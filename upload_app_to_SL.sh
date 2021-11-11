@@ -119,6 +119,12 @@ curl -u "$_arg_sl_user_name:$_arg_sl_access_key" --location \
 --form 'name="$(basename $_arg_app_location)"' \
 --form 'description="$_arg_app_description"'
 
+curl -u "$SAUCE_USERNAME:$SAUCE_ACCESS_KEY" --location \
+--request POST 'https://api.us-west-1.saucelabs.com/v1/storage/upload' \
+--form 'payload=@"g16K4P8IX/iOS.RealDevice.SauceLabs.Mobile.Sample.app.2.7.1.ipa"' \
+--form 'name="iOS.RealDevice.SauceLabs.Mobile.Sample.app.2.7.1.ipa"' \
+--form 'description="iOS Test App v3"'
+
 # May need this data in the tests somewhere. 
 #  {
 #     "item": {
