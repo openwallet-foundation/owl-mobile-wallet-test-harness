@@ -11,49 +11,39 @@ from agent_controller_client import agent_controller_GET, agent_controller_POST,
 # import Page Objects needed
 from pageobjects.bifold.termsofservice import TermsOfServicePage
 from pageobjects.bifold.pinsetup import PINSetupPage
+from pageobjects.bifold.home import HomePage
 
 # Instantiate the page objects needed
 # Can I pass the context here on instantiation or should we do it in the steps? 
 # We could put a page factory somewhere that instantiates all pages for a given app. 
-iWikipediaHomePage = WikipediaHomePage()
+thisTermOfServicePage = TermsOfServicePage()
+thisPINSetupPage = PINSetupPage()
+thisHomePage = HomePage()
 
-@given('a React Native app in the Device Cloud')
+@given('the terms of service has been accepted')
 def step_impl(context):
-    # Is there anything to do here to make sure the app is in the device cloud? 
-    # Should the manage script put the app in teh cloud or can a step like this do it?
+    thisTermOfServicePage.select_accept(context)
+    thisPINSetupPage = thisTermOfServicePage.submit(context)
+
+@given('a PIN has been set up')
+def step_impl(context):
+    # TODO Move the data into the feature file
+    thisPINSetupPage.enter_pin(context, "369369")
+    thisPINSetupPage.enter_second_pin(context, "369369")
+    thisHomePage = thisPINSetupPage.create_pin(context)
+
+@when('the wallet user scans the QR code sent by the issuer')
+def step_impl(context):
+    thisScanPage = thisHomePage.select_scan(context)
+    #thisScanPage.
+
+@when('accepts the connection')
+def step_impl(context):
+    # click yes on notification? 
     pass
 
-@given('an aries agent is running with a controller with a web service API')
+@then('there is a connection between Issuer and wallet user')
 def step_impl(context):
-    # Maybe ping the service at this point? 
-    pass
-
-@when('the test sends an event to the app')
-def step_impl(context):
-    # call the page object for the app to do some event
-    iWikipediaHomePage.search(context,"tiger")
-    #assert True
-
-@when('can retrieve screen contents')
-def step_impl(context):
-    # call the page object for the app to get some information from the screen
-    elems = iWikipediaHomePage.get_search_results(context)
-    assert len(elems) > 0, "results not populated"
-    for elem in elems:
-        print(elem.text)
-        if "Tiger" in elem.text:
-            assert True
-
-@when('can call the agent web service api')
-def step_impl(context):
-    # call some web service online pretending it is the agent controller web service
-    (resp_status, resp_text) = agent_controller_GET("http://acme_agent:9022/", "connections")
-    #(resp_status, resp_text) = agent_controller_POST("http://acme_agent:9022/", "connections", operation="create-invitation", data="{}")
-    #(resp_status, resp_text) = agent_controller_POST("agent_url" + "/agent/command/", "connection", operation="create-invitation")
-    assert resp_status == 200, f'resp_status {resp_status} is not 200; {resp_text}'
-
-@then('we have a viable test framework')
-def step_impl(context):
-    # nothing to do here
+    # Check the connections for a new connection
     pass
     

@@ -16,3 +16,10 @@ class BasePage(object):
     def set_device(self, context):
         self.device = context.browser
         
+    def on_the_right_page(self, context, title):
+        title_element = WebDriverWait(self.device, 10).until(
+            EC.title_is(title))
+        if title_element.name() == title:
+            return True
+        else:
+            return False

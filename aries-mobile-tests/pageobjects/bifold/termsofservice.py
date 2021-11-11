@@ -21,6 +21,11 @@ class TermsOfServicePage(BasePage):
     #Android Locators
 
     def select_accept(self, context):
+        if self.on_the_right_page(context, "Terms of Service"):
+            
+        else:
+            
+
         search_element = WebDriverWait(context.browser, 10).until(
             EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, "Search Wikipedia"))
         )

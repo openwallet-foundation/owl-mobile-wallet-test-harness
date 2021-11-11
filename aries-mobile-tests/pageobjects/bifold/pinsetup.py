@@ -31,3 +31,7 @@ class PINSetupPage(BasePage):
     def enter_second_pin(self, context, pin):
         elems = context.browser.find_elements_by_class_name("android.widget.TextView")
         return elems
+
+    def create_pin(self, context):
+        elems = context.browser.find_elements_by_class_name("android.widget.TextView")
+        return elems    
