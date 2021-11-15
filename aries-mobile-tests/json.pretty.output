@@ -1,0 +1,162 @@
+[
+{
+  "elements": [
+    {
+      "keyword": "Scenario",
+      "location": "features/sample.feature:4",
+      "name": "Sample scenario to call the app in the device cloud and call the agent controller",
+      "status": "failed",
+      "steps": [
+        {
+          "keyword": "Given",
+          "location": "features/sample.feature:5",
+          "match": {
+            "arguments": [],
+            "location": "features/steps/sample.py:19"
+          },
+          "name": "a React Native app in the Device Cloud",
+          "result": {
+            "duration": 0.00015020370483398438,
+            "status": "passed"
+          },
+          "step_type": "given"
+        },
+        {
+          "keyword": "And",
+          "location": "features/sample.feature:6",
+          "match": {
+            "arguments": [],
+            "location": "features/steps/sample.py:25"
+          },
+          "name": "an aries agent is running with a controller with a web service API",
+          "result": {
+            "duration": 0.00013947486877441406,
+            "status": "passed"
+          },
+          "step_type": "given"
+        },
+        {
+          "keyword": "When",
+          "location": "features/sample.feature:7",
+          "match": {
+            "arguments": [],
+            "location": "features/steps/sample.py:30"
+          },
+          "name": "the test sends an event to the app",
+          "result": {
+            "duration": 10.22407078742981,
+            "status": "passed"
+          },
+          "step_type": "when"
+        },
+        {
+          "keyword": "And",
+          "location": "features/sample.feature:8",
+          "match": {
+            "arguments": [],
+            "location": "features/steps/sample.py:36"
+          },
+          "name": "can retrieve screen contents",
+          "result": {
+            "duration": 18.2407283782959,
+            "status": "passed"
+          },
+          "step_type": "when"
+        },
+        {
+          "keyword": "And",
+          "location": "features/sample.feature:9",
+          "match": {
+            "arguments": [],
+            "location": "features/steps/sample.py:46"
+          },
+          "name": "can call the agent web service api",
+          "result": {
+            "duration": 0.1613469123840332,
+            "error_message": [
+              "Traceback (most recent call last):",
+              "  File \"/home/mike/.local/lib/python3.8/site-packages/aiohttp/connector.py\", line 999, in _create_direct_connection",
+              "    hosts = await asyncio.shield(host_resolved)",
+              "  File \"/home/mike/.local/lib/python3.8/site-packages/aiohttp/connector.py\", line 865, in _resolve_host",
+              "    addrs = await self._resolver.resolve(host, port, family=self._family)",
+              "  File \"/home/mike/.local/lib/python3.8/site-packages/aiohttp/resolver.py\", line 31, in resolve",
+              "    infos = await self._loop.getaddrinfo(",
+              "  File \"/usr/lib/python3.8/asyncio/base_events.py\", line 825, in getaddrinfo",
+              "    return await self.run_in_executor(",
+              "  File \"/usr/lib/python3.8/concurrent/futures/thread.py\", line 57, in run",
+              "    result = self.fn(*self.args, **self.kwargs)",
+              "  File \"/usr/lib/python3.8/socket.py\", line 918, in getaddrinfo",
+              "    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):",
+              "socket.gaierror: [Errno -3] Temporary failure in name resolution",
+              "",
+              "The above exception was the direct cause of the following exception:",
+              "",
+              "Traceback (most recent call last):",
+              "  File \"/home/mike/.local/lib/python3.8/site-packages/behave/model.py\", line 1329, in run",
+              "    match.run(runner.context)",
+              "  File \"/home/mike/.local/lib/python3.8/site-packages/behave/matchers.py\", line 98, in run",
+              "    self.func(context, *args, **kwargs)",
+              "  File \"features/steps/sample.py\", line 49, in step_impl",
+              "    (resp_status, resp_text) = agent_controller_GET(\"http://acme_agent:9022/\", \"connections\")",
+              "  File \"/home/mike/aries/aries-mobile-test-harness/aries-mobile-tests/agent_controller_client.py\", line 63, in agent_controller_GET",
+              "    (resp_status, resp_text) = run_coroutine_with_kwargs(make_agent_controller_request, \"GET\", agent_url)",
+              "  File \"/home/mike/aries/aries-mobile-test-harness/aries-mobile-tests/agent_controller_client.py\", line 38, in run_coroutine_with_kwargs",
+              "    return loop.run_until_complete(coroutine(*args, **kwargs))",
+              "  File \"/usr/lib/python3.8/asyncio/base_events.py\", line 616, in run_until_complete",
+              "    return future.result()",
+              "  File \"/home/mike/aries/aries-mobile-test-harness/aries-mobile-tests/agent_controller_client.py\", line 48, in make_agent_controller_request",
+              "    async with client_session.request(",
+              "  File \"/home/mike/.local/lib/python3.8/site-packages/aiohttp/client.py\", line 1117, in __aenter__",
+              "    self._resp = await self._coro",
+              "  File \"/home/mike/.local/lib/python3.8/site-packages/aiohttp/client.py\", line 520, in _request",
+              "    conn = await self._connector.connect(",
+              "  File \"/home/mike/.local/lib/python3.8/site-packages/aiohttp/connector.py\", line 535, in connect",
+              "    proto = await self._create_connection(req, traces, timeout)",
+              "  File \"/home/mike/.local/lib/python3.8/site-packages/aiohttp/connector.py\", line 892, in _create_connection",
+              "    _, proto = await self._create_direct_connection(req, traces, timeout)",
+              "  File \"/home/mike/.local/lib/python3.8/site-packages/aiohttp/connector.py\", line 1011, in _create_direct_connection",
+              "    raise ClientConnectorError(req.connection_key, exc) from exc",
+              "aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host acme_agent:9022 ssl:default [Temporary failure in name resolution]",
+              "",
+              "Captured stdout:",
+              "EN",
+              "Did you mean \"tigers\"?",
+              "Tiger",
+              "Species of big cat",
+              "Tiger Woods",
+              "American golfer",
+              "Tiger I",
+              "1942 heavy tank family",
+              "Tiger King",
+              "2020 American true crime documentary miniseries",
+              "Search Wikipedia",
+              "In the news",
+              "Nov 10, 2021",
+              "In stock car racing, Kyle Larson wins the NASCAR Cup Series championship.",
+              "Kenyans Albert Korir and Peres Jepchirchir win the New York City Marathon men's and women's races.",
+              "Explore"
+            ],
+            "status": "failed"
+          },
+          "step_type": "when"
+        },
+        {
+          "keyword": "Then",
+          "location": "features/sample.feature:10",
+          "name": "we have a viable test framework",
+          "step_type": "then"
+        }
+      ],
+      "tags": [
+        "T001-Sample"
+      ],
+      "type": "scenario"
+    }
+  ],
+  "keyword": "Feature",
+  "location": "features/sample.feature:1",
+  "name": "Sample test specification",
+  "status": "failed",
+  "tags": []
+}
+]

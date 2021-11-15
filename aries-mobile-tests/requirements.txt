@@ -2,6 +2,7 @@ behave
 allure-behave
 #behave==1.2.6
 browserstack-local==1.2.2
+SauceClient
 paver==1.3.4
 selenium==3.141.0
 psutil==5.7.2
