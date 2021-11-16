@@ -1,0 +1,1 @@
+docker build -f aries-mobile-tests/Dockerfile.harness -t aries-mobile-test-harness .

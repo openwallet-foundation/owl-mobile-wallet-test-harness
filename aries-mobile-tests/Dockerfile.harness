@@ -3,10 +3,13 @@ COPY ./aries-mobile-tests/requirements.txt /aries-mobile-test-harness/
 WORKDIR /aries-mobile-test-harness
 RUN pip install -r requirements.txt
 
+
 RUN \
     echo "==> Install stuff not in the requirements..."   && \
     pip install --no-cache-dir \
-        aiohttp
+        aiohttp \
+    pip install --no-cache-dir \
+        python-decouple
 
 COPY . /aries-mobile-test-harness
 WORKDIR /aries-mobile-test-harness/aries-mobile-tests

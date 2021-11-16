@@ -6,36 +6,27 @@
 #  
 # -----------------------------------------------------------
 from appium import webdriver
-from decouple import config
-
-# from browserstack.local import Local
+from browserstack.local import Local
 import os, json
 
 config_file_path = os.path.join(os.path.dirname(__file__), '..', "config.json")
-print("Path to the (empty for now) config file = %s" % (config_file_path))
+print("Path to the config file = %s" % (config_file_path))
 with open(config_file_path) as config_file:
     CONFIG = json.load(config_file)
 
 # Take user credentials from environment variables if they are defined
-
-CONFIG['capabilities']['sauce:options']['username'] = config('SL_USERNAME')
-CONFIG['capabilities']['sauce:options']['accesskey'] = config('SL_ACCESS_KEY')
-region = config('SL_REGION')
+if 'BROWSERSTACK_USERNAME' in os.environ: CONFIG['capabilities']['browserstack.user'] = os.environ['BROWSERSTACK_USERNAME'] 
+if 'BROWSERSTACK_ACCESS_KEY' in os.environ: CONFIG['capabilities']['browserstack.key'] = os.environ['BROWSERSTACK_ACCESS_KEY']
 
 def before_feature(context, feature):
-
-        desired_capabilities = CONFIG['capabilities'] 
-
-        url = f'https://@ondemand.{region}.saucelabs.com:443/wd/hub'
-
-        context.browser = webdriver.Remote(
-                desired_capabilities= desired_capabilities,
-                command_executor=url,
-                keep_alive=True) 
+    desired_capabilities = CONFIG['capabilities']
+    context.browser = webdriver.Remote(
+        desired_capabilities=desired_capabilities,
+        command_executor="http://hub-cloud.browserstack.com/wd/hub"
+    )
 
 def after_feature(context, feature):
     # Invoke driver.quit() after the test is done to indicate to BrowserStack 
     # that the test is completed. Otherwise, test will appear as timed out on BrowserStack.
     context.browser.quit()
-
 

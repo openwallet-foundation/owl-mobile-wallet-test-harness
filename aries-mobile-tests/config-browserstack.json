@@ -1,0 +1,13 @@
+{
+    "capabilities": {
+        "browserstack.user" : "sheldon11",
+        "browserstack.key" : "FUxuxakn4P6dgeBbv9C4",
+        "project": "Bifold Behave Android Project",
+        "build": "bifold-build-1",
+        "name": "bifold_sample_test",
+        "browserstack.debug": true,
+        "app": "bs://e1aad69246cb74c89bbd463a3eeed9bfbe140ee0",
+        "device": "Google Pixel 3",
+        "os_version": "9.0"
+    }
+}
