@@ -1,0 +1,13 @@
+{
+    "capabilities": {
+        "project": "Bifold Behave Project",
+        "build": "bifold-build-1",
+        "platformName": "iOS",
+        "appium:app":"storage:filename=AriesBifold.zip",
+        "appium:deviceName":"iPhone SE (2nd generation) Simulator",
+        "appium:platformVersion":"14.5",
+        "sauce:options":{
+            "appiumVersion":"1.21.0"
+        }
+    }
+}

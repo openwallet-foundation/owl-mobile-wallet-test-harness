@@ -12,10 +12,16 @@ Want to see the Aries Mobile Test Harness in action? Give it a try using a git, 
 ```bash
 git clone https://github.com/bcgov/aries-mobile-test-harness
 cd aries-mobile-tests
+```
+Upload an app to the device cloud
+```bash
+./upload_app_to_SL.sh <device_cloud_username> <device_cloud_access_key> /<full path to apps>/apps/bifold-bc/AriesBifold.zip "iOS Bifold BC App" api.us-west-1
+```
+Build and run the tests
+```bash
 docker build -f aries-mobile-tests/Dockerfile.harness -t aries-mobile-test-harness .
-docker run aries-mobile-test-harness
+docker run -it --rm -e SAUCE_USERNAME=<device_cloud_username> -e SAUCE_ACCESS_KEY=<device_cloud_access_key> -e SL_REGION=us-west-1 aries-mobile-test-harness bash
 /aries-mobile-test-harness/aries-mobile-tests> behave
-
 ```
 
 ## Contents<!-- omit in toc -->

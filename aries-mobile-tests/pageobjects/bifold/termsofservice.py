@@ -11,7 +11,7 @@ class TermsOfServicePage(BasePage):
     # def __init__ (self, context):
     #     #self.device = context.browser
     #     self.context = context
-
+    
     #def __init__ (self):
 
     #iOS Locators
@@ -24,7 +24,12 @@ class TermsOfServicePage(BasePage):
         if self.on_the_right_page(context, "Terms of Service"):
             
         else:
-            
+            driver.manage(). timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            driver. findElement (MobileBy.AccessibilityId ("Login Screen")).clickO:
+            driver. findElement(MobileBy.AccessibilityId("username")).sendKeys("alice");
+            driver. findElement (MobileBy.AccessibilityId("password")). sendKeys ("mypassword");
+            driver. findElement(MobileBy.AccessibilityId("loginBtn")).click():
+            driver.findElement(By.xpath("//*[@text='Logout']")).click();
 
         search_element = WebDriverWait(context.browser, 10).until(
             EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, "Search Wikipedia"))
