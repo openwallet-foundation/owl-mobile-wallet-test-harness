@@ -13,5 +13,4 @@ RUN \
 
 COPY . /aries-mobile-test-harness
 WORKDIR /aries-mobile-test-harness/aries-mobile-tests
-#ENTRYPOINT ["behave"]
-#ENTRYPOINT ["bash"]
+
