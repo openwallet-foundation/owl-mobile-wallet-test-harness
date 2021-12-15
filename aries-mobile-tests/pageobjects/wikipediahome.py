@@ -8,17 +8,17 @@ class WikipediaHomePage(object):
     """A sample test class to show how page object works"""
 
     # def __init__ (self, context):
-    #     #self.device = context.browser
+    #     #self.device = context.driver
     #     self.context = context
 
     #def __init__ (self):
 
     def search(self, context, keyword):
-        search_element = WebDriverWait(context.browser, 10).until(
+        search_element = WebDriverWait(context.driver, 10).until(
             EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, "Search Wikipedia"))
         )
         search_element.click()
-        search_input = WebDriverWait(context.browser, 30).until(
+        search_input = WebDriverWait(context.driver, 30).until(
             EC.element_to_be_clickable((MobileBy.ID, "org.wikipedia.alpha:id/search_src_text"))
         )
         search_input.send_keys(keyword)
@@ -26,6 +26,6 @@ class WikipediaHomePage(object):
 
 
     def get_search_results(self, context):
-        elems = context.browser.find_elements_by_class_name("android.widget.TextView")
+        elems = context.driver.find_elements_by_class_name("android.widget.TextView")
         return elems
         

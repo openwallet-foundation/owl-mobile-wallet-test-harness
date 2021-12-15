@@ -70,12 +70,13 @@ def agent_controller_POST(url, topic, operation=None, id=None, data=None) -> (in
     if data:
         payload["data"] = data
     if operation:
-        agent_url = agent_url + operation + "/"
+        agent_url = agent_url + operation
     if id:
         if topic == 'credential':
             payload["cred_ex_id"] = id
         else:
             payload["id"] = id
+
     (resp_status, resp_text) = run_coroutine_with_kwargs(make_agent_controller_request, "POST", agent_url, data=payload)
     return (resp_status, resp_text)
 
