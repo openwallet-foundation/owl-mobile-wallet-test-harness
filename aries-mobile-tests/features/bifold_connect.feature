@@ -1,3 +1,4 @@
+@Connect
 Feature: Connect to an Issuer
 
    @T001-Connect

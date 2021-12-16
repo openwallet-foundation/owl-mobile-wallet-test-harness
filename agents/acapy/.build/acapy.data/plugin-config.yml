@@ -1,0 +1,8 @@
+version: '2'
+
+http_uniresolver:
+  endpoint:
+    http://192.168.65.3:8080/1.0/identifiers
+  methods:
+    # - sov
+    - orb

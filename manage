@@ -2,7 +2,10 @@
 # set -x
 
 # Set of valid agents - add new agents here
-export VALID_AGENTS=$(ls aries-backchannels/*/Dockerfile.* | sed "s/^.*file.//" |  tr "\n" " " | sort -u)
+export VALID_AGENTS=$(ls agents/*/Dockerfile.* | sed "s/^.*file.//" |  tr "\n" " " | sort -u)
+
+# Set of valid wallets - Looks in aries-mobile-tests/pageobjects for folders containing wallet page objects
+export VALID_WALLETS=$(ls -d aries-mobile-tests/pageobjects/*/ | awk -F'/' '{ a = length($NF) ? $NF : $(NF-1); print a }' | tr "\n" " " | sort -u)
 
 export MSYS_NO_PATHCONV=1
 # getDockerHost; for details refer to https://github.com/bcgov/DITP-DevOps/tree/main/code/snippets#getdockerhost
@@ -10,24 +13,28 @@ export MSYS_NO_PATHCONV=1
 export DOCKERHOST=$(getDockerHost)
 
 SCRIPT_HOME="$( cd "$( dirname "$0" )" && pwd )"
-export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-aath}"
+export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-amth}"
 export AGENT_TIMEOUT=30
 export LEDGER_TIMEOUT=60
 # these two can be overrode via env vars
 export LEDGER_URL_CONFIG="${LEDGER_URL_CONFIG}"
 export TAILS_SERVER_URL_CONFIG="${TAILS_SERVER_URL_CONFIG}"
 
+# always use ngrok for mobile testing
+export USE_NGROK="true"
+
+
 # these are derived from the above two
 LEDGER_URL_HOST="${LEDGER_URL_CONFIG:-http://localhost:9000}"
 LEDGER_URL_INTERNAL="${LEDGER_URL_CONFIG:-http://${DOCKERHOST}:9000}"
 TAILS_SERVER_URL_HOST="${TAILS_SERVER_URL_CONFIG:-http://localhost:6543}"
 TAILS_SERVER_URL_INTERNAL="${TAILS_SERVER_URL_CONFIG:-http://${DOCKERHOST}:6543}"
-CLOUD_AGENCY_URL="${CLOUD_AGENCY_URL:-http://localhost:8000}"
+#CLOUD_AGENCY_URL="${CLOUD_AGENCY_URL:-http://localhost:8000}"
 # important: inside the internal URLs, we replace "://localhost:" with "://${DOCKERHOST}:"
 #   so it works inside docker.
 LEDGER_URL_INTERNAL="$(echo ${LEDGER_URL_INTERNAL} | sed "s/:\/\/localhost:/:\/\/${DOCKERHOST}:/" )"
 TAILS_SERVER_URL_INTERNAL="$(echo ${TAILS_SERVER_URL_INTERNAL} | sed "s/:\/\/localhost:/:\/\/${DOCKERHOST}:/" )"
-CLOUD_AGENCY_URL_INTERNAL="$(echo ${CLOUD_AGENCY_URL} | sed "s/:\/\/localhost:/:\/\/${DOCKERHOST}:/" )"
+#CLOUD_AGENCY_URL_INTERNAL="$(echo ${CLOUD_AGENCY_URL} | sed "s/:\/\/localhost:/:\/\/${DOCKERHOST}:/" )"
 
 # Running on Windows?
 if [[ "$OSTYPE" == "msys" ]]; then
@@ -77,74 +84,74 @@ usage () {
 
   Commands:
 
-  build [ -a agent ]* args
-    Build the docker images for the agents and the test harness.
+  build [ -w wallet ] [ -i/v agent ]*
+    Build the docker images for the issuer and verifier agents and the mobile test harness.
       You need to do this first.
+      - "wallet" must be specified based off of the name given to the set of page objects in the pageobjects folder. eg. "bifold". 
+      This copies only the wallets related pageobjects and tests into the container.
       - "agent" must be one from the supported list: ${VALID_AGENTS}
-      - multiple agents may be built by specifying multiple -a options
-      - By default, all agents and the harness will be built
 
-  rebuild [ -a agent ]* args
+    Examples:
+    $0 build -w bifold -i acapy-main -v acapy-main  - Build the Aries Mobile Test harness to test bifold, use acapy-main as the issuer and the verifier.
+
+  rebuild [ -w wallet ] [ -i/v agent ]*
     Same as build, but adds the --no-cache option to force building from scratch
 
-  run [ -a/b/f/m/d agent ] [-r allure [-e comparison]] [ -i <ini file> ] [ -o <output file> ] [ -n ] [ -v <AIP level> ] [ -t tags ]*
-    Run the tagged tests using the specified agents for Acme, Bob, Faber and Mallory.
-      Select the agents for the roles of Acme (-a), Bob (-b), Faber (-f) and Mallory (-m).
-      - For all to be set to the same, use "-d" for default.
+  run [ -r allure ] [ -d <device cloud> ] [ -u <device cloud username> ] [ -k <device cloud key> ] [ -p platform ] [ -a <app name> ] [ -i <issuer agent> ] [ -v <verifier agent> ] [ -t tags ]*
+    Run the tagged tests using the specified Wallet using specified issuer and verifier agents.
+      Select the agents for the roles of Issuer (-i) and Verifier (-v).
       - The value for agent must be one of: ${VALID_AGENTS}
       Use -t option(s) to indicate tests with the gives tag(s) are to be executed.
         -t options can NOT have spaces, even if the option is quoted; use a behave INI file instead (-i option)
         For not running tagged tests, specify a ~ before the tag, e.g. "-t ~@wip" runs tests that don't have the "@wip" tag
-      Use -v to specify the AIP level, in case the agent needs to customize its startup configuration
-        "-v 10" or "-v 20"
-      Use the -i option to use the specified file as the behave.ini file for the run
-      - Default is the behave.ini file in the "aries-test-harness" folder
+      Use -d to specify the Device Cloud Service to be used, SauceLabs is currently supported
+        "-d SauceLabs"
+      Use -u to specify the username for the given device cloud service.
+      Use -k to specify the access key for the given device cloud service.
+      Use -p to specify the mobile device platform
+        "-p iOS" or "-p Android"
+      Use -a to specify the app name or id of the app loaded into the device cloud service
+      Use -i to specify the issuer to use in the tests
+        Currenty supporting acapy-main
+      Use -v to specify the verifier to use in the tests
+        Currenty supporting acapy-main
       Use the -r option to output to allure
         (allure is the only supported option)
-      Use the -e option to compare current results to Known Good Results (KGR)
-        (comparison is the only supported option)
-      Use the -n option to start ngrok endpoints for each agent
-        (this is *required* when testing with a Mobile agent)
+LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 
 
     Examples:
-    $0 run -a acapy -b vcx -f vcx -m acapy  - Run all the tests using the specified agents per role
-    $0 run -d vcx                           - Run all tests for all features using the vcx agent in all roles
-    $0 run -d acapy -t @SmokeTest -t @P1    - Run the tests tagged @SmokeTest and/or @P1 (priority 1) using all ACA-Py agents
-    $0 run -d acapy -b mobile -n -t @MobileTest  - Run the mobile tests using ngrok endpoints
+    $0 run -d SauceLabs -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p Android -a app-release.apk -i acapy-main -v acapy-main -t @Connect
+      - Run all tests tagged with Connect on SauceLabs with the app-release.apk app on the android platform. Use acapy-main as the basis for the issuer and verifier. 
 
   tags - Get a list of the tags on the features tests
 
   tests - Get a list of the test scenarios in the features, including the associated tags
-
-  test [-r allure [-e comparison]] [ -i <ini file> ] [ -o <output file> ] [ -n ] [ -v <AIP level> ] [ -t tags ]*
-    Run the tagged tests using the set of agents that were started with the 'start' command, using all the same parameters as 'run',
-    except -a/b/f/m/d/n.
-
-  scenarios - synonym for tests, but longer and harder to spell
-
-  service [start|stop|logs|clean] service-name
-    Run the given service command on the given service. Commands:
-      - start: start the service, creating the AATH docker network if necessary.
-      - stop: stop the service, deleting the AATH docker network if it's now unused.
-      - logs: print the scrolling logs of the service. Ctrl-C to exit.
-      - clean: clean up the service containers and build files, if any.
-
-  start [ -a/b/f/m/d agent ]* [-n]
-    Initialize the test harness using the specified agents for Acme, Bob, Faber and Mallory.
-      Select the agents for the roles of Acme (-a), Bob (-b), Faber (-f) and Mallory (-m).
-      - For all to be set to the same, use "-d" for default.
-      - The value for agent must be one of: ${VALID_AGENTS}
-    Use the -n option to start ngrok endpoints for each agent
-        (this is *required* when testing with a Mobile agent)
-
-  stop - stop the test harness.
-
-  rebuild - Rebuild the docker images.
-
-  dockerhost - Print the ip address of the Docker Host Adapter as it is seen by containers running in docker.
 EOF
 exit 1
 }
+  # scenarios - synonym for tests, but longer and harder to spell
+
+  # service [start|stop|logs|clean] service-name
+  #   Run the given service command on the given service. Commands:
+  #     - start: start the service, creating the AATH docker network if necessary.
+  #     - stop: stop the service, deleting the AATH docker network if it's now unused.
+  #     - logs: print the scrolling logs of the service. Ctrl-C to exit.
+  #     - clean: clean up the service containers and build files, if any.
+
+  # start [ -a/b/f/m/d agent ]* [-n]
+  #   Initialize the test harness using the specified agents for Acme, Bob, Faber and Mallory.
+  #     Select the agents for the roles of Acme (-a), Bob (-b), Faber (-f) and Mallory (-m).
+  #     - For all to be set to the same, use "-d" for default.
+  #     - The value for agent must be one of: ${VALID_AGENTS}
+  #   Use the -n option to start ngrok endpoints for each agent
+  #       (this is *required* when testing with a Mobile agent)
+
+  # stop - stop the test harness.
+
+  # rebuild - Rebuild the docker images.
+
+  # dockerhost - Print the ip address of the Docker Host Adapter as it is seen by containers running in docker.
+
 
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
@@ -217,22 +224,22 @@ function initEnv() {
 # - image Dockerfile has an ARG for the commit hash,
 # - build script grabs the HEAD commit hash from the agent's github repo
 
-# Build images -- add more backchannels here...
+# Build images -- add more agents here...
 # TODO: Define args to build only what's needed
 buildImages() {
   args=${@}
 
-  echo Agents to build: ${BUILD_AGENTS}
+  echo "Agents to build: Issuer:${ISSUER_AGENT}, Verifier:${VERIFIER_AGENT}"
 
   for agent in ${BUILD_AGENTS}; do
-    export BACKCHANNEL_FOLDER=$(dirname "$(find aries-backchannels -name *.${agent})" )
-    echo Backchannel Folder: ${BACKCHANNEL_FOLDER}
-    if [ -e "${BACKCHANNEL_FOLDER}/Dockerfile.${agent}" ]; then
-      echo "Building ${agent}-agent-backchannel ..."
+    export AGENT_FOLDER=$(dirname "$(find agents -name *.${agent})" )
+    echo Agent Folder: ${AGENT_FOLDER}
+    if [ -e "${AGENT_FOLDER}/Dockerfile.${agent}" ]; then
+      echo "Building ${agent}-agent ..."
       local REPO_ARGS
       REPO_ARGS=
-      if [[ -f "${BACKCHANNEL_FOLDER}/${agent}.repoenv" ]]; then
-        source "${BACKCHANNEL_FOLDER}/${agent}.repoenv"
+      if [[ -f "${AGENT_FOLDER}/${agent}.repoenv" ]]; then
+        source "${AGENT_FOLDER}/${agent}.repoenv"
         if [[ -n "${REPO_URL}" ]]; then
           local REPO_COMMIT
           if [[ -z ${REPO_BRANCH} ]]; then
@@ -247,8 +254,8 @@ buildImages() {
         ${args} \
         $(initDockerBuildArgs) \
         ${REPO_ARGS} \
-        -t "${agent}-agent-backchannel" \
-        -f "${BACKCHANNEL_FOLDER}/Dockerfile.${agent}" "aries-backchannels/"; then
+        -t "${agent}-agent" \
+        -f "${AGENT_FOLDER}/Dockerfile.${agent}" "agents/"; then
           echo "Docker image build failed."
           exit 1
       fi
@@ -258,12 +265,12 @@ buildImages() {
     fi
   done
 
-  echo "Building aries-test-harness ..."
+  echo "Building aries-mobile-test-harness ..."
   if ! docker build \
     ${args} \
     $(initDockerBuildArgs) \
-    -t 'aries-test-harness' \
-    -f 'aries-test-harness/Dockerfile.harness' 'aries-test-harness/'; then
+    -f 'aries-mobile-tests/Dockerfile.harness' \
+    -t 'aries-mobile-test-harness' '.'; then
       echo "Docker image build failed."
       exit 1
   fi
@@ -401,13 +408,9 @@ waitForUniresolver(){
   )
 }
 
-startCloudAgency(){
-    docker-compose -f ./aries-backchannels/aries-vcx/ci/docker-compose.yml up -d
-}
-
 dockerhost_url_templates() {
   # generate acapy plugin config file, writing $DOCKERHOST into URLs
-  pushd ${SCRIPT_HOME}/aries-backchannels/acapy/ > /dev/null
+  pushd ${SCRIPT_HOME}/agents/acapy/ > /dev/null
 
   mkdir -p .build/acapy-main.data
   mkdir -p .build/acapy.data
@@ -462,14 +465,14 @@ startAgent() {
   local CONTAINER_NAME=$2
   local IMAGE_NAME=$3
   local PORT_RANGE=$4
-  local BACKCHANNEL_PORT=$5
+  local AGENT_PORT=$5
   local AGENT_ENDPOINT_PORT=$6
   local AIP_CONFIG=$7
   local AGENT_NAME=$8
 
-  local BACKCHANNEL_DIR=$(dirname "$(find aries-backchannels -name *.${AGENT_NAME})" )
+  local AGENT_DIR=$(dirname "$(find agents -name *.${AGENT_NAME})" )
 
-  local ENV_PATH="$(find $BACKCHANNEL_DIR -name *${AGENT_NAME}.env)"
+  local ENV_PATH="$(find $AGENT_DIR -name *${AGENT_NAME}.env)"
   local ENV_FILE_ARG=
 
   if [[ -n $ENV_PATH ]]; then
@@ -477,7 +480,7 @@ startAgent() {
     # echo $ENV_FILE_ARG
   fi
 
-  local DATA_VOLUME_PATH="$(find $BACKCHANNEL_DIR -wholename */${AGENT_NAME}.data)"
+  local DATA_VOLUME_PATH="$(find $AGENT_DIR -wholename */${AGENT_NAME}.data)"
   local DATA_VOLUME_ARG=
   # optional data volume folder
   if [[ -n DATA_VOLUME_PATH  ]]; then
@@ -487,56 +490,84 @@ startAgent() {
   if [ ! "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
     if [[ "${USE_NGROK}" = "true" ]]; then
       echo "Starting ngrok for ${NAME} Agent ..."
-      if [[ "${IMAGE_NAME}" = "dotnet-master-agent-backchannel" ]]; then
-        docker run -d --rm --name "${CONTAINER_NAME}-ngrok" wernight/ngrok ngrok http "${CONTAINER_NAME}:${BACKCHANNEL_PORT}" --log stdout > /dev/null
-      else
-        docker run -d --rm --name "${CONTAINER_NAME}-ngrok" wernight/ngrok ngrok http "${CONTAINER_NAME}:${AGENT_ENDPOINT_PORT}" --log stdout > /dev/null
-      fi
+      docker run -d --rm --name "${CONTAINER_NAME}-ngrok" wernight/ngrok ngrok http "${CONTAINER_NAME}:${AGENT_ENDPOINT_PORT}" --log stdout > /dev/null
       sleep 1
       export NGROK_NAME="${CONTAINER_NAME}-ngrok"
-      docker network connect aath_network "${CONTAINER_NAME}-ngrok"
+      docker network connect amth_network "${CONTAINER_NAME}-ngrok"
     else
       export NGROK_NAME=
     fi
     echo "Starting ${NAME} Agent using ${IMAGE_NAME} ..."
-    export BACKCHANNEL_EXTRA_ARGS_NAME="BACKCHANNEL_EXTRA_${AGENT_NAME//-/_}"
-    export BACKCHANNEL_EXTRA_ARGS=`echo ${!BACKCHANNEL_EXTRA_ARGS_NAME}`
-    local container_id=$(docker run -dt --name "${CONTAINER_NAME}" --expose "${PORT_RANGE}" -p "${PORT_RANGE}:${PORT_RANGE}" ${DATA_VOLUME_ARG} ${ENV_FILE_ARG} -e "NGROK_NAME=${NGROK_NAME}" -e "EXTRA_ARGS=${BACKCHANNEL_EXTRA_ARGS}" -e "DOCKERHOST=${DOCKERHOST}" -e "AGENT_NAME=${NAME}" -e "LEDGER_URL=${LEDGER_URL_INTERNAL}" -e "TAILS_SERVER_URL=${TAILS_SERVER_URL_INTERNAL}" -e "CLOUD_AGENCY_URL=${CLOUD_AGENCY_URL_INTERNAL}" -e "AIP_CONFIG=${AIP_CONFIG}" "${IMAGE_NAME}" -p "${BACKCHANNEL_PORT}" -i false)
+    export AGENT_EXTRA_ARGS_NAME="AGENT_EXTRA_${AGENT_NAME//-/_}"
+    export AGENT_EXTRA_ARGS=`echo ${!AGENT_EXTRA_ARGS_NAME}`
+    local container_id=$(docker run -dt --name "${CONTAINER_NAME}" --expose "${PORT_RANGE}" -p "${PORT_RANGE}:${PORT_RANGE}" ${DATA_VOLUME_ARG} ${ENV_FILE_ARG} -e "NGROK_NAME=${NGROK_NAME}" -e "EXTRA_ARGS=${AGENT_EXTRA_ARGS}" -e "DOCKERHOST=${DOCKERHOST}" -e "AGENT_NAME=${NAME}" -e "LEDGER_URL=${LEDGER_URL_INTERNAL}" -e "TAILS_SERVER_URL=${TAILS_SERVER_URL_INTERNAL}" -e "CLOUD_AGENCY_URL=${CLOUD_AGENCY_URL_INTERNAL}" -e "AIP_CONFIG=${AIP_CONFIG}" "${IMAGE_NAME}" -p "${AGENT_PORT}" -i false)
     sleep 1
     if [[ "${USE_NGROK}" = "true" ]]; then
-      docker network connect aath_network "${CONTAINER_NAME}"
-    elif [[ "${AGENT_NAME}" = "afgo-master" || "${AGENT_NAME}" = "afgo-interop" ]]; then
-      docker network connect aath_network "${CONTAINER_NAME}"
-    fi
-    if [[ "${IMAGE_NAME}" = "mobile-agent-backchannel" ]]; then
-      echo "Tail-ing log files for ${NAME} agent in ${container_id}"
-      docker logs -f ${container_id} &
+      docker network connect amth_network "${CONTAINER_NAME}"
+    # if [[ "${IMAGE_NAME}" = "mobile-agent-backchannel" ]]; then
+    #   echo "Tail-ing log files for ${NAME} agent in ${container_id}"
+    #   docker logs -f ${container_id} &
     fi
   else
     echo "${NAME} Agent already running, skipping..."
   fi
 }
 
-writeEnvProperties() {
-  ACME_VERSION=$(getAgentVersion 9020)
-  BOB_VERSION=$(getAgentVersion 9030)
-  FABER_VERSION=$(getAgentVersion 9040)
-  MALLORY_VERSION=$(getAgentVersion 9050)
+# TODO this should write some of the info in the appium/Sauce Labs config.json
+modifyConfigJson() {
+  # if Platform is iOS, use the iOS.config.json
+  if [[ "${DEVICE_PLATFORM}" == "iOS" ]]; then
+    # copy the iOS config.json
+    cp ./aries-mobile-tests/sl_ios_config.json ./aries-mobile-tests/config.json
+  fi
+    
+  # If Platform is Android, use the Android.config.json
+  if [[ "${DEVICE_PLATFORM}" == "Android" ]]; then
+    # copy the Android config.json
+    cp ./aries-mobile-tests/sl_android_config.json ./aries-mobile-tests/config.json
+  fi
 
-  env_file="$(pwd)/aries-test-harness/allure/allure-results/environment.properties"
+  contents="$(jq '.capabilities |= . + { "platformName": "${DEVICE_PLATFORM}" }' ./aries-mobile-tests/config.json)" && \
+  echo "${contents}" > config.json
+
+  contents="$(jq '.capabilities |= . + { "appium:platformName": "storage:filename=${APP_NAME}" }' ./aries-mobile-tests/config.json)" && \
+  echo "${contents}" > config.json
+
+  export DEVICE=$(echo $contents | jq '(.capabilities |= . "appium:deviceName")[]')
+  export OS_VERSION=$(echo $contents | jq '(.capabilities |= . "appium:platformVersion")[]')
+
+  #docker cp ./aries-mobile-tests/config.json aries-mobile-test-harness:/aries-mobile-test-harness/aries-mobile-tests/config.json
+}
+
+# Write properties like 
+# platform
+# device(s)
+# OS Version(s)
+# Wallet
+# Issuer 
+# Verifier
+writeEnvProperties() {
+  # ISSUER_VERSION=$(getAgentVersion 9020)
+  # VERIFIER_VERSION=$(getAgentVersion 9030)
+  # HOLDER_VERSION=$(getWalletVersion 9040)
+
+  env_file="$(pwd)/aries-mobile-tests/allure/allure-results/environment.properties"
   declare -a env_array
-  env_array+=("role.acme=$ACME_AGENT")
-  env_array+=("acme.agent.version=$ACME_VERSION")
-  env_array+=("role.bob=$BOB_AGENT")
-  env_array+=("bob.agent.version=$BOB_VERSION")
-  env_array+=("role.faber=$FABER_AGENT")
-  env_array+=("faber.agent.version=$FABER_VERSION")
-  env_array+=("role.mallory=$MALLORY_AGENT")
-  env_array+=("mallory.agent.version=$MALLORY_VERSION")
+  env_array+=("device.cloud.service=$DEVICE_CLOUD")
+  env_array+=("app=$APP_NAME")
+  env_array+=("role.issuer=$ISSUER_AGENT")
+  #env_array+=("issuer.agent.version=$ISSUER_VERSION")
+  env_array+=("role.verifier=$VERIFIER_AGENT")
+  #env_array+=("verifier.agent.version=$VERIFIER_VERSION")
+  env_array+=("platform=$DEVICE_PLATFORM")
+  env_array+=("device=$DEVICE")
+  env_array+=("device.os=$OS_VERSION")
+  env_array+=("execution.tags=$TAGS")
   printf "%s\n" "${env_array[@]}" > $env_file
 
 }
 
+# TODO Not sure we need this in the Mobile Test Harness
 getAgentVersion(){
   port=${1}
   # get agent version using a backchannel-exposed api
@@ -549,18 +580,21 @@ getAgentVersion(){
   # fi
 }
 
+# TODO Do we need this for Mobile? 
 createNetwork() {
-  if [[ -z `docker network ls -q --filter "name=aath_network"` ]]; then
-    docker network create aath_network > /dev/null
+  if [[ -z `docker network ls -q --filter "name=amth_network"` ]]; then
+    docker network create amth_network > /dev/null
   fi
 }
 
+# TODO Will only need this if we keep createNetwork() above
 cleanupNetwork() {
-  if [[ -z `docker ps -q --filter "network=aath_network"` && `docker network ls -q --filter "name=aath_network"` ]]; then
-    docker network rm aath_network > /dev/null
+  if [[ -z `docker ps -q --filter "network=amth_network"` && `docker network ls -q --filter "name=amth_network"` ]]; then
+    docker network rm amth_network > /dev/null
   fi
 }
 
+# TODO Probably don't need this for mobile
 auxiliaryService() {
   local SERVICE_NAME
   local SERVICE_COMMAND
@@ -574,6 +608,7 @@ auxiliaryService() {
   fi
 }
 
+# TODO Probably don't need this for mobile
 startServices() {
   # sets if services this procedure starts should be stopped automatically
   local AUTO_CLEANUP
@@ -587,6 +622,7 @@ startServices() {
     auxiliaryService orb start
   fi
 
+  # TODO do we need to start a ledger for mobile? Maybe only if the Harness is starting an agent.
   # if we're *not* using an external VON ledger, start the local one
   if [[ -z ${LEDGER_URL_CONFIG} ]]; then
     if [[ -z `docker ps -q --filter="name=von_webserver_1"` ]]; then
@@ -601,14 +637,6 @@ startServices() {
   if ! waitForLedger; then
     echoRed "\nThe Indy Ledger is not running.\n"
     exit 1
-  fi
-
-  if [[ -z `docker ps -q --filter="name=uni-resolver-web.local"` ]]; then
-      echo "starting local uniresolver..."
-    auxiliaryService uniresolver start
-    if [[ $AUTO_CLEANUP ]]; then
-      export STARTED_LOCAL_UNIRESOLVER=true
-    fi
   fi
 
   # if we're *not* using an external indy tails server, start the local one
@@ -626,13 +654,9 @@ startServices() {
     echoRed "\nThe Indy Tails Server is not running.\n"
     exit 1
   fi
-
-  if ! waitForUniresolver; then
-    echoRed "\nUniversal Resolver is not running.\n"
-    exit 1
-  fi
 }
 
+# TODO Probably din't need this for mobile
 stopServices() {
   if [[ "auto" = $1 ]]; then
     if [[ ${STARTED_LOCAL_UNIRESOLVER} ]]; then
@@ -657,6 +681,7 @@ stopServices() {
   fi
 }
 
+# TODO Probably don't need this for mobile
 serviceCommand() {
   local SERVICE_COMMAND
   SERVICE_COMMAND=$1
@@ -664,84 +689,76 @@ serviceCommand() {
   SERVICE_TARGET=$2
 
   # TODO: allow multiple services to be named - but can we handle logs command then?
-  if [[ "all" = $SERVICE_TARGET ]]; then
-    case "${SERVICE_COMMAND}" in
-      start)
-          createNetwork
-          startServices all
-        ;;
-      stop)
-          stopServices all
-          cleanupNetwork
-        ;;
-      *)
-          echo err: \'start\' and \'stop\' are only valid commands for target \'all\'
-        ;;
-    esac
+#   if [[ "all" = $SERVICE_TARGET ]]; then
+#     case "${SERVICE_COMMAND}" in
+#       start)
+#           createNetwork
+#           startServices all
+#         ;;
+#       stop)
+#           stopServices all
+#           cleanupNetwork
+#         ;;
+#       *)
+#           echo err: \'start\' and \'stop\' are only valid commands for target \'all\'
+#         ;;
+#     esac
 
-    return
-  fi
+#     return
+#   fi
 
-  case "${SERVICE_COMMAND}" in
-    start)
-        createNetwork
-        auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
-      ;;
-    logs)
-        auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
-      ;;
-    stop|clean)
-        auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
-        cleanupNetwork
-      ;;
-    *)
-        auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
-      ;;
-  esac
+#   case "${SERVICE_COMMAND}" in
+#     start)
+#         createNetwork
+#         auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
+#       ;;
+#     logs)
+#         auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
+#       ;;
+#     stop|clean)
+#         auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
+#         cleanupNetwork
+#       ;;
+#     *)
+#         auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
+#       ;;
+#   esac
 }
+
 
 startHarness(){
   echo Agents to be used:
-  echo "  Acme - ${ACME}"
-  echo "  Bob - ${BOB}"
-  echo "  Faber - ${FABER}"
-  echo "  Mallory - ${MALLORY}"
+  echo "  Issuer - ${ISSUER_AGENT}"
+  echo "  Verfier - ${VERIFIER_AGENT}"
+  echo "  Holder - ${APP_NAME}"
   echo ""
 
   createNetwork
 
-  startServices auto
+  # startServices auto
 
-  # Only start cloud agency if vcx is in the agent list to run.
-  if [[ "${ACME}" = "aries-vcx" ]] || [[ "${BOB}" = "aries-vcx" ]] || [[ "${MALLORY}" = "aries-vcx" ]] || [[ "${FABER}" = "aries-vcx" ]]; then
-    startCloudAgency
-
-    if ! waitForCloudAgency; then
-      echoRed "\nThe cloud agency not running.\n"
-      exit 1
-    fi
-  fi
-
+  # TODO probably don't need this for Mobile
   dockerhost_url_templates
 
-  export ACME_AGENT=${ACME_AGENT:-${ACME}-agent-backchannel}
-  export BOB_AGENT=${BOB_AGENT:-${BOB}-agent-backchannel}
-  export FABER_AGENT=${FABER_AGENT:-${FABER}-agent-backchannel}
-  export MALLORY_AGENT=${MALLORY_AGENT:-${MALLORY}-agent-backchannel}
-  export AIP_CONFIG=${AIP_CONFIG:-10}
+  #export ISSUER_AGENT=${ISSUER_AGENT:-${ISSUER}-agent}
+  export ISSUER_AGENT=${ISSUER}-agent
+  #export VERIFIER_AGENT=${VERIFIER_AGENT:-$VERIFIER}-agent}
+  export VERIFIER_AGENT=${VERIFIER}-agent
+  # export AIP_CONFIG=${AIP_CONFIG:-10}
 
   export PROJECT_ID=${PROJECT_ID:-general}
 
-  startAgent Acme acme_agent "$ACME_AGENT" "9020-9029" 9020 9021 "$AIP_CONFIG" "$ACME"
-  startAgent Bob bob_agent "$BOB_AGENT" "9030-9039" 9030 9031 "$AIP_CONFIG" "$BOB"
-  startAgent Faber faber_agent "$FABER_AGENT" "9040-9049" 9040 9041 "$AIP_CONFIG" "$FABER"
-  startAgent Mallory mallory_agent "$MALLORY_AGENT" "9050-9059" 9050 9051 "$AIP_CONFIG" "$MALLORY"
+  # start agents or ...
+  startAgent Issuer issuer_agent "$ISSUER_AGENT" "9020-9029" 9020 9021 "20" "$ISSUER"
+  startAgent Verifier verifier_agent "$VERIFIER_AGENT" "9030-9039" 9030 9031 "20" "$VERIFIER"
 
   echo
-  waitForAgent Acme 9020
-  waitForAgent Bob 9030
-  waitForAgent Faber 9040
-  waitForAgent Mallory 9050
+  waitForAgent Issuer 9020
+  waitForAgent Verifier 9030
+
+  echo
+  # config.json file handling
+  modifyConfigJson
 
   echo
   # Allure Reports environment.properties file handling
@@ -752,10 +769,8 @@ startHarness(){
 }
 
 deleteAgents() {
-    deleteAgent acme_agent
-    deleteAgent bob_agent
-    deleteAgent faber_agent
-    deleteAgent mallory_agent
+    deleteAgent issuer_agent
+    deleteAgent verifier_agent
 }
 
 deleteAgent() {
@@ -777,27 +792,33 @@ runTests() {
   export BEHAVE_INI_TMP="$(pwd)/behave.ini.tmp"
   cp ${BEHAVE_INI} ${BEHAVE_INI_TMP}
 
-  if [[ "${REPORT}" = "allure" ]]; then
+  echo "Running with Device Cloud Service ${DEVICE_CLOUD}"
+  if [[ "${DEVICE_CLOUD}" = "SauceLabs" ]]; then
+    # if Region is not set default to us-west-1
+    if [[ -z ${SL_REGION} ]]; then
+      export SL_REGION="us-west-1"
+    fi
+    if [[ "${REPORT}" = "allure" ]]; then
       echo "Executing tests with Allure Reports."
-      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-test-harness/behave.ini -v "$(pwd)/aries-test-harness/allure/allure-results:/aries-test-harness/allure/allure-results/" aries-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Acme=http://0.0.0.0:9020 -D Bob=http://0.0.0.0:9030 -D Faber=http://0.0.0.0:9040 -D Mallory=http://0.0.0.0:9050
-  else
-      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-test-harness/behave.ini aries-test-harness -k ${runArgs} -D Acme=http://0.0.0.0:9020 -D Bob=http://0.0.0.0:9030 -D Faber=http://0.0.0.0:9040 -D Mallory=http://0.0.0.0:9050
+      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=http://0.0.0.0:9022/ -D Verifier=http://0.0.0.0:9032/
+    else
+      echo "Executing tests without Allure Reports."
+      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -D Issuer=http://0.0.0.0:9022/ -D Verifier=http://0.0.0.0:9032/
+    fi
+  #else # place holder for other device cloud services like BrowserStack, etc.
   fi
+
   local docker_result=$?
   rm ${BEHAVE_INI_TMP}
 
   # Export agent logs
   mkdir -p .logs
-  docker logs acme_agent > .logs/acme_agent.log
-  docker logs bob_agent > .logs/bob_agent.log
-  docker logs faber_agent > .logs/faber_agent.log
-  docker logs mallory_agent > .logs/mallory_agent.log
+  docker logs issuer_agent > .logs/issuer_agent.log
+  # docker logs verifier_agent > .logs/verifier_agent.log
 
   if [[ "${USE_NGROK}" = "true" ]]; then
-    docker logs acme_agent-ngrok > .logs/acme_agent-ngrok.log
-    docker logs bob_agent-ngrok > .logs/bob_agent-ngrok.log
-    docker logs faber_agent-ngrok > .logs/faber_agent-ngrok.log
-    docker logs mallory_agent-ngrok > .logs/mallory_agent-ngrok.log
+    docker logs issuer_agent-ngrok > .logs/issuer_agent-ngrok.log
+  #   docker logs issuer_agent-ngrok > .logs/issuer_agent-ngrok.log
   fi
 }
 
@@ -815,24 +836,13 @@ stopIfExists(){
 stopHarness(){
   echo "Cleanup:"
   echo "  - Shutting down all the agents ..."
-  docker stop acme_agent bob_agent faber_agent mallory_agent > /dev/null
-  docker rm -v acme_agent bob_agent faber_agent mallory_agent > /dev/null
+  docker stop issuer_agent verifier_agent > /dev/null
+  docker rm -v issuer_agent verifier_agent > /dev/null
 
-  stopIfExists acme_agent-ngrok
-  stopIfExists bob_agent-ngrok
-  stopIfExists faber_agent-ngrok
-  stopIfExists mallory_agent-ngrok
+  stopIfExists issuer_agent-ngrok
+  stopIfExists verifier_agent-ngrok
 
   printf "Done\n"
-
-  if [[ "${REPORT}" = "allure" ]]; then
-    if [[ "${REPORT_ERROR_TYPE}" = "comparison" ]]; then
-      # TODO run the same_as_yesterday.py script and capture the result
-      echo "Checking results vs KGR ..."
-      ${terminalEmu} docker run ${INTERACTIVE} --rm -v "$(pwd)/aries-test-harness/allure/allure-results:/aries-test-harness/allure/allure-results/" --entrypoint /aries-test-harness/allure/same_as_yesterday.sh -e PROJECT_ID=${PROJECT_ID} aries-test-harness
-      docker_result=$?
-    fi
-  fi
 
   stopServices auto
 
@@ -929,60 +939,51 @@ shift
 
 # Handle run args
 if [[ "${COMMAND}" == "run" || "${COMMAND}" == "start" || "${COMMAND}" == "test" ]]; then
-  ACME="none"
-  BOB="none"
-  FABER="none"
-  MALLORY="none"
+  ISSUER="none"
+  VERIFIER="none"
+  WALLET="none"
   TAGS=""
-  BEHAVE_INI=aries-test-harness/behave.ini
+  BEHAVE_INI=aries-mobile-tests/behave.ini
 
-  while getopts "hna:b:c:f:m:r:e:d:t:v:i:" FLAG; do
+  while getopts ":d:u:k:p:a:i:v:r:t:" FLAG; do
     case $FLAG in
-        h ) usage ;;
-        : ) usage ;;
-        \? ) #unrecognized option - show help
-        echo -e \\n"Invalid script option: -${OPTARG}"\\n
-        usage
-            ;;
-        r ) export REPORT=${OPTARG}
-            ;;
-        e ) export REPORT_ERROR_TYPE=${OPTARG}
-            ;;
-        a ) export ACME=${OPTARG}
-            ;;
-        b ) export BOB=${OPTARG}
-            ;;
-        f ) export FABER=${OPTARG}
-            ;;
-        m ) export MALLORY=${OPTARG}
-            ;;
-        t ) export TAGS="${TAGS} --tags=${OPTARG}"
-            ;;
-        v ) export AIP_CONFIG=${OPTARG}
-            ;;
-        i ) export BEHAVE_INI=${OPTARG}
-            ;;
-        n ) export USE_NGROK="true"
-            ;;
-        d )
-            export ACME=${OPTARG}
-            export BOB=${OPTARG}
-            export FABER=${OPTARG}
-            export MALLORY=${OPTARG}
-            ;;
+      h ) usage ;;
+      : ) usage ;;
+      \? ) #unrecognized option - show help
+      echo -e \\n"Invalid script option: -${OPTARG}"\\n
+      usage
+          ;;
+      r ) export REPORT=${OPTARG}
+          ;;
+      d ) export DEVICE_CLOUD=${OPTARG}
+          ;;
+      u ) export DEVICE_CLOUD_USERNAME=${OPTARG}
+          ;;
+      k ) export DEVICE_CLOUD_ACCESS_KEY=${OPTARG}
+          ;;
+      p ) export DEVICE_PLATFORM=${OPTARG}
+          ;;
+      a ) export APP_NAME=${OPTARG}
+          export WALLET=${OPTARG}
+          ;;
+      i ) export ISSUER_AGENT=${OPTARG}
+          export ISSUER=${OPTARG}
+          ;;
+      v ) export VERIFIER_AGENT=${OPTARG}
+          export VERIFIER=${OPTARG}
+          ;;
+      t ) export TAGS="${TAGS} --tags=${OPTARG}"
+          ;;
     esac
   done
   shift $((OPTIND-1))
 
   if [[ "${COMMAND}" == "run" || "${COMMAND}" == "test" ]]; then
-    for agent in ${ACME} ${BOB} ${FABER} ${MALLORY}; do
+    for agent in ${ISSUER_AGENT} ${VERIFIER_AGENT}; do
         if [[ $(isAgent $agent) == false ]] ; then
-            echo All agents Acme, Bob, Faber and Mallory must be set to one of: ${VALID_AGENTS}.
+            echo All agents Issuer and Verifier must be set to one of: ${VALID_AGENTS}.
             echo Use \"${0} help\" to get more information.
             exit 1
-        fi
-        if [ "$agent" == "mobile" ]; then
-          printLetsEncryptWarning
         fi
     done
 
@@ -1000,26 +1001,38 @@ fi
 # Handle additional Build arguments
 if [[ "${COMMAND}" == "build" || "${COMMAND}" == "rebuild" ]]; then
 
-  while getopts "ha:" FLAG; do
+  # Get build commandline arguments 
+  while getopts ":w:i:v:" FLAG; do
     case $FLAG in
-        h ) usage ;;
-        : ) usage ;;
         \? ) #unrecognized option - show help
         set -- "$@" "$FLAG"
             ;;
-        a ) export BUILD_AGENTS="${BUILD_AGENTS} ${OPTARG}"
+        w ) export WALLET_UNDER_TEST=${OPTARG}
             ;;
+        i ) export ISSUER_AGENT=${OPTARG}
+            ;;
+        v ) export VERIFIER_AGENT=${OPTARG}
+            ;;
+        * ) usage ;;
     esac
   done
+
   shift $((OPTIND-1))
 
+  # Determine what agents to build. Only build once if Issuer and Verifier are the same. 
+  export BUILD_AGENTS="${BUILD_AGENTS} ${ISSUER_AGENT}"
+  if ["${ISSUER_AGENT}" != "${VERIFIER_AGENT}"]; then
+    export BUILD_AGENTS="${BUILD_AGENTS} ${VERIFIER_AGENT}"
+  fi
+
+  # TODO Check here to see if the wallet passed in is in the VALID_WALLETS list, if not, exit.
   if [ "${BUILD_AGENTS}" == "" ]; then
      BUILD_AGENTS=${VALID_AGENTS}
   fi
+  # echo "Wallet entered is not a valid wallet. See aries-mobile-test-harness/aries-mobile-tests/pageobjects/ for wallets"
+  # echo "If your wallet is not in that location, add pageobjects for your wallet and place it in a directory of your wallet name."
+  # exit 1
 
-  if [[ "${TAGS}" =~ "@Mobile" ]]; then
-    printLetsEncryptWarning
-  fi
 fi
 
 pushd ${SCRIPT_HOME} >/dev/null
@@ -1053,14 +1066,14 @@ case "${COMMAND}" in
       serviceCommand ${@}
     ;;
   tags)
-      grep -h @ aries-test-harness/features/*feature |  tr " " "\n" | sort -u | fmt
+      grep -h @ aries-mobile-tests/features/*feature |  tr " " "\n" | sort -u | fmt
     ;;
   rm)
       deleteAgents
     ;;
 
   tests|scenarios)
-      grep -h -B 1 Scenario aries-test-harness/features/*feature
+      grep -h -B 1 Scenario aries-mobile-tests/features/*feature
     ;;
 
   dockerhost)

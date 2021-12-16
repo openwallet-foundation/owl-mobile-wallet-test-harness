@@ -1,5 +1,31 @@
 import time
 import datetime
+import base64
+import json
+import io
+from qrcode import QRCode
+from PIL import Image
+
+def get_qr_code_from_invitation(invitation_json):
+    # message_bytes = json.dumps(invitation).encode("ascii")
+    # base64_bytes = base64.b64encode(message_bytes)
+    # base64_message = base64_bytes.decode("ascii")
+    # invitation_url = invitation["serviceEndpoint"] + "?c_i=" + base64_message
+    invitation_url = invitation_json["invitation_url"]
+
+    qr = QRCode(border=1)
+    qr.add_data(invitation_url)
+    qr.make()
+    #img = qr.make_image(fill_color="red", back_color="#23dda0")
+    img = qr.make_image()
+    img.save('./qrcode_test.png')
+
+    with io.BytesIO() as output:
+        img.save(output, format="PNG")
+        contents = base64.b64encode(output.getvalue())
+
+    return contents.decode('utf-8')
+    
 
 def create_non_revoke_interval(timeframe):
     # timeframe containes two variables, the To and from of the non-revoked to and from parameters in the send presentation request message
