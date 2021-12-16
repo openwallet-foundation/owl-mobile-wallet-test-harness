@@ -1,3 +1,4 @@
+
 # Aries Mobile Test Harness<!-- omit in toc -->
 
   
@@ -107,8 +108,10 @@ If you have an open source wallet and would like to contribute and help others w
 If you do not wish to house your tests and page objects in the AMTH repo and would prefer to store theses in your own repo. You can add a requirement.txt file in a <wallet> folder in the page objects and test folders that contains something like, `mywallet-tests@git+https://github.com/myorg/mywallet-tests.git@main`
 When using the test harness from the AMTH repo, a `-w <mywallet>` option in the `.manage build` command  
 TODO: The manage script needs to be updated to support this option when someone desires it. 
+Another way to accomplish this is to actually make your repo a [submodule](https://gist.github.com/gitaarik/8735255) of the AMTH repo. This way,  one can use git commands to get the test repo and the AMTH repo together, but still live in different repos. 
 #### Option 3: Pull the AMTH into your environment
 If you have a private repo that holds your tests and page objects for your aries wallet, you can pull the AMTH from its repo to your environment or CI workflow. One way to do this is have a requirements.txt file somewhere in your repo containing `aries-mobile-test-harness@git+https://github.com/bcgov/aries-mobile-test-harness.git@main`, and gets used by tools in your repo to get the AMTH. Then copy your page objects and tests into the pulled test harness into a wallet folder for page objects and tests. Then build the test containers as stated at the beginning of the document with the `-w <mywallet>` option. 
+Another way to accomplish this is to actually make the AMTH repo a [submodule](https://gist.github.com/gitaarik/8735255) of your private repo. This way,  one can use git commands to get the test repo and the AMTH repo together, but still live in different repos. 
 
 ### Writting Page Objects for your Wallet
 Use the [page object model](https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/) to isolate app page changes from the test code. All appium calls to get and manipulate app elements should be in page objects, not the tests. Your page objects should live in the `aries-mobile-test-harness/aries-mobile-tests/pageobjects/<mywallet>/` folder. Your page objects may inherit from the `aries-mobile-test-harness/aries-mobile-tests/pageobjects/basepage.py` class. Follow the patterns laid out in the bifold wallet page objects in the AMTH repo.
