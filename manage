@@ -513,7 +513,7 @@ startAgent() {
   fi
 }
 
-# TODO this should write some of the info in the appium/Sauce Labs config.json
+# Write some of the info in the appium/Sauce Labs config.json
 modifyConfigJson() {
   # if Platform is iOS, use the iOS.config.json
   if [[ "${DEVICE_PLATFORM}" == "iOS" ]]; then
@@ -533,8 +533,8 @@ modifyConfigJson() {
   contents="$(jq '.capabilities |= . + { "appium:platformName": "storage:filename=${APP_NAME}" }' ./aries-mobile-tests/config.json)" && \
   echo "${contents}" > config.json
 
-  export DEVICE=$(echo $contents | jq '(.capabilities |= . "appium:deviceName")[]')
-  export OS_VERSION=$(echo $contents | jq '(.capabilities |= . "appium:platformVersion")[]')
+  export DEVICE=$(echo $contents | jq -r '(.capabilities |= . "deviceName")[]')
+  export OS_VERSION=$(echo $contents | jq -r '(.capabilities |= . "platformVersion")[]')
 
   #docker cp ./aries-mobile-tests/config.json aries-mobile-test-harness:/aries-mobile-test-harness/aries-mobile-tests/config.json
 }
@@ -800,7 +800,7 @@ runTests() {
     fi
     if [[ "${REPORT}" = "allure" ]]; then
       echo "Executing tests with Allure Reports."
-      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=http://0.0.0.0:9022/ -D Verifier=http://0.0.0.0:9032/
+      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=http://0.0.0.0:9022/ -D Verifier=http://0.0.0.0:9032/
     else
       echo "Executing tests without Allure Reports."
       ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -D Issuer=http://0.0.0.0:9022/ -D Verifier=http://0.0.0.0:9032/
