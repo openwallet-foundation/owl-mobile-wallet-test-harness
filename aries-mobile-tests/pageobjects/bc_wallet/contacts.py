@@ -3,6 +3,8 @@ from appium.webdriver.common.mobileby import MobileBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
+#from pageobjects.bifold.home import HomePage
+#from pageobjects.bifold.scan import ScanPage
 
 class ContactsPage(BasePage):
     """Contacts page object"""
