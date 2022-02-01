@@ -6,8 +6,8 @@ from pageobjects.basepage import BasePage
 from pageobjects.bifold.pinsetup import PINSetupPage
 
 # These classes can inherit from a BasePage to do commone setup and functions
-class TermsOfServicePage(BasePage):
-    """Terms of Service page object"""
+class TermsAndConditionsPage(BasePage):
+    """Terms and Conditions page object"""
 
     # Locators
     # TODO: We could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 

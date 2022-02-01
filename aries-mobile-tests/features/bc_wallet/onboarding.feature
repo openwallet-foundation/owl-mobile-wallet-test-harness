@@ -5,18 +5,67 @@ Feature: Onboarding
   As a new holder
   I want to review onboarding material
 
-@T001-Onboarding @wip @AcceptanceTest
-Scenario: New User reviews all onboarding screens
-Given The User has completed the on-boarding carousel screens
-And User sees the Terms and Conditions screen
-When The User scrolls to the bottom of the screen
-And The users accepts the Terms and Conditions
-And The continue button becomes active
-And The user clicks continue
-Then The user transitions to the PIN creation screen
 
-@T002-Onboarding @wip @AcceptanceTest
-Scenario: New User wants to go back to review previous reviewed onboarding material
+  @T001-Onboarding @wip @AcceptanceTest
+  Scenario: New User reviews all onboarding screens
+    Given The User has completed the initial language selection
+    And the user is on the onboarding Welcome screen
+    When the user selects Next
+    And they are brought to the Store your credentials securely screen
+    And the user selects Next
+    And they are brought to the Share only what is neccessary screen
+    And the user selects Next
+    And they are brought to the Take control of your information screen
+    Then they can select Get started
+    And are brought to the Terms and Conditions screen
 
-@T003-Onboarding @wip @FunctionalTest
-Scenario: New User quits app mid review of onboarding material
+
+  @T002-Onboarding @wip @AcceptanceTest
+  Scenario Outline: New User skips onboarding screens
+    Given The User has completed the initial language selection
+    And the user is on the onboarding <screen>
+    When the user selects Skip
+    Then are brought to the Terms and Conditions screen
+
+    Examples:
+      | screen                                 |
+      | Welcome screen                         |
+      | Store your credentials securely screen |
+      | Share only what is neccessary screen   |
+
+
+  @T003-Onboarding @wip @AcceptanceTest
+  Scenario Outline: New User wants to go back to review previous reviewed onboarding material
+    Given The User has completed the initial language selection
+    And the user is on the onboarding <screen>
+    When the user selects Back
+    Then are brought to the <previous screen>
+
+    Examples:
+      | screen                                  | previous screen                        |
+      | Store your credentials securely screen  | Welcome screen                         |
+      | Share only what is neccessary screen    | Store your credentials securely screen |
+      | Take control of your information screen | Share only what is neccessary screen   |
+
+
+  @T004-Onboarding @wip @FunctionalTest
+  Scenario: New User quits app mid review of onboarding material
+    Given The User has completed the initial language selection
+    And the user is on the onboarding <screen>
+    When the user quits the app
+    And they reopen the app
+    Then they land on the Welcome screen
+
+    Examples:
+      | screen                                 |
+      | Welcome screen                         |
+      | Store your credentials securely screen |
+      | Share only what is neccessary screen   |
+      | Take control of your information screen |
+
+
+  @T005-Onboarding @wip @FunctionalTest
+  Scenario: New User wants to learn more about BC wallet during onboarding
+    Given The User has completed the Take control of your information screen
+    When the user selects Learn more about BC Wallet
+    Then then they are brought to thier browser with more info about BC wallet

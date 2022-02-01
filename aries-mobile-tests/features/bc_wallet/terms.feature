@@ -21,7 +21,7 @@ Given The User has completed the on-boarding carousel screens
 And User sees the Terms and Conditions screen
 When The User scrolls to the bottom of the screen
 And The User presses the back button
-Then The User goes back to the last on-boarding screen they viewed.
+Then The User goes back to the last on-boarding screen they viewed
 
 @T003-T&C @wip @FunctionalTest
 Scenario: New User Rejects Terms and Conditions and returns to app to accept
