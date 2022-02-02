@@ -1,5 +1,6 @@
 #DID-349 , 351, 352
 Feature: Explainer screens
+
   Background: I am a new user and wallet is not setup
     Given I am a new user 
     And My wallet is not setup
