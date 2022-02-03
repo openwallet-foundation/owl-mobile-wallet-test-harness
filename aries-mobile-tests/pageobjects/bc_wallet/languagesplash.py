@@ -7,7 +7,7 @@ from pageobjects.bc_wallet.onboardingwelcome import OnboardingWelcomePage
 
 # These classes can inherit from a BasePage to do common setup and functions
 class LanguageSplashPage(BasePage):
-    """Set Language Spash Screen page object"""
+    """Set Language Spash Screen page object - Out Of Scope"""
 
     # Locators
     # TODO: If Ontario/BC or other wallets are closely alligned and only locators are different, 
@@ -18,6 +18,11 @@ class LanguageSplashPage(BasePage):
     english_button_locator = "English"
     french_button_locator = "French"
 
+    def on_this_page(self):
+        if self.on_the_right_page(self.title_locator):
+            return True
+        else:
+            return False
 
     def select_english(self):
         if self.on_the_right_page(self.title_locator):

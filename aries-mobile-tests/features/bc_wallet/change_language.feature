@@ -7,19 +7,6 @@ Feature: Language
 
 
   @T001-Language @wip @AcceptanceTest
-  Scenario Outline: New User sets intial language
-    Given the new user has opened the app for the first time
-    And they are in the initial select language screen
-    When the new user selects <language>
-    Then the new user is brought to the onboarding screen in the <language> they selected
-
-    Examples:
-      | language |
-      | English  |
-      | French   |
-
-
-  @T002-Language @wip @AcceptanceTest
   Scenario Outline: Existing holder changes language
     Given the holder has initially selected <language> as the language
     And the holder is in the language settings
@@ -32,7 +19,7 @@ Feature: Language
       | French   | English            |
 
 
-  @T003-Language @wip @FunctionalTest
+  @T002-Language @wip @FunctionalTest
   Scenario Outline: Holder quits app after changing language
     Given the holder has initially selected <language> as the language
     And the holder is in the language settings
@@ -45,3 +32,17 @@ Feature: Language
       | language | different language |
       | English  | French             |
       | French   | English            |
+
+
+
+  @T00X-Language @wip @OutOfScope
+  Scenario Outline: New User sets intial language
+    Given the new user has opened the app for the first time
+    And they are in the initial select language screen
+    When the new user selects <language>
+    Then the new user is brought to the onboarding screen in the <language> they selected
+
+    Examples:
+      | language |
+      | English  |
+      | French   |

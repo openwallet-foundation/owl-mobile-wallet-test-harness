@@ -8,7 +8,7 @@ Feature: Onboarding
 
   @T001-Onboarding @wip @AcceptanceTest
   Scenario: New User reviews all onboarding screens
-    Given The User has completed the initial language selection
+    Given the new user has opened the app for the first time
     And the user is on the onboarding Welcome screen
     When the user selects Next
     And they are brought to the Store your credentials securely screen
@@ -22,7 +22,7 @@ Feature: Onboarding
 
   @T002-Onboarding @wip @AcceptanceTest
   Scenario Outline: New User skips onboarding screens
-    Given The User has completed the initial language selection
+    Given the new user has opened the app for the first time
     And the user is on the onboarding <screen>
     When the user selects Skip
     Then are brought to the Terms and Conditions screen
@@ -36,7 +36,7 @@ Feature: Onboarding
 
   @T003-Onboarding @wip @AcceptanceTest
   Scenario Outline: New User wants to go back to review previous reviewed onboarding material
-    Given The User has completed the initial language selection
+    Given the new user has opened the app for the first time
     And the user is on the onboarding <screen>
     When the user selects Back
     Then are brought to the <previous screen>
@@ -50,7 +50,7 @@ Feature: Onboarding
 
   @T004-Onboarding @wip @FunctionalTest
   Scenario: New User quits app mid review of onboarding material
-    Given The User has completed the initial language selection
+    Given the new user has opened the app for the first time
     And the user is on the onboarding <screen>
     When the user quits the app
     And they reopen the app
