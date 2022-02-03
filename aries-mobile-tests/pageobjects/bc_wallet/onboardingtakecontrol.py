@@ -20,6 +20,12 @@ class OnboardingTakeControlPage(BasePage):
     back_locator = "Back"
     get_started_locator = "Get Started"
 
+    def on_this_page(self):
+        if self.on_the_right_page(self.title_locator):
+            return True
+        else:
+            return False
+
     def get_onboarding_text(self):
         if self.on_the_right_page(self.title_locator):
             pass

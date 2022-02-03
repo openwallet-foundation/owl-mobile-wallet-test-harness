@@ -18,6 +18,12 @@ class TermsAndConditionsPage(BasePage):
     back_locator = "Back"
 
 
+    def on_this_page(self):
+        if self.on_the_right_page(self.title_locator):
+            return True
+        else:
+            return False
+
     def select_accept(self):
         if self.on_the_right_page(self.title_locator):
             self.driver.swipe(500, 2000, 500, 100)

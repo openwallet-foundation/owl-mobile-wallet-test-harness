@@ -21,47 +21,53 @@ from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 def step_impl(context):
     # App opened already buy appium. 
     # Intialize the page we should be on
-    context.thisLanguageSplashPage = LanguageSplashPage(context.driver)
+    context.thisOnboardingWelcomePage = OnboardingWelcomePage(context.driver)
     
 
-@given('they are in the initial select language screen')
+@given('the user is on the onboarding Welcome screen')
 def step_impl(context):
-    assert context.thisLanguageSplashPage.on_this_page()
+    assert context.thisOnboardingWelcomePage.on_this_page()
+    # set a current onboarding page so the select Next step can be reused across these pages
+    context.currentOnboardingPage = context.thisOnboardingWelcomePage
 
-
-@when('the new user selects "{language}"')
-def step_impl(context, language):
-
-    if language == 'English':
-        context.thisLanguageSplashPage.select_english()
-    elif language == "French":
-        context.thisLanguageSplashPage.select_french()
-    else:
-        raise Exception(f"Unexpected language, {language}")
-
-
-@when('the wallet user scans the QR code sent by the issuer')
+@when('the user selects Next')
 def step_impl(context):
-    (resp_status, resp_text) = agent_controller_POST(context.issuer_url, "connections", operation="create-invitation")
-    assert resp_status == 200, f'resp_status {resp_status} is not 200; {resp_text}'
-    invitation_json = json.loads(resp_text)
-    qrimage = get_qr_code_from_invitation(invitation_json)
+    thisOnboardingPage = context.currentOnboardingPage.select_next()
+    if type(thisOnboardingPage) == OnboardingStoreCredsSecurelyPage:
+        context.thisOnboardingStoreCredsSecurelyPage = thisOnboardingPage
+    elif type(thisOnboardingPage) == OnboardingTakeControlPage:
+        context.thisOnboardingTakeControlPage = thisOnboardingPage
+    elif type(thisOnboardingPage) == OnboardingShareNecessaryPage:
+        context.thisOnboardingShareNecessaryPage = thisOnboardingPage
 
-    context.thisHomePage.inject_connection_invite_qr_code(qrimage)
-    # Do we need to load the scan page after image injection? probably not. 
-    #context.thisScanPage = context.thisHomePage.select_scan()
-    context.thisHomePage.select_scan()
-    #context.thisHomePage.select_settings()
-    #thisScanPage.
 
-@when('accepts the connection')
+@when('they are brought to the Store your credentials securely screen')
 def step_impl(context):
-    # click yes on notification? 
-    pass
+    assert context.thisOnboardingStoreCredsSecurelyPage.on_this_page()
+    # set a current onboarding page so the select Next step can be reused across these pages
+    context.currentOnboardingPage = context.thisOnboardingStoreCredsSecurelyPage
 
-@then('there is a connection between Issuer and wallet user')
+
+@when('they are brought to the Share only what is neccessary screen')
 def step_impl(context):
-    # Check the connections for a new connection
-    context.thisContactsPage = context.thisHomePage.select_contacts()
-    
-    
+    assert context.thisOnboardingShareNecessaryPage.on_this_page()
+    # set a current onboarding page so the select Next step can be reused across these pages
+    context.currentOnboardingPage = context.thisOnboardingShareNecessaryPage
+
+
+@when('they are brought to the Take control of your information screen')
+def step_impl(context):
+    assert context.thisOnboardingTakeControlPage.on_this_page()
+    # set a current onboarding page so the select Next step can be reused across these pages
+    context.currentOnboardingPage = context.thisOnboardingTakeControlPage
+
+
+@then('they can select Get started')
+def step_impl(context):
+    context.thisTermsAndConditionsPage = context.thisOnboardingTakeControlPage.select_get_started()
+
+
+@then('are brought to the Terms and Conditions screen')
+def step_impl(context):
+    assert context.thisTermsAndConditionsPage.on_this_page()
+

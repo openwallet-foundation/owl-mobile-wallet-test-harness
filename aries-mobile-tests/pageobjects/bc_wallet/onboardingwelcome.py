@@ -18,6 +18,12 @@ class OnboardingWelcomePage(BasePage):
     next_locator = "Next"
     skip_locator = "Skip"
 
+    def on_this_page(self):
+        if self.on_the_right_page(self.title_locator):
+            return True
+        else:
+            return False
+
     def get_onboarding_text(self):
         if self.on_the_right_page(self.title_locator):
             pass
