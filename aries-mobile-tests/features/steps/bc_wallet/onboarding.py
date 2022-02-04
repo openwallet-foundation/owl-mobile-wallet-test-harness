@@ -71,3 +71,75 @@ def step_impl(context):
 def step_impl(context):
     assert context.thisTermsAndConditionsPage.on_this_page()
 
+
+@given('the user is on the onboarding {screen}')
+def step_impl(context, screen):
+    # Assume for now they start on the welcome screen
+
+    # Detemrine what onboarding screen they are on, then migrate them to the screen passed in.
+    if screen == "Welcome screen":
+        # at the start of a test call the intial steps.
+        context.execute_steps(f'''
+           Given the user is on the onboarding Welcome screen
+        ''')
+
+    elif screen == "Store your credentials securely screen":
+        context.execute_steps(f'''
+            Given the user is on the onboarding Welcome screen
+            When the user selects Next
+            And they are brought to the Store your credentials securely screen
+        ''')
+
+    elif screen == "Share only what is neccessary screen":
+        context.execute_steps(f'''
+            Given the user is on the onboarding Welcome screen
+            When the user selects Next
+            And they are brought to the Store your credentials securely screen
+            And the user selects Next
+            And they are brought to the Share only what is neccessary screen
+        ''')
+    elif screen == "Take control of your information screen":
+        context.execute_steps(f'''
+            Given the user is on the onboarding Welcome screen
+            When the user selects Next
+            And they are brought to the Store your credentials securely screen
+            And the user selects Next
+            And they are brought to the Share only what is neccessary screen
+            And the user selects Next
+            And they are brought to the Take control of your information screen
+        ''')
+    else:
+        raise Exception(f"Unexpected screen, {screen}")
+
+
+@when('the user selects Skip')
+def step_impl(context):
+    context.thisTermsAndConditionsPage = context.currentOnboardingPage.select_skip()
+
+
+@when('the user selects Back')
+def step_impl(context):
+    thisOnboardingPage = context.currentOnboardingPage.select_back()
+    if type(thisOnboardingPage) == OnboardingWelcomePage:
+        context.thisOnboardingWelcomePage = thisOnboardingPage
+        context.currentOnboardingPage = context.thisOnboardingWelcomePage
+    if type(thisOnboardingPage) == OnboardingStoreCredsSecurelyPage:
+        context.thisOnboardingStoreCredsSecurelyPage = thisOnboardingPage
+        context.currentOnboardingPage = context.thisOnboardingStoreCredsSecurelyPage
+    elif type(thisOnboardingPage) == OnboardingTakeControlPage:
+        context.thisOnboardingTakeControlPage = thisOnboardingPage
+        context.currentOnboardingPage = context.thisOnboardingTakeControlPage
+    elif type(thisOnboardingPage) == OnboardingShareNecessaryPage:
+        context.thisOnboardingShareNecessaryPage = thisOnboardingPage
+        context.currentOnboardingPage = context.thisOnboardingShareNecessaryPage
+
+
+@then('are brought to the {previous_screen}')
+def step_impl(context, previous_screen):
+    if previous_screen == "Welcome screen":
+        assert context.thisOnboardingWelcomePage.on_this_page()
+    elif previous_screen == "Store your credentials securely screen":
+        assert context.thisOnboardingStoreCredsSecurelyPage.on_this_page()
+    elif previous_screen == "Share only what is neccessary screen":
+        assert context.thisOnboardingShareNecessaryPage.on_this_page()
+

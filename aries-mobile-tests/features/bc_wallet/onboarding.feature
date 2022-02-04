@@ -39,10 +39,10 @@ Feature: Onboarding
     Given the new user has opened the app for the first time
     And the user is on the onboarding <screen>
     When the user selects Back
-    Then are brought to the <previous screen>
+    Then are brought to the <previous_screen>
 
     Examples:
-      | screen                                  | previous screen                        |
+      | screen                                  | previous_screen                        |
       | Store your credentials securely screen  | Welcome screen                         |
       | Share only what is neccessary screen    | Store your credentials securely screen |
       | Take control of your information screen | Share only what is neccessary screen   |
