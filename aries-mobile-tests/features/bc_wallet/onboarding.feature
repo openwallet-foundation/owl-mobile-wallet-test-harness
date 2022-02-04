@@ -49,7 +49,7 @@ Feature: Onboarding
 
 
   @T004-Onboarding @wip @FunctionalTest
-  Scenario: New User quits app mid review of onboarding material
+  Scenario Outline: New User quits app mid review of onboarding material
     Given the new user has opened the app for the first time
     And the user is on the onboarding <screen>
     When the user quits the app
