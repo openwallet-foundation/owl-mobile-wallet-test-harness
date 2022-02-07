@@ -22,9 +22,9 @@ class PINPage(BasePage):
         search_input = WebDriverWait(context.driver, 30).until(
             EC.element_to_be_clickable((MobileBy.ID, "org.wikipedia.alpha:id/search_src_text"))
         )
-        search_input.send_keys(keyword)
+        search_input.send_keys(pin) # used to be keyword
         time.sleep(5)
 
-    def submit_pin(self, context:
+    def submit_pin(self, context):
         thisHomePage = context.driver.find_elements_by_class_name("android.widget.TextView")
         return thisHomePage
