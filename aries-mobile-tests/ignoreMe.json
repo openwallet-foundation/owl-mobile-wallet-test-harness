@@ -1,0 +1,87 @@
+[
+  {
+    "key": "elementId",
+    "value": "00000000-0000-0017-ffff-ffff0000009d",
+    "name": "elementId"
+  },
+  {
+    "key": "index",
+    "value": "4",
+    "name": "index"
+  },
+  {
+    "key": "package",
+    "value": "com.ariesbifold",
+    "name": "package"
+  },
+  {
+    "key": "class",
+    "value": "android.view.ViewGroup",
+    "name": "class"
+  },
+  {
+    "key": "text",
+    "value": "",
+    "name": "text"
+  },
+  {
+    "key": "checkable",
+    "value": "false",
+    "name": "checkable"
+  },
+  {
+    "key": "checked",
+    "value": "false",
+    "name": "checked"
+  },
+  {
+    "key": "clickable",
+    "value": "true",
+    "name": "clickable"
+  },
+  {
+    "key": "enabled",
+    "value": "true",
+    "name": "enabled"
+  },
+  {
+    "key": "focusable",
+    "value": "false",
+    "name": "focusable"
+  },
+  {
+    "key": "focused",
+    "value": "false",
+    "name": "focused"
+  },
+  {
+    "key": "long-clickable",
+    "value": "false",
+    "name": "long-clickable"
+  },
+  {
+    "key": "password",
+    "value": "false",
+    "name": "password"
+  },
+  {
+    "key": "scrollable",
+    "value": "false",
+    "name": "scrollable"
+  },
+  {
+    "key": "selected",
+    "value": "false",
+    "name": "selected"
+  },
+  {
+    "key": "bounds",
+    "value": "[69,1711][1011,1843]",
+    "name": "bounds"
+  },
+  {
+    "key": "displayed",
+    "value": "true",
+    "name": "displayed"
+  }
+]
