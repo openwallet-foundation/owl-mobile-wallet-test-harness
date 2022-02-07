@@ -527,11 +527,17 @@ modifyConfigJson() {
     cp ./aries-mobile-tests/sl_android_config.json ./aries-mobile-tests/config.json
   fi
 
-  contents="$(jq '.capabilities |= . + { "platformName": "${DEVICE_PLATFORM}" }' ./aries-mobile-tests/config.json)" && \
-  echo "${contents}" > config.json
+  contents="$(jq --arg DEVICE_PLATFORM "${DEVICE_PLATFORM}" '.capabilities |= . + { "platformName": $DEVICE_PLATFORM }' ./aries-mobile-tests/config.json)" && \
+  echo "${contents}" > ./aries-mobile-tests/config.json
 
-  contents="$(jq '.capabilities |= . + { "appium:platformName": "storage:filename=${APP_NAME}" }' ./aries-mobile-tests/config.json)" && \
-  echo "${contents}" > config.json
+  # contents="$(jq '.capabilities |= . + { "platformName": ${DEVICE_PLATFORM} }' ./aries-mobile-tests/config.json)" && \
+  # echo "${contents}" > ./aries-mobile-tests/config.json
+
+  contents="$(jq --arg APP_NAME "storage:filename=${APP_NAME}" '.capabilities |= . + { "app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
+  echo "${contents}" > ./aries-mobile-tests/config.json
+
+  # contents="$(jq '.capabilities |= . + { "appium:platformName": "storage:filename=${APP_NAME}" }' ./aries-mobile-tests/config.json)" && \
+  # echo "${contents}" > config.json
 
   export DEVICE=$(echo $contents | jq -r '(.capabilities |= . "deviceName")[]')
   export OS_VERSION=$(echo $contents | jq -r '(.capabilities |= . "platformVersion")[]')
