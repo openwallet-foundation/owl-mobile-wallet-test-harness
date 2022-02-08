@@ -12,9 +12,10 @@ from typing import TypeVar
 import sys
 # pageObject Imports
 # Why are Python imports still so terrible?
-# TODO: Tomorrow just use the repl and play with path
-sys.path.insert(0, "../../pageobjects/ODS/onboarding/")
-from onboarding import initialOnboarding
+# INFO: I give up with sys append and path lib and
+# https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time
+sys.path.append(".../pageobjects/ODS/onboarding/")
+import initialOnboarding
 
 
 T = TypeVar('T')
