@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 
-class explainerScreens(BasePage):
+class explainerPages(BasePage):
     """ 
     Figma: 
         Category: Onboarding
@@ -14,20 +14,24 @@ class explainerScreens(BasePage):
     """
     # Locators
     nextBtnLocator: str = 'Next'
+    doneBtnLocator: str =  "00000000-0000-002d-ffff-ffff000001bd" #BUG: undefined for now
     # backBtnLocator:str = 'Back' #BUG: undefined for now
     backBtnLocator: str = "00000000-0000-001d-ffff-ffff000000f6"
     skipBtnLocator: str = "00000000-0000-001d-ffff-ffff0000012c" # BUG: cannot find the accessibility name
+    # TODO: check the sub-title at each movement
+    subTitleList: list = ["Store credentials","Share only what's neccesary","Keep track of what you shared"] 
     
-
+    # INFO: test for swipping too?
     def selectSkipButton(self) -> None:
         self.find_by_element_id(self.skipBtnLocator).click()
         return 
 
     def selectNextBtn(self, index: int) -> int | None:
-        self.find_by_element_id(self.nextBtnLocator).click()
         if index == 2:
+            self.find_by_element_id(self.doneBtnLocator).click()
             return None
         else: 
+            self.find_by_element_id(self.nextBtnLocator).click()
             index += 1 
             return index
 
@@ -38,6 +42,4 @@ class explainerScreens(BasePage):
         else: 
             index -= 1
             return index
-
-
 
