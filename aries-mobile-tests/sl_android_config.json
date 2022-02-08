@@ -6,7 +6,6 @@
         "app":"storage:filename=app-release.apk",
         "deviceName":"Samsung_Galaxy_S9_real_us",
         "platformVersion":"10.0",
-        "appiumVersion":"1.22.1",
         "sauceLabsImageInjectionEnabled": true,
         "autoGrantPermissions": true
     }
