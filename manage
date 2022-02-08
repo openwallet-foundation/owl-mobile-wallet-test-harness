@@ -1027,17 +1027,47 @@ if [[ "${COMMAND}" == "build" || "${COMMAND}" == "rebuild" ]]; then
 
   # Determine what agents to build. Only build once if Issuer and Verifier are the same. 
   export BUILD_AGENTS="${BUILD_AGENTS} ${ISSUER_AGENT}"
-  if ["${ISSUER_AGENT}" != "${VERIFIER_AGENT}"]; then
+  if [ "$ISSUER_AGENT" != "$VERIFIER_AGENT" ]; then
     export BUILD_AGENTS="${BUILD_AGENTS} ${VERIFIER_AGENT}"
   fi
 
   # TODO Check here to see if the wallet passed in is in the VALID_WALLETS list, if not, exit.
-  if [ "${BUILD_AGENTS}" == "" ]; then
+  if [ "$BUILD_AGENTS" == "" ]; then
      BUILD_AGENTS=${VALID_AGENTS}
   fi
   # echo "Wallet entered is not a valid wallet. See aries-mobile-test-harness/aries-mobile-tests/pageobjects/ for wallets"
   # echo "If your wallet is not in that location, add pageobjects for your wallet and place it in a directory of your wallet name."
   # exit 1
+
+  # add the wallet steps to all_steps.py so that all steps are seen by behave. 
+  # the format 
+  # from steps.bifold.connect import *
+  # is used for every file in the steps/wallet package.
+  
+  # check if steps/WALLET_UNDER_TEST exists, if not, report a bad wallet name.
+  if [ -d "aries-mobile-tests/features/steps/${WALLET_UNDER_TEST}" ]; then
+    # Are there any files in the steps/wallet folder?
+    if [ "$(ls -A aries-mobile-tests/features/steps/${WALLET_UNDER_TEST}/)" ]; then
+      echo "Adding an aries-mobile-tests/features/steps/all_steps.py for ${WALLET_UNDER_TEST}"
+      FILES="aries-mobile-tests/features/steps/${WALLET_UNDER_TEST}/*.py"
+      step_imports=""
+      for f in $FILES
+      do
+        echo "Adding import for $f to aries-mobile-tests/features/steps/all_steps.py..."
+        f_no_ext=${f%.*}
+        step_imports="${step_imports}from steps.${WALLET_UNDER_TEST}.${f_no_ext##*/} import *"$'\n'
+      done
+      echo "$step_imports" > aries-mobile-tests/features/steps/all_steps.py
+    else
+      echo "Error: no steps defined in aries-mobile-tests/features/steps/${WALLET_UNDER_TEST}"
+      exit 1
+    fi
+  else
+    echo "Error: Invalid wallet name ${WALLET_UNDER_TEST}"
+    echo "Wallet name needs to be one of"
+    for i in $(ls -d aries-mobile-tests/features/steps/*/); do echo ${i%%/}; done
+    exit 1
+  fi
 
 fi
 
