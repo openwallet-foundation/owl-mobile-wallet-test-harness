@@ -41,17 +41,17 @@ Feature: Explainer screens
     |Share only necessary screen|
     |Keep track of what you shared screen|
 
-@DID-?
-  Scenario: New user wants to review previous explanier screen 
-    Given My langauage has been set 
-    And I am on Get started screen
-    And I clicked on Get started 
-    And I am on the explanier <screen>
-    When the user selects Back
-    Then I am on the explainer <previous screen>
+# @DID-?
+#   Scenario: New user wants to review previous explanier screen 
+#     Given My langauage has been set 
+#     And I am on Get started screen
+#     And I clicked on Get started 
+#     And I am on the explanier <screen>
+#     When the user selects Back
+#     Then I am on the explainer <previous screen>
 
-    Examples:
-    |screen                                 |previous screen           |
-    |Store credentials screen               |Terms of use screen       |
-    |Share only necessary screen            |Store credentials screen  |
-    |Keep track of what you shared screen   |Share only necessary screen |
+#     Examples:
+#     |screen                                 |previous screen           |
+#     |Store credentials screen               |Terms of use screen       |
+#     |Share only necessary screen            |Store credentials screen  |
+#     |Keep track of what you shared screen   |Share only necessary screen |
