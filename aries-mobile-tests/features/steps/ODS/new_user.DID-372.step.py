@@ -8,10 +8,10 @@ from behave import given, when, then
 from typing import TypeVar
 
 # PageObject
-from onboarding import initialOnboarding
-from termsAndConditions import termsAndConditions
-from explainerPages import explainerPages
-from touchIDBiometrics import touchIDBiometrics
+from pageobjects.ODS.onboarding.initialOnboarding import initialOnboarding
+from pageobjects.ODS.onboarding.termsAndConditions import termsAndConditions
+from pageobjects.ODS.onboarding.explainerPages import explainerPages
+from pageobjects.ODS.onboarding.touchIDBiometrics import touchIDBiometrics
 
 """
     @DID-372
@@ -43,7 +43,8 @@ def stepThenNewUser1(context) -> None:
         context.initialOnboarding.selectGetStartedBtn() is False
     ), "We are still on the onboard screen"
 
-    # multiple and are essentially a repeat of the previous1
+
+# multiple and are essentially a repeat of the previous1
 
 
 """
