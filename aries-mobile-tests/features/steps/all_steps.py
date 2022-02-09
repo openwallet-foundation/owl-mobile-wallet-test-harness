@@ -1,2 +1,3 @@
-from steps.ODS.new_user.DID-372.step import *
+from steps.ODS.__init__ import *
+from steps.ODS.new_user_step import *
 
