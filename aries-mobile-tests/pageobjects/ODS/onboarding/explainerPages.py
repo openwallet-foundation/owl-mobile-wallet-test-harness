@@ -1,8 +1,4 @@
-import time
-
-from appium.webdriver.common.mobileby import MobileBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from typing import Union
 from pageobjects.basepage import BasePage
 
 class explainerPages(BasePage):
@@ -25,7 +21,7 @@ class explainerPages(BasePage):
     ]
 
     # INFO: test for swipping too?
-    def rightPage(self,index: int) -> bool | None:
+    def rightPage(self,index: int) -> Union[bool,None]:
         if self.on_the_right_page(self.subTitleList[index]):
             return True
         else:
@@ -35,8 +31,8 @@ class explainerPages(BasePage):
         self.find_by_element_id(self.skipBtnLocator).click()
         return
 
-    def selectNextBtn(self, index: int) -> int | None:
-        if index == 2 && self.rightPage(index):
+    def selectNextBtn(self, index: int) -> Union[int,None]:
+        if index == 2 and self.rightPage(index):
             self.find_by_element_id(self.doneBtnLocator).click()
             return None
 
@@ -48,8 +44,8 @@ class explainerPages(BasePage):
         else: 
             raise Exception("Wher are thou?")
 
-    def selectBackBtn(self, index:int) -> int | None:
-        if index == 0 && self.rightPage(index):
+    def selectBackBtn(self, index:int) -> Union[int,None]:
+        if index == 0 and self.rightPage(index):
             self.find_by_element_id(self.backBtnLocator).click()
 
             return None

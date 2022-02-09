@@ -1,3 +1,4 @@
+from typing import Union
 from pageobjects.basepage import BasePage
 
 
@@ -17,18 +18,18 @@ class initialOnboarding(BasePage):
     titleLocator: str = "00000000-0000-001d-ffff-ffff00000025"  
     # WARN: no accessibility name but is it required?
 
-    def rightPage(self) -> bool | None:
+    def rightPage(self) -> Union[bool,None]:
         if self.on_the_right_page(self.titleLocator):
             return True
         else:
             raise Exception("Not on the terms of service page")
 
-    def selectSecuritySettings(self) ->  bool | None:
+    def selectSecuritySettings(self) ->  Union[bool,None]:
         if self.rightPage():
             self.find_by_element_id(self.securitySettingsLocator).click()
             return True
 
-    def selectGetStartedBtn(self) -> bool | None:
+    def selectGetStartedBtn(self) -> Union[bool,None]:
         if self.rightPage():
             self.find_by_element_id(self.getStartedLocator).click()
             return True
