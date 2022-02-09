@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 
 
-class explainerPages(BasePage):
+class termsAndConditions(BasePage):
     """
     Figma:
         Category: Onboarding
@@ -17,7 +17,7 @@ class explainerPages(BasePage):
     # Locators
     privacyStatementLinkLocator: str = ""  # INFO: no link?
     termsOfUsageLinkLocator: str = ""
-    cehckboxTOSLocator: str = "I Agree to the Terms of Service"
+    checkboxTOSLocator: str = "I Agree to the Terms of Service"
     continueBtnLocator: str = "Continue"
     backBtnLocator: str = "Back"
     titleLocator: str = "Terms of Use"
@@ -29,20 +29,18 @@ class explainerPages(BasePage):
         else:
             raise Exception("Not on the terms of service page")
 
-    def selectConitnueBtn(self) -> None:
-        if self.rightPage:
+    def selectContinueBtn(self) -> None:
+        if self.rightPage():
             self.find_by_accessibility_id(self.continueBtnLocator).click()
             return
 
     def selectBackBtn(self) -> None:
-        if self.rightPage:
+        if self.rightPage():
             self.find_by_accessibility_id(self.continueBtnLocator).click()
             return
+    
+    def checkTOSBox(self) -> None:
+        if self.rightPage():
+            self.find_by_accessibility_id(self.checkboxTOSLocator)
 
-    def selectBackBtn(self, index: int) -> int | None:
-        self.find_by_element_id(self.backBtnLocator).click()
-        if index == 0:
-            return None
-        else:
-            index -= 1
-            return index
+
