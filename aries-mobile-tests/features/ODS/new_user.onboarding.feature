@@ -10,10 +10,10 @@ Feature: Explainer screens
     Given I am on Get started screen
     When I click on Check your device's security settings 
     Then I land on Device settings screen 
-
+    #INFO: This is out of order TOS is after the explainer screns
   @DID-
   Scenario: New user reviews all explainer screens 
-    Given My langauage has been set 
+    Given My language has been set 
     And I am on Get started screen
     When I click on Get started 
     And I accept Terms of service
@@ -24,7 +24,7 @@ Feature: Explainer screens
     And I click Next 
     And I land on Keep track of what you shared screen
     And I click Done 
-    Then I am on Confirm your biometircs screen 
+    Then I am on Confirm your biometrics screen 
 
   @DID- 
   Scenario Outline: New user skips explainer screens
