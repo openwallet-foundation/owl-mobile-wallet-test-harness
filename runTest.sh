@@ -6,7 +6,7 @@ if [ -f .env ]
 then
   # export "$(cat .env | xargs)"
   source .env
-  echo $DEVICE_CLOUD_USERNAME 
+  # echo $DEVICE_CLOUD_USERNAME 
 else
   echo "Missing .env file!" > logfile.log
   exit 125
