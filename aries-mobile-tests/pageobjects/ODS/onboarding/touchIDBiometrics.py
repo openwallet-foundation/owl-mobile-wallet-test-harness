@@ -1,3 +1,5 @@
+from typing import Union
+
 from pageobjects.basepage import BasePage
 
 
@@ -17,18 +19,18 @@ class touchIDBiometrics(BasePage):
 
     changeSecuritySettings: str = ""
     
-    def rightPage(self) -> bool | None:
+    def rightPage(self) -> Union[bool,None]:
         if self.on_the_right_page(self.titleLocator):
             return True
         else:
             raise Exception("Not on the terms of service page")
     
-    def selectContinueBtn(self) -> bool | None:
+    def selectContinueBtn(self) -> Union[bool,None]:
         if self.rightPage():
             self.find_by_element_id(self.continueBtnLocator).click()
             return True
 
-    def selectBackBtn(self) -> bool | None:
+    def selectBackBtn(self) -> Union[bool,None]:
         if self.rightPage():
             self.find_by_element_id(self.continueBtnLocator).click()
             return Truel

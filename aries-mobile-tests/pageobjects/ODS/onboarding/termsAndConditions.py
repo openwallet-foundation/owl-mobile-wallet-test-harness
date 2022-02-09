@@ -1,8 +1,5 @@
-import time
+from typing import Union
 
-from appium.webdriver.common.mobileby import MobileBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 
 
@@ -23,7 +20,7 @@ class termsAndConditions(BasePage):
     titleLocator: str = "Terms of Use"
 
     # INFO: test for swipping too?
-    def rightPage(self) -> bool | None:
+    def rightPage(self) -> Union[bool,None]:
         if self.on_the_right_page(self.titleLocator):
             return True
         else:

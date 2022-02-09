@@ -2,8 +2,8 @@
   "capabilities": {
     "project": "Bifold Behave Project",
     "build": "build-1",
-    "platformName": "",
-    "app": "storage:filename=",
+    "platformName": "Android",
+    "app": "storage:filename=app-release.apk",
     "deviceName": "Samsung_Galaxy_S9_real_us",
     "platformVersion": "10.0",
     "sauceLabsImageInjectionEnabled": true,
