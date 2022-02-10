@@ -1,5 +1,5 @@
-@Connect @bifold
-Feature: Connect to an Issuer
+@Connect @bc_wallet
+Feature: Connect to an Issuer/Scan QR Code
 
    @T001-Connect
    Scenario: Connect to an Issuer based on a QR code

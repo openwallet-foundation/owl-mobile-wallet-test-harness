@@ -37,7 +37,14 @@ class BasePage(object):
                 EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, locator))
             )
         except:
-	        raise Exception(f"Could not find element by Accessibility id Locator {locator}")
+            try:
+                # If there is a problem with the accessibility id, try doing it by name.
+                # return WebDriverWait(self.driver, 20).until(
+                #     EC.presence_of_element_located((MobileBy.NAME, locator))
+                # )
+                return self.driver.find_element_by_name(locator)
+            except:
+	            raise Exception(f"Could not find element by Accessibility id or Name Locator {locator}")
 
     # Locate by id
     def find_by_element_id(self, locator):

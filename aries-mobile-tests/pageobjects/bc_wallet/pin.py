@@ -2,9 +2,10 @@ import time
 from appium.webdriver.common.mobileby import MobileBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from pageobjects.basepage import BasePage
+from pageobjects.bifold.home import HomePage
 
-# These classes can inherit from a BasePage to do commone setup and functions
-class WikipediaHomePage(object):
+class PINPage(BasePage):
     """A sample test class to show how page object works"""
 
     # def __init__ (self, context):
@@ -13,7 +14,7 @@ class WikipediaHomePage(object):
 
     #def __init__ (self):
 
-    def search(self, context, keyword):
+    def enter_pin(self, context, pin):
         search_element = WebDriverWait(context.driver, 10).until(
             EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, "Search Wikipedia"))
         )
@@ -24,8 +25,6 @@ class WikipediaHomePage(object):
         search_input.send_keys(keyword)
         time.sleep(5)
 
-
-    def get_search_results(self, context):
-        elems = context.driver.find_elements_by_class_name("android.widget.TextView")
-        return elems
-        
+    def submit_pin(self, context:
+        thisHomePage = context.driver.find_elements_by_class_name("android.widget.TextView")
+        return thisHomePage

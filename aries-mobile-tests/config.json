@@ -1,6 +1,6 @@
 {
   "capabilities": {
-    "project": "Bifold Behave Project",
+    "project": "BC Wallet",
     "build": "build-1",
     "platformName": "Android",
     "app": "storage:filename=Ontario-wallet-Feb-03.apk",
