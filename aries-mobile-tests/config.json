@@ -3,9 +3,9 @@
     "project": "Bifold Behave Project",
     "build": "build-1",
     "platformName": "Android",
-    "app": "storage:filename=app-release.apk",
-    "deviceName": "Samsung_Galaxy_S9_real_us",
-    "platformVersion": "10.0",
+    "app": "storage:filename=Ontario-wallet-Feb-03.apk",
+    "deviceName": "Samsung.*",
+    "platformVersion": "10",
     "sauceLabsImageInjectionEnabled": true,
     "autoGrantPermissions": true
   }

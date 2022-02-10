@@ -1,4 +1,6 @@
 #DID-349 , 351, 352
+# add @ tag
+# @ ODS
 Feature: Explainer screens
 
   Background: I am a new user and wallet is not setup
@@ -11,7 +13,8 @@ Feature: Explainer screens
     When I click on Check your device's security settings 
     Then I land on Device settings screen 
     #INFO: This is out of order TOS is after the explainer screns
-  @DID-
+
+  @DID-373
   Scenario: New user reviews all explainer screens 
     Given My language has been set 
     And I am on Get started screen
