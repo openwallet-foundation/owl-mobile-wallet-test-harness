@@ -1,11 +1,12 @@
 {
     "capabilities": {
-        "project": "Bifold Behave Project",
+        "project": "BC Wallet",
         "build": "build-1",
         "platformName": "iOS",
-        "app":"storage:filename=AriesBifold.zip",
-        "deviceName":"iPhone_11_15_real_us",
-        "platformVersion":"15.1",
+        "app":"storage:filename=AriesBifold-76.ipa",
+        "deviceName":"iPhone.*",
+        "platformVersion":"15.3",
+        "sessionCreationRetry" : "3",
         "sauceLabsImageInjectionEnabled": true,
         "autoGrantPermissions": true
     }

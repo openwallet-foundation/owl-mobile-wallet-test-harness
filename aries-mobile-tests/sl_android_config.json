@@ -1,11 +1,12 @@
 {
     "capabilities": {
-        "project": "Bifold Behave Project",
+        "project": "BC Wallet",
         "build": "build-1",
         "platformName": "Android",
         "app":"storage:filename=app-release.apk",
-        "deviceName":"Samsung_Galaxy_S9_real_us",
-        "platformVersion":"10.0",
+        "deviceName":"Samsung.*",
+        "platformVersion":"10",
+        "sessionCreationRetry" : "3",
         "sauceLabsImageInjectionEnabled": true,
         "autoGrantPermissions": true
     }
