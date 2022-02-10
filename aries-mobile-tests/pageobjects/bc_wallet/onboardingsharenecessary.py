@@ -4,7 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.onboardingtakecontrol import OnboardingTakeControlPage
-from pageobjects.bc_wallet.onboardingstorecredssecurely import OnboardingStoreCredsSecurelyPage
+#from pageobjects.bc_wallet.onboardingstorecredssecurely import OnboardingStoreCredsSecurelyPage
 
 # These classes can inherit from a BasePage to do common setup and functions
 class OnboardingShareNecessaryPage(BasePage):
@@ -42,6 +42,7 @@ class OnboardingShareNecessaryPage(BasePage):
     def select_back(self):
         if self.on_the_right_page(self.title_locator):
             self.find_by_accessibility_id(self.back_locator).click()
+            from pageobjects.bc_wallet.onboardingstorecredssecurely import OnboardingStoreCredsSecurelyPage
             return OnboardingStoreCredsSecurelyPage(self.driver)
         else:
             raise Exception(f"App not on the {self.title_locator} page")

@@ -1,4 +1,4 @@
-@Connect
+@Connect @bifold
 Feature: Connect to an Issuer
 
    @T001-Connect

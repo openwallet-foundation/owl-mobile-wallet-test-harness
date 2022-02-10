@@ -4,7 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.home import HomePage
-from pageobjects.bc_wallet.secure import SecurePage
+#from pageobjects.bc_wallet.secure import SecurePage
 
 # These classes can inherit from a BasePage to do commone setup and functions
 class AllowNotificationsPage(BasePage):
@@ -41,6 +41,7 @@ class AllowNotificationsPage(BasePage):
     def select_back(self):
         if self.on_the_right_page(self.title_locator):
             self.find_by_accessibility_id(self.back_locator).click()
+            from pageobjects.bc_wallet.secure import SecurePage
             return SecurePage(self.driver)
         else:
             raise Exception(f"App not on the {self.title_locator} page")

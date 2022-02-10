@@ -6,7 +6,7 @@ Feature: Onboarding
   I want to review onboarding material
 
 
-  @T001-Onboarding @wip @AcceptanceTest
+  @T001-Onboarding @AcceptanceTest
   Scenario: New User reviews all onboarding screens
     Given the new user has opened the app for the first time
     And the user is on the onboarding Welcome screen
@@ -20,7 +20,7 @@ Feature: Onboarding
     And are brought to the Terms and Conditions screen
 
 
-  @T002-Onboarding @wip @AcceptanceTest
+  @T002-Onboarding @AcceptanceTest
   Scenario Outline: New User skips onboarding screens
     Given the new user has opened the app for the first time
     And the user is on the onboarding <screen>

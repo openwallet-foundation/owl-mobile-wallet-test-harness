@@ -3,7 +3,7 @@ from appium.webdriver.common.mobileby import MobileBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.onboardingsharenecessary import OnboardingShareNecessaryPage
+#from pageobjects.bc_wallet.onboardingsharenecessary import OnboardingShareNecessaryPage
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -43,13 +43,14 @@ class OnboardingTakeControlPage(BasePage):
     def select_back(self):
         if self.on_the_right_page(self.title_locator):
             self.find_by_accessibility_id(self.back_locator).click()
+            from pageobjects.bc_wallet.onboardingsharenecessary import OnboardingShareNecessaryPage
             return OnboardingShareNecessaryPage(self.driver)
         else:
             raise Exception(f"App not on the {self.title_locator} page")
 
     def select_get_started(self):
         if self.on_the_right_page(self.title_locator):
-            self.find_by_accessibility_id(self.skip_locator).click()
+            self.find_by_accessibility_id(self.get_started_locator).click()
             return TermsAndConditionsPage(self.driver)
         else:
             raise Exception(f"App not on the {self.title_locator} page")
