@@ -1,2 +1,6 @@
 __pycache__
 .env
+.logs
+*.log
+all_steps.py
+
