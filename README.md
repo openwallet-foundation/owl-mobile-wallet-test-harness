@@ -39,7 +39,7 @@ Build and run the tests
 LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 ./manage run -d SauceLabs -u <device_cloud_username> -k <device_cloud_access_key> -p Android -a app-release.apk -i acapy-main -v acapy-main -t @Connect
 ```
 
-The alternative is to run runTest.sh to do all of it for you granted you created a .env file at the root folder.
+The alternative is to run runTest.sh to do the work for you granted you created a .env file at the root folder.
 You must complete the following key/values that will be sourced at runtime.
 ```
 DEVICE_CLOUD_USERNAME=???
@@ -47,6 +47,10 @@ DEVICE_CLOUD_ACCESS_KEY=???
 APP_APK_LOCATION=/home/{LinuxIsBest}/Documents/{AppName}.apk
 APP_NAME=???
 ```
+You must also have the following modern unix tools installed:
+ - [ripgrep](https://github.com/BurntSushi/ripgrep) grep but better
+ - [fzf](https://github.com/junegunn/fzf) fuzzy finder
+ - [bat](https://github.com/sharkdp/bat) cat but better
   
 
 ## Contents<!-- omit in toc -->
