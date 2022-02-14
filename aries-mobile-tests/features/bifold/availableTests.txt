@@ -1,0 +1,4 @@
+# Please ensure you follow this format for the regex to pick it and yes the space is required.
+
+@Connect : test the connection of the bifold
+@bifold : test the entire bifold
