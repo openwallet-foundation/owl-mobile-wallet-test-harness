@@ -1,7 +1,7 @@
 @Connect @bc_wallet
 Feature: Connect to an Issuer/Scan QR Code
 
-   @T001-Connect
+   @T001-Connect @wip
    Scenario: Connect to an Issuer based on a QR code
       Given the terms of service has been accepted
       And a PIN has been set up
