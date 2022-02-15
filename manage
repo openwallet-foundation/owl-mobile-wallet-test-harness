@@ -1102,14 +1102,14 @@ case "${COMMAND}" in
       serviceCommand ${@}
     ;;
   tags)
-      grep -h @ aries-mobile-tests/features/*feature |  tr " " "\n" | sort -u | fmt
+      grep -rh --include \*.feature @ aries-mobile-tests/features/* |  tr " " "\n" | sort -u | fmt
     ;;
   rm)
       deleteAgents
     ;;
 
   tests|scenarios)
-      grep -h -B 1 Scenario aries-mobile-tests/features/*feature
+      grep -rh --include \*.feature -B 1 Scenario aries-mobile-tests/features/*
     ;;
 
   dockerhost)
