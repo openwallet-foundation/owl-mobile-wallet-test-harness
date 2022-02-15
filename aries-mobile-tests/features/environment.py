@@ -55,7 +55,7 @@ def before_feature(context, feature):
     context.verifier_url = context.config.userdata.get("Verifier")
 
 def after_scenario(context, scenario):
-    print(os.environ)
+
     device_cloud_service = os.environ['DEVICE_CLOUD']
     if device_cloud_service == "SauceLabs":
 
