@@ -6,10 +6,12 @@
 #  
 # -----------------------------------------------------------
 from appium import webdriver
-#from browserstack.local import Local
+import allure
 from sauceclient import SauceClient
 from decouple import config
 import os, json
+import hmac
+from hashlib import md5
 
 config_file_path = os.path.join(os.path.dirname(__file__), '..', "config.json")
 print("Path to the config file = %s" % (config_file_path))
@@ -51,6 +53,29 @@ def before_feature(context, feature):
     # Set the Issuer and Verfier URLs
     context.issuer_url = context.config.userdata.get("Issuer")
     context.verifier_url = context.config.userdata.get("Verifier")
+
+def after_scenario(context, scenario):
+    print(os.environ)
+    device_cloud_service = os.environ['DEVICE_CLOUD']
+    if device_cloud_service == "SauceLabs":
+
+        # Add the sauce Labs results and video url to the allure results
+        # Link that requires a sauce labs account and login
+        testobject_test_report_url = context.driver.capabilities["testobject_test_report_url"]
+        allure.attach(testobject_test_report_url, "Sauce Labs Report and Video (Login required)")
+        print(f"Sauce Labs Report and Video (Login required): {testobject_test_report_url}")
+
+        # Link does not require a sauce labs account and login. Token generated.
+        # TODO This isn't working. Have contacted Sauce Labs. 
+        test_id = testobject_test_report_url.rpartition('/')[-1]
+        session_id = context.driver.session_id
+        key = f"{username}:{access_key}"
+        sl_token = hmac.new(key.encode("ascii"), None, md5).hexdigest()
+        url = f"{testobject_test_report_url}?auth={sl_token}"
+        allure.attach(url, "Public Sauce Labs Report and Video (Login not required) (Nonfunctional at this time)")
+        print(f"Public Sauce Labs Report and Video (Login not required): {url} (Nonfunctional at this time)")
+
+    # elif device_cloud_service == "something else in the future":
 
 def after_feature(context, feature):
     # Invoke driver.quit() after the test is done to indicate to BrowserStack 
