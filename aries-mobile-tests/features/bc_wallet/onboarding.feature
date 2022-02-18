@@ -34,7 +34,7 @@ Feature: Onboarding
       | Share only what is neccessary screen   |
 
 
-  @T003-Onboarding @wip @AcceptanceTest
+  @T003-Onboarding @AcceptanceTest
   Scenario Outline: New User wants to go back to review previous reviewed onboarding material
     Given the new user has opened the app for the first time
     And the user is on the onboarding <screen>
@@ -48,7 +48,7 @@ Feature: Onboarding
       | Take control of your information screen | Share only what is neccessary screen   |
 
 
-  @T004-Onboarding @wip @FunctionalTest
+  @T004-Onboarding @FunctionalTest
   Scenario Outline: New User quits app mid review of onboarding material
     Given the new user has opened the app for the first time
     And the user is on the onboarding <screen>
@@ -66,6 +66,7 @@ Feature: Onboarding
 
   @T005-Onboarding @wip @FunctionalTest
   Scenario: New User wants to learn more about BC wallet during onboarding
-    Given The User has completed the Take control of your information screen
+    Given the new user has opened the app for the first time
+    And the user is on the "Take control of your information screen"
     When the user selects Learn more about BC Wallet
-    Then then they are brought to thier browser with more info about BC wallet
+    Then they are brought to thier browser with more info about BC wallet

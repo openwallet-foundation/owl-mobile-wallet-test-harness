@@ -34,25 +34,40 @@ url = 'http://%s:%s@ondemand.%s.saucelabs.com:80/wd/hub' % (username, access_key
 print(url)
 
 def before_feature(context, feature):
-    #CONFIG['capabilities']['sauce:options']['name'] = feature.name
-    CONFIG['capabilities']['name'] = feature.name
-    desired_capabilities = CONFIG['capabilities']
-    print(desired_capabilities)
+    # TODO there is an issue where calling driver.reset does not reset the app on iOS. Until a solution is found for this issue
+    # moving the driver creation and driver.quit() to the before and after scenario methods. 
+
+    # CONFIG['capabilities']['name'] = feature.name
+    # CONFIG['capabilities']['fullReset'] = True
+    # desired_capabilities = CONFIG['capabilities']
+    # print(desired_capabilities)
+
     # context.driver = webdriver.Remote(
     #     desired_capabilities=desired_capabilities,
-    #     command_executor="http://hub-cloud.browserstack.com/wd/hub"
+    #     command_executor=url,
+    #     keep_alive=False
     # )
-    context.driver = webdriver.Remote(
-        desired_capabilities=desired_capabilities,
-        command_executor=url,
-        keep_alive=True
-    )
-    print(json.dumps(context.driver.capabilities))
-    #context.driver = webdriver.Remote(url, desired_capabilities)
+    # print(json.dumps(context.driver.capabilities))
 
     # Set the Issuer and Verfier URLs
     context.issuer_url = context.config.userdata.get("Issuer")
     context.verifier_url = context.config.userdata.get("Verifier")
+
+def before_scenario(context, scenario):
+    # TODO go through the sceanrio tags and find the unique id, starts with T, and prefix it to the name. 
+    # maybe put the feature in it as well like Feature:TestID:Scenario
+    CONFIG['capabilities']['name'] = scenario.name
+    CONFIG['capabilities']['fullReset'] = True
+    desired_capabilities = CONFIG['capabilities']
+    print(desired_capabilities)
+    
+    context.driver = webdriver.Remote(
+        desired_capabilities=desired_capabilities,
+        command_executor=url,
+        keep_alive=False
+    )
+    print(json.dumps(context.driver.capabilities))
+
 
 def after_scenario(context, scenario):
 
@@ -65,23 +80,36 @@ def after_scenario(context, scenario):
         allure.attach(testobject_test_report_url, "Sauce Labs Report and Video (Login required)")
         print(f"Sauce Labs Report and Video (Login required): {testobject_test_report_url}")
 
+        # Since every test scenario is a new session with potentially a different device
+        # write the capabilities info as an attachment to the test scenario to keep track
+        allure.attach(json.dumps(context.driver.capabilities), "Complete Appium/Sauce Labs Test Environment Configuration")
+
         # Link does not require a sauce labs account and login. Token generated.
-        # TODO This isn't working. Have contacted Sauce Labs. 
-        test_id = testobject_test_report_url.rpartition('/')[-1]
-        session_id = context.driver.session_id
-        key = f"{username}:{access_key}"
-        sl_token = hmac.new(key.encode("ascii"), None, md5).hexdigest()
-        url = f"{testobject_test_report_url}?auth={sl_token}"
-        allure.attach(url, "Public Sauce Labs Report and Video (Login not required) (Nonfunctional at this time)")
-        print(f"Public Sauce Labs Report and Video (Login not required): {url} (Nonfunctional at this time)")
+        # # TODO This isn't working. Have contacted Sauce Labs. 
+        # test_id = testobject_test_report_url.rpartition('/')[-1]
+        # session_id = context.driver.session_id
+        # key = f"{username}:{access_key}"
+        # sl_token = hmac.new(key.encode("ascii"), None, md5).hexdigest()
+        # url = f"{testobject_test_report_url}?auth={sl_token}"
+        # allure.attach(url, "Public Sauce Labs Report and Video (Login not required) (Nonfunctional at this time)")
+        # print(f"Public Sauce Labs Report and Video (Login not required): {url} (Nonfunctional at this time)")
 
     # elif device_cloud_service == "something else in the future":
+    
+    # if context.driver.capabilities['platformName'] == "iOS":
+    #     context.driver.close_app()
+    #     context.driver.launch_app()
+    # else:
+    #     context.driver.reset()
 
-def after_feature(context, feature):
-    # Invoke driver.quit() after the test is done to indicate to BrowserStack 
-    # that the test is completed. Otherwise, test will appear as timed out on BrowserStack.
-    # if context does not contain browser then something went wrong on initialization and no need to call quit.
     if hasattr(context, 'driver'):
         context.driver.quit()
+
+# def after_feature(context, feature):
+#     # Invoke driver.quit() after the test is done to indicate to BrowserStack 
+#     # that the test is completed. Otherwise, test will appear as timed out on BrowserStack.
+#     # if context does not contain browser then something went wrong on initialization and no need to call quit.
+#     if hasattr(context, 'driver'):
+#         context.driver.quit()
 
 

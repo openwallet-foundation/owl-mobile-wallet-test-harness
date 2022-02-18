@@ -13,27 +13,31 @@ class BasePage(object):
     def set_device(self, context):
         self.driver = context.driver
         
-    def on_the_right_page(self, title):
-        # title_element = WebDriverWait(self.driver, 10).until(
-        #     EC.title_is(title))
-        # if title_element.name() == title:
-        #     return True
-        # else:
-        #     return False
+
+    def on_this_page(self, locator, timeout=10):
         
         # replace this sleep when there is an accessibility id on page titles.  
-        time.sleep(10)
-        return True
+        found_locator = False
+        i=0
+        while found_locator == False and i < timeout:
+            if locator in self.get_page_source():
+                found_locator = True
+            else:
+                found_locator = False
+            i = i + 1
+        return found_locator
+
 
     # Initialize and define the type of driver as WebDriver
     def __init__(self, driver):
         self.driver = driver
+        self.current_platform = driver.capabilities['platformName']
 
     # Locate by Accessibility id
-    def find_by_accessibility_id(self, locator):
+    def find_by_accessibility_id(self, locator, timeout=20):
         try:
 	        # The location of a single element gets the location of a single element
-            return WebDriverWait(self.driver, 20).until(
+            return WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, locator))
             )
         except:
@@ -55,6 +59,9 @@ class BasePage(object):
             )
         except:
             raise Exception(f"Could not find element by element id Locator {locator}")
+
+    def get_page_source(self):
+        return self.driver.page_source
 
     # Positioning according to xpath
     def find_by_xpath(self, locator):

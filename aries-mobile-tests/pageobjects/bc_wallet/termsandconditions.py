@@ -12,29 +12,26 @@ class TermsAndConditionsPage(BasePage):
     # Locators
     # TODO: We could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
-    title_locator = "Terms of Service"
+    on_this_page_text_locator = "EULA"
     terms_and_conditions_accept_locator = "I Agree to the Terms of Service"
     continue_button_locator = "Submit"
     back_locator = "Back"
 
 
-    def on_this_page(self):
-        if self.on_the_right_page(self.title_locator):
-            return True
-        else:
-            return False
+    def on_this_page(self):     
+        return super().on_this_page(self.on_this_page_text_locator) 
 
     def select_accept(self):
-        if self.on_the_right_page(self.title_locator):
+        if self.on_this_page():
             self.driver.swipe(500, 2000, 500, 100)
             self.find_by_accessibility_id(self.terms_and_conditions_accept_locator).click()
             return True
         else:
-            raise Exception(f"App not on the {self.title_locator} page")
+            raise Exception(f"App not on the {self.on_this_page_text_locator} page")
 
 
     def select_continue(self):
-        if self.on_the_right_page(self.title_locator):
+        if self.on_this_page():
             self.find_by_accessibility_id(self.continue_button_locator).click()
 
             # Maybe should check if it is checked or let the test call is_accept_checked()? 
@@ -45,7 +42,7 @@ class TermsAndConditionsPage(BasePage):
 
 
     def select_back(self):
-        if self.on_the_right_page(self.title_locator):
+        if self.on_this_page():
             self.find_by_accessibility_id(self.back_locator).click()
             # not sure what page to return here since they could of got here by skipping and they would return the the onboarding page
             # they selected skip on.

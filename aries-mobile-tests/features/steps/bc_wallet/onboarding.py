@@ -29,6 +29,7 @@ def step_impl(context):
     assert context.thisOnboardingWelcomePage.on_this_page()
     # set a current onboarding page so the select Next step can be reused across these pages
     context.currentOnboardingPage = context.thisOnboardingWelcomePage
+    
 
 @when('the user selects Next')
 def step_impl(context):
@@ -71,7 +72,7 @@ def step_impl(context):
 def step_impl(context):
     assert context.thisTermsAndConditionsPage.on_this_page()
 
-
+@given('the user is on the "{screen}"')
 @given('the user is on the onboarding {screen}')
 def step_impl(context, screen):
     # Assume for now they start on the welcome screen
@@ -80,7 +81,7 @@ def step_impl(context, screen):
     if screen == "Welcome screen":
         # at the start of a test call the intial steps.
         context.execute_steps(f'''
-           Given the user is on the onboarding Welcome screen
+            Given the user is on the onboarding Welcome screen
         ''')
 
     elif screen == "Store your credentials securely screen":
@@ -143,3 +144,35 @@ def step_impl(context, previous_screen):
     elif previous_screen == "Share only what is neccessary screen":
         assert context.thisOnboardingShareNecessaryPage.on_this_page()
 
+
+@when('the user quits the app')
+def step_impl(context):
+    # close the app and reopen
+    context.driver.reset()
+
+
+@when('they reopen the app')
+def step_impl(context):
+    # app was opened in the driver.reset() call in the last step.
+    pass
+
+
+@then('they land on the Welcome screen')
+def step_impl(context):
+    context.execute_steps(f'''
+        Given the new user has opened the app for the first time
+        Given the user is on the onboarding Welcome screen
+    ''')
+
+
+@when('the user selects Learn more about BC Wallet')
+def step_impl(context):
+    context.thisOnboardingTakeControlPage.select_learn_more()
+
+
+@then('they are brought to thier browser with more info about BC wallet')
+def step_impl(context):
+    # TODO how to check for this?
+    print(context.driver.get().getContextHandles())
+    print(context.driver.getContext())
+    #raise NotImplementedError(u'STEP: Then they are brought to thier browser with more info about BC wallet')
