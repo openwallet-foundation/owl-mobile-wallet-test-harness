@@ -12,11 +12,13 @@ class SecurePage(BasePage):
     # Locators
     # TODO: We could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
-    title_locator = "Secure your wallet"
+    on_this_page_text_locator = "Secure your Wallet"
     device_security_settings_link_locator = "device security settings"
     use_device_security_button_locator = "Submit"
     back_locator = "Back"
 
+    def on_this_page(self):     
+        return super().on_this_page(self.on_this_page_text_locator) 
 
     def select_device_security_settings(self):
         if self.on_the_right_page(self.title_locator):

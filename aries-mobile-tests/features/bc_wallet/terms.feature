@@ -5,29 +5,28 @@ Feature: Terms and Conditions
   As a new holder
   I want to review the terms and conditions
 
-@T001-T&C @wip @AcceptanceTest
+@T001-TandC @AcceptanceTest
 Scenario: New User Accepts Terms and Conditions
-Given The User has completed the on-boarding carousel screens
-And User sees the Terms and Conditions screen
-When The User scrolls to the bottom of the screen
-And The users accepts the Terms and Conditions
-And The continue button becomes active
-And The user clicks continue
-Then The user transitions to the PIN creation screen
+Given the User has completed on-boarding
+And the User is on the Terms and Conditions screen
+When the User scrolls to the bottom of the screen
+And the users accepts the Terms and Conditions
+And the user clicks continue
+Then the user transitions to the PIN creation screen
 
-@T002-T&C @wip @AcceptanceTest
+@T002-TandC @AcceptanceTest
 Scenario: New User Rejects Terms and Conditions
-Given The User has completed the on-boarding carousel screens
-And User sees the Terms and Conditions screen
-When The User scrolls to the bottom of the screen
-And The User presses the back button
-Then The User goes back to the last on-boarding screen they viewed
+Given the User has completed on-boarding
+And the User is on the Terms and Conditions screen
+When the User scrolls to the bottom of the screen
+And the User presses the back button
+Then the User goes back to the last on-boarding screen they viewed
 
-@T003-T&C @wip @FunctionalTest
+@T003-TandC @wip @FunctionalTest
 Scenario: New User Rejects Terms and Conditions and returns to app to accept
-Given The User has completed the on-boarding carousel screens
-And User sees the Terms and Conditions screen
-And the user has pressed that back button
+Given the User has completed on-boarding
+And the User was on the Terms and Conditions screen
+And the user has pressed the back button
 And the user was taken back to the on-bording screen
 When they close the app
 And they reopen the app
