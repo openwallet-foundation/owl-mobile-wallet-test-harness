@@ -1,6 +1,11 @@
 __pycache__
 .env
 .logs
+.build
 *.log
+.vscode/
 all_steps.py
-
+aries-mobile-tests/features/steps/all_steps.py
+aries-mobile-tests/allure/allure-results/environment.properties
+aries-mobile-tests/allure/cookiesFile
+aries-mobile-tests/config.json
