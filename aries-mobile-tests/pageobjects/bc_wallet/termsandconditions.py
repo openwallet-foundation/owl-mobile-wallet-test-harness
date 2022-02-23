@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.secure import SecurePage
+from pageobjects.bc_wallet.pinsetup import PINSetupPage
 
 
 # These classes can inherit from a BasePage to do commone setup and functions
@@ -55,7 +56,8 @@ class TermsAndConditionsPage(BasePage):
 
             # Maybe should check if it is checked or let the test call is_accept_checked()? 
             # return a new page object? The Pin Setup page.
-            return SecurePage(self.driver)
+            #return SecurePage(self.driver)
+            return PINSetupPage(self.driver)
         else:
             raise Exception(f"App not on the {self.title_locator} page")
 
