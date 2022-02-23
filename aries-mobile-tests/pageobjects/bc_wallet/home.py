@@ -3,19 +3,22 @@ from appium.webdriver.common.mobileby import MobileBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
-from pageobjects.bifold.contacts import ContactsPage
-#from pageobjects.bifold.scan import ScanPage
+from pageobjects.bc_wallet.contacts import ContactsPage
+
 
 class HomePage(BasePage):
     """Home page object"""
 
     # Locators
-    title_locator = "Home"
+    on_this_page_text_locator = "Welcome"
     home_locator = "Home"
     scan_locator = "Scan"
     credentials_locator = "Credentials"
     settings_locator = "Settings"
     contacts_locator = "Contacts"
+
+    def on_this_page(self):     
+        return super().on_this_page(self.on_this_page_text_locator) 
 
     def select_notification(self, context):
         search_element = WebDriverWait(context.driver, 10).until(

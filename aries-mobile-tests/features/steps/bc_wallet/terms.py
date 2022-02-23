@@ -12,6 +12,7 @@ from agent_test_utils import get_qr_code_from_invitation
 # import Page Objects needed
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 from pageobjects.bc_wallet.secure import SecurePage
+from pageobjects.bc_wallet.pinsetup import PINSetupPage
 from pageobjects.bc_wallet.onboardingwelcome import OnboardingWelcomePage
 from pageobjects.bc_wallet.onboardingtakecontrol import OnboardingTakeControlPage
 
@@ -49,12 +50,12 @@ def step_impl(context):
 
 @when('the user clicks continue')
 def step_impl(context):
-    context.thisSecurePage = context.thisTermsAndConditionsPage.select_continue()
+    context.thisPINSetupPage = context.thisTermsAndConditionsPage.select_continue()
 
-
+@given('the User is on the PIN creation screen')
 @then('the user transitions to the PIN creation screen')
 def step_impl(context):
-    context.thisSecurePage.on_this_page()
+    context.thisPINSetupPage.on_this_page()
 
 
 @when('the User presses the back button')
