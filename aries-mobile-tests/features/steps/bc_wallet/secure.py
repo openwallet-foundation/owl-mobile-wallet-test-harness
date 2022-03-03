@@ -29,11 +29,13 @@ def step_impl(context):
 @when('the User enters the first PIN as "{pin}"')
 def step_impl(context, pin):
     context.thisPINSetupPage.enter_pin(pin)
+    assert context.thisPINSetupPage.get_pin()
 
 
 @when('the User re-enters the PIN as "{pin}"')
 def step_impl(context, pin):
     context.thisPINSetupPage.enter_second_pin(pin)
+    assert context.thisPINSetupPage.get_second_pin()
 
 
 @when('the User selects Create PIN')

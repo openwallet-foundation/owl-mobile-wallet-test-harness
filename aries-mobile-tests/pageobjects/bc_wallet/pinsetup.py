@@ -19,15 +19,35 @@ class PINSetupPage(BasePage):
 
     def enter_pin(self, pin):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.first_pin_locator).send_keys(pin)
+            if self.current_platform == "iOS":
+                self.find_multiple_by_accessibility_id(self.first_pin_locator)[2].send_keys(pin)
+            else:
+                #self.find_by_accessibility_id(self.second_pin_locator).click()
+                self.find_by_accessibility_id(self.first_pin_locator).send_keys(pin)
             return True
+        else:
+            raise Exception(f"App not on the {self.title_locator} page")
+
+    def get_pin(self):
+        if self.on_this_page():
+            return self.find_by_accessibility_id(self.first_pin_locator).text
         else:
             raise Exception(f"App not on the {self.title_locator} page")
 
     def enter_second_pin(self, pin):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.second_pin_locator).send_keys(pin)
+            if self.current_platform == "iOS":
+                self.find_multiple_by_accessibility_id(self.second_pin_locator)[2].send_keys(pin)
+            else:
+                #self.find_by_accessibility_id(self.second_pin_locator).click()
+                self.find_by_accessibility_id(self.second_pin_locator).send_keys(pin)
             return True
+        else:
+            raise Exception(f"App not on the {self.title_locator} page")
+
+    def get_second_pin(self):
+        if self.on_this_page():
+            return self.find_by_accessibility_id(self.second_pin_locator).text
         else:
             raise Exception(f"App not on the {self.title_locator} page")
 

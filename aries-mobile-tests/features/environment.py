@@ -72,7 +72,7 @@ def before_scenario(context, scenario):
 def after_scenario(context, scenario):
 
     device_cloud_service = os.environ['DEVICE_CLOUD']
-    if device_cloud_service == "SauceLabs":
+    if device_cloud_service == "SauceLabs" and hasattr(context, 'driver'):
 
         # Add the sauce Labs results and video url to the allure results
         # Link that requires a sauce labs account and login
