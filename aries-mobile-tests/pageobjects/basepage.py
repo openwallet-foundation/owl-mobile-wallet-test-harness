@@ -4,6 +4,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # BasePage to do common setup and functions
+
+
 class BasePage(object):
     """A base page object to do things common to all page objects"""
 
@@ -12,13 +14,12 @@ class BasePage(object):
 
     def set_device(self, context):
         self.driver = context.driver
-        
 
     def on_this_page(self, locator, timeout=10):
-        
-        # replace this sleep when there is an accessibility id on page titles.  
+
+        # replace this sleep when there is an accessibility id on page titles.
         found_locator = False
-        i=0
+        i = 0
         while found_locator == False and i < timeout:
             if locator in self.get_page_source():
                 found_locator = True
@@ -27,8 +28,8 @@ class BasePage(object):
             i = i + 1
         return found_locator
 
-
     # Initialize and define the type of driver as WebDriver
+
     def __init__(self, driver):
         self.driver = driver
         self.current_platform = driver.capabilities['platformName']
@@ -38,7 +39,8 @@ class BasePage(object):
         try:
 	        # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
-                EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, locator))
+                EC.presence_of_element_located(
+                    (MobileBy.ACCESSIBILITY_ID, locator))
             )
         except:
             try:
@@ -48,17 +50,33 @@ class BasePage(object):
                 # )
                 return self.driver.find_element_by_name(locator)
             except:
-	            raise Exception(f"Could not find element by Accessibility id or Name Locator {locator}")
+                raise Exception(
+                    f"Could not find element by Accessibility id or Name Locator {locator}")
+
+    # Locate multiple elements by Accessibility id.
+    # this is a workaround for when iOS may have translated the labels down into text and input fields.
+    # we shouldn't be calling this very much, and when we have to, we should log an issue with the wallet for unique accessibilituy IDs
+    def find_multiple_by_accessibility_id(self, locator, timeout=20):
+        try:
+	        # The location of a single element gets the location of a single element
+            return WebDriverWait(self.driver, timeout).until(
+                EC.presence_of_all_elements_located(
+                    (MobileBy.ACCESSIBILITY_ID, locator))
+            )
+        except:
+            raise Exception(
+                f"Could not find elements by Accessibility id {locator}")
 
     # Locate by id
     def find_by_element_id(self, locator):
         try:
 	        # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((MobileBy.ID , locator))
+                EC.presence_of_element_located((MobileBy.ID, locator))
             )
         except:
-            raise Exception(f"Could not find element by element id Locator {locator}")
+            raise Exception(
+                f"Could not find element by element id Locator {locator}")
 
     def get_page_source(self):
         return self.driver.page_source
