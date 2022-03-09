@@ -138,8 +138,17 @@ An example of a fully composed run command that tests a BC Bifold Android app th
 ```bash
 LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 ./manage run -d SauceLabs -u <device-cloud-username> -k <device-cloud-access-key> -p Android -a app-release.apk -i acapy-main -v acapy-main -t @Connect
 ```
-Here is an example of a run command what tests the BC wallet iOS app and uses some locally running Aries Agent Test Harness agents as issuer and verifier;
+Here is a full example of a run command what tests the BC wallet iOS app and uses some locally running Aries Agent Test Harness agents as issuer and verifier;
+Clone, build and run AATH agents
 ```bash
+git clone https://github.com/hyperledger/aries-agent-test-harness
+cd aries-agent-test-harness
+./manage build -a acapy-main
+LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io TAILS_SERVER_URL_CONFIG=https://tails.vonx.io AGENT_CONFIG_FILE=/aries-backchannels/acapy/auto_issuer_config.yaml ./manage start -a acapy-main -b acapy-main -n
+```
+Run BC Wallet Tests in AMTH with those AATH agents
+```bash
+./manage build -w bc_wallet
 LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 ./manage run -d SauceLabs -u <device-cloud-username> -k <device-cloud-access-key> -p iOS -a AriesBifold-114.ipa -i http://0.0.0.0:9020 -v http://0.0.0.0:9030 -t @bc_wallet -t @T001-Connect
 ```
 
