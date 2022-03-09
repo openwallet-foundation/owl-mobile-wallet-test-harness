@@ -93,6 +93,7 @@ usage () {
 
     Examples:
     $0 build -w bifold -i acapy-main -v acapy-main  - Build the Aries Mobile Test harness to test bifold, use acapy-main as the issuer and the verifier.
+    $0 build -w bc_wallet - Use the BC Wallet files in the test container, issuer and verifier are managed outside the test harness and will be pointed to in the run command.
 
   rebuild [ -w wallet ] [ -i/v agent ]*
     Same as build, but adds the --no-cache option to force building from scratch
@@ -112,16 +113,18 @@ usage () {
         "-p iOS" or "-p Android"
       Use -a to specify the app name or id of the app loaded into the device cloud service
       Use -i to specify the issuer to use in the tests
-        Currenty supporting acapy-main
+        Currenty supporting acapy-main or a URL to another agent controller
       Use -v to specify the verifier to use in the tests
-        Currenty supporting acapy-main
+        Currenty supporting acapy-main or a URL to another agent controller
       Use the -r option to output to allure
         (allure is the only supported option)
 LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 
 
     Examples:
     $0 run -d SauceLabs -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p Android -a app-release.apk -i acapy-main -v acapy-main -t @Connect
-      - Run all tests tagged with Connect on SauceLabs with the app-release.apk app on the android platform. Use acapy-main as the basis for the issuer and verifier. 
+      - Run all tests tagged with Connect on SauceLabs with the app-release.apk app on the Android platform. Use acapy-main as the basis for the issuer and verifier. 
+    $0 run -d SauceLabs -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p iOS -a AriesBCWallet.ipa -i http://0.0.0.0:9020 -v http://0.0.0.0:9030 -t @Connect
+      - Run all tests tagged with Connect on SauceLabs with the AriesBCWallet.ipa app on the iOS platform. Use some externaly mamaged and stared agents for the issuer and verifier. 
 
   tags - Get a list of the tags on the features tests
 
@@ -229,7 +232,9 @@ function initEnv() {
 buildImages() {
   args=${@}
 
-  echo "Agents to build: Issuer:${ISSUER_AGENT}, Verifier:${VERIFIER_AGENT}"
+  if [[ ${ISSUER_AGENT} ]] || [[ ${VERIFIER_AGENT} ]]; then
+    echo "Agents to build: Issuer:${ISSUER_AGENT}, Verifier:${VERIFIER_AGENT}"
+  fi
 
   for agent in ${BUILD_AGENTS}; do
     export AGENT_FOLDER=$(dirname "$(find agents -name *.${agent})" )
@@ -747,20 +752,30 @@ startHarness(){
   dockerhost_url_templates
 
   #export ISSUER_AGENT=${ISSUER_AGENT:-${ISSUER}-agent}
-  export ISSUER_AGENT=${ISSUER}-agent
+  #export ISSUER_AGENT=${ISSUER}-agent
   #export VERIFIER_AGENT=${VERIFIER_AGENT:-$VERIFIER}-agent}
-  export VERIFIER_AGENT=${VERIFIER}-agent
+  #export VERIFIER_AGENT=${VERIFIER}-agent
   # export AIP_CONFIG=${AIP_CONFIG:-10}
 
   export PROJECT_ID=${PROJECT_ID:-general}
 
   # start agents or ...
-  startAgent Issuer issuer_agent "$ISSUER_AGENT" "9020-9029" 9020 9021 "20" "$ISSUER"
-  startAgent Verifier verifier_agent "$VERIFIER_AGENT" "9030-9039" 9030 9031 "20" "$VERIFIER"
+  if [[ "$ISSUER_AGENT" != *"http"* ]]; then 
+    export ISSUER_AGENT=${ISSUER}-agent
+    startAgent Issuer issuer_agent "$ISSUER_AGENT" "9020-9029" 9020 9021 "20" "$ISSUER"
+  fi
+  if [[ "$VERIFIER_AGENT" != *"http"* ]]; then
+    export VERIFIER_AGENT=${VERIFIER}-agent
+    startAgent Verifier verifier_agent "$VERIFIER_AGENT" "9030-9039" 9030 9031 "20" "$VERIFIER"
+  fi
 
   echo
-  waitForAgent Issuer 9020
-  waitForAgent Verifier 9030
+  if [[ "$ISSUER_AGENT" != *"http"* ]]; then
+    waitForAgent Issuer 9020
+  fi
+  if [[ "$VERIFIER_AGENT" != *"http"* ]]; then
+    waitForAgent Verifier 9030
+  fi
 
   echo
   # config.json file handling
@@ -798,6 +813,18 @@ runTests() {
   export BEHAVE_INI_TMP="$(pwd)/behave.ini.tmp"
   cp ${BEHAVE_INI} ${BEHAVE_INI_TMP}
 
+  # Set Issuer and Verifier URL
+  if [[ "$ISSUER_AGENT" == *"http"* ]]; then
+    issuerURL=$ISSUER_AGENT
+  else
+    issuerURL="http://0.0.0.0:9022/"
+  fi
+  if [[ "$VERIFIER_AGENT" == *"http"* ]]; then
+    verifierURL=$VERIFIER_AGENT
+  else
+    verifierURL="http://0.0.0.0:9032/"
+  fi
+
   echo "Running with Device Cloud Service ${DEVICE_CLOUD}"
   if [[ "${DEVICE_CLOUD}" = "SauceLabs" ]]; then
     # if Region is not set default to us-west-1
@@ -806,10 +833,10 @@ runTests() {
     fi
     if [[ "${REPORT}" = "allure" ]]; then
       echo "Executing tests with Allure Reports."
-      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e DEVICE_CLOUD=${DEVICE_CLOUD} -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=http://0.0.0.0:9022/ -D Verifier=http://0.0.0.0:9032/
+      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e DEVICE_CLOUD=${DEVICE_CLOUD} -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=${issuerURL} -D Verifier=${verifierURL}
     else
       echo "Executing tests without Allure Reports."
-      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e DEVICE_CLOUD=${DEVICE_CLOUD} -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -D Issuer=http://0.0.0.0:9022/ -D Verifier=http://0.0.0.0:9032/
+      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e DEVICE_CLOUD=${DEVICE_CLOUD} -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -D Issuer=${issuerURL} -D Verifier=${verifierURL}
     fi
   #else # place holder for other device cloud services like BrowserStack, etc.
   fi
@@ -986,8 +1013,9 @@ if [[ "${COMMAND}" == "run" || "${COMMAND}" == "start" || "${COMMAND}" == "test"
 
   if [[ "${COMMAND}" == "run" || "${COMMAND}" == "test" ]]; then
     for agent in ${ISSUER_AGENT} ${VERIFIER_AGENT}; do
-        if [[ $(isAgent $agent) == false ]] ; then
-            echo All agents Issuer and Verifier must be set to one of: ${VALID_AGENTS}.
+        if [[ $(isAgent $agent) == false ]] && [[ "$agent" != *"http"* ]]; then 
+            echo All agents Issuer and Verifier must be set to one of: ${VALID_AGENTS}
+            echo or a URL to your agent controller.
             echo Use \"${0} help\" to get more information.
             exit 1
         fi
@@ -1026,15 +1054,17 @@ if [[ "${COMMAND}" == "build" || "${COMMAND}" == "rebuild" ]]; then
   shift $((OPTIND-1))
 
   # Determine what agents to build. Only build once if Issuer and Verifier are the same. 
-  export BUILD_AGENTS="${BUILD_AGENTS} ${ISSUER_AGENT}"
-  if [ "$ISSUER_AGENT" != "$VERIFIER_AGENT" ]; then
+  if [[ "$ISSUER_AGENT" ]]; then 
+    export BUILD_AGENTS="${BUILD_AGENTS} ${ISSUER_AGENT}"
+  fi
+  if [[ "$VERIFIER_AGENT" ]] || [[ "$VERIFIER_AGENT" != "$ISSUER_AGENT" ]]; then
     export BUILD_AGENTS="${BUILD_AGENTS} ${VERIFIER_AGENT}"
   fi
 
-  # TODO Check here to see if the wallet passed in is in the VALID_WALLETS list, if not, exit.
-  if [ "$BUILD_AGENTS" == "" ]; then
-     BUILD_AGENTS=${VALID_AGENTS}
-  fi
+    # TODO Check here to see if the wallet passed in is in the VALID_WALLETS list, if not, exit.
+    # if [ "$BUILD_AGENTS" == "" ]; then
+    #   BUILD_AGENTS=${VALID_AGENTS}
+    # fi
   # echo "Wallet entered is not a valid wallet. See aries-mobile-test-harness/aries-mobile-tests/pageobjects/ for wallets"
   # echo "If your wallet is not in that location, add pageobjects for your wallet and place it in a directory of your wallet name."
   # exit 1

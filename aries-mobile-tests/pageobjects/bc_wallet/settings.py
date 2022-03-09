@@ -5,22 +5,17 @@ from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.contacts import ContactsPage
 from pageobjects.bc_wallet.connecting import ConnectingPage
-from pageobjects.bc_wallet.settings import SettingsPage
 
 
-class HomePage(BasePage):
+class SettingsPage(BasePage):
     """Home page object"""
 
     # Locators
-    on_this_page_text_locator = "Welcome"
-    home_locator = "Home"
-    scan_locator = "Scan"
-    credentials_locator = "Credentials"
-    settings_locator = "Settings"
+    on_this_page_text_locator = "App Preferences"
+    back_locator = "Go Back"
     contacts_locator = "Contacts"
 
     def on_this_page(self):     
-        print(self.driver.page_source)
         return super().on_this_page(self.on_this_page_text_locator) 
 
     def select_notification(self, context):
