@@ -5,57 +5,68 @@
 
 from behave import given, when, then
 import json
+from time import sleep
 
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
 from agent_test_utils import get_qr_code_from_invitation
 # import Page Objects needed
-from pageobjects.bifold.termsofservice import TermsOfServicePage
-from pageobjects.bifold.pinsetup import PINSetupPage
-from pageobjects.bifold.home import HomePage
+from pageobjects.bc_wallet.connecting import ConnectingPage
+from pageobjects.bc_wallet.home import HomePage
 
-# Instantiate the page objects needed
-# Can I pass the context here on instantiation or should we do it in the steps? 
-# We could put a page factory somewhere that instantiates all pages for a given app. 
-# thisTermOfServicePage = TermsOfServicePage()
-# thisPINSetupPage = PINSetupPage()
-# thisHomePage = HomePage()
+@given('a PIN has been set up with "{pin}"')
+def step_impl(context, pin):
+    context.execute_steps(f'''
+        Given the User is on the PIN creation screen
+        When the User enters the first PIN as "{pin}"
+        And the User re-enters the PIN as "{pin}"
+        And the User selects Create PIN
+        Then the User has successfully created a PIN
+    ''')
 
-@given('the terms of service has been accepted')
+
+@when('the Holder scans the QR code sent by the issuer')
 def step_impl(context):
-    context.thisTermOfServicePage = TermsOfServicePage(context.driver)
-    context.thisTermOfServicePage.select_accept()
-    context.thisPINSetupPage = context.thisTermOfServicePage.submit()
-
-@given('a PIN has been set up')
-def step_impl(context):
-    # TODO Move the data into the feature file
-    context.thisPINSetupPage.enter_pin("369369")
-    context.thisPINSetupPage.enter_second_pin("369369")
-    context.thisHomePage = context.thisPINSetupPage.create_pin()
-
-@when('the wallet user scans the QR code sent by the issuer')
-def step_impl(context):
-    (resp_status, resp_text) = agent_controller_POST(context.issuer_url, "connections", operation="create-invitation")
+    (resp_status, resp_text) = agent_controller_POST(
+        context.issuer_url + "/agent/command/", "connection", operation="create-invitation"
+    )
     assert resp_status == 200, f'resp_status {resp_status} is not 200; {resp_text}'
     invitation_json = json.loads(resp_text)
     qrimage = get_qr_code_from_invitation(invitation_json)
 
     context.thisHomePage.inject_connection_invite_qr_code(qrimage)
-    # Do we need to load the scan page after image injection? probably not. 
+    # Do we need to load the scan page after image injection? probably not.
     #context.thisScanPage = context.thisHomePage.select_scan()
-    context.thisHomePage.select_scan()
-    #context.thisHomePage.select_settings()
-    #thisScanPage.
+    context.thisConnectingPage = context.thisHomePage.select_scan()
 
-@when('accepts the connection')
+
+@when('the Holder is taken to the Connecting Screen/modal')
 def step_impl(context):
-    # click yes on notification? 
-    pass
+    # The connecting screen is temporary. 
+    # What if the connecting screen goes away too fast before this next line runs? Maybe check at home? Let the page object do it?
+    assert context.thisConnectingPage.on_this_page()
 
-@then('there is a connection between Issuer and wallet user')
+@when('the Connecting completes successfully')
+def step_impl(context):
+    # The connecting screen is temporary, loop until it goes away and return home.
+    timeout=20
+    i=0
+    while context.thisConnectingPage.on_this_page() and i < timeout:
+        # need to break out here incase we are stuck on connecting? 
+        # if we are too long, we need to click the Go back to home button.
+        sleep(1)
+        i+=1
+    if i == 20: # we timed out and it is still connecting
+        context.thisHomePage = context.thisConnectingPage.select_go_back_to_home()
+    else:
+        #assume we are home
+        assert context.thisHomePage.on_this_page()
+
+
+@then('there is a connection between Issuer and Holder')
 def step_impl(context):
     # Check the connections for a new connection
-    context.thisContactsPage = context.thisHomePage.select_contacts()
+    context.thisSettingsPage = context.thisHomePage.select_settings()
+    pass
     
     

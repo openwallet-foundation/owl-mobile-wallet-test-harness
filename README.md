@@ -39,14 +39,6 @@ Build and run the tests
 LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 ./manage run -d SauceLabs -u <device_cloud_username> -k <device_cloud_access_key> -p Android -a app-release.apk -i acapy-main -v acapy-main -t @Connect
 ```
 
-The alternative is to run runTest.sh to do all of it for you granted you created a .env file at the root folder.
-You must complete the following key/values that will be sourced at runtime.
-```
-DEVICE_CLOUD_USERNAME=???
-DEVICE_CLOUD_ACCESS_KEY=???
-APP_APK_LOCATION=/home/{LinuxIsBest}/Documents/{AppName}.apk
-APP_NAME=???
-```
   
 
 ## Contents<!-- omit in toc -->
@@ -132,13 +124,32 @@ The AMTH `./manage` script in the repo root folder is used to manage running bui
 
 `./manage` is a bash script, so you must be in a bash compatible shell to run the AMTH. You must also have an operational docker installation and git installed.  As well, the current AMTH requires access to a running Indy network. You can also pass in environment variables for the LEDGER_URL, GENESIS_URL or GENESIS_FILE to use a remote network. For example `LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io`
 
-Before running tests, you must build the Issuer, Verifier and harness docker images. Use `./manage build -w <walletname> -i <issuer> -v <verifier>` to build the docker images the agents, and the test harness itself.  Currently only `acapy-main` is supported for both issuer and verifier. The plan is to allow for other domain specific agents that will be communicating with the wallet under test to be built or pointed to with these options. 
 
-To run the tests, use the `./manage run...` sub-command. The `run` command requires defining what agents will be used for issuer `-i` and verifier `-v`. To review the the other options for the run command use the `./manage help` command. Essentially these other options are used to contstruct a test config for appium to tell the device cloud what platforms, devices, and operating systems to use on the devices. 
+Before running tests, must build the test harness docker image.`./manage build -w <walletname>` 
+You can build an Aca-py Issuer, Verifier. Use `./manage build -w <walletname> -i <issuer> -v <verifier>` to build the docker images the agents. Currently only `acapy-main` is supported for both issuer and verifier. Note these agents do not have a controller, you would be communicating with their admin APIs. Your tests become the controller handling web hooks, etc.  If you are testing your wallet with other agents as the issuer and verifier, see the `./manage run` command below on how to pass a URL to  point to your issuer or verifier controller/agent. 
+  
+
+To run the tests, use the `./manage run...` sub-command. The `run` command requires defining what agents will be used for issuer `-i` and verifier `-v`. To review the the other options for the run command use the `./manage help` command. Essentially these other options are used to contstruct a test config for appium to tell the device cloud what platforms, devices, and operating systems to use on the devices.
+
+The `-i issuer` and `-v verifier` in the `run` command can also take a URL to your controller/agent. One recommendation is to use [Aries Agent Test Harness agents](https://github.com/hyperledger/aries-agent-test-harness/#using-aath-agents-as-services) and backchannel controllers to speed up mobile wallet test development. 
 
 An example of a fully composed run command that tests a BC Bifold Android app that is located in the Sauce Labs device cloud is as follows;
+
 ```bash
 LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 ./manage run -d SauceLabs -u <device-cloud-username> -k <device-cloud-access-key> -p Android -a app-release.apk -i acapy-main -v acapy-main -t @Connect
+```
+Here is a full example of a run command what tests the BC wallet iOS app and uses some locally running Aries Agent Test Harness agents as issuer and verifier;
+Clone, build and run AATH agents
+```bash
+git clone https://github.com/hyperledger/aries-agent-test-harness
+cd aries-agent-test-harness
+./manage build -a acapy-main
+LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io TAILS_SERVER_URL_CONFIG=https://tails.vonx.io AGENT_CONFIG_FILE=/aries-backchannels/acapy/auto_issuer_config.yaml ./manage start -a acapy-main -b acapy-main -n
+```
+Run BC Wallet Tests in AMTH with those AATH agents
+```bash
+./manage build -w bc_wallet
+LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 ./manage run -d SauceLabs -u <device-cloud-username> -k <device-cloud-access-key> -p iOS -a AriesBifold-114.ipa -i http://0.0.0.0:9020 -v http://0.0.0.0:9030 -t @bc_wallet -t @T001-Connect
 ```
 
 NOTE: you will need your own Sauce Labs username and access key for this command to work. 
