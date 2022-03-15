@@ -8,6 +8,6 @@
         "platformVersion":"15.3",
         "sessionCreationRetry" : "3",
         "sauceLabsImageInjectionEnabled": true,
-        "autoGrantPermissions": true
+        "autoAcceptAlerts": true
     }
 }

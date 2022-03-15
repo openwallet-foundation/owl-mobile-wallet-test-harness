@@ -37,28 +37,28 @@ class BasePage(object):
     # Locate by Accessibility id
     def find_by_accessibility_id(self, locator, timeout=20):
         try:
-	        # The location of a single element gets the location of a single element
+            # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located(
                     (MobileBy.ACCESSIBILITY_ID, locator))
             )
         except:
-            try:
-                # If there is a problem with the accessibility id, try doing it by name.
-                # return WebDriverWait(self.driver, 20).until(
-                #     EC.presence_of_element_located((MobileBy.NAME, locator))
-                # )
-                return self.driver.find_element_by_name(locator)
-            except:
-                raise Exception(
-                    f"Could not find element by Accessibility id or Name Locator {locator}")
+            # try:
+            #     # If there is a problem with the accessibility id, try doing it by name.
+            #     # return WebDriverWait(self.driver, 20).until(
+            #     #     EC.presence_of_element_located((MobileBy.NAME, locator))
+            #     # )
+            #     return self.driver.find_element_by_name(locator)
+            # except:
+            raise Exception(
+                f"Could not find element by Accessibility id Locator {locator}")
 
     # Locate multiple elements by Accessibility id.
     # this is a workaround for when iOS may have translated the labels down into text and input fields.
     # we shouldn't be calling this very much, and when we have to, we should log an issue with the wallet for unique accessibilituy IDs
     def find_multiple_by_accessibility_id(self, locator, timeout=20):
         try:
-	        # The location of a single element gets the location of a single element
+            # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_all_elements_located(
                     (MobileBy.ACCESSIBILITY_ID, locator))
@@ -67,10 +67,22 @@ class BasePage(object):
             raise Exception(
                 f"Could not find elements by Accessibility id {locator}")
 
+    # Locate multiple elements by id.
+    def find_multiple_by__id(self, locator, timeout=20):
+        try:
+            # The location of a single element gets the location of a single element
+            return WebDriverWait(self.driver, timeout).until(
+                EC.presence_of_all_elements_located(
+                    (MobileBy.ID, locator))
+            )
+        except:
+            raise Exception(
+                f"Could not find elements by id {locator}")
+
     # Locate by id
     def find_by_element_id(self, locator):
         try:
-	        # The location of a single element gets the location of a single element
+            # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((MobileBy.ID, locator))
             )
@@ -84,13 +96,13 @@ class BasePage(object):
     # Positioning according to xpath
     def find_by_xpath(self, locator):
         try:
-	    # The location of a single element gets the location of a single element
+            # The location of a single element gets the location of a single element
             return self.driver.find_element_by_xpath(locator)
         except:
-	    # To locate multiple same xpath elements, you can get a list. You can use the list query for the location of a specific element (xpath is the only location, generally it is not necessary to use this method)
+            # To locate multiple same xpath elements, you can get a list. You can use the list query for the location of a specific element (xpath is the only location, generally it is not necessary to use this method)
             return self.driver.find_elements(locator)
 
     # Positioning according to classname
     def find_by_classname(self, *locator):
-	# classname location is rarely used. It is generally used when id location and xpath location cannot be used. What you get is a list. You can use the list to query the location of a specific element
+        # classname location is rarely used. It is generally used when id location and xpath location cannot be used. What you get is a list. You can use the list to query the location of a specific element
         return self.driver.find_elements_by_class_name(*locator)

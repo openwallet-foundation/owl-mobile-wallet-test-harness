@@ -6,6 +6,7 @@ from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.contacts import ContactsPage
 from pageobjects.bc_wallet.connecting import ConnectingPage
 from pageobjects.bc_wallet.settings import SettingsPage
+from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
 
 
 class HomePage(BasePage):
@@ -13,27 +14,26 @@ class HomePage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Welcome"
+    on_this_page_notification_locator = "New Credential Offer"
+    view_notification_button_locator = "View"
     home_locator = "Home"
     scan_locator = "Scan"
     credentials_locator = "Credentials"
     settings_locator = "Settings"
     contacts_locator = "Contacts"
 
-    def on_this_page(self):     
-        print(self.driver.page_source)
-        return super().on_this_page(self.on_this_page_text_locator) 
+    def on_this_page(self):
+        #print(self.driver.page_source)
+        return super().on_this_page(self.on_this_page_text_locator)
 
-    def select_notification(self, context):
-        search_element = WebDriverWait(context.driver, 10).until(
-            EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, "Search Wikipedia"))
-        )
-        search_element.click()
-        search_input = WebDriverWait(context.driver, 30).until(
-            EC.element_to_be_clickable((MobileBy.ID, "org.wikipedia.alpha:id/search_src_text"))
-        )
-        search_input.send_keys(keyword)
-        time.sleep(5)
+    def select_credential_offer_notification(self):
+        if super().on_this_page(self.on_this_page_notification_locator):
+            self.find_by_accessibility_id(self.view_notification_button_locator).click()
 
+            # return a new page objectfor the Contacts page
+            return CredentialOfferPage(self.driver)
+        else:
+            raise Exception(f"App not on the {type(self)}")
 
     def select_contacts(self):
         if self.on_this_page():
@@ -42,29 +42,28 @@ class HomePage(BasePage):
             # return a new page objectfor the Contacts page
             return ContactsPage(self.driver)
         else:
-            raise Exception(f"App not on the {type(self)}") 
-        #return ContactsPage
+            raise Exception(f"App not on the {type(self)}")
+        # return ContactsPage
 
     def inject_connection_invite_qr_code(self, image):
         # Read the file from your project and transform it to a base64 string
-        #const qrCodeImage = readFileSync(join(process.cwd(), 'assets/qr-code.png'), 'base64');
+        # const qrCodeImage = readFileSync(join(process.cwd(), 'assets/qr-code.png'), 'base64');
 
         # Provide the base64 string image to the device
         self.driver.execute_script(f"sauce:inject-image={image}")
 
     def select_scan(self):
         if self.on_this_page():
-            # Inject image 
+            # Inject image
             self.find_by_accessibility_id(self.scan_locator).click()
 
             # return a new page object? The scan page.
             return ConnectingPage(self.driver)
         else:
-            raise Exception(f"App not on the {type(self)} page") 
-
+            raise Exception(f"App not on the {type(self)} page")
 
     def select_credentials(self):
-        
+
         return CredentialsPage
 
     def select_settings(self):
@@ -74,5 +73,5 @@ class HomePage(BasePage):
             # return a new page objectfor the settings page
             return SettingsPage(self.driver)
         else:
-            raise Exception(f"App not on the {type(self)} page") 
-        #return SettingsPage
+            raise Exception(f"App not on the {type(self)} page")
+        # return SettingsPage

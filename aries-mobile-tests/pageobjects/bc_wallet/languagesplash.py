@@ -29,11 +29,11 @@ class LanguageSplashPage(BasePage):
             self.find_by_accessibility_id(self.english_button_locator).click()
             return OnboardingWelcomePage(self.driver)
         else:
-            raise Exception(f"App not on the {self.title_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
     def select_french(self):
         if self.on_the_right_page(self.title_locator):
             self.find_by_accessibility_id(self.french_button_locator).click()
             return OnboardingWelcomePage(self.driver)
         else:
-            raise Exception(f"App not on the {self.title_locator} page")
+            raise Exception(f"App not on the {type(self)} page")

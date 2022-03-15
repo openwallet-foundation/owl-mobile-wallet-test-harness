@@ -10,10 +10,11 @@ class ConnectingPage(BasePage):
     """Connecting to an Agent Screen page object"""
 
     # Locators
-    on_this_page_text_locator = "Just a moment while we make a secure connection"
-    back_to_home_locator = "Go back to home"
+    on_this_page_text_locator = "Just a moment"
+    back_to_home_locator = "Home"
 
-    def on_this_page(self):     
+    def on_this_page(self):   
+        #print(self.driver.page_source)  
         return super().on_this_page(self.on_this_page_text_locator)   
 
     def select_go_back_to_home(self):

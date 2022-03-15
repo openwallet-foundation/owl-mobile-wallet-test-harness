@@ -39,7 +39,7 @@ class TermsAndConditionsPage(BasePage):
             # If we exit the while that means it wasn't found
             return False
         else:
-            raise Exception(f"App not on the {self.on_this_page_text_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
     def select_accept(self):
         if self.on_this_page():
@@ -47,7 +47,7 @@ class TermsAndConditionsPage(BasePage):
             self.find_by_accessibility_id(self.terms_and_conditions_accept_locator).click()
             return True
         else:
-            raise Exception(f"App not on the {self.on_this_page_text_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
 
     def select_continue(self):
@@ -59,7 +59,7 @@ class TermsAndConditionsPage(BasePage):
             #return SecurePage(self.driver)
             return PINSetupPage(self.driver)
         else:
-            raise Exception(f"App not on the {self.title_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
 
     def select_back(self):
@@ -69,4 +69,4 @@ class TermsAndConditionsPage(BasePage):
             # they selected skip on. Tests will have to track what onboarding page they were on in the tests and make sure they are there. 
             return BasePage(self.driver)
         else:
-            raise Exception(f"App not on the {self.title_locator} page")
+            raise Exception(f"App not on the {type(self)} page")

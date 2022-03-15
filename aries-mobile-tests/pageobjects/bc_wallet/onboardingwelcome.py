@@ -38,11 +38,11 @@ class OnboardingWelcomePage(BasePage):
             self.find_by_accessibility_id(self.next_locator[self.current_platform]).click()
             return OnboardingStoreCredsSecurelyPage(self.driver)
         else:
-            raise Exception(f"App not on the {self.on_this_page_text_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
     def select_skip(self):
         if self.on_this_page():
             self.find_by_accessibility_id(self.skip_locator).click()
             return TermsAndConditionsPage(self.driver)
         else:
-            raise Exception(f"App not on the {self.on_this_page_text_locator} page")
+            raise Exception(f"App not on the {type(self)} page")

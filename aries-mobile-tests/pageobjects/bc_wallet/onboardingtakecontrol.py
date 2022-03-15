@@ -27,7 +27,7 @@ class OnboardingTakeControlPage(BasePage):
         if self.on_this_page():
             pass
         else:
-            raise Exception(f"App not on the {self.on_this_page_text_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
     def select_learn_more(self):
         if self.on_this_page():
@@ -35,7 +35,7 @@ class OnboardingTakeControlPage(BasePage):
             # TODO not sure what to do here if it opens a browser. return true for now.
             return True
         else:
-            raise Exception(f"App not on the {self.on_this_page_text_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
     def select_back(self):
         if self.on_this_page():
@@ -43,11 +43,11 @@ class OnboardingTakeControlPage(BasePage):
             from pageobjects.bc_wallet.onboardingsharenecessary import OnboardingShareNecessaryPage
             return OnboardingShareNecessaryPage(self.driver)
         else:
-            raise Exception(f"App not on the {self.on_this_page_text_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
     def select_get_started(self):
         if self.on_this_page():
             self.find_by_accessibility_id(self.get_started_locator).click()
             return TermsAndConditionsPage(self.driver)
         else:
-            raise Exception(f"App not on the {self.on_this_page_text_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
