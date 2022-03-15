@@ -17,14 +17,9 @@ class OnboardingShareNecessaryPage(BasePage):
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
     on_this_page_text_locator = "Share only what is necessary"
     page_text_locator = "Page Text"
-    next_locator = {
-        "iOS": "nextButtonX",
-        "Android": "Next"
-    }
-    #next_locator = "Next"
-    #next_locator = "nextButton"
     skip_locator = "Skip"
-    back_locator = "Back"
+    back_locator = "com.ariesbifold:id/Back"
+    next_locator = "com.ariesbifold:id/Next"
 
     def on_this_page(self):     
         return super().on_this_page(self.on_this_page_text_locator)
@@ -37,14 +32,14 @@ class OnboardingShareNecessaryPage(BasePage):
 
     def select_next(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.next_locator[self.current_platform]).click()
+            self.find_by_element_id(self.next_locator).click()
             return OnboardingTakeControlPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 
     def select_back(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.back_locator).click()
+            self.find_by_element_id(self.back_locator).click()
             from pageobjects.bc_wallet.onboardingstorecredssecurely import OnboardingStoreCredsSecurelyPage
             return OnboardingStoreCredsSecurelyPage(self.driver)
         else:

@@ -15,16 +15,12 @@ class OnboardingWelcomePage(BasePage):
     # we could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
     on_this_page_text_locator = "Welcome"
-    # Getting around the iOS getbyAccessibilityID issue. testID seems to be replacing it.
-    next_locator = {
-        "iOS": "nextButtonX",
-        "Android": "Next"
-    }
-    #next_locator = "Next"
-    #next_locator = "nextButton"
     skip_locator = "Skip"
+    # locator changes in 127
+    next_locator = "com.ariesbifold:id/Next"
 
-    def on_this_page(self):     
+    def on_this_page(self):  
+        #print(self.driver.page_source)   
         return super().on_this_page(self.on_this_page_text_locator)   
 
     def get_onboarding_text(self):
@@ -35,7 +31,7 @@ class OnboardingWelcomePage(BasePage):
 
     def select_next(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.next_locator[self.current_platform]).click()
+            self.find_by_element_id(self.next_locator).click()
             return OnboardingStoreCredsSecurelyPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

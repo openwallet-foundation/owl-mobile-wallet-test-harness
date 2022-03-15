@@ -17,7 +17,7 @@ class OnboardingTakeControlPage(BasePage):
     on_this_page_text_locator = "Take control of your information"
     page_text_locator = "Page Text"
     learn_more_locator = "Learn more about BC Wallet"
-    back_locator = "Back"
+    back_locator = "com.ariesbifold:id/Back"
     get_started_locator = "Get Started"
 
     def on_this_page(self):     
@@ -39,7 +39,7 @@ class OnboardingTakeControlPage(BasePage):
 
     def select_back(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.back_locator).click()
+            self.find_by_element_id(self.back_locator).click()
             from pageobjects.bc_wallet.onboardingsharenecessary import OnboardingShareNecessaryPage
             return OnboardingShareNecessaryPage(self.driver)
         else:
