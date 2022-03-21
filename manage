@@ -846,12 +846,18 @@ runTests() {
 
   # Export agent logs
   mkdir -p .logs
-  docker logs issuer_agent > .logs/issuer_agent.log
-  # docker logs verifier_agent > .logs/verifier_agent.log
+  if [[ "$ISSUER_AGENT" != *"http"* ]]; then
+    docker logs issuer_agent > .logs/issuer_agent.log
 
-  if [[ "${USE_NGROK}" = "true" ]]; then
-    docker logs issuer_agent-ngrok > .logs/issuer_agent-ngrok.log
-  #   docker logs issuer_agent-ngrok > .logs/issuer_agent-ngrok.log
+    if [[ "${USE_NGROK}" = "true" ]]; then
+      docker logs issuer_agent-ngrok > .logs/issuer_agent-ngrok.log
+    fi
+  fi
+  if [[ "$VERIFIER_AGENT" == *"http"* ]]; then
+    docker logs verifier_agent > .logs/verifier_agent.log
+    if [[ "${USE_NGROK}" = "true" ]]; then
+      docker logs verifier_agent-ngrok > .logs/verifier_agent-ngrok.log
+    fi
   fi
 }
 
@@ -868,9 +874,11 @@ stopIfExists(){
 
 stopHarness(){
   echo "Cleanup:"
-  echo "  - Shutting down all the agents ..."
-  docker stop issuer_agent verifier_agent > /dev/null
-  docker rm -v issuer_agent verifier_agent > /dev/null
+  echo "  - Shutting down all the agents if running ..."
+  #docker stop issuer_agent verifier_agent > /dev/null
+  #docker rm -v issuer_agent verifier_agent > /dev/null
+  stopIfExists issuer_agent
+  stopIfExists verifier_agent
 
   stopIfExists issuer_agent-ngrok
   stopIfExists verifier_agent-ngrok

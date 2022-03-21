@@ -26,7 +26,7 @@ class SecurePage(BasePage):
             # Not yet sure what to do here.
             return True
         else:
-            raise Exception(f"App not on the {self.title_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
 
     def select_use_device_security(self):
@@ -37,7 +37,7 @@ class SecurePage(BasePage):
             # return a new page object? The Pin Setup page.
             return AllowNotificationsPage(self.driver)
         else:
-            raise Exception(f"App not on the {self.title_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
 
     def select_back(self):

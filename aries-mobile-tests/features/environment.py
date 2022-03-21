@@ -12,6 +12,7 @@ from decouple import config
 import os, json
 import hmac
 from hashlib import md5
+from agent_factory.agent_interface_factory import AgentInterfaceFactory
 
 config_file_path = os.path.join(os.path.dirname(__file__), '..', "config.json")
 print("Path to the config file = %s" % (config_file_path))
@@ -50,8 +51,22 @@ def before_feature(context, feature):
     # print(json.dumps(context.driver.capabilities))
 
     # Set the Issuer and Verfier URLs
-    context.issuer_url = context.config.userdata.get("Issuer")
-    context.verifier_url = context.config.userdata.get("Verifier")
+    # TODO these two lines can be removed once the Agent Factory is fully in place. 
+    #context.issuer_url = context.config.userdata.get("Issuer")
+    #context.verifier_url = context.config.userdata.get("Verifier")
+
+    # Get the issuer endpoint and the issuer type and create an issuer interface from the agent factory
+    issuer_info = context.config.userdata.get("Issuer").split(";")
+    issuer_type = issuer_info[0]
+    issuer_endpoint = issuer_info[1]
+    verifier_info = context.config.userdata.get("Verifier").split(";")
+    verifier_type = verifier_info[0]
+    verifier_endpoint = verifier_info[1]
+    aif = AgentInterfaceFactory()
+    context.issuer = aif.create_issuer_agent_interface(issuer_type, issuer_endpoint)
+    context.verifier = aif.create_verifier_agent_interface(verifier_type, verifier_endpoint)
+
+
 
 def before_scenario(context, scenario):
     # TODO go through the sceanrio tags and find the unique id, starts with T, and prefix it to the name. 

@@ -24,7 +24,7 @@ class AllowNotificationsPage(BasePage):
             self.find_by_accessibility_id(self.continue_button_locator).click()
             return HomePage(self.driver)
         else:
-            raise Exception(f"App not on the {self.title_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
 
     def select_skip_for_now(self):
@@ -35,7 +35,7 @@ class AllowNotificationsPage(BasePage):
             # return a new page object? The Pin Setup page.
             return HomePage(self.driver)
         else:
-            raise Exception(f"App not on the {self.title_locator} page")
+            raise Exception(f"App not on the {type(self)} page")
 
 
     def select_back(self):
@@ -44,4 +44,4 @@ class AllowNotificationsPage(BasePage):
             from pageobjects.bc_wallet.secure import SecurePage
             return SecurePage(self.driver)
         else:
-            raise Exception(f"App not on the {self.title_locator} page")
+            raise Exception(f"App not on the {type(self)} page")

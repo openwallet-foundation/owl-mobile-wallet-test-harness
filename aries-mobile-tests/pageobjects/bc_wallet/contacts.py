@@ -20,7 +20,7 @@ class ContactsPage(BasePage):
             # return a new page objectfor the Contacts page
             #return ContactPage(self.driver)
         else:
-            raise Exception(f"App not on the {self.title_locator} page") 
+            raise Exception(f"App not on the {type(self)} page") 
         #return ContactPage
 
 
