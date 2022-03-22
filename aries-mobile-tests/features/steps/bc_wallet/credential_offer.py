@@ -59,6 +59,18 @@ def step_impl(context):
     assert values in actual_values
 
 
+@given('the user has a credential offer')
+def step_impl(context):
+    context.execute_steps(f'''
+        When the Holder receives a Non-Revocable credential offer
+        And the Holder taps on the credential offer notification
+        Then holder is brought to the credential offer screen
+    ''')
+
+@when('they select Accept')
+def step_impl(context):
+    context.thisCredentialOfferPage.select_accept()
+
 def get_expected_credential_detail(context):
     issuer_type_in_use = context.issuer.get_issuer_type()
     found = False
