@@ -21,6 +21,38 @@ Using a variation on a Factory Pattern, AMTH tests can utilize any issuer or ver
 
 The following diagram provides a rough overview of the architecture of the Agent Abstraction layer .
 ![Agent Abstraction Layer Architecture](docs/assets/agent_abstraction_layer_arch/AgentInterfaceAbstraction.png)
+
+### Class Diagram
+```mermaid
+classDiagram
+   IssuerAgentInterface <|-- AATHIssuerAgentInterface :implements
+   IssuerAgentInterface <|-- CANdyWebIssuerAgentInterface :implements
+   IssuerAgentInterface <|-- OtherIssuerAgentInterface :implements
+   AgentInterfaceFactory ..> IssuerAgentInterface :creates
+   AgentInterfaceFactory ..> VerifierAgentInterface :creates
+   <<Interface>> IssuerAgentInterface
+   VerifierAgentInterface <|-- AATHVerifierAgentInterface :implements
+   AMTH ..> AgentInterfaceFactory :uses
+   <<Interface>> VerifierAgentInterface
+   class AgentInterfaceFactory{
+       +create_issuer_agent_interface(agent_type, agent_endpoint)
+   }
+   class IssuerAgentInterface{
+       +__init__(endpoint):
+       +get_issuer_type()str
+       +create_invitation()qr_code_image base64encoded
+       +connected()boolean
+       +send_credential(schema, credential_offer, revokable)
+   }
+   class VerifierAgentInterface{
+       +__init__(endpoint):
+       +get_issuer_type()str
+       +send_proof()
+   }
+    class AMTH{
+      +beforeFeature(agent_type)
+    }		
+```
 The Agent Interface factory, is called upfront at the beginning of a test run to create an instance of the interface for the issuer and verifier passed in on the command line with the `-i` and `-v` parameters on the AMTH `manage run` command.  The type of agent you wish each use for these roles are prefixed to the value for those parameters. For example, if the issuer is going to be an Aries Agent Test Harness backchannel/agent the parameter would look like this, `-i AATH;http://0.0.0.0:9020`.  The type and endpoint to the issuer is separated by a semi-colon. Note that all agents are external to AMTH and must be running before running the `manage run` command. 
 
 These Agent Interfaces implement their common methods based on the interface defined in the `IssuerAgentInterface` and `VerifierAgentInterface` Abstract Base Classes.
