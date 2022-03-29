@@ -6,6 +6,7 @@
 #  
 # -----------------------------------------------------------
 from appium import webdriver
+from behave.model_core import Status
 import allure
 from sauceclient import SauceClient
 from decouple import config
@@ -74,20 +75,29 @@ def before_scenario(context, scenario):
     CONFIG['capabilities']['name'] = scenario.name
     CONFIG['capabilities']['fullReset'] = True
     desired_capabilities = CONFIG['capabilities']
-    print(desired_capabilities)
+    print("\n\nDesired Capabilities passed to Appium:")
+    print(json.dumps(desired_capabilities,indent=4))
     
     context.driver = webdriver.Remote(
         desired_capabilities=desired_capabilities,
         command_executor=url,
         keep_alive=False
     )
-    print(json.dumps(context.driver.capabilities))
+    print("\nActual Capabilities used by Appium:")
+    print(json.dumps(context.driver.capabilities,indent=4))
 
 
 def after_scenario(context, scenario):
 
     device_cloud_service = os.environ['DEVICE_CLOUD']
     if device_cloud_service == "SauceLabs" and hasattr(context, 'driver'):
+
+        # set the status of the test in Sauce Labs
+        #context.driver.execute_script(f'sauce:job-result={scenario.status}')
+        if scenario.status == Status.failed:
+            context.driver.execute_script('sauce:job-result=failed')
+        elif scenario.status == Status.passed:
+            context.driver.execute_script('sauce:job-result=passed')
 
         # Add the sauce Labs results and video url to the allure results
         # Link that requires a sauce labs account and login
@@ -97,7 +107,7 @@ def after_scenario(context, scenario):
 
         # Since every test scenario is a new session with potentially a different device
         # write the capabilities info as an attachment to the test scenario to keep track
-        allure.attach(json.dumps(context.driver.capabilities), "Complete Appium/Sauce Labs Test Environment Configuration")
+        allure.attach(json.dumps(context.driver.capabilities,indent=4), "Complete Appium/Sauce Labs Test Environment Configuration")
 
         # Link does not require a sauce labs account and login. Token generated.
         # # TODO This isn't working. Have contacted Sauce Labs. 

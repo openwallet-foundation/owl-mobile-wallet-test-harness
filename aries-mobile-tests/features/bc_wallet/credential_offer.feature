@@ -23,7 +23,7 @@ Feature: Offer a Credential
    #| CANdyWebIssuer    | # CANdy - Unverified Person Issuer | Unverified Person | First Name;Last Name;Date of Birth;Street Address;Postal Code;City;Province;Country;Issued | Sheldon;Regular;1989-03-04;123 Perfect Street;A2V 3E1;Awesome City;BC;Canada;2022-03-14T23:27:20.133Z |
 
 
-   @T002-CredentialOffer @wip @critical @AcceptanceTest @Story_79 @Story_82
+   @T002-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario: Holder accepts the credential offer recieved
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
@@ -36,6 +36,8 @@ Feature: Offer a Credential
       And they select Done
       Then they are brought to the list of credentials
       And the credential accepted is at the top of the list
+         | issuer_agent_type | credential_name |
+         | AATHIssuer        | Test Schema     |
 
 
    @T003-CredentialOffer @wip @critical @AcceptanceTest @Story_79
@@ -49,8 +51,8 @@ Feature: Offer a Credential
       Then they are brought to the list of credentials
       And a temporary notification will appear that informs the holder of the declined action
       And the credential declined is not in the list
-Then the holder will be taken to the credential list page
-And a temporary notification will appear that informs the holder of the declined action
+      Then the holder will be taken to the credential list page
+      And a temporary notification will appear that informs the holder of the declined action
 
    @T004-CredentialOffer @Story_82 @wip @ExceptionTest
    Scenario Outline: Holder is waiting for a Credential Offer but it fails to be recieved
@@ -60,7 +62,7 @@ And a temporary notification will appear that informs the holder of the declined
       Then a temporary error notification (toast) is displayed <error message>
       And they are taken back home
       #Then a full screen modal is displayed with an error message and a button back to the home screen?
-      
+
       Examples:
          | reason                                     | error message                |
          | timeout?                                   | this is taking too long man! |
@@ -75,9 +77,23 @@ And a temporary notification will appear that informs the holder of the declined
       When the holder <leaves the flow>
       When the credential fails to be delivered to the user for <reason>
       Then a temporary error notification (toast) is displayed <error message> when the user returns to the app
-      
+
       Examples:
          | leaves the flow           |
          | clicks on the home button |
          | leaves the app            |
 
+   @T006-CredentialOffer @wip @critical @AcceptanceTest @Story_79 @Story_82
+   Scenario: Holder accepts the credential offer recieved with previous credential(s)
+      Given the User has completed on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And a connection has been successfully made
+      And the user has existing credentials
+      And the user has a credential offer
+      When they select Accept
+      And the holder is informed that their credential is on the way with an indication of loading
+      And once the credential arrives they are informed that the Credential is added to your wallet
+      And they select Done
+      Then they are brought to the list of credentials
+      And the credential accepted is at the top of the list

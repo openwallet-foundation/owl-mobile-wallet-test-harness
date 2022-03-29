@@ -16,7 +16,7 @@ class AgentInterfaceFactory():
     verifier_agent_type_interface_dict = {
         "AATH": AATHVerifierAgentInterface
     }
-
+    
     def create_issuer_agent_interface(self, agent_type, agent_endpoint) -> IssuerAgentInterface:
         """create an issuer agent interface object of the type given"""
         return self.issuer_agent_type_interface_dict[agent_type](agent_endpoint)

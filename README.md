@@ -131,12 +131,12 @@ You can build an Aca-py Issuer, Verifier. Use `./manage build -w <walletname> -i
 
 To run the tests, use the `./manage run...` sub-command. The `run` command requires defining what agents will be used for issuer `-i` and verifier `-v`. To review the the other options for the run command use the `./manage help` command. Essentially these other options are used to contstruct a test config for appium to tell the device cloud what platforms, devices, and operating systems to use on the devices.
 
-The `-i issuer` and `-v verifier` in the `run` command can also take a URL to your controller/agent. One recommendation is to use [Aries Agent Test Harness agents](https://github.com/hyperledger/aries-agent-test-harness/#using-aath-agents-as-services) and backchannel controllers to speed up mobile wallet test development. When you point to external agents you must specify the type of agent interface to use in the test harness. An interface for AATH exists in AMTH, so to use AATH controllers/agents you need to specify the issuer (-i) or verifier (-v) as follows `-i AATH;url`. See [Any-Agent Support(Agent Abstraction)]() for details on adding support for other issuers or verifiers. 
+The `-i issuer` and `-v verifier` in the `run` command can also take a URL to your controller/agent. One recommendation is to use [Aries Agent Test Harness agents](https://github.com/hyperledger/aries-agent-test-harness/#using-aath-agents-as-services) and backchannel controllers to speed up mobile wallet test development. When you point to external agents you must specify the type of agent interface to use in the test harness. An interface for AATH exists in AMTH, so to use AATH controllers/agents you need to specify the issuer (-i) or verifier (-v) as follows `-i "AATH;url"`. See [Any-Agent Support(Agent Abstraction)](https://github.com/hyperledger/aries-mobile-test-harness/blob/main/AGENT_ABSTRACTION.md) for details on adding support for other issuers or verifiers. 
 
 An example of a fully composed run command that tests a BC Bifold Android app that is located in the Sauce Labs device cloud is as follows;
 
 ```bash
-LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 ./manage run -d SauceLabs -u <device-cloud-username> -k <device-cloud-access-key> -p Android -a app-release.apk -i acapy-main -v acapy-main -t @Connect
+LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 ./manage run -d SauceLabs -u <device-cloud-username> -k <device-cloud-access-key> -p Android -a app-release.apk -i "AATH;http://0.0.0.0:9020" -v "AATH;http://0.0.0.0:9030" -t @Connect
 ```
 Here is a full example of a run command what tests the BC wallet iOS app and uses some locally running Aries Agent Test Harness agents as issuer and verifier;
 Clone, build and run AATH agents

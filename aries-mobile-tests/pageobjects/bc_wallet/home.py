@@ -7,6 +7,7 @@ from pageobjects.bc_wallet.contacts import ContactsPage
 from pageobjects.bc_wallet.connecting import ConnectingPage
 from pageobjects.bc_wallet.settings import SettingsPage
 from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
+from time import sleep
 
 
 class HomePage(BasePage):
@@ -28,10 +29,12 @@ class HomePage(BasePage):
 
     def select_credential_offer_notification(self):
         if super().on_this_page(self.on_this_page_notification_locator):
-            if self.current_platform == "iOS":
-                self.find_by_accessibility_id(self.view_notification_button_locator).click()
-            else:
-                self.find_by_element_id(self.view_notification_button_locator).click()
+            sleep(20)
+            print(self.driver.page_source)
+            # if self.current_platform == "iOS":
+            self.find_by_accessibility_id(self.view_notification_button_locator).click()
+            # else:
+            #     self.find_by_element_id(self.view_notification_button_locator).click()
 
             # return a new page objectfor the Contacts page
             return CredentialOfferPage(self.driver)
