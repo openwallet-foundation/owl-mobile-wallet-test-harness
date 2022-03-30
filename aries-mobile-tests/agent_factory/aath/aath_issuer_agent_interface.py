@@ -23,14 +23,23 @@ class AATHIssuerAgentInterface(IssuerAgentInterface):
     def get_issuer_type(self) -> str:
         """return the type of issuer as a string AATHIssuer"""
         return "AATHIssuer"
-        
 
-    def create_invitation(self):
+    def create_invitation(self, oob=False):
         """create an invitation and return the json back to the caller """
-        # Should we return the actual QR code as an image here? Would make the tests easier
-        (resp_status, resp_text) = agent_controller_POST(
-            self.endpoint + "/agent/command/", "connection", operation="create-invitation"
-        )
+        self.oob = oob
+        if self.oob is True:
+            data = {"use_public_did": False}
+            (resp_status, resp_text) = agent_controller_POST(
+                self.endpoint + "/agent/command/",
+                "out-of-band",
+                operation="send-invitation-message",
+                data=data,
+            )
+        else:
+            (resp_status, resp_text) = agent_controller_POST(
+                self.endpoint + "/agent/command/", "connection", operation="create-invitation"
+            )
+
         if resp_status != 200:
             raise Exception(
                 f"Call to create connection invitation failed: {resp_status}; {resp_text}"
@@ -42,10 +51,26 @@ class AATHIssuerAgentInterface(IssuerAgentInterface):
 
     def connected(self):
         """return True/False indicating if this issuer is connected to the wallet holder """
-        return expected_agent_state(self.endpoint, "connection", self.invitation_json['connection_id'], "complete", sleep_time=2.0)
 
+        # If OOB then make a call to get the connection id from the webhook. 
+        if self.oob == True:
+            # Get the responders's connection id from the above request's response webhook in the backchannel
+            invitation_id = self.invitation_json["invitation"]["@id"]
+            (resp_status, resp_text) = agent_controller_GET(
+                self.endpoint  + "/agent/response/", "did-exchange", id=invitation_id
+            )
+            if resp_status != 200:
+                raise Exception(
+                    f"Call get the connection id from the OOB connection failed: {resp_status}; {resp_text}"
+                )
+            else:
+                resp_json = json.loads(resp_text)
+                connection_id = resp_json["connection_id"]
+        else:
+            connection_id = self.invitation_json['connection_id']
+        return expected_agent_state(self.endpoint, "connection", connection_id, "complete", sleep_time=2.0)
 
-    def send_credential(self, schema=None, credential_offer=None, revokable=False):
+    def send_credential(self, version=1, schema=None, credential_offer=None, revokable=False):
         """send a credential to the holder"""
 
         # How is the schema and cred def setup? Should be done here in the agent interface. Need to check if it exists first
@@ -62,7 +87,8 @@ class AATHIssuerAgentInterface(IssuerAgentInterface):
         # Check for an existing credential definition. If it doesn't exist create it.
         if self._credential_definition is None or self._credential_definition.get("credential_definition_id") is None:
             self._credential_definition = self.DEFAULT_CRED_DEF_TEMPLATE.copy()
-            self._create_credential_definition(self._credential_definition, revokable)
+            self._create_credential_definition(
+                self._credential_definition, revokable)
 
         # Where to get the credential data?
         # if data is none, use a default cred
