@@ -34,7 +34,7 @@ class IssuerAgentInterface(ABC):
         """return the type of issuer you are ie 'AATHIssuer' or 'CANdyWebIssuer'"""
 
     @abstractmethod
-    def create_invitation(self):
+    def create_invitation(self, oob: bool = False):
         """create an invitation and return the json back to the caller """
         # Should we return the actual QR code as an image here? Would make the tests easier
 
@@ -43,5 +43,5 @@ class IssuerAgentInterface(ABC):
         """return True/False indicating if this issuer is connected to the wallet holder """
 
     @abstractmethod
-    def send_credential(self, credential_data=None):
+    def send_credential(self, version: int = 1, credential_data=None, revokable: bool = False):
         """create an invitation and return the json back to the caller """
