@@ -1,5 +1,5 @@
 """
-Absctact Base Class for actual issuer agent interfaces to implement
+Class for actual AATH issuer agent
 """
 
 from agent_factory.issuer_agent_interface import IssuerAgentInterface
@@ -66,12 +66,20 @@ class AATHIssuerAgentInterface(IssuerAgentInterface):
             else:
                 resp_json = json.loads(resp_text)
                 connection_id = resp_json["connection_id"]
+                self.invitation_json["connection_id"] = connection_id
         else:
             connection_id = self.invitation_json['connection_id']
         return expected_agent_state(self.endpoint, "connection", connection_id, "complete", sleep_time=2.0)
 
     def send_credential(self, version=1, schema=None, credential_offer=None, revokable=False):
         """send a credential to the holder"""
+
+        if version == 2:
+            topic = "issue-credential-v2"
+            type = "issue-credential/2.0/credential-preview"
+        else:
+            topic = "issue-credential"
+            type = "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/credential-preview"
 
         # How is the schema and cred def setup? Should be done here in the agent interface. Need to check if it exists first
         if self._my_public_did is None:
@@ -98,7 +106,7 @@ class AATHIssuerAgentInterface(IssuerAgentInterface):
         cred_offer = {
             "cred_def_id": self._credential_definition["credential_definition_id"],
             "credential_preview": {
-                "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/issue-credential/1.0/credential-preview",
+                "@type": type,
                 "attributes": cred_data,
             },
             "connection_id": self.invitation_json['connection_id'],
@@ -106,7 +114,7 @@ class AATHIssuerAgentInterface(IssuerAgentInterface):
 
         (resp_status, resp_text) = agent_controller_POST(
             self.endpoint + "/agent/command/",
-            "issue-credential",
+            topic,
             operation="send-offer",
             data=cred_offer,
         )
