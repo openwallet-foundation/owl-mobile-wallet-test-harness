@@ -24,10 +24,12 @@ def step_impl(context, pin):
         Then the User has successfully created a PIN
     ''')
 
-
+@when ('the Holder scans the QR code sent by the {agent}')
 @when('the Holder scans the QR code sent by the issuer')
-def step_impl(context):
-    qrimage = context.issuer.create_invitation()
+def step_impl(context, agent="issuer"):
+    qrimage = exec(f"context.{agent}.create_invitation()")
+    #qrimage = context.issuer.create_invitation()
+    #qrimage = context.issuer.create_invitation(oob=True)
     # (resp_status, resp_text) = agent_controller_POST(
     #     context.issuer_url + "/agent/command/", "connection", operation="create-invitation"
     # )

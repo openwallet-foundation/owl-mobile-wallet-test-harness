@@ -3,12 +3,13 @@ Class for actual AATH issuer agent
 """
 
 from agent_factory.issuer_agent_interface import IssuerAgentInterface
+from agent_factory.aath.aath_agent_interface import AATHAgentInterface
 import json
 from agent_test_utils import get_qr_code_from_invitation
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
 
 
-class AATHIssuerAgentInterface(IssuerAgentInterface):
+class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
 
     _my_public_did: str
     _schema: dict
@@ -24,52 +25,52 @@ class AATHIssuerAgentInterface(IssuerAgentInterface):
         """return the type of issuer as a string AATHIssuer"""
         return "AATHIssuer"
 
-    def create_invitation(self, oob=False):
-        """create an invitation and return the json back to the caller """
-        self.oob = oob
-        if self.oob is True:
-            data = {"use_public_did": False}
-            (resp_status, resp_text) = agent_controller_POST(
-                self.endpoint + "/agent/command/",
-                "out-of-band",
-                operation="send-invitation-message",
-                data=data,
-            )
-        else:
-            (resp_status, resp_text) = agent_controller_POST(
-                self.endpoint + "/agent/command/", "connection", operation="create-invitation"
-            )
+    # def create_invitation(self, oob=False):
+    #     """create an invitation and return the json back to the caller """
+    #     self.oob = oob
+    #     if self.oob is True:
+    #         data = {"use_public_did": False}
+    #         (resp_status, resp_text) = agent_controller_POST(
+    #             self.endpoint + "/agent/command/",
+    #             "out-of-band",
+    #             operation="send-invitation-message",
+    #             data=data,
+    #         )
+    #     else:
+    #         (resp_status, resp_text) = agent_controller_POST(
+    #             self.endpoint + "/agent/command/", "connection", operation="create-invitation"
+    #         )
 
-        if resp_status != 200:
-            raise Exception(
-                f"Call to create connection invitation failed: {resp_status}; {resp_text}"
-            )
-        else:
-            self.invitation_json = json.loads(resp_text)
-            qrimage = get_qr_code_from_invitation(self.invitation_json)
-            return qrimage
+    #     if resp_status != 200:
+    #         raise Exception(
+    #             f"Call to create connection invitation failed: {resp_status}; {resp_text}"
+    #         )
+    #     else:
+    #         self.invitation_json = json.loads(resp_text)
+    #         qrimage = get_qr_code_from_invitation(self.invitation_json)
+    #         return qrimage
 
-    def connected(self):
-        """return True/False indicating if this issuer is connected to the wallet holder """
+    # def connected(self):
+    #     """return True/False indicating if this issuer is connected to the wallet holder """
 
-        # If OOB then make a call to get the connection id from the webhook. 
-        if self.oob == True:
-            # Get the responders's connection id from the above request's response webhook in the backchannel
-            invitation_id = self.invitation_json["invitation"]["@id"]
-            (resp_status, resp_text) = agent_controller_GET(
-                self.endpoint  + "/agent/response/", "did-exchange", id=invitation_id
-            )
-            if resp_status != 200:
-                raise Exception(
-                    f"Call get the connection id from the OOB connection failed: {resp_status}; {resp_text}"
-                )
-            else:
-                resp_json = json.loads(resp_text)
-                connection_id = resp_json["connection_id"]
-                self.invitation_json["connection_id"] = connection_id
-        else:
-            connection_id = self.invitation_json['connection_id']
-        return expected_agent_state(self.endpoint, "connection", connection_id, "complete", sleep_time=2.0)
+    #     # If OOB then make a call to get the connection id from the webhook. 
+    #     if self.oob == True:
+    #         # Get the responders's connection id from the above request's response webhook in the backchannel
+    #         invitation_id = self.invitation_json["invitation"]["@id"]
+    #         (resp_status, resp_text) = agent_controller_GET(
+    #             self.endpoint  + "/agent/response/", "did-exchange", id=invitation_id
+    #         )
+    #         if resp_status != 200:
+    #             raise Exception(
+    #                 f"Call get the connection id from the OOB connection failed: {resp_status}; {resp_text}"
+    #             )
+    #         else:
+    #             resp_json = json.loads(resp_text)
+    #             connection_id = resp_json["connection_id"]
+    #             self.invitation_json["connection_id"] = connection_id
+    #     else:
+    #         connection_id = self.invitation_json['connection_id']
+    #     return expected_agent_state(self.endpoint, "connection", connection_id, "complete", sleep_time=2.0)
 
     def send_credential(self, version=1, schema=None, credential_offer=None, revokable=False):
         """send a credential to the holder"""
