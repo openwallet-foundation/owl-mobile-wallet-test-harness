@@ -19,7 +19,7 @@ def get_qr_code_from_invitation(invitation_json):
     #img = qr.make_image(fill_color="red", back_color="#23dda0")
     img = qr.make_image()
     img.save('./qrcode_test.png')
-    qr.print_ascii(tty=True)
+    qr.print_ascii(invert=True)
 
     with io.BytesIO() as output:
         img.save(output, format="PNG")
