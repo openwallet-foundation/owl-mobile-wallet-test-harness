@@ -10,7 +10,7 @@ from agent_controller_client import agent_controller_GET, agent_controller_POST,
 
 class AATHAgentInterface():
 
-    def create_invitation(self, oob=False):
+    def create_invitation_util(self, oob=False):
         """create an invitation and return the json back to the caller """
         self.oob = oob
         if self.oob is True:
@@ -35,7 +35,7 @@ class AATHAgentInterface():
             qrimage = get_qr_code_from_invitation(self.invitation_json)
             return qrimage
 
-    def connected(self):
+    def connected_util(self):
         """return True/False indicating if this issuer is connected to the wallet holder """
 
         # If OOB then make a call to get the connection id from the webhook. 

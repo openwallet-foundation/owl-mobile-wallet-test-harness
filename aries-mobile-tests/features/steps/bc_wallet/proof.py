@@ -9,17 +9,17 @@ from time import sleep
 
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
-from agent_test_utils import get_qr_code_from_invitation
+from agent_test_utils import get_qr_code_from_invitation, table_to_str
 # import Page Objects needed
-#from pageobjects.bc_wallet.credential_offer_notification import CredentialOfferNotificationPage
+# from pageobjects.bc_wallet.credential_offer_notification import CredentialOfferNotificationPage
+from pageobjects.bc_wallet.information_sent_successfully import InformationSentSuccessfullyPage
 from pageobjects.bc_wallet.proof_request import ProofRequestPage
-from pageobjects.bc_wallet.credential_added import CredentialAddedPage
 from pageobjects.bc_wallet.home import HomePage
 
 
 @given('the holder has a Non-Revocable credential')
 def step_impl(context):
-    context.execute_steps(f'''
+    context.execute_steps(u'''
         Given the user has a credential offer
         When they select Accept
         And the holder is informed that their credential is on the way with an indication of loading
@@ -27,114 +27,125 @@ def step_impl(context):
         And they select Done
         Then they are brought to the list of credentials
         And the credential accepted is at the top of the list
-    ''')
+        {table}
+    '''.format(table=table_to_str(context.table)))
 
 
 @when('the Holder receives a proof request')
 def step_impl(context):
+    # Make sure the connection is successful first.
+    context.execute_steps('''
+        Then there is a connection between "verifier" and Holder
+    ''')
+
     context.verifier.send_proof_request()
 
 
 @then('holder is brought to the proof request')
 def step_impl(context):
+    # TODO need to click view at this point until story 29 is implemented. Remove view click afterwards.
+    context.thisProofRequestPage = context.thisHomePage.select_proof_request_notification()
+
+    #context.thisProofRequestPage=ProofRequestPage(context.driver)
     assert context.thisProofRequestPage.on_this_page()
 
 
 @then('they can view the contents of the proof request')
 def step_impl(context):
-    assert context.thisProofRequestPage.on_this_page()
+    #assert context.thisProofRequestPage.on_this_page()
 
-    who, cred_type, attributes, values = get_expected_credential_detail(context)
+    who, attributes, values=get_expected_proof_request_detail(
+        context)
     # The below doesn't have locators in build 127. Calibrate in the future fixed build
-    #actual_who, actual_cred_type, actual_attributes, actual_values = context.thisCredentialOfferPage.get_credential_details() 
-    #assert who in actual_who
-    #assert cred_type in actual_cred_type
-    #assert attributes in actual_attributes
-    #assert values in actual_values
+    # actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
+    # assert who in actual_who
+    # assert attributes in actual_attributes
+    # assert values in actual_values
 
 
-@given('the user has a credential offer')
+@given('the user has a proof request')
 def step_impl(context):
     context.execute_steps(f'''
-        When the Holder receives a Non-Revocable credential offer
-        And the Holder taps on the credential offer notification
-        Then holder is brought to the credential offer screen
+        When the Holder scans the QR code sent by the "verifier"
+        And the Holder is taken to the Connecting Screen/modal
+        And the Connecting completes successfully
+        And the Holder receives a proof request
+        Then holder is brought to the proof request
     ''')
 
 
-@when('they select Accept')
+@when('they select Share')
 def step_impl(context):
-    context.thisCredentialOnTheWayPage = context.thisCredentialOfferPage.select_accept()
+    context.thisSendingInformationSecurleyPage = context.thisProofRequestPage.select_share()
 
 
-@when('the holder is informed that their credential is on the way with an indication of loading')
+@when('the holder is informed that they are sending information securely')
 def step_impl(context):
-    assert context.thisCredentialOnTheWayPage.on_this_page()
+    assert context.thisSendingInformationSecurleyPage.on_this_page()
 
 
-@when('once the credential arrives they are informed that the Credential is added to your wallet')
+@when('once the proof is verified they are informed of such')
 def step_impl(context):
     # The Cred is on the way screen is temporary, loop until it goes away and create the cred added page.
     timeout=20
     i=0
-    while context.thisCredentialOnTheWayPage.on_this_page() and i < timeout:
-        # need to break out here incase we are stuck on connecting? 
+    while context.thisSendingInformationSecurleyPage.on_this_page() and i < timeout:
+        # need to break out here incase we are stuck on connecting?
         # if we are too long, we need to click the Go back to home button.
         sleep(1)
         i+=1
     if i == 20: # we timed out and it is still connecting
-        context.thisHomePage = context.thisCredentialOnTheWayPage.select_cancel()
+        context.thisHomePage = context.thisSendingInformationSecurleyPage.select_back_to_home()
     else:
-        #assume credential added 
-        context.thisCredentialAddedPage = CredentialAddedPage(context.driver)
-        assert context.thisCredentialAddedPage.on_this_page()
+        #assume credential added
+        context.thisInformationSentSuccessfullyPage = InformationSentSuccessfullyPage(context.driver)
+        assert context.thisInformationSentSuccessfullyPage.on_this_page()
 
 
-@when('they select Done')
+@when('they select Done on the verfified information')
 def step_impl(context):
-    context.thisCredentialsPage = context.thisCredentialAddedPage.select_done()
+    context.thisHomePage = context.thisInformationSentSuccessfullyPage.select_done()
 
 
-@then(u'they are brought to the list of credentials')
+@then(u'they are brought Home')
 def step_impl(context):
-    context.thisCredentialsPage.on_this_page()
+    context.thisHomePage.on_this_page()
 
 
-@then(u'the credential accepted is at the top of the list')
-def step_impl(context):
-    assert context.thisCredentialsPage.credential_exists(get_expected_credential_name(context))
-    # TODO when testIDs are implemented on this page, get the specific data and assert
-    # also check that it is at the top. 
+# @then(u'the credential accepted is at the top of the list')
+# def step_impl(context):
+#     assert context.thisCredentialsPage.credential_exists(get_expected_credential_name(context))
+#     # TODO when testIDs are implemented on this page, get the specific data and assert
+#     # also check that it is at the top.
 
-def get_expected_credential_name(context):
-    issuer_type_in_use = context.issuer.get_issuer_type()
-    found = False
+# def get_expected_credential_name(context):
+#     issuer_type_in_use = context.issuer.get_issuer_type()
+#     found = False
+#     for row in context.table:
+#         if row["issuer_agent_type"] == issuer_type_in_use:
+#             cred_name = row["credential_name"]
+#             found = True
+#             # get out of loop at the first found row. Can't see a reason for multiple rows of the same agent type
+#             break
+#     if found == False:
+#         raise Exception(
+#             f"No credential name in table data for {issuer_type_in_use}"
+#         )
+#     return cred_name
+
+def get_expected_proof_request_detail(context):
+    verifier_type_in_use=context.verifier.get_issuer_type()
+    found=False
     for row in context.table:
-        if row["issuer_agent_type"] == issuer_type_in_use:
-            cred_name = row["credential_name"]
-            found = True
+        if row["verifier_agent_type"] == verifier_type_in_use:
+            who=row["who"]
+            attributes=row["attributes"].split(';')
+            values=row["values"].split(';')
+            found=True
             # get out of loop at the first found row. Can't see a reason for multiple rows of the same agent type
             break
     if found == False:
         raise Exception(
-            f"No credential name in table data for {issuer_type_in_use}"
+            f"No credential details in table data for {verifier_type_in_use}"
         )
-    return cred_name
-
-def get_expected_credential_detail(context):
-    issuer_type_in_use = context.issuer.get_issuer_type()
-    found = False
-    for row in context.table:
-        if row["issuer_agent_type"] == issuer_type_in_use:
-            who = row["who"]
-            cred_type = row["cred_type"]
-            attributes = row["attributes"].split(';')
-            values = row["values"].split(';')
-            found = True
-            # get out of loop at the first found row. Can't see a reason for multiple rows of the same agent type
-            break
-    if found == False:
-        raise Exception(
-            f"No credential details in table data for {issuer_type_in_use}"
-        )
-    return who, cred_type, attributes, values
+    return who, attributes, values

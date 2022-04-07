@@ -97,3 +97,5 @@ Feature: Offer a Credential
       And they select Done
       Then they are brought to the list of credentials
       And the credential accepted is at the top of the list
+
+      # Revokable

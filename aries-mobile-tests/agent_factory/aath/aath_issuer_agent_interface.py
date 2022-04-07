@@ -25,32 +25,34 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
         """return the type of issuer as a string AATHIssuer"""
         return "AATHIssuer"
 
-    # def create_invitation(self, oob=False):
-    #     """create an invitation and return the json back to the caller """
-    #     self.oob = oob
-    #     if self.oob is True:
-    #         data = {"use_public_did": False}
-    #         (resp_status, resp_text) = agent_controller_POST(
-    #             self.endpoint + "/agent/command/",
-    #             "out-of-band",
-    #             operation="send-invitation-message",
-    #             data=data,
-    #         )
-    #     else:
-    #         (resp_status, resp_text) = agent_controller_POST(
-    #             self.endpoint + "/agent/command/", "connection", operation="create-invitation"
-    #         )
+    def create_invitation(self, oob=False):
+        #return self.create_invitation_util(oob)
+        """create an invitation and return the json back to the caller """
+        self.oob = oob
+        if self.oob is True:
+            data = {"use_public_did": False}
+            (resp_status, resp_text) = agent_controller_POST(
+                self.endpoint + "/agent/command/",
+                "out-of-band",
+                operation="send-invitation-message",
+                data=data,
+            )
+        else:
+            (resp_status, resp_text) = agent_controller_POST(
+                self.endpoint + "/agent/command/", "connection", operation="create-invitation"
+            )
 
-    #     if resp_status != 200:
-    #         raise Exception(
-    #             f"Call to create connection invitation failed: {resp_status}; {resp_text}"
-    #         )
-    #     else:
-    #         self.invitation_json = json.loads(resp_text)
-    #         qrimage = get_qr_code_from_invitation(self.invitation_json)
-    #         return qrimage
+        if resp_status != 200:
+            raise Exception(
+                f"Call to create connection invitation failed: {resp_status}; {resp_text}"
+            )
+        else:
+            self.invitation_json = json.loads(resp_text)
+            qrimage = get_qr_code_from_invitation(self.invitation_json)
+            return qrimage
 
-    # def connected(self):
+    def connected(self):
+        return self.connected_util()
     #     """return True/False indicating if this issuer is connected to the wallet holder """
 
     #     # If OOB then make a call to get the connection id from the webhook. 

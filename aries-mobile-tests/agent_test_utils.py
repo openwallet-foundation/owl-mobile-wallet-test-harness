@@ -155,3 +155,17 @@ def amend_presentation_definition_with_runtime_data(context, presentation_defini
 
     return presentation_definition
 
+def table_to_str(table):
+    result = ''
+    if table.headings:
+        result = '|'
+    for heading in table.headings:
+        result += heading + '|'
+    result += '\n'
+    for row in table.rows:
+        if row.cells:
+            result += '|'
+        for cell in row.cells:
+            result += cell + '|'
+        result += '\n'
+    return result

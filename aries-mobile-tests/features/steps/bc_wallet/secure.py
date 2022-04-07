@@ -13,6 +13,7 @@ from agent_test_utils import get_qr_code_from_invitation
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 from pageobjects.bc_wallet.secure import SecurePage
 from pageobjects.bc_wallet.home import HomePage
+from pageobjects.bc_wallet.navbar import NavBar
 from pageobjects.bc_wallet.pinsetup import PINSetupPage
 
 
@@ -47,3 +48,4 @@ def step_impl(context):
 @then('they land on the Home screen')
 def step_impl(context):
     context.thisHomePage.on_this_page()
+    context.thisNavBar = NavBar(context.driver)
