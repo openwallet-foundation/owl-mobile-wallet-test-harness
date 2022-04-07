@@ -19,11 +19,11 @@ from pageobjects.bc_wallet.home import HomePage
 
 @given('a connection has been successfully made')
 def step_impl(context):
-    context.execute_steps(f'''
-        When the Holder scans the QR code sent by the issuer
+    context.execute_steps('''
+        When the Holder scans the QR code sent by the "issuer"
         And the Holder is taken to the Connecting Screen/modal
         And the Connecting completes successfully
-        Then there is a connection between Issuer and Holder
+        Then there is a connection between "issuer" and Holder
     ''')
 
 

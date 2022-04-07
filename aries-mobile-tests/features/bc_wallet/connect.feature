@@ -9,10 +9,10 @@ Feature: Connect to an Issuer/Scan QR Code for Credential
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      When the Holder scans the QR code sent by the issuer
+      When the Holder scans the QR code sent by the "issuer"
       And the Holder is taken to the Connecting Screen/modal
       And the Connecting completes successfully
-      Then there is a connection between Issuer and Holder
+      Then there is a connection between "issuer" and Holder
 
    @T002-Connect @wip @normal @AcceptanceTest
    Scenario: Scan QR code to recieve a credential offer but exits scanning
