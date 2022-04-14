@@ -1,0 +1,62 @@
+name: AMTH BC Wallet Integration Tests
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'latest_app_android'
+      - 'latest_app_ios'
+
+jobs:
+  run-on-device-tests:
+    #needs: [build-ios, build-android]
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        include:
+          - mobile-platform: "-p Android"
+            app-file-name: "-a AriesBifold-${{ github.run_number }}.aab"
+            report-project: "android-one-device-smoke"
+          - mobile-platform: "-p iOS"
+            app-file-name: "-a AriesBifold-${{ github.run_number }}.ipa"
+            report-project: "ios-one-device-smoke"
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: run-aath-agents
+        uses: ./.github/workflows/actions/run-aath-agents
+
+      - name: Fetch mobile test harness repo
+        uses: actions/checkout@v2
+        with:
+          repository: hyperledger/aries-mobile-test-harness
+          path: aries-mobile-test-harness
+          ref: main
+
+      - name: Run SauceLabs smoke-test
+        uses: ./.github/workflows/actions/run-test-harness
+        env:
+          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
+          REGION: "us-west-1"
+        with:
+          MOBILE_WALLET: "-w bc_wallet"
+          ISSUER_AGENT: '-i "AATH;http://0.0.0.0:9020"'
+          VERIFIER_AGENT: '-v "AATH;http://0.0.0.0:9030"'
+          DEVICE_CLOUD: "-d SauceLabs"
+          DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
+          DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
+          MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
+          APP_FILE_NAME: ${{ matrix.app-file-name }}
+          TEST_SCOPE: "-t @bc_wallet -t ~@wip"
+          REPORT_PROJECT: ${{ matrix.report-project }}
+        continue-on-error: true
+
+      - name: Upload smoke-test results to Allure
+        uses: ./.github/workflows/actions/run-send-gen-test-results-secure
+        with:
+          REPORT_PROJECT: ${{ matrix.report-project }}
+          ADMIN_USER: ${{ secrets.ALLURE_USERNAME }}
+          ADMIN_PW: ${{ secrets.ALLURE_PASSWD }}
