@@ -8,8 +8,8 @@ from pathlib import Path
 local_latest_app_json_filename = ".github/workflows/bc_wallet/latest_app.json"
 platform = "ios"
 sl_region = "us-west-1"
-sl_user = "oauth-sheldon.regular-32de4"
-sl_key = "06ca1bec-977d-4b12-926d-ab5bf5eb3709"
+sl_user = ""
+sl_key = ""
 
 def find_latest_app(resp_json, platfrom):
     latest_app = None
