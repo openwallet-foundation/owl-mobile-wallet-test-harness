@@ -34,6 +34,24 @@ def step_impl(context):
     # context.thisCredentialOfferNotificationPage = CredentialOfferNotificationPage(context.driver)
     # assert context.thisCredentialOfferNotificationPage.on_this_page()
 
+@when('the Holder receives a credential offer of {credential}')
+def step_impl(context, credential):
+    # Open cred data file
+    try:
+        credential_json_file = open("features/data/" + credential.lower() + ".json")
+        credential_json = json.load(credential_json_file)
+        # get schema name from cred data
+        cred_type = credential_json['schema_name']
+        # open schema file
+        try:
+            cred_type_json_file = open(f"features/data/schema_{cred_type.lower()}.json")
+            cred_type_json = json.load(cred_type_json_file)
+            context.issuer.send_credential(schema=cred_type_json, credential_offer=credential_json)
+        except FileNotFoundError:
+            print(f"FileNotFoundError: features/data/schema_{cred_type.lower()}.json")
+    except FileNotFoundError:
+        print("FileNotFoundError: features/data/" + credential.lower() + ".json")
+
 
 @when('the Holder taps on the credential offer notification')
 def step_impl(context):
@@ -63,6 +81,15 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(f'''
         When the Holder receives a Non-Revocable credential offer
+        And the Holder taps on the credential offer notification
+        Then holder is brought to the credential offer screen
+    ''')
+
+
+@given('the user has a credential offer for {credential}')
+def step_impl(context, credential):
+    context.execute_steps(f'''
+        When the Holder receives a credential offer of {credential}
         And the Holder taps on the credential offer notification
         Then holder is brought to the credential offer screen
     ''')
