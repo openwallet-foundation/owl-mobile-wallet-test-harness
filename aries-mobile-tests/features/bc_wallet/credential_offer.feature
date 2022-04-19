@@ -39,6 +39,26 @@ Feature: Offer a Credential
          | issuer_agent_type | credential_name |
          | AATHIssuer        | Test Schema     |
 
+   @T002.1-CredentialOffer @wip @critical @AcceptanceTest @Story_79 @Story_82
+   Scenario Outline: Holder accepts the credential offer recieved
+      Given the User has completed on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And a connection has been successfully made
+      And the user has a credential offer for <credential>
+      When they select Accept
+      And the holder is informed that their credential is on the way with an indication of loading
+      And once the credential arrives they are informed that the Credential is added to your wallet
+      And they select Done
+      Then they are brought to the list of credentials
+      And the credential accepted is at the top of the list
+         | issuer_agent_type | credential_name |
+         | AATHIssuer        | Photo Id        |
+
+      Examples:
+         | credential         |
+         | cred_data_photo_id |
+
 
    @T003-CredentialOffer @wip @critical @AcceptanceTest @Story_79
    Scenario: Holder declines the credential offer recieved
@@ -98,4 +118,4 @@ Feature: Offer a Credential
       Then they are brought to the list of credentials
       And the credential accepted is at the top of the list
 
-      # Revokable
+# Revokable

@@ -7,7 +7,7 @@ from agent_factory.aath.aath_agent_interface import AATHAgentInterface
 import json
 from agent_test_utils import get_qr_code_from_invitation
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
-
+from random import randint
 
 class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
 
@@ -90,21 +90,25 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
         if schema is None:
             self._schema = self.DEFAULT_SCHEMA_TEMPLATE.copy()
         else:
-            # TODO may have to pass a schema in from the tests.
             self._schema = schema
         # Check for an existing schema. If it doesn't exist create it.
         if self._schema.get("schema_id") is None:
             self._create_schema(self._schema)
         # Check for an existing credential definition. If it doesn't exist create it.
         if self._credential_definition is None or self._credential_definition.get("credential_definition_id") is None:
-            self._credential_definition = self.DEFAULT_CRED_DEF_TEMPLATE.copy()
+            if schema is None:
+                self._credential_definition = self.DEFAULT_CRED_DEF_TEMPLATE.copy()
+            else:
+                self._credential_definition = {
+                    "schema_id": self._schema["schema_id"],
+                    "tag": str(randint(1, 10000)),
+                }
             self._create_credential_definition(
                 self._credential_definition, revokable)
 
-        # Where to get the credential data?
         # if data is none, use a default cred
         # if data is not none then use it as the cred
-        cred_data = credential_offer or self.DEFAULT_CREDENTIAL_ATTR_TEMPLATE.copy()
+        cred_data = credential_offer["attributes"] or self.DEFAULT_CREDENTIAL_ATTR_TEMPLATE.copy()
 
         cred_offer = {
             "cred_def_id": self._credential_definition["credential_definition_id"],
@@ -138,7 +142,7 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
             )
         else:
             resp_json = json.loads(resp_text)
-            self.__my_public_did = resp_json["did"]
+            self._my_public_did = resp_json["did"]
 
     def _create_schema(self, schema):
         (resp_status, resp_text) = agent_controller_POST(
