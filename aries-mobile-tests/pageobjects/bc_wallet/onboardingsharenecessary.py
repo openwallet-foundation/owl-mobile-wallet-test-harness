@@ -21,7 +21,8 @@ class OnboardingShareNecessaryPage(BasePage):
     back_locator = "com.ariesbifold:id/Back"
     next_locator = "com.ariesbifold:id/Next"
 
-    def on_this_page(self):     
+    def on_this_page(self): 
+        #print(self.driver.page_source)      
         return super().on_this_page(self.on_this_page_text_locator)
 
     def get_onboarding_text(self):

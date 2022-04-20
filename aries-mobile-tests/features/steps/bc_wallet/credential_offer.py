@@ -86,7 +86,7 @@ def step_impl(context):
     ''')
 
 
-@given('the user has a credential offer for {credential}')
+@given('the user has a credential offer of {credential}')
 def step_impl(context, credential):
     context.execute_steps(f'''
         When the Holder receives a credential offer of {credential}
@@ -97,7 +97,7 @@ def step_impl(context, credential):
 
 @when('they select Accept')
 def step_impl(context):
-    context.thisCredentialOnTheWayPage = context.thisCredentialOfferPage.select_accept()
+    context.thisCredentialOnTheWayPage = context.thisCredentialOfferPage.select_accept(scroll=True)
 
 
 @when('the holder is informed that their credential is on the way with an indication of loading')

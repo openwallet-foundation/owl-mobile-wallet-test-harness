@@ -24,8 +24,11 @@ class CredentialOfferPage(BasePage):
         #print(self.driver.page_source)
         return super().on_this_page(self.on_this_page_text_locator)
 
-    def select_accept(self):
+    def select_accept(self, scroll=False):
         if self.on_this_page():
+            # if the credential has a lot of attributes it could need to scroll
+            if scroll == True:
+                self.scroll_to_element(self.accept_locator, 1500)
             self.find_by_accessibility_id(self.accept_locator).click()
             return CredentialOnTheWayPage(self.driver)
         else:

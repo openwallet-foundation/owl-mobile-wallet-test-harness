@@ -34,9 +34,9 @@ Upload an app to the device cloud
 Build and run the tests
 
 ```bash
-./manage build -w bifold -i acapy-main -v acapy-main
+./manage build -w bc_wallet
 
-LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 ./manage run -d SauceLabs -u <device_cloud_username> -k <device_cloud_access_key> -p Android -a app-release.apk -i acapy-main -v acapy-main -t @Connect
+LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 ./manage run -d SauceLabs -u <device_cloud_username> -k <device_cloud_access_key> -p Android -a app-release.apk -i "AATH;http://0.0.0.0:9020" -v "AATH;http://0.0.0.0:9030" -t @bc_wallet -t @T002.1-Proof
 ```
 
   
@@ -95,14 +95,19 @@ AMTH test scripts are written in the [Gherkin](https://behave.readthedocs.io/en/
 
 ## Implementing Tests for Your Wallet
 
-When implementing tests, the first step is to create a feature file. This feature file should contain your wallet name in the file name. For example, `aries-mobile-test-harness/aries-mobile-tests/features/bifold_connect.feature`
-The corresponding steps file for the feature should be put in `aries-mobile-test-harness/aries-mobile-tests/features/steps/bifold/connect.py`
-Step files should always call page objects to manipulate the app. 
-On the `build` command only feature files with the `<mywallet>_` prefix is copied into the test harness container. Also only the steps in the `/steps/<mywallet>/` folder is copied into the container.
-TODO: The manage script needs to be updated to add imports for the wallet name passed in with the `-w` build option into the `aries-mobile-test-harness/aries-mobile-tests/features/steps/all_steps.py` file. For example for bifold we add `from steps.bifold.connect import *`  to the `all_steps.py` file.
+When implementing tests, the first step is to create a feature file. This feature file should located in a separate wallet folder inside the features folder. For example, `aries-mobile-test-harness/aries-mobile-tests/features/bc_wallet/connect.feature`
+
+The corresponding steps file for the feature should be put in `aries-mobile-test-harness/aries-mobile-tests/features/steps/bc_wallet/connect.py`
+
+Step files should always call page objects to manipulate the app. Steps should never make appium calls directly. Make this the soul purpose of the page objects. Page objects should be located in their own folder for the specific wallet. For example, `aries-mobile-test-harness/aries-mobile-tests/page_objects/bc_wallet/connecting.py`
+
+If you use and specific external test data for your wallet testing, they should be located in `aries-mobile-test-harness/aries-mobile-tests/features/data/bc_wallet/`. If you are working directly in the AMTH repo for your wallet tests, and you have test data files that can be used across wallets, you should put that test data in `aries-mobile-test-harness/aries-mobile-tests/features/data/`. Click through for more information on [externalizing your credential and proof test data](https://github.com/hyperledger/aries-mobile-test-harness/blob/main/EXTERNALIZED_TEST_DATA.md).
+
+On the `build` command only feature files, page_objects, and data within the corresponding wallet named folders are copied into the test harness container. The wallet steps in the `/steps/<mywallet>/` folder are imported into an all_steps.py file so Behave will only see the step implementations in that file for your wallet.
+
 
 ### Deciding Where to Store a Wallets Tests and Page Objects
-#### Option 1: House the wallets tests in the AMTH repo
+#### Option 1: House the wallet tests in the AMTH repo
 If you have an open source wallet and would like to contribute and help others with your tests as examples, please feel free to store your tests and page objects in the [AMTH Repo](https://github.com/hyperledger/aries-mobile-test-harness).
 #### Option 2: Tell the AMTH where to get your tests
 If you do not wish to house your tests and page objects in the AMTH repo and would prefer to store theses in your own repo. You can add a requirement.txt file in a <wallet> folder in the page objects and test folders that contains something like, `mywallet-tests@git+https://github.com/myorg/mywallet-tests.git@main`

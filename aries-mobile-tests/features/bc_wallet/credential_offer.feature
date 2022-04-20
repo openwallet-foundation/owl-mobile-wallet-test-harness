@@ -39,7 +39,7 @@ Feature: Offer a Credential
          | issuer_agent_type | credential_name |
          | AATHIssuer        | Test Schema     |
 
-   @T002.1-CredentialOffer @wip @critical @AcceptanceTest @Story_79 @Story_82
+   @T002.1-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario Outline: Holder accepts the credential offer recieved
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
