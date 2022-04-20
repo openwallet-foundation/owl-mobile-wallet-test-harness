@@ -2,11 +2,10 @@
 
 ## Contents<!-- omit in toc -->
 
--  [Default Test Credentials and Proofs](#default-test-credentials-and-the-need-for-more)
--  [Defining Tests in Feature Files w/ Externalized Credential Data](#defining-tests-in-feature-files-with-externalized-credential-info)
--  [Credential Type Definitions](#credential-type-definitions)
--  [Credential Data](#credential-data)
--  [Proof Requests](#proof-requests)
+-  [Default Test Credentials](#default-test-credentials)
+-  [Defining Tests in Feature Files w/ Externalized Credential Data](#defining-tests-in-feature-files-with-externalized-credential-data)
+-  [Defining Tests in Feature Files w/ Externalized Proof Data](#defining-tests-in-feature-files-with-externalized-proof-data)
+-  [Summary](#summary)
 
 ## Default Test Credentials
 Each Issuer and Verifier agent interface implemented in AMTH should have a default credential and a default proof that are created and used when no parameters are are passed to the interface to send a credential offer or send a proof request. This is the case with the current AATH issuer and verfier interfaces. In this case we may have the need to change the type of credential and the type of proof used, to do this we can externalize this test data into json data files. This is what this document will explain.
