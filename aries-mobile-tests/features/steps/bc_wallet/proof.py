@@ -30,15 +30,35 @@ def step_impl(context):
         {table}
     '''.format(table=table_to_str(context.table)))
 
+@given('the holder has a credential of {credential}')
+def step_impl(context, credential):
+    context.execute_steps(f'''
+        Given the user has a credential offer of {credential}
+        When they select Accept
+        And the holder is informed that their credential is on the way with an indication of loading
+        And once the credential arrives they are informed that the Credential is added to your wallet
+        And they select Done
+        Then they are brought to the list of credentials
+    ''')
 
+@when('the Holder receives a proof request of {proof}')
 @when('the Holder receives a proof request')
-def step_impl(context):
+def step_impl(context, proof=None):
     # Make sure the connection is successful first.
     context.execute_steps('''
         Then there is a connection between "verifier" and Holder
     ''')
 
-    context.verifier.send_proof_request()
+    if proof is None:
+        context.verifier.send_proof_request()
+    else:
+        #open the proof data file
+        try:
+            proof_json_file = open("features/data/" + proof.lower() + ".json")
+            proof_json = json.load(proof_json_file)
+            context.verifier.send_proof_request(request_for_proof=proof_json)
+        except FileNotFoundError:
+            print("FileNotFoundError: features/data/" + proof.lower() + ".json")
 
 
 @then('holder is brought to the proof request')
@@ -70,6 +90,17 @@ def step_impl(context):
         And the Holder is taken to the Connecting Screen/modal
         And the Connecting completes successfully
         And the Holder receives a proof request
+        Then holder is brought to the proof request
+    ''')
+
+
+@given('the user has a proof request for {proof}')
+def step_impl(context, proof):
+    context.execute_steps(f'''
+        When the Holder scans the QR code sent by the "verifier"
+        And the Holder is taken to the Connecting Screen/modal
+        And the Connecting completes successfully
+        And the Holder receives a proof request of {proof}
         Then holder is brought to the proof request
     ''')
 

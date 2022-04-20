@@ -28,7 +28,6 @@ class AATHVerifierAgentInterface(VerifierAgentInterface, AATHAgentInterface):
         else:
             topic = "proof"
 
-        # check for a schema template already loaded in the context. If it is, it was loaded from an external Schema, so use it.
         if request_for_proof:
             pass
             # if context.non_revoked_timeframe:

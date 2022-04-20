@@ -106,3 +106,22 @@ class BasePage(object):
     def find_by_classname(self, *locator):
         # classname location is rarely used. It is generally used when id location and xpath location cannot be used. What you get is a list. You can use the list to query the location of a specific element
         return self.driver.find_elements_by_class_name(*locator)
+
+    def scroll_to_element(self, locator, incremental_scroll_amount=500, timeout=20, find_by=MobileBy.ACCESSIBILITY_ID):
+        element = None
+        i = 0
+        while element == None and i < timeout:
+            try: 
+                if find_by == MobileBy.ACCESSIBILITY_ID:
+                    element = self.find_by_accessibility_id(locator)
+                else:
+                    element = self.find_by_element_id(locator)
+                self.driver.swipe(500, incremental_scroll_amount, 500, 100)
+            except:
+                # not found try again
+                i = i + 1
+        if element:
+            return True
+        else:
+            return False
+

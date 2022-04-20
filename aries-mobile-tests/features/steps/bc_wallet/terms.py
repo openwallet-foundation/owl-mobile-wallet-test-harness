@@ -31,6 +31,15 @@ def step_impl(context):
             Then they can select Get started
         ''')
 
+
+@given('the User has skipped on-boarding')
+def step_impl(context):
+    context.execute_steps(f'''
+            Given the new user has opened the app for the first time
+            Given the user is on the onboarding Welcome screen
+            When the user selects Skip
+        ''')
+
 @given('the User is on the Terms and Conditions screen')
 def step_impl(context):
     context.execute_steps(f'''

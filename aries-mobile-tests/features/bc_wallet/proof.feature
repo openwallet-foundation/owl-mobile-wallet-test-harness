@@ -42,6 +42,28 @@ Feature: Proof
       And they select Done on the verfified information
       Then they are brought Home
 
+
+   @T002.1-Proof @critical @AcceptanceTest @Story_29
+   Scenario Outline: Holder accepts the proof request
+      Given the User has completed on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And a connection has been successfully made
+      And the holder has a credential of <credential>
+         | issuer_agent_type | credential_name |
+         | AATHIssuer        | Photo Id        |
+      And the user has a proof request for <proof>
+      When they select Share
+      And the holder is informed that they are sending information securely
+      And once the proof is verified they are informed of such
+      And they select Done on the verfified information
+      Then they are brought Home
+
+      Examples:
+         | credential         | proof          |
+         | cred_data_photo_id | proof_photo_id |
+
+
 #Connectionless
 
 #Revokable
