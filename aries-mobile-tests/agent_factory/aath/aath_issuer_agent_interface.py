@@ -108,7 +108,10 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
 
         # if data is none, use a default cred
         # if data is not none then use it as the cred
-        cred_data = credential_offer["attributes"] or self.DEFAULT_CREDENTIAL_ATTR_TEMPLATE.copy()
+        if credential_offer:
+            cred_data = credential_offer["attributes"] 
+        else:
+            cred_data = self.DEFAULT_CREDENTIAL_ATTR_TEMPLATE.copy()
 
         cred_offer = {
             "cred_def_id": self._credential_definition["credential_definition_id"],
