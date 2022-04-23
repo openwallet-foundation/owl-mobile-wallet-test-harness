@@ -6,7 +6,7 @@ import io
 from qrcode import QRCode
 from PIL import Image
 
-def get_qr_code_from_invitation(invitation_json):
+def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_code=False):
     # message_bytes = json.dumps(invitation).encode("ascii")
     # base64_bytes = base64.b64encode(message_bytes)
     # base64_message = base64_bytes.decode("ascii")
@@ -18,8 +18,10 @@ def get_qr_code_from_invitation(invitation_json):
     qr.make()
     #img = qr.make_image(fill_color="red", back_color="#23dda0")
     img = qr.make_image()
-    img.save('./qrcode_test.png')
-    qr.print_ascii(invert=True)
+    if save_qr_code:
+        img.save('./qrcode_test.png')
+    if print_qr_code:
+        qr.print_ascii(invert=True)
 
     with io.BytesIO() as output:
         img.save(output, format="PNG")

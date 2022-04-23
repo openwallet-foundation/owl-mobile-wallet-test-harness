@@ -66,6 +66,9 @@ def before_feature(context, feature):
     aif = AgentInterfaceFactory()
     context.issuer = aif.create_issuer_agent_interface(issuer_type, issuer_endpoint)
     context.verifier = aif.create_verifier_agent_interface(verifier_type, verifier_endpoint)
+    context.print_page_source_on_failure = eval(context.config.userdata['print_page_source_on_failure'])
+    context.print_qr_code_on_creation = eval(context.config.userdata['print_qr_code_on_creation'])
+    context.save_qr_code_on_creation = eval(context.config.userdata['save_qr_code_on_creation'])
 
 
 
@@ -88,6 +91,10 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
+
+    if scenario.status == Status.failed and context.print_page_source_on_failure:
+        print(context.driver.page_source)
+
 
     device_cloud_service = os.environ['DEVICE_CLOUD']
     if device_cloud_service == "SauceLabs" and hasattr(context, 'driver'):
