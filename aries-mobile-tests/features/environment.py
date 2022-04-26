@@ -92,7 +92,7 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
 
-    if scenario.status == Status.failed and context.print_page_source_on_failure:
+    if hasattr(context, 'driver') and scenario.status == Status.failed and context.print_page_source_on_failure:
         print(context.driver.page_source)
 
 

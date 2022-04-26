@@ -1,0 +1,94 @@
+name: BC WALLET LATEST APP CHECK IN SAUCE LABS
+
+on:
+  # repository dispatch: if could be triggered from bc wallet repo then wait for midnight, don't think we can wait.
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *" # every day at midnight
+
+jobs:
+  check-app-updated:
+    runs-on: ubuntu-latest
+    outputs:
+      APP_IS_NEW: ${{ steps.check-app-updated-on-sl.outputs.APP_IS_NEW }}
+      NEW_APP_NAME: ${{ steps.check-app-updated-on-sl.outputs.NEW_APP_NAME }}
+    steps:
+      - name: check-app-updated-on-sl
+        id: check-app-updated-on-sl
+      - uses: actions/checkout@v2.1.0
+      - run: |
+          new_app=$(python get_sl_apps_uploaded.py ${{ secrets.SAUCE_USERNAME }} ${{ secrets.SAUCE_ACCESS_KEY }} Android us-west-1 .github/workflows/bc_wallet/latest_app.json )
+          app_name="${output//'%'/'%25'}"
+          echo "::set-output name=APP_IS_NEW::$new_app"
+          echo "::set-output name=NEW_APP_NAME::$app_name"
+      # - name: check-app-updated-on-sl
+      #   id: check-app-updated-on-sl
+      #   uses: ./.github/workflows/actions/get-latest-app-name
+      #   # env:
+      #   #   LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
+      #   #   REGION: "us-west-1"
+      #   with:
+      #     DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
+      #     DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
+      #     MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
+      #     SAUCE_LABS_REGION: "us-west-1"
+      #     LAST_KNOWN_LATEST_APP_FILE: ".github/workflows/bc_wallet/latest_app.json"
+        #continue-on-error: false
+        # Could do the error
+        # better output variable true or false. Set an output. 
+        # Wade can send example of the output variable. 
+  run-on-device-tests:
+    needs: [check-app-updated]
+    #needs: [check-app-updated-ios, check-app-updated-android]
+    if: ${{ needs.check-app-updated.outputs.APP_IS_NEW }} == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        include:
+          - mobile-platform: "-p Android"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.aab"
+            #app-file-name: ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}
+            report-project: "android-multi-device-full"
+          - mobile-platform: "-p iOS"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
+            report-project: "ios-multi-device-full"
+    #timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: run-aath-agents
+        uses: ./.github/workflows/actions/run-aath-agents
+
+      - name: Fetch mobile test harness repo
+        uses: actions/checkout@v2
+        with:
+          repository: hyperledger/aries-mobile-test-harness
+          path: aries-mobile-test-harness
+          ref: main
+
+      - name: Run SauceLabs smoke-test
+        uses: ./.github/workflows/actions/run-test-harness
+        env:
+          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
+          REGION: "us-west-1"
+        with:
+          MOBILE_WALLET: "-w bc_wallet"
+          ISSUER_AGENT: '-i "AATH;http://0.0.0.0:9020"'
+          VERIFIER_AGENT: '-v "AATH;http://0.0.0.0:9030"'
+          DEVICE_CLOUD: "-d SauceLabs"
+          DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
+          DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
+          MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
+          APP_FILE_NAME: ${{ matrix.app-file-name }}
+          TEST_SCOPE: "-t @bc_wallet -t ~@wip"
+          REPORT_PROJECT: ${{ matrix.report-project }}
+        continue-on-error: true
+
+      - name: Upload smoke-test results to Allure
+        uses: ./.github/workflows/actions/run-send-gen-test-results-secure
+        with:
+          REPORT_PROJECT: ${{ matrix.report-project }}
+          ADMIN_USER: ${{ secrets.ALLURE_USERNAME }}
+          ADMIN_PW: ${{ secrets.ALLURE_PASSWD }}

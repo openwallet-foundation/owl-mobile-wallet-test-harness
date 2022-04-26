@@ -45,7 +45,7 @@ runs:
         def find_latest_app(resp_json, platfrom):
           latest_app = None
           for item in resp_json["items"]:
-              if latest_app == None == None or item['upload_timestamp'] > latest_app['upload_timestamp']:
+              if latest_app == None or item['upload_timestamp'] > latest_app['upload_timestamp']:
                   latest_app = item
           return latest_app
 
