@@ -13,13 +13,13 @@ jobs:
       APP_IS_NEW: ${{ steps.check-app-updated-on-sl.outputs.APP_IS_NEW }}
       NEW_APP_NAME: ${{ steps.check-app-updated-on-sl.outputs.NEW_APP_NAME }}
     steps:
-      - name: check-app-updated-on-sl
-        id: check-app-updated-on-sl
-      #- uses: actions/checkout@v2.1.0
+      - name: install-python-requests
         uses: BSFishy/pip-action@v1
         with:
           packages: |
             requests
+      - name: check-app-updated-on-sl
+        id: check-app-updated-on-sl
         run: |
           new_app=$(python .github/workflows/bc_wallet/get_sl_apps_uploaded.py ${{ secrets.SAUCE_USERNAME }} ${{ secrets.SAUCE_ACCESS_KEY }} Android us-west-1 .github/workflows/bc_wallet/latest_app.json )
           app_name="${output//'%'/'%25'}"
