@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: check-app-updated-on-sl
         id: check-app-updated-on-sl
-      - uses: actions/checkout@v2.1.0
+      #- uses: actions/checkout@v2.1.0
       - run: |
           new_app=$(python get_sl_apps_uploaded.py ${{ secrets.SAUCE_USERNAME }} ${{ secrets.SAUCE_ACCESS_KEY }} Android us-west-1 .github/workflows/bc_wallet/latest_app.json )
           app_name="${output//'%'/'%25'}"
