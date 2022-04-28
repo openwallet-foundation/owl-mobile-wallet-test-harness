@@ -27,7 +27,7 @@ jobs:
           app_name="${output//'%'/'%25'}"
           echo "::set-output name=APP_IS_NEW::$new_app"
           echo "::set-output name=NEW_APP_NAME::$app_name"
-        working-directory: aries-mobile-test-harness
+      #  working-directory: aries-mobile-test-harness
       # - name: check-app-updated-on-sl
       #   id: check-app-updated-on-sl
       #   uses: ./.github/workflows/actions/get-latest-app-name
@@ -68,12 +68,12 @@ jobs:
       - name: run-aath-agents
         uses: ./.github/workflows/actions/run-aath-agents
 
-      - name: Fetch mobile test harness repo
-        uses: actions/checkout@v2
-        with:
-          repository: hyperledger/aries-mobile-test-harness
-          path: aries-mobile-test-harness
-          ref: main
+      # - name: Fetch mobile test harness repo
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: hyperledger/aries-mobile-test-harness
+      #     path: aries-mobile-test-harness
+      #     ref: main
 
       - name: Run SauceLabs smoke-test
         uses: ./.github/workflows/actions/run-test-harness
