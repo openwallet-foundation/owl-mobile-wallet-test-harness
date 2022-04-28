@@ -14,7 +14,7 @@ jobs:
       NEW_APP_NAME: ${{ steps.check-app-updated-on-sl.outputs.NEW_APP_NAME }}
     steps:
       - name: checkout-test-harness
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
       # - name: install-python-requests
       #   uses: BSFishy/pip-action@v1
       #   with:
