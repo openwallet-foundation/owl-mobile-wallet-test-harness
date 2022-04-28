@@ -15,13 +15,11 @@ jobs:
     steps:
       - name: checkout-test-harness
         uses: actions/checkout@v3
-        with:
-          path: aries-mobile-test-harness
-      - name: install-python-requests
-        uses: BSFishy/pip-action@v1
-        with:
-          packages: |
-            requests
+      # - name: install-python-requests
+      #   uses: BSFishy/pip-action@v1
+      #   with:
+      #     packages: |
+      #       requests
       - name: check-app-updated-on-sl
         id: check-app-updated-on-sl
         run: |
@@ -65,7 +63,7 @@ jobs:
             report-project: "ios-multi-device-full"
     #timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v2
+      #- uses: actions/checkout@v2
 
       - name: run-aath-agents
         uses: ./.github/workflows/actions/run-aath-agents
