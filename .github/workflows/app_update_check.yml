@@ -16,8 +16,12 @@ jobs:
       - name: check-app-updated-on-sl
         id: check-app-updated-on-sl
       #- uses: actions/checkout@v2.1.0
+        uses: BSFishy/pip-action@v1
+        with:
+          packages: |
+            requests
         run: |
-          new_app=$(python get_sl_apps_uploaded.py ${{ secrets.SAUCE_USERNAME }} ${{ secrets.SAUCE_ACCESS_KEY }} Android us-west-1 .github/workflows/bc_wallet/latest_app.json )
+          new_app=$(python .github/workflows/bc_wallet/get_sl_apps_uploaded.py ${{ secrets.SAUCE_USERNAME }} ${{ secrets.SAUCE_ACCESS_KEY }} Android us-west-1 .github/workflows/bc_wallet/latest_app.json )
           app_name="${output//'%'/'%25'}"
           echo "::set-output name=APP_IS_NEW::$new_app"
           echo "::set-output name=NEW_APP_NAME::$app_name"
