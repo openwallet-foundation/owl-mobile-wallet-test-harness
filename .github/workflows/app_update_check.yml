@@ -15,11 +15,6 @@ jobs:
     steps:
       - name: checkout-test-harness
         uses: actions/checkout@v2
-      # - name: install-python-requests
-      #   uses: BSFishy/pip-action@v1
-      #   with:
-      #     packages: |
-      #       requests
       - name: check-app-updated-on-sl
         id: check-app-updated-on-sl
         run: |
@@ -28,22 +23,6 @@ jobs:
           echo "::set-output name=APP_IS_NEW::$new_app"
           echo "::set-output name=NEW_APP_NAME::$app_name"
       #  working-directory: aries-mobile-test-harness
-      # - name: check-app-updated-on-sl
-      #   id: check-app-updated-on-sl
-      #   uses: ./.github/workflows/actions/get-latest-app-name
-      #   # env:
-      #   #   LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
-      #   #   REGION: "us-west-1"
-      #   with:
-      #     DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
-      #     DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
-      #     MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
-      #     SAUCE_LABS_REGION: "us-west-1"
-      #     LAST_KNOWN_LATEST_APP_FILE: ".github/workflows/bc_wallet/latest_app.json"
-        #continue-on-error: false
-        # Could do the error
-        # better output variable true or false. Set an output. 
-        # Wade can send example of the output variable. 
   run-on-device-tests:
     needs: [check-app-updated]
     #needs: [check-app-updated-ios, check-app-updated-android]
@@ -63,7 +42,7 @@ jobs:
             report-project: "ios-multi-device-full"
     #timeout-minutes: 60
     steps:
-      #- uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: run-aath-agents
         uses: ./.github/workflows/actions/run-aath-agents
