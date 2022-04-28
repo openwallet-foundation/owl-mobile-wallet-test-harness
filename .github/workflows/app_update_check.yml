@@ -42,7 +42,7 @@ jobs:
             report-project: "ios-multi-device-full"
     #timeout-minutes: 60
     steps:
-      #- uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: run-aath-agents
         uses: ./.github/workflows/run-aath-agents
