@@ -19,11 +19,13 @@ jobs:
         id: check-app-updated-on-sl
         run: |
           output=$(python .github/workflows/bc_wallet/get_sl_apps_uploaded.py ${{ secrets.SAUCE_USERNAME }} ${{ secrets.SAUCE_ACCESS_KEY }} Android us-west-1 .github/workflows/bc_wallet/latest_app.json )
+          echo $output
           new_app=$output[1]
           app_name=$output[2]
+          echo $new_app
+          echo $app_name
           echo "::set-output name=APP_IS_NEW::$new_app"
           echo "::set-output name=NEW_APP_NAME::$app_name"
-      #  working-directory: aries-mobile-test-harness
   run-on-device-tests:
     needs: [check-app-updated]
     #needs: [check-app-updated-ios, check-app-updated-android]
