@@ -25,7 +25,7 @@ Feature: Offer a Credential
 
    @T002-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario: Holder accepts the credential offer recieved
-      Given the User has completed on-boarding
+      Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And a connection has been successfully made
@@ -41,11 +41,11 @@ Feature: Offer a Credential
 
    @T002.1-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario Outline: Holder accepts the credential offer recieved
-      Given the User has completed on-boarding
+      Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And a connection has been successfully made
-      And the user has a credential offer for <credential>
+      And the user has a credential offer of <credential>
       When they select Accept
       And the holder is informed that their credential is on the way with an indication of loading
       And once the credential arrives they are informed that the Credential is added to your wallet
@@ -62,7 +62,7 @@ Feature: Offer a Credential
 
    @T003-CredentialOffer @wip @critical @AcceptanceTest @Story_79
    Scenario: Holder declines the credential offer recieved
-      Given the User has completed on-boarding
+      Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And a connection has been successfully made
@@ -105,7 +105,7 @@ Feature: Offer a Credential
 
    @T006-CredentialOffer @wip @critical @AcceptanceTest @Story_79 @Story_82
    Scenario: Holder accepts the credential offer recieved with previous credential(s)
-      Given the User has completed on-boarding
+      Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And a connection has been successfully made

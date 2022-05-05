@@ -22,7 +22,7 @@ class HomePage(BasePage):
     home_locator = "Home"
     scan_locator = "Scan"
     credentials_locator = "Credentials"
-    settings_locator = "Settings"
+    settings_tid_locator = "com.ariesbifold:id/Settings"
     contacts_locator = "Contacts"
 
     def on_this_page(self):
@@ -91,10 +91,9 @@ class HomePage(BasePage):
 
     def select_settings(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.settings_locator).click()
+            self.find_by_element_id(self.settings_tid_locator).click()
 
-            # return a new page objectfor the settings page
+            # return a new page object for the settings page
             return SettingsPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
-        # return SettingsPage

@@ -15,7 +15,7 @@ class OnboardingWelcomePage(BasePage):
     # we could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
     on_this_page_text_locator = "Welcome"
-    skip_locator = "Skip"
+    skip_locator = "com.ariesbifold:id/Skip"
     # locator changes in 127
     next_locator = "com.ariesbifold:id/Next"
 
@@ -38,7 +38,7 @@ class OnboardingWelcomePage(BasePage):
 
     def select_skip(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.skip_locator).click()
+            self.find_by_element_id(self.skip_locator).click()
             return TermsAndConditionsPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

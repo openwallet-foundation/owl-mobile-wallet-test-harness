@@ -28,7 +28,7 @@ Feature: Proof
 
    @T002-Proof @critical @AcceptanceTest @Story_29
    Scenario: Holder accepts the proof request
-      Given the User has completed on-boarding
+      Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And a connection has been successfully made
@@ -45,7 +45,7 @@ Feature: Proof
 
    @T002.1-Proof @critical @AcceptanceTest @Story_29
    Scenario Outline: Holder accepts the proof request
-      Given the User has completed on-boarding
+      Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And a connection has been successfully made

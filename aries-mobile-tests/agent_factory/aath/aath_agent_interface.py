@@ -10,7 +10,7 @@ from agent_controller_client import agent_controller_GET, agent_controller_POST,
 
 class AATHAgentInterface():
 
-    def create_invitation_util(self, oob=False):
+    def create_invitation_util(self, oob=False, print_qrcode=False, save_qrcode=False):
         """create an invitation and return the json back to the caller """
         self.oob = oob
         if self.oob is True:
@@ -32,7 +32,7 @@ class AATHAgentInterface():
             )
         else:
             self.invitation_json = json.loads(resp_text)
-            qrimage = get_qr_code_from_invitation(self.invitation_json)
+            qrimage = get_qr_code_from_invitation(self.invitation_json, print_qrcode, save_qrcode)
             return qrimage
 
     def connected_util(self):

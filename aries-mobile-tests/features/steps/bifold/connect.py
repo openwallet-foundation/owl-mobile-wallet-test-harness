@@ -3,6 +3,7 @@
 # 
 # -----------------------------------------------------------
 
+from time import sleep
 from behave import given, when, then
 import json
 
@@ -39,6 +40,8 @@ def step_impl(context):
     (resp_status, resp_text) = agent_controller_POST(context.issuer_url, "connections", operation="create-invitation")
     assert resp_status == 200, f'resp_status {resp_status} is not 200; {resp_text}'
     invitation_json = json.loads(resp_text)
+    # TODO this sleep needs to be removed when the wallet initialization is moved to a prescreen instead of messages on the welcome page
+    sleep(20)
     qrimage = get_qr_code_from_invitation(invitation_json, context.print_qr_code_on_creation, context.save_qr_code_on_creation)
 
     context.thisHomePage.inject_connection_invite_qr_code(qrimage)

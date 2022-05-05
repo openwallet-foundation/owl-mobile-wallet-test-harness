@@ -34,7 +34,7 @@ class IssuerAgentInterface(ABC):
         """return the type of issuer you are ie 'AATHIssuer' or 'CANdyWebIssuer'"""
 
     @abstractmethod
-    def create_invitation(self, oob: bool = False):
+    def create_invitation(self, oob: bool = False, print_qrcode: bool = False, save_qrcode: bool = False):
         """create an invitation and return the json back to the caller """
         # Should we return the actual QR code as an image here? Would make the tests easier
 

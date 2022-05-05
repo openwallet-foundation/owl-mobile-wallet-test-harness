@@ -27,10 +27,10 @@ def step_impl(context, pin):
 
 @when('the Holder scans the QR code sent by the "{agent}"')
 def step_impl(context, agent):
-
-    #exec(f"qrimage = context.{agent}.create_invitation()")
+    # TODO sleep is temporary until the wallet initialization moves to its own screen
+    #sleep(40)
     if agent == "issuer":
-        qrimage = context.issuer.create_invitation()
+        qrimage = context.issuer.create_invitation(print_qrcode=context.print_qr_code_on_creation, save_qrcode=context.save_qr_code_on_creation)
     elif agent == "verifier":
         qrimage = context.verifier.create_invitation()
     else:
@@ -47,37 +47,49 @@ def step_impl(context, agent):
 def step_impl(context):
     # The connecting screen is temporary. 
     # What if the connecting screen goes away too fast before this next line runs? Maybe check at home?
-    context.connecting_is_done = False
-    if context.thisConnectingPage.on_this_page():
-        assert True
-    else:
-        # We are probably already on the home screen
-        assert context.thisHomePage.on_this_page()
-        context.connecting_is_done = True
+    assert context.thisConnectingPage.on_this_page()
+    # context.connecting_is_done = False
+    # if context.thisConnectingPage.on_this_page():
+    #     assert True
+    # else:
+    #     # We are probably already on the home screen
+    #     # TDOD as of build 164 this isn't needed. It seems the page doesn't automatically go to the home screen after a while
+    #     assert context.thisHomePage.on_this_page()
+    #     context.connecting_is_done = True
 
 @when('the Connecting completes successfully')
 def step_impl(context):
     # The connecting screen is temporary, loop until it goes away and return home.
-    if context.connecting_is_done == False:
-        timeout=20
-        i=0
-        while context.thisConnectingPage.on_this_page() and i < timeout:
-            # need to break out here incase we are stuck on connecting? 
-            # if we are too long, we need to click the Go back to home button.
-            sleep(1)
-            i+=1
-        if i == 20: # we timed out and it is still connecting
-            context.thisHomePage = context.thisConnectingPage.select_go_back_to_home()
-        else:
-            #assume we are home
-            assert context.thisHomePage.on_this_page()
-
+    # if context.connecting_is_done == False:
+    #     timeout=20
+    #     i=0
+    #     while context.thisConnectingPage.on_this_page() and i < timeout:
+    #         # need to break out here incase we are stuck on connecting? 
+    #         # if we are too long, we need to click the Go back to home button.
+    #         sleep(1)
+    #         i+=1
+    #     if i == 20: # we timed out and it is still connecting
+    #         context.thisHomePage = context.thisConnectingPage.select_go_back_to_home()
+    #     else:
+    #         #assume we are home
+    #         assert context.thisHomePage.on_this_page()
+    
+    timeout=20
+    i=0
+    while context.issuer.connected() == False and i < timeout:
+        sleep(1)
+        i+=1
+    if i == 20: # we timed out and it is still connecting
+        raise Exception(f'Failed to connected in timeout of {timeout} seconds')
+        #context.thisHomePage = context.thisConnectingPage.select_go_back_to_home()
+    else:
+        # One last check
+        assert context.issuer.connected()
 
 @then('there is a connection between "{agent}" and Holder')
 def step_impl(context, agent):
     # Check the contacts for a new connection
-    # TODO the contacts list is created on scan not on successful connection made. Will have to check the issuer for successful connection
-    #context.thisSettingsPage = context.thisHomePage.select_settings()
+
     if agent == "issuer":
         assert context.issuer.connected()
     elif agent == "verifier":

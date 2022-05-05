@@ -14,8 +14,8 @@ class AATHVerifierAgentInterface(VerifierAgentInterface, AATHAgentInterface):
         """return the type of issuer as a string AATHVerifier"""
         return "AATHVerifier"
 
-    def create_invitation(self, oob=False):
-        return self.create_invitation_util(oob)
+    def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False):
+        return self.create_invitation_util(oob, print_qrcode, save_qrcode)
 
     def connected(self):
         return self.connected_util()
