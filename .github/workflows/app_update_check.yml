@@ -20,8 +20,8 @@ jobs:
         run: |
           output=$(python .github/workflows/bc_wallet/get_sl_apps_uploaded.py ${{ secrets.SAUCE_USERNAME }} ${{ secrets.SAUCE_ACCESS_KEY }} Android us-west-1 .github/workflows/bc_wallet/latest_app.json )
           echo $output
-          new_app=$output[1]
-          app_name=$output[2]
+          new_app=${output[1]}
+          app_name=${output[2]}
           echo $new_app
           echo $app_name
           echo "::set-output name=APP_IS_NEW::$new_app"
