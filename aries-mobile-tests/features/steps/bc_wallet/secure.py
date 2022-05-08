@@ -51,5 +51,5 @@ def step_impl(context):
     context.thisNavBar = NavBar(context.driver)
 
     #make sure the wallet is initialized and a connection to the mediator exists
-    context.thisSettingsPage = context.thisHomePage.select_settings()
-    context.thisSettingsPage.select_connections()
+    #context.thisSettingsPage = context.thisHomePage.select_settings()
+    #context.thisSettingsPage.select_connections()
