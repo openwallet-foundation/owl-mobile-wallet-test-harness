@@ -11,9 +11,6 @@ if len(sys.argv) != 6:
     raise Exception(
         "Incorrect argument passed to script. Usage: python .github/workflows/bc_wallet/get_sl_apps_uploaded.py <Sauce Labs User> <Suace Labs Key> <Platform> <Sauce Labs Region> <Latest App File eg .github/workflows/bc_wallet/latest_app.json>"
         )
-    # print("ERROR: Incorrect argument passed to script")
-    # print("Usage: python .github/workflows/bc_wallet/get_sl_apps_uploaded.py <Sauce Labs User> <Suace Labs Key> <Platform> <Sauce Labs Region> <Latest App File eg .github/workflows/bc_wallet/latest_app.json>")
-    # exit()
 
 # Assign script parameters
 sl_user = sys.argv[1]
@@ -61,6 +58,3 @@ else: # Local json file is new, just use the latest app found
         file_name, ext = os.path.splitext(latest_app_json['name'])
         print(file_name)
         json.dump(latest_app_json, outfile)
-
-# maybe save it to a repo file and push. Then let the main test run workflow pick up that push and run the tests. 
-# this will run once a day after midnight.
