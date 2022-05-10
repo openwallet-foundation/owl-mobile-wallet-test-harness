@@ -46,6 +46,16 @@ jobs:
 
       - name: run-aath-agents
         uses: ./.github/workflows/run-aath-agents
+        with:
+          USE_NGROK: ""
+
+      - name: run-sauce-connect-tunnel
+        uses: saucelabs/sauce-connect-action@v2
+        with:
+            username: ${{ secrets.SAUCE_USERNAME }}
+            accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
+            tunnelIdentifier: github-action-tunnel
+            region: us-west-1
 
       - name: Run SauceLabs smoke-test
         uses: ./.github/workflows/run-test-harness
