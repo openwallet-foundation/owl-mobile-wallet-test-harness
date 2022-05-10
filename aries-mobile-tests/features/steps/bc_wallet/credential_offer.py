@@ -61,6 +61,7 @@ def step_impl(context):
 
 @then('holder is brought to the credential offer screen')
 def step_impl(context):
+    context.thisCredentialOfferPage = CredentialOfferPage(context.driver)
     assert context.thisCredentialOfferPage.on_this_page()
 
 
@@ -81,7 +82,6 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(f'''
         When the Holder receives a Non-Revocable credential offer
-        And the Holder taps on the credential offer notification
         Then holder is brought to the credential offer screen
     ''')
 
@@ -90,7 +90,6 @@ def step_impl(context):
 def step_impl(context, credential):
     context.execute_steps(f'''
         When the Holder receives a credential offer of {credential}
-        And the Holder taps on the credential offer notification
         Then holder is brought to the credential offer screen
     ''')
 
