@@ -34,6 +34,19 @@ class BasePage(object):
         self.driver = driver
         self.current_platform = driver.capabilities['platformName']
 
+    def find_by(self, locator_tpl: tuple, timeout=20):
+        if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID:
+            return self.find_by_accessibility_id(locator_tpl[1], timeout)
+        elif locator_tpl[0] == MobileBy.ID:
+            return self.find_by_element_id(locator_tpl[1], timeout)
+
+
+    def find_multiple_by(self, locator_tpl: tuple, timeout=20):
+        if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID:
+            return self.find_multiple_by_accessibility_id(locator_tpl[1], timeout)
+        elif locator_tpl[0] == MobileBy.ID:
+            return self.find_multiple_by_id(locator_tpl[1], timeout)
+
     # Locate by Accessibility id
     def find_by_accessibility_id(self, locator, timeout=20):
         try:
@@ -68,7 +81,7 @@ class BasePage(object):
                 f"Could not find elements by Accessibility id {locator}")
 
     # Locate multiple elements by id.
-    def find_multiple_by__id(self, locator, timeout=20):
+    def find_multiple_by_id(self, locator, timeout=20):
         try:
             # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
@@ -80,10 +93,10 @@ class BasePage(object):
                 f"Could not find elements by id {locator}")
 
     # Locate by id
-    def find_by_element_id(self, locator):
+    def find_by_element_id(self, locator, timeout=20):
         try:
             # The location of a single element gets the location of a single element
-            return WebDriverWait(self.driver, 10).until(
+            return WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located((MobileBy.ID, locator))
             )
         except:
@@ -108,6 +121,7 @@ class BasePage(object):
         return self.driver.find_elements_by_class_name(*locator)
 
     def scroll_to_element(self, locator, incremental_scroll_amount=500, timeout=20, find_by=MobileBy.ACCESSIBILITY_ID):
+        """ deprecated """
         element = None
         i = 0
         while element == None and i < timeout:
@@ -125,3 +139,16 @@ class BasePage(object):
         else:
             return False
 
+    def scroll_to_element(self, locator, direction='down'):
+        """ Scroll to the element based on the accessibility id given. """
+        """ The locator MUST be an accessibility id. """
+        """ Can give a direction and the direction only applies to iOS. Default is down. """
+        
+        # Works great for Android, but iOS has different parameters
+        if self.current_platform == "Android":
+            self.driver.execute_script('mobile: scroll', {"strategy": 'accessibility id', "selector": locator})
+        else:
+            # Message: Mobile scroll supports the following strategies: name, direction, predicateString, and toVisible. Specify one of these
+            # iOS
+            el = self.driver.find_element(MobileBy.ACCESSIBILITY_ID, locator)
+            self.driver.execute_script("mobile: scroll", {"direction": direction, 'element': el})

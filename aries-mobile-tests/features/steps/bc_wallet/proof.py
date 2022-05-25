@@ -64,9 +64,9 @@ def step_impl(context, proof=None):
 @then('holder is brought to the proof request')
 def step_impl(context):
     # TODO need to click view at this point until story 29 is implemented. Remove view click afterwards.
-    context.thisProofRequestPage = context.thisHomePage.select_proof_request_notification()
+    #context.thisProofRequestPage = context.thisHomePage.select_proof_request_notification()
 
-    #context.thisProofRequestPage=ProofRequestPage(context.driver)
+    context.thisProofRequestPage = ProofRequestPage(context.driver)
     assert context.thisProofRequestPage.on_this_page()
 
 
@@ -77,10 +77,10 @@ def step_impl(context):
     who, attributes, values=get_expected_proof_request_detail(
         context)
     # The below doesn't have locators in build 127. Calibrate in the future fixed build
-    # actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
-    # assert who in actual_who
-    # assert attributes in actual_attributes
-    # assert values in actual_values
+    actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
+    assert who in actual_who
+    assert attributes in actual_attributes
+    assert values in actual_values
 
 
 @given('the user has a proof request')

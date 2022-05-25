@@ -9,8 +9,7 @@ Feature: Terms and Conditions
 Scenario: New User Accepts Terms and Conditions
 Given the User has completed on-boarding
 And the User is on the Terms and Conditions screen
-When the User scrolls to the bottom of the screen
-And the users accepts the Terms and Conditions
+When the users accepts the Terms and Conditions
 And the user clicks continue
 Then the user transitions to the PIN creation screen
 
@@ -18,8 +17,7 @@ Then the user transitions to the PIN creation screen
 Scenario: New User Rejects Terms and Conditions
 Given the User has completed on-boarding
 And the User is on the Terms and Conditions screen
-When the User scrolls to the bottom of the screen
-And the User presses the back button
+When the User presses the back button
 Then the User goes back to the last on-boarding screen they viewed
 
 @T003-TandC @wip @FunctionalTest @low

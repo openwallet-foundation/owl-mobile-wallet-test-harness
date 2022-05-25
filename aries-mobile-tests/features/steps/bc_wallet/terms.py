@@ -46,17 +46,12 @@ def step_impl(context):
             Then are brought to the Terms and Conditions screen
         ''')
 
-
-@when('the User scrolls to the bottom of the screen')
-def step_impl(context):
-    assert context.thisTermsAndConditionsPage.scroll_to_element(context.thisTermsAndConditionsPage.back_locator, 1500)
-
-
+@given('the users accepts the Terms and Conditions')
 @when('the users accepts the Terms and Conditions')
 def step_impl(context):
     context.thisTermsAndConditionsPage.select_accept()
 
-
+@given('the user clicks continue')
 @when('the user clicks continue')
 def step_impl(context):
     context.thisPINSetupPage = context.thisTermsAndConditionsPage.select_continue()

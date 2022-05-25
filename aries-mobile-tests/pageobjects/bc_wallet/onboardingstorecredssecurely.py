@@ -18,7 +18,7 @@ class OnboardingStoreCredsSecurelyPage(BasePage):
     on_this_page_text_locator = "Store and secure credentials"
     #next_locator = "Next"
     #next_locator = "nextButton"
-    skip_locator = "Skip"
+    skip_locator = "com.ariesbifold:id/Skip"
     back_locator = "com.ariesbifold:id/Back"
     next_locator = "com.ariesbifold:id/Next"
 
@@ -48,7 +48,7 @@ class OnboardingStoreCredsSecurelyPage(BasePage):
 
     def select_skip(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.skip_locator).click()
+            self.find_by_element_id(self.skip_locator).click()
             return TermsAndConditionsPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

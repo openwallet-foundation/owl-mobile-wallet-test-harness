@@ -14,12 +14,12 @@ class ProofRequestPage(BasePage):
     # Wireframes state different text here, so it will probably change to this
     #on_this_page_text_locator = "is requesting the following"
     on_this_page_text_locator = "is requesting you to share"
-    who_locator = "Who"
-    attribute_locator = "attribute"
-    value_locator = "value"
-    details_locator = "Details"
-    share_locator = "Share"
-    decline_locator = "Decline"
+    who_locator = (MobileBy.ID, "com.ariesbifold:id/HeaderText")
+    attribute_locator = (MobileBy.ID, "com.ariesbifold:id/AttributeName")
+    value_locator = (MobileBy.ID, "com.ariesbifold:id/AttributeValue")
+    details_locator = (MobileBy.ID, "com.ariesbifold:id/Details")
+    share_locator = (MobileBy.ID, "com.ariesbifold:id/Share")
+    decline_locator = (MobileBy.ID, "com.ariesbifold:id/Decline")
 
 
     def on_this_page(self):
@@ -28,14 +28,14 @@ class ProofRequestPage(BasePage):
 
     def select_share(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.share_locator).click()
+            self.find_by(self.share_locator).click()
             return SendingInformationSecurelyPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 
     def select_decline(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.accept_locator).click()
+            self.find_by(self.decline_locator).click()
             # Not sure what is returned here yet
             # return CredentialOfferPage(self.driver)
         else:
@@ -43,10 +43,10 @@ class ProofRequestPage(BasePage):
 
     def get_proof_request_details(self):
         if self.on_this_page():
-            who = self.find_by_accessibility_id(self.who_locator).text
-            #cred_type = self.find_by_accessibility_id(self.cred_type_locator).text
-            attribute_elements = self.find_multiple_by_id(self.attribute_locator)
-            value_elements = self.find_multiple_by_id(self.values_locator)
+            who = self.find_by(self.who_locator).text
+            #cred_type = self.find_by_accessibility_id(self.details_locator).text
+            attribute_elements = self.find_multiple_by(self.attribute_locator)
+            value_elements = self.find_multiple_by(self.values_locator)
             attributes = []
             for attribute in attribute_elements:
                 attributes = attributes.append[attribute.text]

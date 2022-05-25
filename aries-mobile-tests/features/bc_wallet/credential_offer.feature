@@ -15,7 +15,6 @@ Feature: Offer a Credential
       And a PIN has been set up with "369369"
       And a connection has been successfully made
       When the Holder receives a Non-Revocable credential offer
-      And the Holder taps on the credential offer notification
       Then holder is brought to the credential offer screen
       And they can view the contents of the credential
          | issuer_agent_type | who         | cred_type    | attributes           | values                  |
@@ -25,7 +24,7 @@ Feature: Offer a Credential
 
    @T002-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario: Holder accepts the credential offer recieved
-      Given the User has completed on-boarding
+      Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And a connection has been successfully made
@@ -41,11 +40,11 @@ Feature: Offer a Credential
 
    @T002.1-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario Outline: Holder accepts the credential offer recieved
-      Given the User has completed on-boarding
+      Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And a connection has been successfully made
-      And the user has a credential offer for <credential>
+      And the user has a credential offer of <credential>
       When they select Accept
       And the holder is informed that their credential is on the way with an indication of loading
       And once the credential arrives they are informed that the Credential is added to your wallet
@@ -62,7 +61,7 @@ Feature: Offer a Credential
 
    @T003-CredentialOffer @wip @critical @AcceptanceTest @Story_79
    Scenario: Holder declines the credential offer recieved
-      Given the User has completed on-boarding
+      Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And a connection has been successfully made
@@ -105,7 +104,7 @@ Feature: Offer a Credential
 
    @T006-CredentialOffer @wip @critical @AcceptanceTest @Story_79 @Story_82
    Scenario: Holder accepts the credential offer recieved with previous credential(s)
-      Given the User has completed on-boarding
+      Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And a connection has been successfully made
@@ -117,5 +116,22 @@ Feature: Offer a Credential
       And they select Done
       Then they are brought to the list of credentials
       And the credential accepted is at the top of the list
+
+
+   @T007-CredentialOffer @wip @critical @AcceptanceTest @Story_79
+   Scenario: Holder receives and views the contents of a credential offer but takes longer that usual and gets notification on home screen
+      Given the User has completed on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And a connection has been successfully made
+      When the Holder receives a Non-Revocable credential offer
+      And it takes longer than expected
+      And they go home
+      And they receive a credential offer notification
+      And the Holder taps on the credential offer notification
+      Then holder is brought to the credential offer screen
+      And they can view the contents of the credential
+         | issuer_agent_type | who         | cred_type    | attributes           | values                  |
+         | AATHIssuer        | aca-py.Acme | Test Schema. | Attr 1;Attr 2;Attr 3 | value_1;value_2;value_3 |
 
 # Revokable
