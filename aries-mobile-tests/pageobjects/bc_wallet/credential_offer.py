@@ -1,7 +1,4 @@
-import time
 from appium.webdriver.common.mobileby import MobileBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.credential_on_the_way import CredentialOnTheWayPage
 
@@ -17,8 +14,9 @@ class CredentialOfferPage(BasePage):
     cred_type_locator = "credential type"
     attribute_locator = "attribute"
     value_locator = "value"
-    accept_locator = "Accept"
-    decline_locator = "Decline"
+    accept_locator = (MobileBy.ID, "com.ariesbifold:id/AcceptCredentialOffer")
+    accept_aid_locator = (MobileBy.ACCESSIBILITY_ID, "Accept")
+    decline_locator = (MobileBy.ID, "com.ariesbifold:id/DeclineCredentialOffer")
 
     def on_this_page(self):
         #print(self.driver.page_source)
@@ -28,15 +26,15 @@ class CredentialOfferPage(BasePage):
         if self.on_this_page():
             # if the credential has a lot of attributes it could need to scroll
             if scroll == True:
-                self.scroll_to_element(self.accept_locator, 1500)
-            self.find_by_accessibility_id(self.accept_locator).click()
+                self.scroll_to_element(self.accept_aid_locator[1])
+            self.find_by(self.accept_locator).click()
             return CredentialOnTheWayPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 
     def select_decline(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.accept_locator).click()
+            self.find_by(self.decline_locator).click()
             # Not sure what is returned here yet
             # return CredentialOfferPage(self.driver)
         else:

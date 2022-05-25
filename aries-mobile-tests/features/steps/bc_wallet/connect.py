@@ -27,8 +27,6 @@ def step_impl(context, pin):
 
 @when('the Holder scans the QR code sent by the "{agent}"')
 def step_impl(context, agent):
-    # TODO sleep is temporary until the wallet initialization moves to its own screen
-    #sleep(40)
     if agent == "issuer":
         qrimage = context.issuer.create_invitation(print_qrcode=context.print_qr_code_on_creation, save_qrcode=context.save_qr_code_on_creation)
     elif agent == "verifier":

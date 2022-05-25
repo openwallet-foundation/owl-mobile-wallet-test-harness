@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.home import HomePage
+from pageobjects.bc_wallet.initialization import InitializationPage
 
 class PINSetupPage(BasePage):
     """PIN Setup page object"""
@@ -51,7 +52,8 @@ class PINSetupPage(BasePage):
         if self.on_this_page():
             self.find_by_element_id(self.create_pin_button_tid_locator).click()
 
-            # return a new page object? The Home page.
-            return HomePage(self.driver)
+            # return the wallet initialization page
+            return InitializationPage(self.driver)
+            #return HomePage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page") 

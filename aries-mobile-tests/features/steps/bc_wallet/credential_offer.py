@@ -115,7 +115,7 @@ def step_impl(context):
         sleep(1)
         i+=1
     if i == 20: # we timed out and it is still connecting
-        context.thisHomePage = context.thisCredentialOnTheWayPage.select_cancel()
+        context.thisHomePage = context.thisCredentialOnTheWayPage.select_home()
     else:
         #assume credential added 
         context.thisCredentialAddedPage = CredentialAddedPage(context.driver)
@@ -134,9 +134,9 @@ def step_impl(context):
 
 @then(u'the credential accepted is at the top of the list')
 def step_impl(context):
-    assert context.thisCredentialsPage.credential_exists(get_expected_credential_name(context))
-    # TODO when testIDs are implemented on this page, get the specific data and assert
-    # also check that it is at the top. 
+    json_elems = context.thisCredentialsPage.get_credentials()
+    assert get_expected_credential_name(context) in json_elems["credentials"][0]["text"]
+    #assert context.thisCredentialsPage.credential_exists(get_expected_credential_name(context))
 
 def get_expected_credential_name(context):
     issuer_type_in_use = context.issuer.get_issuer_type()

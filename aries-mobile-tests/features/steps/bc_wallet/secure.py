@@ -21,7 +21,6 @@ from pageobjects.bc_wallet.pinsetup import PINSetupPage
 def step_impl(context):
     context.execute_steps(f'''
         Given the User is on the Terms and Conditions screen
-        When the User scrolls to the bottom of the screen
         And the users accepts the Terms and Conditions
         And the user clicks continue
     ''')
@@ -41,15 +40,18 @@ def step_impl(context, pin):
 
 @when('the User selects Create PIN')
 def step_impl(context):
-    context.thisHomePage = context.thisPINSetupPage.create_pin()
+    context.thisInitializationPage = context.thisPINSetupPage.create_pin()
+    #context.thisHomePage = context.thisPINSetupPage.create_pin()
 
 
 @then('the User has successfully created a PIN')
 @then('they land on the Home screen')
 def step_impl(context):
-    context.thisHomePage.on_this_page()
+    # The Home page will not show until the initialization page is done. 
+    #assert context.thisInitializationPage.on_this_page()
+    context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     context.thisNavBar = NavBar(context.driver)
 
-    #make sure the wallet is initialized and a connection to the mediator exists
+    #If there are continued problems withconnection we can check if connection to the mediator exists
     #context.thisSettingsPage = context.thisHomePage.select_settings()
     #context.thisSettingsPage.select_connections()
