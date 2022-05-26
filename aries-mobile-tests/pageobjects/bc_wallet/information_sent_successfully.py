@@ -11,8 +11,9 @@ class InformationSentSuccessfullyPage(BasePage):
     """Proof Information sent successfully page object"""
 
     # Locators
-    on_this_page_text_locator = "Information sent successfully"
-    done_locator = "Done"
+    on_this_page_text_locator = "Information approved"
+    approval_locator = (MobileBy.ID, "com.ariesbifold:id/SentProofRequest")
+    done_locator = (MobileBy.ID, "com.ariesbifold:id/Done")
 
     def on_this_page(self):
         #print(self.driver.page_source)
@@ -20,7 +21,7 @@ class InformationSentSuccessfullyPage(BasePage):
 
     def select_done(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.done_locator).click()
+            self.find_by(self.done_locator).click()
             from pageobjects.bc_wallet.home import HomePage
             return HomePage(self.driver)
         else:
