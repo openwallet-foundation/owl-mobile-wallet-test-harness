@@ -48,10 +48,10 @@ class CredentialOfferPage(BasePage):
             value_elements = self.find_multiple_by_id(self.values_locator)
             attributes = []
             for attribute in attribute_elements:
-                attributes = attributes.append[attribute.text]
+                attributes.append(attribute.text)
             values = []
             for value in value_elements:
-                values = values.append[value.text]
+                values.append(value.text)
             return who, cred_type, attributes, values
         else:
             raise Exception(f"App not on the {type(self)} page")

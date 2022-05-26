@@ -1,7 +1,7 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/29
 @Proof @bc_wallet @Story_29
 Feature: Proof
-   In order easily prove my credential details to a verifier
+   In order to easily prove my credential details to a verifier
    As a holder
    I want to be able to review, accept, and decline a proof request
 

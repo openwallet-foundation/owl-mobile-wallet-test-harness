@@ -23,7 +23,7 @@ class ProofRequestPage(BasePage):
 
 
     def on_this_page(self):
-        print(self.driver.page_source)
+        #print(self.driver.page_source)
         return super().on_this_page(self.on_this_page_text_locator)
 
     def select_share(self):
@@ -46,13 +46,13 @@ class ProofRequestPage(BasePage):
             who = self.find_by(self.who_locator).text
             #cred_type = self.find_by_accessibility_id(self.details_locator).text
             attribute_elements = self.find_multiple_by(self.attribute_locator)
-            value_elements = self.find_multiple_by(self.values_locator)
+            value_elements = self.find_multiple_by(self.value_locator)
             attributes = []
             for attribute in attribute_elements:
-                attributes = attributes.append[attribute.text]
+                attributes.append(attribute.text)
             values = []
             for value in value_elements:
-                values = values.append[value.text]
+                values.append(value.text)
             return who, attributes, values
         else:
             raise Exception(f"App not on the {type(self)} page")

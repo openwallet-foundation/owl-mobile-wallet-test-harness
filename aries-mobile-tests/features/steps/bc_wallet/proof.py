@@ -63,8 +63,6 @@ def step_impl(context, proof=None):
 
 @then('holder is brought to the proof request')
 def step_impl(context):
-    # TODO need to click view at this point until story 29 is implemented. Remove view click afterwards.
-    #context.thisProofRequestPage = context.thisHomePage.select_proof_request_notification()
 
     context.thisProofRequestPage = ProofRequestPage(context.driver)
     assert context.thisProofRequestPage.on_this_page()
@@ -72,15 +70,14 @@ def step_impl(context):
 
 @then('they can view the contents of the proof request')
 def step_impl(context):
-    #assert context.thisProofRequestPage.on_this_page()
 
     who, attributes, values=get_expected_proof_request_detail(
         context)
     # The below doesn't have locators in build 127. Calibrate in the future fixed build
     actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
     assert who in actual_who
-    assert attributes in actual_attributes
-    assert values in actual_values
+    assert all(item in attributes for item in actual_attributes)
+    assert all(item in values for item in actual_values)
 
 
 @given('the user has a proof request')
@@ -141,28 +138,6 @@ def step_impl(context):
 @then(u'they are brought Home')
 def step_impl(context):
     context.thisHomePage.on_this_page()
-
-
-# @then(u'the credential accepted is at the top of the list')
-# def step_impl(context):
-#     assert context.thisCredentialsPage.credential_exists(get_expected_credential_name(context))
-#     # TODO when testIDs are implemented on this page, get the specific data and assert
-#     # also check that it is at the top.
-
-# def get_expected_credential_name(context):
-#     issuer_type_in_use = context.issuer.get_issuer_type()
-#     found = False
-#     for row in context.table:
-#         if row["issuer_agent_type"] == issuer_type_in_use:
-#             cred_name = row["credential_name"]
-#             found = True
-#             # get out of loop at the first found row. Can't see a reason for multiple rows of the same agent type
-#             break
-#     if found == False:
-#         raise Exception(
-#             f"No credential name in table data for {issuer_type_in_use}"
-#         )
-#     return cred_name
 
 def get_expected_proof_request_detail(context):
     verifier_type_in_use=context.verifier.get_issuer_type()
