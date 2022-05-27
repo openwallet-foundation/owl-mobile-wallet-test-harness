@@ -58,11 +58,11 @@ jobs:
       #       region: us-west-1
       - name: run-sauce-connect-tunnel
         run: |
-          docker run -t \
+          docker run \
             -e SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} \
             -e SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} \
             --network="host" \
-            -it saucelabs/sauce-connect
+            -t saucelabs/sauce-connect
 
       - name: Run SauceLabs smoke-test
         uses: ./.github/workflows/run-test-harness
