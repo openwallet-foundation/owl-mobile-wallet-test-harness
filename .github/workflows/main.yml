@@ -58,7 +58,7 @@ jobs:
       #       region: us-west-1
       - name: run-sauce-connect-tunnel
         run: |
-          docker run \
+          docker run -t \
             -e SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} \
             -e SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} \
             --network="host" \
