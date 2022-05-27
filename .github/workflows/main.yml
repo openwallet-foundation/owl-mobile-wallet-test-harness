@@ -89,7 +89,7 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet -t @T002.1-Proof"
+          TEST_SCOPE: "-t @bc_wallet -t ~@wip"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
