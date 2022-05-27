@@ -47,7 +47,7 @@ jobs:
       - name: run-aath-agents
         uses: ./.github/workflows/run-aath-agents
         with:
-          USE_NGROK: "-n"
+          USE_NGROK: ""
 
       # - name: run-sauce-connect-tunnel
       #   uses: saucelabs/sauce-connect-action@v2
@@ -56,16 +56,21 @@ jobs:
       #       accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
       #       tunnelIdentifier: github-action-tunnel
       #       region: us-west-1
-      - name: run-sauce-connect-tunnel
-        run: |
-          docker run \
-            -e SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} \
-            -e SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} \
-            --network="host" \
-            -i saucelabs/sauce-connect
-        shell: bash
+      - name: Saucectl RUN Docker and Cloud
+        uses: saucelabs/saucectl-run-action@v1
         env:
-          NO_TTY: "1"
+          SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
+          SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
+        with:
+          testing-environment: ""
+          concurrency: 10
+      # - name: run-sauce-connect-tunnel
+      #   run: |
+      #     docker run \
+      #       -e SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} \
+      #       -e SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} \
+      #       --network="host" \
+      #       -i saucelabs/sauce-connect
 
       - name: Run SauceLabs smoke-test
         uses: ./.github/workflows/run-test-harness
