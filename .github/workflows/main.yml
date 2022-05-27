@@ -34,9 +34,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - mobile-platform: "-p Android"
-            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.aab"
-            report-project: "android-multi-device-full"
+          # - mobile-platform: "-p Android"
+          #   app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.aab"
+          #   report-project: "android-multi-device-full"
           - mobile-platform: "-p iOS"
             app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
             report-project: "ios-multi-device-full"
@@ -47,7 +47,7 @@ jobs:
       - name: run-aath-agents
         uses: ./.github/workflows/run-aath-agents
         with:
-          USE_NGROK: ""
+          USE_NGROK: "-n"
 
       # - name: run-sauce-connect-tunnel
       #   uses: saucelabs/sauce-connect-action@v2
