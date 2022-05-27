@@ -62,7 +62,10 @@ jobs:
             -e SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} \
             -e SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} \
             --network="host" \
-            saucelabs/sauce-connect
+            -i saucelabs/sauce-connect
+        shell: bash
+        env:
+          NO_TTY: "1"
 
       - name: Run SauceLabs smoke-test
         uses: ./.github/workflows/run-test-harness
