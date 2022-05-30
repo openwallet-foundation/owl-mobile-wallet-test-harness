@@ -54,8 +54,8 @@ jobs:
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          tunnelIdentifier: github-action-tunnel
-      #       region: us-west-1
+      #    tunnelIdentifier: github-action-tunnel
+      #    region: us-west-1
 
       # - name: Saucectl RUN Docker and Cloud
       #   uses: saucelabs/saucectl-run-action@v1
