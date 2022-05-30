@@ -34,9 +34,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - mobile-platform: "-p Android"
-            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.aab"
-            report-project: "android-multi-device-full"
+          # - mobile-platform: "-p Android"
+          #   app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.aab"
+          #   report-project: "android-multi-device-full"
           - mobile-platform: "-p iOS"
             app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
             report-project: "ios-multi-device-full"
@@ -49,12 +49,12 @@ jobs:
         with:
           USE_NGROK: ""
 
-      # - name: run-sauce-connect-tunnel
-      #   uses: saucelabs/sauce-connect-action@v2
-      #   with:
-      #       username: ${{ secrets.SAUCE_USERNAME }}
-      #       accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-      #       tunnelIdentifier: github-action-tunnel
+      - name: run-sauce-connect-tunnel
+        uses: saucelabs/sauce-connect-action@v2
+        with:
+          username: ${{ secrets.SAUCE_USERNAME }}
+          accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
+          tunnelIdentifier: github-action-tunnel
       #       region: us-west-1
 
       # - name: Saucectl RUN Docker and Cloud
@@ -66,14 +66,14 @@ jobs:
       #     testing-environment: ""
       #     concurrency: 10
 
-      - name: run-sauce-connect-tunnel
-        run: |
-          docker run \
-            -e SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} \
-            -e SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} \
-            --network="host" \
-            --detach \
-            saucelabs/sauce-connect
+      # - name: run-sauce-connect-tunnel
+      #   run: |
+      #     docker run \
+      #       -e SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} \
+      #       -e SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} \
+      #       --network="host" \
+      #       --detach \
+      #       saucelabs/sauce-connect
 
       - name: Run SauceLabs smoke-test
         uses: ./.github/workflows/run-test-harness
@@ -89,7 +89,7 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet -t ~@wip"
+          TEST_SCOPE: "-t @bc_wallet -t @T001-Proof"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
