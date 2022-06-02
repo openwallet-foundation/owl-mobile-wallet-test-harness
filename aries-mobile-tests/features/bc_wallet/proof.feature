@@ -64,8 +64,43 @@ Feature: Proof
          | cred_data_photo_id | proof_photo_id |
 
 
+   @T003-Proof @critical @AcceptanceTest @Revocation
+   Scenario Outline: Holder accepts the proof request of a revoked credential where the verifier cares if the credential was revoked
+      Given the User has skipped on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And a connection has been successfully made
+      And the holder has a credential of <credential>
+         | issuer_agent_type | credential_name    |
+         | AATHIssuer        | Photo Id Revokable |
+      And the credential has been revoked by the issuer
+      When the user has a proof request for <proof> including proof of non-revocation at <interval>
+      Then they can only select Decline
+      And they are asked if they are sure they want to decline the Proof
+      And they Confirm the decline
+      And they are brought home
+
+      Examples:
+         | credential                   | proof                    | interval |
+         | cred_data_photo_id_revokable | proof_photo_id_revokable | now:now  |
+
+
+   @T004-Proof @critical @AcceptanceTest @Revocation @wip
+   Scenario Outline: Holder accepts the proof request of a non-revoked revokable credential where the verifier cares if the credential was revoked
+
+
+
+   @T005-Proof @critical @AcceptanceTest @Revocation @wip
+   Scenario Outline: Holder accepts the proof request of a revoked credential where the verifier doesn't care if the credential was revoked
+
+
+
+   @T006-Proof @critical @AcceptanceTest @Revocation @wip
+   Scenario Outline: Holder accepts the proof request of a non-revoked revokable credential where the verifier doesn't care if the credential was revoked
+
+
+   @T007-Proof @critical @AcceptanceTest @Revocation @wip
+   Scenario Outline: Holder accepts the proof request of a non-revoked credential and presents a non-revokable credential
+# if a non-revokable credential can be presented then that should take precedent over revokable credentials since it de facto satisfies proof of non-revocation.
+
 #Connectionless
-
-#Revokable
-
-#revoked
