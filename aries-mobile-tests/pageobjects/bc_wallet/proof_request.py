@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.sending_information_securely import SendingInformationSecurelyPage
+from pageobjects.bc_wallet.are_you_sure_decline_proof_request import AreYouSureDeclineProofRequestPage
 
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -37,7 +38,7 @@ class ProofRequestPage(BasePage):
         if self.on_this_page():
             self.find_by(self.decline_locator).click()
             # Not sure what is returned here yet
-            # return CredentialOfferPage(self.driver)
+            return AreYouSureDeclineProofRequestPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 

@@ -45,3 +45,7 @@ class IssuerAgentInterface(ABC):
     @abstractmethod
     def send_credential(self, version: int = 1, credential_data=None, revokable: bool = False):
         """create an invitation and return the json back to the caller """
+
+    @abstractmethod
+    def revoke_credential(self):
+        """revoke a credential"""

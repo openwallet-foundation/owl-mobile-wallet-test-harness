@@ -46,7 +46,12 @@ def step_impl(context, credential):
         try:
             cred_type_json_file = open(f"features/data/schema_{cred_type.lower()}.json")
             cred_type_json = json.load(cred_type_json_file)
-            context.issuer.send_credential(schema=cred_type_json, credential_offer=credential_json)
+            # check if the credential is revokable
+            if "support_revocation" in cred_type_json and cred_type_json["support_revocation"] == True:
+                rev = True
+            else:
+                rev = False
+            context.issuer.send_credential(schema=cred_type_json, credential_offer=credential_json, revokable=rev)
         except FileNotFoundError:
             print(f"FileNotFoundError: features/data/schema_{cred_type.lower()}.json")
     except FileNotFoundError:
@@ -124,6 +129,7 @@ def step_impl(context):
 
 @when('they select Done')
 def step_impl(context):
+    # TODO we could be on the home page at this point. Should we fail the last step, fail this one, or try the cred accept again?
     context.thisCredentialsPage = context.thisCredentialAddedPage.select_done()
 
 
