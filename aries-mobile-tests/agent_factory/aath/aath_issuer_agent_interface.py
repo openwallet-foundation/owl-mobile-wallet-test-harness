@@ -94,6 +94,37 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
         else:
             self.credential_json = json.loads(resp_text)
 
+    def revoke_credential(self, publish_immediately=True, notify_holder=False):
+        """revoke a credential"""
+        topic = "revocation"
+
+        cred_rev_id, rev_reg_id = self._get_revocation_ids(self.credential_json["thread_id"]);
+
+        credential_revocation = {
+            "cred_rev_id": cred_rev_id,
+            "rev_registry_id": rev_reg_id,
+            "publish_immediately": publish_immediately,
+        }
+
+        # TODO get the connection ID for the relationship. Could be in the get_revocation_ids call above. 
+        if notify_holder:
+            # connection_id = context.connection_id_dict[issuer][context.holder_name]
+            # credential_revocation["notify_connection_id"] = connection_id
+            pass
+
+        (resp_status, resp_text) = agent_controller_POST(
+            self.endpoint + "/agent/command/",
+            topic,
+            operation="revoke",
+            data=credential_revocation,
+        )
+        if resp_status != 200:
+            raise Exception(
+                f"Call to send credential failed: {resp_status}; {resp_text}"
+            )
+        else:
+            self.credential_json = json.loads(resp_text)
+
     def _get_public_did(self):
         (resp_status, resp_text) = agent_controller_GET(
             self.endpoint + "/agent/command/", "did"
@@ -134,3 +165,20 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
         else:
             resp_json = json.loads(resp_text)
             self._credential_definition["credential_definition_id"] = resp_json["credential_definition_id"]
+
+    def _get_revocation_ids(self, thread_id):
+
+        (resp_status, resp_text) = agent_controller_GET(
+            self.endpoint + "/agent/response/",
+            "revocation-registry",
+            id=thread_id,
+        )
+        if resp_status != 200:
+            raise Exception(
+                f"Call to get revocation ids failed: {resp_status}; {resp_text}"
+            )
+        else:
+            resp_json = json.loads(resp_text)
+            cred_rev_id = resp_json["revocation_id"]
+            rev_reg_id = resp_json["revoc_reg_id"]
+            return cred_rev_id, rev_reg_id

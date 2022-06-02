@@ -9,7 +9,7 @@ from time import sleep
 
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
-from agent_test_utils import get_qr_code_from_invitation, table_to_str
+from agent_test_utils import get_qr_code_from_invitation, table_to_str, create_non_revoke_interval
 # import Page Objects needed
 # from pageobjects.bc_wallet.credential_offer_notification import CredentialOfferNotificationPage
 from pageobjects.bc_wallet.information_sent_successfully import InformationSentSuccessfullyPage
@@ -41,9 +41,10 @@ def step_impl(context, credential):
         Then they are brought to the list of credentials
     ''')
 
+@when('the Holder receives a proof of non-revocation with {proof} at {interval}')
 @when('the Holder receives a proof request of {proof}')
 @when('the Holder receives a proof request')
-def step_impl(context, proof=None):
+def step_impl(context, proof=None, interval=None):
     # Make sure the connection is successful first.
     context.execute_steps('''
         Then there is a connection between "verifier" and Holder
@@ -56,6 +57,9 @@ def step_impl(context, proof=None):
         try:
             proof_json_file = open("features/data/" + proof.lower() + ".json")
             proof_json = json.load(proof_json_file)
+            # check if we are adding a revocation interval to the proof request and add it.
+            if interval:
+                proof_json["non_revoked"] = (create_non_revoke_interval(interval)["non_revoked"])
             context.verifier.send_proof_request(request_for_proof=proof_json)
         except FileNotFoundError:
             print("FileNotFoundError: features/data/" + proof.lower() + ".json")
@@ -67,6 +71,17 @@ def step_impl(context):
     context.thisProofRequestPage = ProofRequestPage(context.driver)
     assert context.thisProofRequestPage.on_this_page()
 
+@then('they can only select Decline')
+def step_impl(context):
+    context.thisAreYouSureDeclineProofRequest = context.thisProofRequestPage.select_decline()
+
+@then('they are asked if they are sure they want to decline the Proof')
+def step_impl(context):
+    context.thisAreYouSureDeclineProofRequest.on_this_page()
+
+@then('they Confirm the decline')
+def step_impl(context):
+    context.thisHomePage = context.thisAreYouSureDeclineProofRequest.select_confirm()
 
 @then('they can view the contents of the proof request')
 def step_impl(context):
@@ -90,14 +105,25 @@ def step_impl(context):
         Then holder is brought to the proof request
     ''')
 
-
+@when('the user has a proof request for {proof} including proof of non-revocation at {interval}')
 @given('the user has a proof request for {proof}')
-def step_impl(context, proof):
-    context.execute_steps(f'''
+def step_impl(context, proof, interval=None):
+    context.execute_steps('''
         When the Holder scans the QR code sent by the "verifier"
         And the Holder is taken to the Connecting Screen/modal
         And the Connecting completes successfully
-        And the Holder receives a proof request of {proof}
+    ''')
+
+    if interval:
+        context.execute_steps(f'''
+            When the Holder receives a proof of non-revocation with {proof} at {interval}
+        ''')
+    else:
+        context.execute_steps(f'''
+            When the Holder receives a proof request of {proof}
+        ''')        
+
+    context.execute_steps('''
         Then holder is brought to the proof request
     ''')
 
@@ -138,6 +164,12 @@ def step_impl(context):
 @then(u'they are brought Home')
 def step_impl(context):
     context.thisHomePage.on_this_page()
+
+
+@given('the credential has been revoked by the issuer')
+def step_impl(context):
+    context.issuer.revoke_credential()
+
 
 def get_expected_proof_request_detail(context):
     verifier_type_in_use=context.verifier.get_issuer_type()
