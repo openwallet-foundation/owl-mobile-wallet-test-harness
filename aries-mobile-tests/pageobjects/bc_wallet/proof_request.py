@@ -5,11 +5,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.sending_information_securely import SendingInformationSecurelyPage
 from pageobjects.bc_wallet.are_you_sure_decline_proof_request import AreYouSureDeclineProofRequestPage
+from pageobjects.bc_wallet.proof_request_details import ProofRequestDetailsPage
 
 
 # These classes can inherit from a BasePage to do common setup and functions
 class ProofRequestPage(BasePage):
-    """Proof Request Details page object"""
+    """Proof Request page object"""
 
     # Locators
     # Wireframes state different text here, so it will probably change to this
@@ -31,6 +32,13 @@ class ProofRequestPage(BasePage):
         if self.on_this_page():
             self.find_by(self.share_locator).click()
             return SendingInformationSecurelyPage(self.driver)
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+
+    def select_details(self):
+        if self.on_this_page():
+            self.find_by(self.details_locator).click()
+            return ProofRequestDetailsPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 
