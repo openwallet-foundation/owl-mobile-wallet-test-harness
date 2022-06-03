@@ -85,22 +85,118 @@ Feature: Proof
          | cred_data_photo_id_revokable | proof_photo_id_revokable | now:now  |
 
 
-   @T004-Proof @critical @AcceptanceTest @Revocation @wip
+   @T004-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked revokable credential where the verifier cares if the credential was revoked
+      Given the User has skipped on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And a connection has been successfully made
+      And the holder has a credential of <credential>
+         | issuer_agent_type | credential_name    |
+         | AATHIssuer        | Photo Id Revokable |
+      When the user has a proof request for <proof> including proof of non-revocation at <interval>
+      And they select Share
+      And the holder is informed that they are sending information securely
+      And once the proof is verified they are informed of such
+      And they select Done on the verfified information
+      Then they are brought Home
+
+      Examples:
+         | credential                   | proof                    | interval |
+         | cred_data_photo_id_revokable | proof_photo_id_revokable | now:now  |
 
 
-
-   @T005-Proof @critical @AcceptanceTest @Revocation @wip
+   @T005-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a revoked credential where the verifier doesn't care if the credential was revoked
+      Given the User has skipped on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And a connection has been successfully made
+      And the holder has a credential of <credential>
+         | issuer_agent_type | credential_name    |
+         | AATHIssuer        | Photo Id Revokable |
+      And the credential has been revoked by the issuer
+      When the user has a proof request for <proof>
+      And they select Share
+      And the holder is informed that they are sending information securely
+      And once the proof is verified they are informed of such
+      And they select Done on the verfified information
+      Then they are brought Home
+
+      Examples:
+         | credential                   | proof                    |
+         | cred_data_photo_id_revokable | proof_photo_id_revokable |
 
 
-
-   @T006-Proof @critical @AcceptanceTest @Revocation @wip
+   @T006-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked revokable credential where the verifier doesn't care if the credential was revoked
+      Given the User has skipped on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And a connection has been successfully made
+      And the holder has a credential of <credential>
+         | issuer_agent_type | credential_name    |
+         | AATHIssuer        | Photo Id Revokable |
+      When the user has a proof request for <proof>
+      And they select Share
+      And the holder is informed that they are sending information securely
+      And once the proof is verified they are informed of such
+      And they select Done on the verfified information
+      Then they are brought Home
+
+      Examples:
+         | credential                   | proof                    |
+         | cred_data_photo_id_revokable | proof_photo_id_revokable |
 
 
-   @T007-Proof @critical @AcceptanceTest @Revocation @wip
+   # if a non-revokable credential can be presented then that should take precedent over revokable credentials since it de facto satisfies proof of non-revocation.
+   @T007-Proof @normal @AcceptanceTest @Revocation @wip
    Scenario Outline: Holder accepts the proof request of a non-revoked credential and presents a non-revokable credential
-# if a non-revokable credential can be presented then that should take precedent over revokable credentials since it de facto satisfies proof of non-revocation.
+      Given the User has skipped on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And a connection has been successfully made
+      And the holder has a credential of <credential>
+         | issuer_agent_type | credential_name |
+         | AATHIssuer        | Photo Id        |
+      And the holder has another credential of <credential_2>
+         | issuer_agent_type | credential_name    |
+         | AATHIssuer        | Photo Id Revokable |
+      When the user has a proof request for <proof> including proof of non-revocation at <interval>
+      Then <credential_name> is selected as the credential to verify the proof
+      And they select Share
+      And the holder is informed that they are sending information securely
+      And once the proof is verified they are informed of such
+      And they select Done on the verfified information
+      And they are brought Home
+
+      Examples:
+         | credential         | credential_2                 | proof                                          | interval |
+         | cred_data_photo_id | cred_data_photo_id_revokable | proof_photo_id_revokable_no_schema_restriction | now:now  |
+
+
+   @T008-Proof @critical @AcceptanceTest @Revocation @wip
+   Scenario Outline: Holder accepts the proof request of a non-revoked credential and presents a non-revokable credential that has been revoked and reissued
+      Given the User has skipped on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And a connection has been successfully made
+      And the holder has a credential of <credential>
+         | issuer_agent_type | credential_name    |
+         | AATHIssuer        | Photo Id Revokable |
+      And the credential has been revoked by the issuer
+      And the holder has a credential of <credential>
+         | issuer_agent_type | credential_name    |
+         | AATHIssuer        | Photo Id Revokable |
+      When the user has a proof request for <proof> including proof of non-revocation at <interval>
+      And they select Share
+      And the holder is informed that they are sending information securely
+      And once the proof is verified they are informed of such
+      And they select Done on the verfified information
+      And they are brought Home
+
+      Examples:
+         | credential                   | proof                    | interval |
+         | cred_data_photo_id_revokable | proof_photo_id_revokable | now:now  |
 
 #Connectionless
