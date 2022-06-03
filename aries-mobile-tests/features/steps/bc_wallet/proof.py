@@ -41,6 +41,13 @@ def step_impl(context, credential):
         Then they are brought to the list of credentials
     ''')
 
+@given('the holder has another credential of {credential_2}')
+def step_impl(context, credential_2):
+    context.execute_steps(f'''
+        Given a connection has been successfully made
+        Given the holder has a credential of {credential_2}
+    ''')
+
 @when('the Holder receives a proof of non-revocation with {proof} at {interval}')
 @when('the Holder receives a proof request of {proof}')
 @when('the Holder receives a proof request')
@@ -105,6 +112,7 @@ def step_impl(context):
         Then holder is brought to the proof request
     ''')
 
+@when('the user has a proof request for {proof}')
 @when('the user has a proof request for {proof} including proof of non-revocation at {interval}')
 @given('the user has a proof request for {proof}')
 def step_impl(context, proof, interval=None):
@@ -128,16 +136,26 @@ def step_impl(context, proof, interval=None):
     ''')
 
 
+@then('<credential_name> is selected as the credential to verify the proof')
+def step_impl(context, credential_name):
+    context.thisProofRequestDetailsPage = context.thisProofRequestPage.select_details()
+    credential_details = context.thisProofRequestDetailsPage.get_first_credential_details()
+    assert credential_name in credential_details
+    context.thisProofRequestPage = context.thisProofRequestDetailsPage.select_back()
+
+
+@then('they select Share')
 @when('they select Share')
 def step_impl(context):
     context.thisSendingInformationSecurleyPage = context.thisProofRequestPage.select_share()
 
-
+@then('the holder is informed that they are sending information securely')
 @when('the holder is informed that they are sending information securely')
 def step_impl(context):
     assert context.thisSendingInformationSecurleyPage.on_this_page()
 
 
+@then('once the proof is verified they are informed of such')
 @when('once the proof is verified they are informed of such')
 def step_impl(context):
     # The Cred is on the way screen is temporary, loop until it goes away and create the cred added page.
@@ -155,7 +173,7 @@ def step_impl(context):
         context.thisInformationSentSuccessfullyPage = InformationSentSuccessfullyPage(context.driver)
         assert context.thisInformationSentSuccessfullyPage.on_this_page()
 
-
+@then('they select Done on the verfified information')
 @when('they select Done on the verfified information')
 def step_impl(context):
     context.thisHomePage = context.thisInformationSentSuccessfullyPage.select_done()
