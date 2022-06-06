@@ -12,18 +12,10 @@ class SendingInformationSecurelyPage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Sending the information securely"
-    back_to_home_locator = "Go back to home"
 
     def on_this_page(self):
         #print(self.driver.page_source)
         return super().on_this_page(self.on_this_page_text_locator)
 
-    def select_back_to_home(self):
-        if self.on_this_page():
-            self.find_by_accessibility_id(self.back_to_home_locator).click()
-            from pageobjects.bc_wallet.home import HomePage
-            return HomePage(self.driver)
-        else:
-            raise Exception(f"App not on the {type(self)} page")
 
 

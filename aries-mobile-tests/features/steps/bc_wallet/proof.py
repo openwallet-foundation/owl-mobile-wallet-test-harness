@@ -13,6 +13,7 @@ from agent_test_utils import get_qr_code_from_invitation, table_to_str, create_n
 # import Page Objects needed
 # from pageobjects.bc_wallet.credential_offer_notification import CredentialOfferNotificationPage
 from pageobjects.bc_wallet.information_sent_successfully import InformationSentSuccessfullyPage
+from pageobjects.bc_wallet.information_approved import InformationApprovedPage
 from pageobjects.bc_wallet.proof_request import ProofRequestPage
 from pageobjects.bc_wallet.home import HomePage
 
@@ -152,8 +153,16 @@ def step_impl(context):
 @then('the holder is informed that they are sending information securely')
 @when('the holder is informed that they are sending information securely')
 def step_impl(context):
-    assert context.thisSendingInformationSecurleyPage.on_this_page()
+    # this step may quickly disappear, so don't fail a test if this is already gone, see if we are on the information sent page
+    while context.thisSendingInformationSecurleyPage.on_this_page():
+        pass
+    #context.thisInformationSentSuccessfullyPage = InformationSentSuccessfullyPage(context.driver)
 
+@then('they are informed that the information sent successfully')
+@when('they are informed that the information sent successfully')
+def step_impl(context):
+    context.thisInformationSentSuccessfullyPage = InformationSentSuccessfullyPage(context.driver)
+    #assert context.thisInformationSentSuccessfullyPage.on_this_page()
 
 @then('once the proof is verified they are informed of such')
 @when('once the proof is verified they are informed of such')
@@ -161,22 +170,22 @@ def step_impl(context):
     # The Cred is on the way screen is temporary, loop until it goes away and create the cred added page.
     timeout=20
     i=0
-    while context.thisSendingInformationSecurleyPage.on_this_page() and i < timeout:
+    while context.thisInformationSentSuccessfullyPage.on_this_page() and i < timeout:
         # need to break out here incase we are stuck on connecting?
         # if we are too long, we need to click the Go back to home button.
         sleep(1)
         i+=1
     if i == 20: # we timed out and it is still connecting
-        context.thisHomePage = context.thisSendingInformationSecurleyPage.select_back_to_home()
+        context.thisHomePage = context.thisInformationSentSuccessfullyPage.select_back_to_home()
     else:
         #assume credential added
-        context.thisInformationSentSuccessfullyPage = InformationSentSuccessfullyPage(context.driver)
-        assert context.thisInformationSentSuccessfullyPage.on_this_page()
+        context.thisInformationApprovedPage = InformationApprovedPage(context.driver)
+        assert context.thisInformationApprovedPage.on_this_page()
 
 @then('they select Done on the verfified information')
 @when('they select Done on the verfified information')
 def step_impl(context):
-    context.thisHomePage = context.thisInformationSentSuccessfullyPage.select_done()
+    context.thisHomePage = context.thisInformationApprovedPage.select_done()
 
 
 @then(u'they are brought Home')
