@@ -45,7 +45,14 @@ class BasePage(object):
         if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID:
             return self.find_multiple_by_accessibility_id(locator_tpl[1], timeout)
         elif locator_tpl[0] == MobileBy.ID:
-            return self.find_multiple_by_id(locator_tpl[1], timeout)
+            # It may be that Android will return none when looking for multiple
+            # so if we get an empty element array here try find_by instead.
+            elems = self.find_multiple_by_id(locator_tpl[1], timeout)
+            if len(elems) == 0:
+                elem = self.find_by_element_id(locator_tpl[1], timeout)
+                elems.append(elem)
+            return elems
+            #return self.find_multiple_by_id(locator_tpl[1], timeout)
 
     # Locate by Accessibility id
     def find_by_accessibility_id(self, locator, timeout=20):

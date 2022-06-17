@@ -113,15 +113,23 @@ def step_impl(context):
         Then holder is brought to the proof request
     ''')
 
+@when('the user has a connectionless proof request for {proof}')
 @when('the user has a proof request for {proof}')
 @when('the user has a proof request for {proof} including proof of non-revocation at {interval}')
 @given('the user has a proof request for {proof}')
 def step_impl(context, proof, interval=None):
-    context.execute_steps('''
-        When the Holder scans the QR code sent by the "verifier"
-        And the Holder is taken to the Connecting Screen/modal
-        And the Connecting completes successfully
-    ''')
+    if "connectionless" in context.scenario.name:
+        context.execute_steps('''
+            When the Holder scans the QR code sent by the "verifier"
+            # And the Holder is taken to the Connecting Screen/modal
+            # And the Connecting completes successfully
+        ''')
+    else:
+        context.execute_steps('''
+            When the Holder scans the QR code sent by the "verifier"
+            And the Holder is taken to the Connecting Screen/modal
+            And the Connecting completes successfully
+        ''')
 
     if interval:
         context.execute_steps(f'''
@@ -197,6 +205,41 @@ def step_impl(context):
 def step_impl(context):
     context.issuer.revoke_credential()
 
+@given('the PCTF Member has setup thier Wallet')
+def step_impl(context):
+    context.execute_steps(f'''
+            Given the User has skipped on-boarding
+            And the User has accepted the Terms and Conditions
+            And a PIN has been set up with "369369"
+        ''')
+    #pass
+
+@given('the PCTF member has an Unverified Person {credential}')
+def step_impl(context, credential):
+    context.execute_steps(f'''
+        Given the user has a credential offer of {credential}
+        And they Scan the credential offer QR Code
+        When they select Accept
+        And the holder is informed that their credential is on the way with an indication of loading
+        And once the credential arrives they are informed that the Credential is added to your wallet
+        And they select Done
+        Then they are brought to the list of credentials
+    ''')
+
+@given('they Scan the credential offer QR Code')
+def step_impl(context):
+    context.thisConnectingPage = context.thisNavBar.select_scan()
+
+@given('the user has a connectionless proof request for access to PCTF Chat')
+def step_impl(context):
+    qrcode = context.verifier.send_proof_request()
+    context.thisNavBar.inject_connection_invite_qr_code(qrcode)
+
+    context.thisConnectingPage = context.thisNavBar.select_scan()
+
+@then('the PCTF member has access to chat')
+def step_impl(context):
+    context.verifier.proof_request_verified()
 
 def get_expected_proof_request_detail(context):
     verifier_type_in_use=context.verifier.get_issuer_type()
