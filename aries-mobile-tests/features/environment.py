@@ -75,7 +75,9 @@ def before_feature(context, feature):
 def before_scenario(context, scenario):
     # TODO go through the sceanrio tags and find the unique id, starts with T, and prefix it to the name. 
     # maybe put the feature in it as well like Feature:TestID:Scenario
-    CONFIG['capabilities']['name'] = scenario.name
+    CONFIG['capabilities']['sauce:options'] = {
+        'name': scenario.name
+    }
     CONFIG['capabilities']['fullReset'] = True
     desired_capabilities = CONFIG['capabilities']
     print("\n\nDesired Capabilities passed to Appium:")
