@@ -12,11 +12,11 @@ class PINSetupPage(BasePage):
     # Locators
     #on_this_page_text_locator = "Enter Pin"
     on_this_page_text_locator = "Remember your PIN"
-    first_pin_locator = (MobileBy.ACCESSIBILITY_ID, "Enter a 6 digit PIN-1")
-    #first_pin_locator = (MobileBy.ID, "com.ariesbifold:id/EnterPIN-1")
+    #first_pin_locator = (MobileBy.ACCESSIBILITY_ID, "Enter a 6 digit PIN-1")
+    first_pin_locator = (MobileBy.ID, "com.ariesbifold:id/EnterPIN")
     first_pin_visibility_locator = (MobileBy.ID, "com.ariesbifold:id/EnterPINVisability")
-    second_pin_locator = (MobileBy.ACCESSIBILITY_ID, "Re-Enter PIN-1")
-    #second_pin_tid_locator = (MobileBy.ID, "com.ariesbifold:id/ReenterPIN-1")
+    #second_pin_locator = (MobileBy.ACCESSIBILITY_ID, "Re-Enter PIN-1")
+    second_pin_locator = (MobileBy.ID, "com.ariesbifold:id/ReenterPIN")
     second_pin_visibility_locator = (MobileBy.ID, "com.ariesbifold:id/ReenterPINVisability")
     #create_pin_button_aid_locator = "Create"
     create_pin_button_tid_locator = (MobileBy.ID, "com.ariesbifold:id/CreatePIN")

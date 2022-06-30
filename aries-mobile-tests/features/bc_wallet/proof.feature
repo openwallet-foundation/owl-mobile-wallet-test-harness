@@ -219,8 +219,7 @@ Feature: Proof
       When they select Share
       And the holder is informed that they are sending information securely
       And they are informed that the information sent successfully
-      And once the proof is verified they are informed of such
-      And they select Done on the verfified information
+      And they select Done on information sent successfully
       Then the PCTF member has access to chat
 
       Examples:

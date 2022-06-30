@@ -5,6 +5,7 @@ Class for actual PCFT Verifier agent
 from agent_factory.verifier_agent_interface import VerifierAgentInterface
 from sys import platform
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.utils import ChromeType
@@ -26,15 +27,21 @@ class PCFT_Chat_VerifierAgentInterface(VerifierAgentInterface):
         # Standup Selenuim Driver with endpoint
         super().__init__(endpoint)
         if platform == "linux" or platform == "linux2":
-            self.driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
+            print("Starting Chromium on linux for Verifier Agent")
+            options = Options()
+            options.add_argument("--no-sandbox")
+            #options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--headless")
+            self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
+            #self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
         else:
+            print("Starting Chrome on Mac or Windows for Verifier Agent")
             self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         # go to the issuer endpoint in the browser
         self.driver.get(self.endpoint)
         # instantiate intial page objects
         self._terms_of_service_page = TermsOfServicePage(self.driver)
         # make sure we are on the first page, the terms of service page
-        #sleep(1)
         if not self._terms_of_service_page.on_this_page():
             raise Exception('Something is wrong, not on the Terms of Service Page for the PCFT Chat Verification')
 

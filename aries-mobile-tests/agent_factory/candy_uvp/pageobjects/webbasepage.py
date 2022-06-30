@@ -10,15 +10,21 @@ class WebBasePage(object):
     """A base page object to do things common to all web based page objects"""
 
     def on_this_page(self, locator, timeout=10):
-        found_locator = False
-        i = 0
-        while found_locator == False and i < timeout:
-            if locator in self.get_page_source():
-                found_locator = True
+        if type(locator) is tuple:
+            if self.find_by(locator, timeout):
+                return True
             else:
-                found_locator = False
-            i = i + 1
-        return found_locator
+                return False
+        else:
+            found_locator = False
+            i = 0
+            while found_locator == False and i < timeout:
+                if locator in self.get_page_source():
+                    found_locator = True
+                else:
+                    found_locator = False
+                i = i + 1
+            return found_locator
 
     # Initialize and define the type of driver as WebDriver
 

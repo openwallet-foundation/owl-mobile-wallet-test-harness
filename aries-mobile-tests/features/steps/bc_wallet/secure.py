@@ -43,6 +43,7 @@ def step_impl(context, pin):
 @when('the User selects Create PIN')
 def step_impl(context):
     context.thisInitializationPage = context.thisPINSetupPage.create_pin()
+    context.driver.execute_script('sauce:biometrics-authenticate=true')
     #context.thisHomePage = context.thisPINSetupPage.create_pin()
 
 

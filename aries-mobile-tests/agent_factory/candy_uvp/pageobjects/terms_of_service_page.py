@@ -8,12 +8,14 @@ class TermsOfServicePage(WebBasePage):
 
     # Locators
     on_this_page_text_locator = "Terms of Service"
+    on_this_page_locator = (By.XPATH, '//*[@id="app"]/div/main/div/div/div/div[1]/div/div/h3[1]/strong')
     i_agree_locator = (By.CLASS_NAME, 'v-input--selection-controls__ripple')
     agree_button_locator = (By.CLASS_NAME, "v-btn__content")
 
 
-    def on_this_page(self):      
-        return super().on_this_page(self.on_this_page_text_locator) 
+    def on_this_page(self):   
+        return super().on_this_page(self.on_this_page_locator, timeout=20)    
+        #return super().on_this_page(self.on_this_page_text_locator, timeout=20) 
 
     def select_i_agree(self):
         if self.on_this_page():

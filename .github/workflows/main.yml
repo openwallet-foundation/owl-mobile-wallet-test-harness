@@ -57,7 +57,7 @@ jobs:
             tunnelIdentifier: github-action-tunnel
             region: us-west-1
 
-      - name: Run SauceLabs smoke-test
+      - name: Run AMTH All Tests
         uses: ./.github/workflows/run-test-harness
         env:
           LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
@@ -71,11 +71,29 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet -t ~@wip"
+          TEST_SCOPE: "-t @bc_wallet -t ~@wip -t ~@Connectionless"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
-      - name: Upload smoke-test results to Allure
+      - name: Run AMTH Connectionless Tests
+        uses: ./.github/workflows/run-test-harness
+        env:
+          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
+          REGION: "us-west-1"
+        with:
+          MOBILE_WALLET: "-w bc_wallet"
+          ISSUER_AGENT: '-i "CANdy_UVP;https://openvp-candy-issuer-test.apps.silver.devops.gov.bc.ca/"'
+          VERIFIER_AGENT: '-v "PCFT_Chat;https://pctftest-test.vonx.io/"'
+          DEVICE_CLOUD: "-d SauceLabs"
+          DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
+          DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
+          MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
+          APP_FILE_NAME: ${{ matrix.app-file-name }}
+          TEST_SCOPE: "-t @bc_wallet -t @Connectionless -t ~@wip"
+          REPORT_PROJECT: ${{ matrix.report-project }}
+        continue-on-error: true
+
+      - name: Upload AMTH All Test results to Allure
         uses: ./.github/workflows/run-send-gen-test-results-secure
         with:
           REPORT_PROJECT: ${{ matrix.report-project }}

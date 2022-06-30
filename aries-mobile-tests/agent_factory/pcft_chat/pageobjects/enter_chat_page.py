@@ -8,7 +8,9 @@ class EnterChatPage(WebBasePage):
 
     # Locators
     on_this_page_text_locator = "Use your credential to join the conversation."
-    enter_button_locator = (By.CLASS_NAME, "btn btn btn-outline-success")
+    #enter_button_locator = (By.CLASS_NAME, "btn btn btn-outline-success")
+    enter_button_locator = (By.XPATH, '//*[@id="signup"]')
+    
 
 
     def on_this_page(self):   

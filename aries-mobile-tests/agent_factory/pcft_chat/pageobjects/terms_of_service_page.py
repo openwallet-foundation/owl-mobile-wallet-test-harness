@@ -8,13 +8,15 @@ class TermsOfServicePage(WebBasePage):
 
     # Locators
     on_this_page_text_locator = "Terms of Service"
+    on_this_page_locator = (By.XPATH, '/html/body/app-root/main/app-disclaimer/div/div/div/h5')
     i_agree_locator = (By.ID, 'agree')
-    agree_button_locator = (By.CLASS_NAME, "btn btn btn-outline-success")
+    #agree_button_locator = (By.CLASS_NAME, "btn btn btn-outline-success")
+    agree_button_locator = (By.XPATH, "/html/body/app-root/main/app-disclaimer/div/div/div/form/button")
+    
 
 
     def on_this_page(self):   
-        #print(self.driver.page_source)     
-        return super().on_this_page(self.on_this_page_text_locator) 
+        return super().on_this_page(self.on_this_page_locator, timeout=20) 
 
     def select_i_agree(self):
         if self.on_this_page():

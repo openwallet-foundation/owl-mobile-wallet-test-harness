@@ -12,9 +12,10 @@ class InformationSentSuccessfullyPage(BasePage):
     # Locators
     on_this_page_text_locator = "Information sent successfully"
     back_to_home_locator = "Go back to home"
+    done_locator = (MobileBy.ID, "com.ariesbifold:id/Done")
 
     def on_this_page(self):
-        #print(self.driver.page_source)
+        print(self.driver.page_source)
         return super().on_this_page(self.on_this_page_text_locator)
 
     def select_back_to_home(self):
@@ -25,4 +26,10 @@ class InformationSentSuccessfullyPage(BasePage):
         else:
             raise Exception(f"App not on the {type(self)} page")
 
-
+    def select_done(self):
+        if self.on_this_page():
+            self.find_by(self.done_locator).click()
+            from pageobjects.bc_wallet.home import HomePage
+            return HomePage(self.driver)
+        else:
+            raise Exception(f"App not on the {type(self)} page")

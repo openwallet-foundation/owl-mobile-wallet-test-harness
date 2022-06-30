@@ -1,12 +1,12 @@
 """
 Class for actual CANdy Unverified Person Credetial issuer agent
 """
-
-from time import sleep
+import base64
 from agent_factory.issuer_agent_interface import IssuerAgentInterface
 from sys import platform
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.utils import ChromeType
 # import Page Objects needed
@@ -14,7 +14,7 @@ from agent_factory.candy_uvp.pageobjects.terms_of_service_page import TermsOfSer
 from agent_factory.candy_uvp.pageobjects.request_credential_page import RequestCredentialPage
 from agent_factory.candy_uvp.pageobjects.review_and_confirm_page import ReviewAndConfirmPage
 from agent_factory.candy_uvp.pageobjects.connect_with_issuer_page import ConnectWithIssuerPage
-#from candy_uvp.pageobjects.issuing_credential_page import IssuingCredentialPage
+from agent_factory.candy_uvp.pageobjects.issuing_credential_page import IssuingCredentialPage
 
 #import json
 #from agent_test_utils import get_qr_code_from_invitation
@@ -26,7 +26,7 @@ class CANdy_UVP_IssuerAgentInterface(IssuerAgentInterface):
     _request_credential_page: RequestCredentialPage
     _review_and_confirm_page: ReviewAndConfirmPage
     _connect_with_issuer_page: ConnectWithIssuerPage
-    #_issuing_credential_page: IssuingCredentialPage
+    _issuing_credential_page: IssuingCredentialPage
 
         # Default schema and cred
     DEFAULT_CREDENTIAL_DATA = {
@@ -43,15 +43,21 @@ class CANdy_UVP_IssuerAgentInterface(IssuerAgentInterface):
         # Standup Selenuim Driver with endpoint
         super().__init__(endpoint)
         if platform == "linux" or platform == "linux2":
-            self.driver = webdriver.Chrome(service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
+            print("Starting Chromium on linux for Issuer Agent")
+            options = Options()
+            options.add_argument("--no-sandbox")
+            #options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--headless")
+            self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
+            #self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
         else:
+            print("Starting Chrome on Mac or Windows for Issuer Agent")
             self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         # go to the issuer endpoint in the browser
         self.driver.get(self.endpoint)
         # instantiate intial page objects
         self._terms_of_service_page = TermsOfServicePage(self.driver)
         # make sure we are on the first page, the terms of service page
-        sleep(1)
         if not self._terms_of_service_page.on_this_page():
             raise Exception('Something is wrong, not on the Terms of Service Page for the CANdy UVP Issuer')
 
@@ -67,7 +73,7 @@ class CANdy_UVP_IssuerAgentInterface(IssuerAgentInterface):
     def connected(self):
         """return true if connected"""
         # Check Issuing Credential Page for  "Connected to the Issuer Agent"
-        return self._connect_with_issuer_page.connected()
+        return self._issuing_credential_page.connected()
 
 
     def send_credential(self, version=1, schema=None, credential_offer=None, revokable=False):
@@ -99,7 +105,10 @@ class CANdy_UVP_IssuerAgentInterface(IssuerAgentInterface):
         self._review_and_confirm_page.select_i_confirm()
         self._connect_with_issuer_page = self._review_and_confirm_page.proceed()
 
-        return self._connect_with_issuer_page.get_qr_code()
+        qrcode = self._connect_with_issuer_page.get_qr_code()
+        self._issuing_credential_page = IssuingCredentialPage(self.driver)
+        return qrcode
+
 
     def restart_issue_credential(self):
         # go to the issuer endpoint in the browser

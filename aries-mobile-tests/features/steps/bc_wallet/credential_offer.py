@@ -34,6 +34,7 @@ def step_impl(context):
     # context.thisCredentialOfferNotificationPage = CredentialOfferNotificationPage(context.driver)
     # assert context.thisCredentialOfferNotificationPage.on_this_page()
 
+@given('the Holder receives a credential offer of {credential}')
 @when('the Holder receives a credential offer of {credential}')
 def step_impl(context, credential):
     # Open cred data file
