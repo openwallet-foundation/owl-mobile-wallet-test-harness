@@ -34,26 +34,37 @@ def step_impl(context):
     # context.thisCredentialOfferNotificationPage = CredentialOfferNotificationPage(context.driver)
     # assert context.thisCredentialOfferNotificationPage.on_this_page()
 
+@given('the Holder receives a credential offer of {credential}')
 @when('the Holder receives a credential offer of {credential}')
 def step_impl(context, credential):
     # Open cred data file
     try:
         credential_json_file = open("features/data/" + credential.lower() + ".json")
         credential_json = json.load(credential_json_file)
-        # get schema name from cred data
-        cred_type = credential_json['schema_name']
-        # open schema file
-        try:
-            cred_type_json_file = open(f"features/data/schema_{cred_type.lower()}.json")
-            cred_type_json = json.load(cred_type_json_file)
-            # check if the credential is revokable
-            if "support_revocation" in cred_type_json and cred_type_json["support_revocation"] == True:
-                rev = True
+
+        if context.issuer.get_issuer_type() == "AATHIssuer": # add others here as they come up that may need a schema and cred def.
+            # get schema name from cred data
+            cred_type = credential_json['schema_name']
+            # open schema file
+            try:
+                cred_type_json_file = open(f"features/data/schema_{cred_type.lower()}.json")
+                cred_type_json = json.load(cred_type_json_file)
+                # check if the credential is revokable
+                if "support_revocation" in cred_type_json and cred_type_json["support_revocation"] == True:
+                    rev = True
+                else:
+                    rev = False
+                context.issuer.send_credential(schema=cred_type_json, credential_offer=credential_json, revokable=rev)
+            except FileNotFoundError:
+                print(f"FileNotFoundError: features/data/schema_{cred_type.lower()}.json")
+        else:
+            if "Connectionless" in context.tags:
+                # We are expecting a QR code on the send credential if connectionless
+                qrimage = context.issuer.send_credential(credential_offer=credential_json)
+                context.thisHomePage.inject_connection_invite_qr_code(qrimage)
             else:
-                rev = False
-            context.issuer.send_credential(schema=cred_type_json, credential_offer=credential_json, revokable=rev)
-        except FileNotFoundError:
-            print(f"FileNotFoundError: features/data/schema_{cred_type.lower()}.json")
+                context.issuer.send_credential(credential_offer=credential_json)
+
     except FileNotFoundError:
         print("FileNotFoundError: features/data/" + credential.lower() + ".json")
 

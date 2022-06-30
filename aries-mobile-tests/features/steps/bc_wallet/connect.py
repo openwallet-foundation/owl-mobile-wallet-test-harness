@@ -55,6 +55,7 @@ def step_impl(context):
     #     assert context.thisHomePage.on_this_page()
     #     context.connecting_is_done = True
 
+@given('the Connecting completes successfully')
 @when('the Connecting completes successfully')
 def step_impl(context):
     # The connecting screen is temporary, loop until it goes away and return home.

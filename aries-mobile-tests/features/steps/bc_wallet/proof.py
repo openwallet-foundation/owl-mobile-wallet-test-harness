@@ -113,15 +113,23 @@ def step_impl(context):
         Then holder is brought to the proof request
     ''')
 
+@when('the user has a connectionless proof request for {proof}')
 @when('the user has a proof request for {proof}')
 @when('the user has a proof request for {proof} including proof of non-revocation at {interval}')
 @given('the user has a proof request for {proof}')
 def step_impl(context, proof, interval=None):
-    context.execute_steps('''
-        When the Holder scans the QR code sent by the "verifier"
-        And the Holder is taken to the Connecting Screen/modal
-        And the Connecting completes successfully
-    ''')
+    if "connectionless" in context.scenario.name:
+        context.execute_steps('''
+            When the Holder scans the QR code sent by the "verifier"
+            # And the Holder is taken to the Connecting Screen/modal
+            # And the Connecting completes successfully
+        ''')
+    else:
+        context.execute_steps('''
+            When the Holder scans the QR code sent by the "verifier"
+            And the Holder is taken to the Connecting Screen/modal
+            And the Connecting completes successfully
+        ''')
 
     if interval:
         context.execute_steps(f'''
@@ -167,12 +175,12 @@ def step_impl(context):
 @then('once the proof is verified they are informed of such')
 @when('once the proof is verified they are informed of such')
 def step_impl(context):
-    # The Cred is on the way screen is temporary, loop until it goes away and create the cred added page.
+    # The proof is on the way screen is temporary, loop until it goes away and create the information approved page.
     timeout=20
     i=0
     while context.thisInformationSentSuccessfullyPage.on_this_page() and i < timeout:
-        # need to break out here incase we are stuck on connecting?
-        # if we are too long, we need to click the Go back to home button.
+        # need to break out here incase we are stuck.
+        # if we are too long, we need to click the Done button.
         sleep(1)
         i+=1
     if i == 20: # we timed out and it is still connecting
@@ -188,6 +196,12 @@ def step_impl(context):
     context.thisHomePage = context.thisInformationApprovedPage.select_done()
 
 
+@then('they select Done on information sent successfully')
+@when('they select Done on information sent successfully')
+def step_impl(context):
+    context.thisHomePage = context.thisInformationSentSuccessfullyPage.select_done()
+
+
 @then(u'they are brought Home')
 def step_impl(context):
     context.thisHomePage.on_this_page()
@@ -197,6 +211,45 @@ def step_impl(context):
 def step_impl(context):
     context.issuer.revoke_credential()
 
+@given('the PCTF Member has setup thier Wallet')
+def step_impl(context):
+    context.execute_steps(f'''
+            Given the User has skipped on-boarding
+            And the User has accepted the Terms and Conditions
+            And a PIN has been set up with "369369"
+        ''')
+    #pass
+
+@given('the PCTF member has an Unverified Person {credential}')
+def step_impl(context, credential):
+    context.execute_steps(f'''
+        Given the Holder receives a credential offer of {credential}
+        And they Scan the credential offer QR Code
+        And the Connecting completes successfully
+        Then holder is brought to the credential offer screen
+        When they select Accept
+        And the holder is informed that their credential is on the way with an indication of loading
+        And once the credential arrives they are informed that the Credential is added to your wallet
+        And they select Done
+        Then they are brought to the list of credentials
+    ''')
+
+@given('they Scan the credential offer QR Code')
+def step_impl(context):
+    context.thisConnectingPage = context.thisNavBar.select_scan()
+
+@given('the user has a connectionless proof request for access to PCTF Chat')
+def step_impl(context):
+    qrcode = context.verifier.send_proof_request()
+    context.thisNavBar.inject_connection_invite_qr_code(qrcode)
+
+    context.thisConnectingPage = context.thisNavBar.select_scan()
+    # This is connectionless and the connecting page doesn't last long. Assume we move quickly to the Proof Request
+    context.thisProofRequestPage = ProofRequestPage(context.driver)
+
+@then('the PCTF member has access to chat')
+def step_impl(context):
+    context.verifier.proof_request_verified()
 
 def get_expected_proof_request_detail(context):
     verifier_type_in_use=context.verifier.get_issuer_type()

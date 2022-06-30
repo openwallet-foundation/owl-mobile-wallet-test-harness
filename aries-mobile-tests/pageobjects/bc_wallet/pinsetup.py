@@ -10,13 +10,16 @@ class PINSetupPage(BasePage):
     """PIN Setup page object"""
 
     # Locators
-    on_this_page_text_locator = "Enter Pin"
-    first_pin_aid_locator = "Enter Pin"
-    first_pin_tid_locator = "com.ariesbifold:id/EnterPin"
-    second_pin_aid_locator = "Re-Enter Pin"
-    second_pin_tid_locator = "com.ariesbifold:id/ReenterPin"
-    create_pin_button_aid_locator = "Create"
-    create_pin_button_tid_locator = "com.ariesbifold:id/Create"
+    #on_this_page_text_locator = "Enter Pin"
+    on_this_page_text_locator = "Remember your PIN"
+    #first_pin_locator = (MobileBy.ACCESSIBILITY_ID, "Enter a 6 digit PIN-1")
+    first_pin_locator = (MobileBy.ID, "com.ariesbifold:id/EnterPIN")
+    first_pin_visibility_locator = (MobileBy.ID, "com.ariesbifold:id/EnterPINVisability")
+    #second_pin_locator = (MobileBy.ACCESSIBILITY_ID, "Re-Enter PIN-1")
+    second_pin_locator = (MobileBy.ID, "com.ariesbifold:id/ReenterPIN")
+    second_pin_visibility_locator = (MobileBy.ID, "com.ariesbifold:id/ReenterPINVisability")
+    #create_pin_button_aid_locator = "Create"
+    create_pin_button_tid_locator = (MobileBy.ID, "com.ariesbifold:id/CreatePIN")
 
     def on_this_page(self):   
         #print(self.driver.page_source)  
@@ -24,36 +27,75 @@ class PINSetupPage(BasePage):
 
     def enter_pin(self, pin):
         if self.on_this_page():
-            self.find_by_element_id(self.first_pin_tid_locator).send_keys(pin)
+            #self.find_by_element_id("com.ariesbifold:id/EnterPIN-1").send_keys("3")
+            # self.find_by_element_id("com.ariesbifold:id/EnterPIN-2").send_keys("6")
+            # self.find_by_element_id("com.ariesbifold:id/EnterPIN-3").send_keys("9")
+            # self.find_by_element_id("com.ariesbifold:id/EnterPIN-4").send_keys("3")
+            # self.find_by_element_id("com.ariesbifold:id/EnterPIN-5").send_keys("6")
+            # self.find_by_element_id("com.ariesbifold:id/EnterPIN-6").send_keys("9")
+            # self.find_by_element_id("com.ariesbifold:id/ReenterPIN-1").send_keys("3")
+            # self.find_by_element_id("com.ariesbifold:id/ReenterPIN-2").send_keys("6")
+            # self.find_by_element_id("com.ariesbifold:id/ReenterPIN-3").send_keys("9")
+            # self.find_by_element_id("com.ariesbifold:id/ReenterPIN-4").send_keys("3")
+            # self.find_by_element_id("com.ariesbifold:id/ReenterPIN-5").send_keys("6")
+            # self.find_by_element_id("com.ariesbifold:id/ReenterPIN-6").send_keys("9")
+            self.find_by(self.first_pin_locator).send_keys(pin)
+            #self.find_by(self.first_pin_tid_locator).set_value(pin)
             return True
         else:
             raise Exception(f"App not on the {type(self)} page")
 
     def get_pin(self):
         if self.on_this_page():
-            return self.find_by_element_id(self.first_pin_tid_locator).text
+            # PIN must be visable. 
+            self.find_by(self.first_pin_visibility_locator).click()
+            size = len(self.first_pin_locator[1])
+            return self._construct_pin_from_boxes(self.first_pin_aid_locator[1][:size - 2])
+            #return self.find_by(self.first_pin_tid_locator).text
         else:
             raise Exception(f"App not on the {type(self)} page")
 
     def enter_second_pin(self, pin):
         if self.on_this_page():
-            self.find_by_element_id(self.second_pin_tid_locator).send_keys(pin)
+            self.find_by(self.second_pin_locator).click()
+            self.find_by(self.second_pin_locator).send_keys(pin)
+            # element = self.find_by(self.second_pin_locator)
+            # element.clear()
+            # element.set_value('3')
+            # element.click()
+            # self.driver.getKeyboard().sendKeys("3")
+            # element.type()
             return True
         else:
             raise Exception(f"App not on the {type(self)} page")
 
     def get_second_pin(self):
         if self.on_this_page():
-            return self.find_by_element_id(self.second_pin_tid_locator).text
+            # PIN must be visable. 
+            self.find_by(self.second_pin_visibility_locator).click()
+            size = len(self.second_pin_locator[1])
+            return self._construct_pin_from_boxes(self.second_pin_aid_locator[1][:size - 2])
+            #return self.find_by(self.second_pin_tid_locator).text
         else:
             raise Exception(f"App not on the {type(self)} page")
 
     def create_pin(self):
         if self.on_this_page():
-            self.find_by_element_id(self.create_pin_button_tid_locator).click()
+            self.find_by(self.create_pin_button_tid_locator).click()
 
             # return the wallet initialization page
             return InitializationPage(self.driver)
-            #return HomePage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page") 
+
+    def _construct_pin_from_boxes(self, pin_locator, find_by=MobileBy.ID, pin_length=6):
+        pin = ""
+        if find_by == MobileBy.ID:
+            find_by_routine = getattr(self, "find_by_element_id")
+        else:
+            find_by_routine = getattr(self, "find_by_accessibility_id")
+        for i in range(pin_length):
+            element_index = i + 1
+            pin = pin + find_by_routine(f"{pin_locator}-{element_index}").text
+
+        return pin
