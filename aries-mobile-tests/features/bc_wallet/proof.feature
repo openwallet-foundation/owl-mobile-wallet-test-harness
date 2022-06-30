@@ -206,4 +206,22 @@ Feature: Proof
          | credential                   | proof                    | interval |
          | cred_data_photo_id_revokable | proof_photo_id_revokable | now:now  |
 
-#Connectionless
+
+   @T009-Proof @critical @AcceptanceTest @Connectionless
+   Scenario Outline: Pan Canadian Trust Framework Member aquires access to PCTF Chat with a connectionless proof request
+      Given the PCTF Member has setup thier Wallet
+      And the PCTF member has an Unverified Person <credential>
+         | issuer_agent_type | credential_name   |
+         | CANdyUVPIssuer    | Unverified Person |
+      And the user has a connectionless proof request for access to PCTF Chat
+         | issuer_agent_type |
+         | PCTFChatVerifier  |
+      When they select Share
+      And the holder is informed that they are sending information securely
+      And they are informed that the information sent successfully
+      And they select Done on information sent successfully
+      Then the PCTF member has access to chat
+
+      Examples:
+         | credential                  |
+         | cred_data_unverified_person |

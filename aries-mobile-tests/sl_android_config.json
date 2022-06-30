@@ -5,7 +5,7 @@
         "platformName": "Android",
         "app":"storage:filename=app-release.apk",
         "deviceName":"Samsung.*",
-        "platformVersion":"10",
+        "platformVersion":"11",
         "sessionCreationRetry" : "3",
         "sauceLabsImageInjectionEnabled": true,
         "autoGrantPermissions": true

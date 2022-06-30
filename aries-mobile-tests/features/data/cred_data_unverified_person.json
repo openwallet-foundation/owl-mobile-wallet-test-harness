@@ -1,0 +1,34 @@
+{
+   "schema_name": "unverified_person",
+   "schema_version": "1.0.0",
+   "attributes": [
+      {
+         "name": "first_name",
+         "value": "Betty"
+      },
+      {
+         "name": "last_name",
+         "value": "Naroff"
+      },
+      {
+         "name": "street_address",
+         "value": "159 Cedar Street, Sudbury, ON"
+      },
+      {
+         "name": "city",
+         "value": "Sudbury"
+      },
+      {
+         "name": "province",
+         "value": "ON"
+      },
+      {
+         "name": "postal_code",
+         "value": "P3E 1B1"
+      },
+      {
+         "name": "date_of_birth",
+         "value": "1942-01-17"
+      }
+   ]
+}

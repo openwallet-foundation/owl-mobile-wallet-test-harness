@@ -10,6 +10,8 @@ RUN \
     pip install --no-cache-dir \
          python-decouple
 
+RUN apt update && apt install -y chromium
+
 COPY . /aries-mobile-test-harness
 WORKDIR /aries-mobile-test-harness/aries-mobile-tests
 ENTRYPOINT ["behave"]

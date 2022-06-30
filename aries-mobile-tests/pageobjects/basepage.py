@@ -16,17 +16,21 @@ class BasePage(object):
         self.driver = context.driver
 
     def on_this_page(self, locator, timeout=10):
-
-        # replace this sleep when there is an accessibility id on page titles.
-        found_locator = False
-        i = 0
-        while found_locator == False and i < timeout:
-            if locator in self.get_page_source():
-                found_locator = True
+        if type(locator) is tuple:
+            if self.find_by(locator, timeout):
+                return True
             else:
-                found_locator = False
-            i = i + 1
-        return found_locator
+                return False
+        else:
+            found_locator = False
+            i = 0
+            while found_locator == False and i < timeout:
+                if locator in self.get_page_source():
+                    found_locator = True
+                else:
+                    found_locator = False
+                i = i + 1
+            return found_locator
 
     # Initialize and define the type of driver as WebDriver
 
@@ -45,7 +49,14 @@ class BasePage(object):
         if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID:
             return self.find_multiple_by_accessibility_id(locator_tpl[1], timeout)
         elif locator_tpl[0] == MobileBy.ID:
-            return self.find_multiple_by_id(locator_tpl[1], timeout)
+            # It may be that Android will return none when looking for multiple
+            # so if we get an empty element array here try find_by instead.
+            elems = self.find_multiple_by_id(locator_tpl[1], timeout)
+            if len(elems) == 0:
+                elem = self.find_by_element_id(locator_tpl[1], timeout)
+                elems.append(elem)
+            return elems
+            #return self.find_multiple_by_id(locator_tpl[1], timeout)
 
     # Locate by Accessibility id
     def find_by_accessibility_id(self, locator, timeout=20):

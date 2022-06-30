@@ -17,17 +17,23 @@ class CredentialOfferPage(BasePage):
     accept_locator = (MobileBy.ID, "com.ariesbifold:id/AcceptCredentialOffer")
     accept_aid_locator = (MobileBy.ACCESSIBILITY_ID, "Accept")
     decline_locator = (MobileBy.ID, "com.ariesbifold:id/DeclineCredentialOffer")
+    decline_aid_locator = (MobileBy.ACCESSIBILITY_ID, "Decline")
 
     def on_this_page(self):
-        #print(self.driver.page_source)
-        return super().on_this_page(self.on_this_page_text_locator)
+        #return super().on_this_page(self.on_this_page_text_locator)
+        return super().on_this_page(self.accept_locator, 30)
 
     def select_accept(self, scroll=False):
         if self.on_this_page():
             # if the credential has a lot of attributes it could need to scroll
             if scroll == True:
-                self.scroll_to_element(self.accept_aid_locator[1])
-            self.find_by(self.accept_locator).click()
+                try:
+                    self.find_by(self.accept_locator).click()
+                except:
+                    self.scroll_to_element(self.decline_aid_locator[1])
+                    self.find_by(self.accept_locator).click()
+            else:
+                self.find_by(self.accept_locator).click()
             return CredentialOnTheWayPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
