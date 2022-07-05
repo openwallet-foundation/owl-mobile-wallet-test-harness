@@ -49,13 +49,14 @@ jobs:
         with:
           USE_NGROK: ""
 
-      # - name: run-sauce-connect-tunnel
-      #   uses: saucelabs/sauce-connect-action@v2
-      #   with:
-      #       username: ${{ secrets.SAUCE_USERNAME }}
-      #       accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-      #       tunnelIdentifier: github-action-tunnel
-      #       region: us-west-1
+      - name: run-sauce-connect-tunnel
+        uses: saucelabs/sauce-connect-action@v2
+        with:
+          username: ${{ secrets.SAUCE_USERNAME }}
+          accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
+          directDomains: aries-mediator-agent-test.apps.silver.devops.gov.bc.ca
+      #    tunnelIdentifier: github-action-tunnel
+      #    region: us-west-1
 
       # - name: Saucectl RUN Docker and Cloud
       #   uses: saucelabs/saucectl-run-action@v1
@@ -66,14 +67,14 @@ jobs:
       #     testing-environment: ""
       #     concurrency: 10
 
-      - name: run-sauce-connect-tunnel
-        run: |
-          docker run \
-            -e SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} \
-            -e SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} \
-            --network="host" \
-            --detach \
-            saucelabs/sauce-connect
+      # - name: run-sauce-connect-tunnel
+      #   run: |
+      #     docker run \
+      #       -e SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} \
+      #       -e SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} \
+      #       --network="host" \
+      #       --detach \
+      #       saucelabs/sauce-connect
 
       - name: Run AMTH All Tests
         uses: ./.github/workflows/run-test-harness
