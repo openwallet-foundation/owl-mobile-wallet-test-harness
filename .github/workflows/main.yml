@@ -94,6 +94,14 @@ jobs:
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
+      - name: Shutdown Sauce Connect Tunnel
+        run: |
+          docker ps \
+          --format '{{.ID}} {{.Image}}' | \
+          grep saucelabs/sauce-connect | \
+          awk '{print $1}' | \
+          xargs docker stop
+
       - name: Run AMTH Connectionless Tests
         uses: ./.github/workflows/run-test-harness
         env:
