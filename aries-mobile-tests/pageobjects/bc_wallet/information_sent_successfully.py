@@ -15,7 +15,6 @@ class InformationSentSuccessfullyPage(BasePage):
     done_locator = (MobileBy.ID, "com.ariesbifold:id/Done")
 
     def on_this_page(self):
-        print(self.driver.page_source)
         return super().on_this_page(self.on_this_page_text_locator)
 
     def select_back_to_home(self):
