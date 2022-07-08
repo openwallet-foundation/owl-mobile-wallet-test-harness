@@ -20,8 +20,8 @@ class CredentialOfferPage(BasePage):
     decline_aid_locator = (MobileBy.ACCESSIBILITY_ID, "Decline")
 
     def on_this_page(self):
-        #return super().on_this_page(self.on_this_page_text_locator)
-        return super().on_this_page(self.accept_locator, 30)
+        return super().on_this_page(self.on_this_page_text_locator, 30)
+        #return super().on_this_page(self.accept_locator, 30)
 
     def select_accept(self, scroll=False):
         if self.on_this_page():

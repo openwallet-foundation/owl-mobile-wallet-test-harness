@@ -67,4 +67,4 @@ class PCFT_Chat_VerifierAgentInterface(VerifierAgentInterface):
 
     def proof_request_verified(self):
         self._chat_page = ChatPage(self.driver)
-        return self.chat_page.on_this_page()
+        return self._chat_page.on_this_page()
