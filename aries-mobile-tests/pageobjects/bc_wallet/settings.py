@@ -40,13 +40,6 @@ class SettingsPage(BasePage):
             raise Exception(f"App not on the {type(self)}") 
         #return ContactsPage
 
-    def inject_connection_invite_qr_code(self, image):
-        # Read the file from your project and transform it to a base64 string
-        #const qrCodeImage = readFileSync(join(process.cwd(), 'assets/qr-code.png'), 'base64');
-
-        # Provide the base64 string image to the device
-        self.driver.execute_script(f"sauce:inject-image={image}")
-
     def select_scan(self):
         if self.on_this_page():
             # Inject image 

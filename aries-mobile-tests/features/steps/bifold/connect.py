@@ -15,12 +15,6 @@ from pageobjects.bifold.termsofservice import TermsOfServicePage
 from pageobjects.bifold.pinsetup import PINSetupPage
 from pageobjects.bifold.home import HomePage
 
-# Instantiate the page objects needed
-# Can I pass the context here on instantiation or should we do it in the steps? 
-# We could put a page factory somewhere that instantiates all pages for a given app. 
-# thisTermOfServicePage = TermsOfServicePage()
-# thisPINSetupPage = PINSetupPage()
-# thisHomePage = HomePage()
 
 @given('the terms of service has been accepted')
 def step_impl(context):
@@ -42,12 +36,10 @@ def step_impl(context):
     invitation_json = json.loads(resp_text)
     qrimage = get_qr_code_from_invitation(invitation_json, context.print_qr_code_on_creation, context.save_qr_code_on_creation)
 
-    context.thisHomePage.inject_connection_invite_qr_code(qrimage)
-    # Do we need to load the scan page after image injection? probably not. 
-    #context.thisScanPage = context.thisHomePage.select_scan()
+    context.device_service_handler.inject_qrcode(qrimage)
+
     context.thisHomePage.select_scan()
-    #context.thisHomePage.select_settings()
-    #thisScanPage.
+
 
 @when('accepts the connection')
 def step_impl(context):

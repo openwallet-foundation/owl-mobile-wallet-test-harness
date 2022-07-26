@@ -10,10 +10,12 @@ from agent_controller_client import agent_controller_GET, agent_controller_POST,
 
 class AATHAgentInterface():
 
+    _oob = False
+
     def create_invitation_util(self, oob=False, print_qrcode=False, save_qrcode=False):
         """create an invitation and return the json back to the caller """
-        self.oob = oob
-        if self.oob is True:
+        self._oob = oob
+        if self._oob is True:
             data = {"use_public_did": False}
             (resp_status, resp_text) = agent_controller_POST(
                 self.endpoint + "/agent/command/",
@@ -39,7 +41,7 @@ class AATHAgentInterface():
         """return True/False indicating if this issuer is connected to the wallet holder """
 
         # If OOB then make a call to get the connection id from the webhook. 
-        if self.oob == True:
+        if self._oob == True:
             # Get the responders's connection id from the above request's response webhook in the backchannel
             invitation_id = self.invitation_json["invitation"]["@id"]
             (resp_status, resp_text) = agent_controller_GET(

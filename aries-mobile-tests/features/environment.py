@@ -14,47 +14,26 @@ import os, json
 import hmac
 from hashlib import md5
 from agent_factory.agent_interface_factory import AgentInterfaceFactory
+from device_service_handler.device_service_handler_factory import DeviceServiceHandlerFactory
 
-config_file_path = os.path.join(os.path.dirname(__file__), '..', "config.json")
-print("Path to the config file = %s" % (config_file_path))
-with open(config_file_path) as config_file:
-    CONFIG = json.load(config_file)
+# Get teh Device Cloud Service passed in from manage
+device_cloud_service = config('DEVICE_CLOUD')
+# Check if there is a config file override. If not, use the default
+try: 
+    config_file_path = config('CONFIG_FILE_OVERRIDE')
+except:
+    config_file_path = os.path.join(os.path.dirname(__file__), '..', "config.json")
+# Create the Device Service Handler requested 
+dcshf = DeviceServiceHandlerFactory()
+device_service_handler = dcshf.create_device_service_handler(device_cloud_service, config_file_path)
 
-# Take user credentials from environment variables if they are defined
-#if 'BROWSERSTACK_USERNAME' in os.environ: CONFIG['capabilities']['browserstack.user'] = os.environ['BROWSERSTACK_USERNAME'] 
-#if 'BROWSERSTACK_ACCESS_KEY' in os.environ: CONFIG['capabilities']['browserstack.key'] = os.environ['BROWSERSTACK_ACCESS_KEY']
-
-# Take user credentials and sauce region from environment variables if they are defined
-# TODO this should be in a separate module that handles device service specific variable settings.
-username = config('SAUCE_USERNAME')
-access_key = config('SAUCE_ACCESS_KEY')
-#if 'SAUCE_USERNAME' in os.environ: username = os.environ['SAUCE_USERNAME'] 
-#if 'SAUCE_ACCESS_KEY' in os.environ: access_key = os.environ['SAUCE_ACCESS_KEY']
-#url = 'http://%s:%s@ondemand.saucelabs.com:80/wd/hub' % (username, access_key)
-region = config('SL_REGION')
-url = 'http://%s:%s@ondemand.%s.saucelabs.com:80/wd/hub' % (username, access_key, region)
-print(url)
 
 def before_feature(context, feature):
     # TODO there is an issue where calling driver.reset does not reset the app on iOS. Until a solution is found for this issue
     # moving the driver creation and driver.quit() to the before and after scenario methods. 
 
-    # CONFIG['capabilities']['name'] = feature.name
-    # CONFIG['capabilities']['fullReset'] = True
-    # desired_capabilities = CONFIG['capabilities']
-    # print(desired_capabilities)
-
-    # context.driver = webdriver.Remote(
-    #     desired_capabilities=desired_capabilities,
-    #     command_executor=url,
-    #     keep_alive=False
-    # )
-    # print(json.dumps(context.driver.capabilities))
-
-    # Set the Issuer and Verfier URLs
-    # TODO these two lines can be removed once the Agent Factory is fully in place. 
-    #context.issuer_url = context.config.userdata.get("Issuer")
-    #context.verifier_url = context.config.userdata.get("Verifier")
+    # Add the Device handler to the test context so tests can do device specific calls. 
+    context.device_service_handler = device_service_handler
 
     # Get the issuer endpoint and the issuer type and create an issuer interface from the agent factory
     issuer_info = context.config.userdata.get("Issuer").split(";")
@@ -75,19 +54,19 @@ def before_feature(context, feature):
 def before_scenario(context, scenario):
     # TODO go through the sceanrio tags and find the unique id, starts with T, and prefix it to the name. 
     # maybe put the feature in it as well like Feature:TestID:Scenario
-    CONFIG['capabilities']['sauce:options'] = {
-        'name': scenario.name
-    }
-    CONFIG['capabilities']['fullReset'] = True
-    desired_capabilities = CONFIG['capabilities']
-    print("\n\nDesired Capabilities passed to Appium:")
-    print(json.dumps(desired_capabilities,indent=4))
     
-    context.driver = webdriver.Remote(
-        desired_capabilities=desired_capabilities,
-        command_executor=url,
-        keep_alive=False
-    )
+    # pass some extra capabilities and options to the device service. If it can't do anything with them then fine.
+    # ie. Local devices won't do anything with a scenario name.
+    # TODO fullReset may have to be moved to the config files, if dev starts to use the Test Harness they may
+    # want tests with previous state maintained. 
+    extra_desired_capabilities = {
+        'name': scenario.name,
+        'fullReset':True
+    }
+    device_service_handler.set_desired_capabilities(extra_desired_capabilities)
+
+    context.driver = device_service_handler.initialize_driver()
+
     print("\nActual Capabilities used by Appium:")
     print(json.dumps(context.driver.capabilities,indent=4))
 
@@ -97,16 +76,13 @@ def after_scenario(context, scenario):
     if hasattr(context, 'driver') and scenario.status == Status.failed and context.print_page_source_on_failure:
         print(context.driver.page_source)
 
-
-    device_cloud_service = os.environ['DEVICE_CLOUD']
-    if device_cloud_service == "SauceLabs" and hasattr(context, 'driver'):
-
-        # set the status of the test in Sauce Labs
-        #context.driver.execute_script(f'sauce:job-result={scenario.status}')
+    if device_service_handler.supports_test_result():
         if scenario.status == Status.failed:
-            context.driver.execute_script('sauce:job-result=failed')
+            device_service_handler.set_test_result(False)
         elif scenario.status == Status.passed:
-            context.driver.execute_script('sauce:job-result=passed')
+            device_service_handler.set_test_result(True)
+
+
 
         # Add the sauce Labs results and video url to the allure results
         # Link that requires a sauce labs account and login

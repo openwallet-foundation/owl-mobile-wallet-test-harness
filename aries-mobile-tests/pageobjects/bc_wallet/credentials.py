@@ -3,8 +3,6 @@ from appium.webdriver.common.mobileby import MobileBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
-#from pageobjects.bc_wallet.credentials import CredentialsPage
-#from pageobjects.bc_wallet.home import HomePage
 
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -23,19 +21,12 @@ class CredentialsPage(BasePage):
     credential_issued_date_locator =  (MobileBy.ID, "com.ariesbifold:id/CredentialIssued")
 
     def on_this_page(self):
-        #print(self.driver.page_source)
-        #return super().on_this_page(self.on_this_page_text_locator)
-        try: 
-            if self.find_by(self.on_this_page_text_locator):
-                return True
-            else:
-                return False
-        except:
-            return False
+
+        return super().on_this_page(self.credential_locator)
 
     def get_credentials(self):
         if self.on_this_page():
-            elems = self.find_multiple_by(self.credential_locator)
+            elems = self.find_multiple_by(self.credential_name_locator)
             json_elems = {
                 "credentials": [
                 ],

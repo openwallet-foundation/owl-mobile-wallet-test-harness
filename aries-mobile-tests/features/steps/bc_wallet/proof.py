@@ -241,7 +241,8 @@ def step_impl(context):
 @given('the user has a connectionless proof request for access to PCTF Chat')
 def step_impl(context):
     qrcode = context.verifier.send_proof_request()
-    context.thisNavBar.inject_connection_invite_qr_code(qrcode)
+
+    context.device_service_handler.inject_qrcode(qrcode)
 
     context.thisConnectingPage = context.thisNavBar.select_scan()
     # This is connectionless and the connecting page doesn't last long. Assume we move quickly to the Proof Request

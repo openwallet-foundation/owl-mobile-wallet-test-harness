@@ -5,6 +5,7 @@
 
 from behave import given, when, then
 import json
+import os
 
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
@@ -43,8 +44,9 @@ def step_impl(context, pin):
 @when('the User selects Create PIN')
 def step_impl(context):
     context.thisInitializationPage = context.thisPINSetupPage.create_pin()
-    context.driver.execute_script('sauce:biometrics-authenticate=true')
-    #context.thisHomePage = context.thisPINSetupPage.create_pin()
+
+    context.device_service_handler.biometrics_authenticate(True)
+
 
 
 @then('the User has successfully created a PIN')

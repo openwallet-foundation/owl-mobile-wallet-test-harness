@@ -21,6 +21,7 @@ class ProofRequestPage(BasePage):
     value_locator = (MobileBy.ID, "com.ariesbifold:id/AttributeValue")
     details_locator = (MobileBy.ID, "com.ariesbifold:id/Details")
     share_locator = (MobileBy.ID, "com.ariesbifold:id/Share")
+    share_aid_locator = (MobileBy.ACCESSIBILITY_ID, "Share")
     decline_locator = (MobileBy.ID, "com.ariesbifold:id/Decline")
 
 
@@ -30,6 +31,7 @@ class ProofRequestPage(BasePage):
 
     def select_share(self):
         if self.on_this_page():
+            self.scroll_to_element(self.share_aid_locator[1])
             self.find_by(self.share_locator).click()
             return SendingInformationSecurelyPage(self.driver)
         else:
