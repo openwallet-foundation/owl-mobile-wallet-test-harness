@@ -30,14 +30,13 @@ def step_impl(context, agent):
     if agent == "issuer":
         qrimage = context.issuer.create_invitation(print_qrcode=context.print_qr_code_on_creation, save_qrcode=context.save_qr_code_on_creation)
     elif agent == "verifier":
-        qrimage = context.verifier.create_invitation()
+        qrimage = context.verifier.create_invitation(print_qrcode=context.print_qr_code_on_creation, save_qrcode=context.save_qr_code_on_creation)
     else:
         raise Exception(f"Invalid agent type: {agent}")
 
 
-    context.thisNavBar.inject_connection_invite_qr_code(qrimage)
+    context.device_service_handler.inject_qrcode(qrimage)
 
-    #context.thisConnectingPage = context.thisHomePage.select_scan()
     context.thisConnectingPage = context.thisNavBar.select_scan()
 
 

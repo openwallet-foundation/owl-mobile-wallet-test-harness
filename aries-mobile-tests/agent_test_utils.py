@@ -7,10 +7,7 @@ from qrcode import QRCode
 from PIL import Image
 
 def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_code=False):
-    # message_bytes = json.dumps(invitation).encode("ascii")
-    # base64_bytes = base64.b64encode(message_bytes)
-    # base64_message = base64_bytes.decode("ascii")
-    # invitation_url = invitation["serviceEndpoint"] + "?c_i=" + base64_message
+
     invitation_url = invitation_json["invitation_url"]
 
     qr = QRCode(border=1)
@@ -19,7 +16,7 @@ def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_co
     #img = qr.make_image(fill_color="red", back_color="#23dda0")
     img = qr.make_image()
     if save_qr_code:
-        img.save('./qrcode_test.png')
+        img.save('./qrcode.png')
     if print_qr_code:
         qr.print_ascii(invert=True)
 

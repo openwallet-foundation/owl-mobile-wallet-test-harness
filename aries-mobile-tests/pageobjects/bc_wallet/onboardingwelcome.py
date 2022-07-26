@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.onboardingstorecredssecurely import OnboardingStoreCredsSecurelyPage
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
+import os
 
 # These classes can inherit from a BasePage to do common setup and functions
 class OnboardingWelcomePage(BasePage):
@@ -20,8 +21,13 @@ class OnboardingWelcomePage(BasePage):
     next_locator = "com.ariesbifold:id/Next"
 
     def on_this_page(self):  
-        #print(self.driver.page_source)   
-        return super().on_this_page(self.on_this_page_text_locator)   
+        # Sometimes (especially when running with a local emulator ) where the app is not loaded yet.
+        # Appium doesn't seem to let this happen when using Sauce Labs. 
+        timeout = 10
+        if "Local" in os.environ['DEVICE_CLOUD']:
+        #if os.environ['DEVICE_CLOUD'] == "Local":
+            timeout = 50
+        return super().on_this_page(self.on_this_page_text_locator, timeout)   
 
     def get_onboarding_text(self):
         if self.on_this_page():

@@ -61,7 +61,7 @@ def step_impl(context, credential):
             if "Connectionless" in context.tags:
                 # We are expecting a QR code on the send credential if connectionless
                 qrimage = context.issuer.send_credential(credential_offer=credential_json)
-                context.thisHomePage.inject_connection_invite_qr_code(qrimage)
+                context.device_service_handler.inject_qrcode(qrimage)
             else:
                 context.issuer.send_credential(credential_offer=credential_json)
 

@@ -92,10 +92,9 @@ usage () {
       - "agent" must be one from the supported list: ${VALID_AGENTS}
 
     Examples:
-    $0 build -w bifold -i acapy-main -v acapy-main  - Build the Aries Mobile Test harness to test bifold, use acapy-main as the issuer and the verifier.
     $0 build -w bc_wallet - Use the BC Wallet files in the test container, issuer and verifier are managed outside the test harness and will be pointed to in the run command.
 
-  rebuild [ -w wallet ] [ -i/v agent ]*
+  rebuild [ -w wallet ]*
     Same as build, but adds the --no-cache option to force building from scratch
 
   run [ -r allure ] [ -d <device cloud> ] [ -u <device cloud username> ] [ -k <device cloud key> ] [ -p platform ] [ -a <app name> ] [ -i <issuer agent> ] [ -v <verifier agent> ] [ -t tags ]*
@@ -112,18 +111,14 @@ usage () {
       Use -p to specify the mobile device platform
         "-p iOS" or "-p Android"
       Use -a to specify the app name or id of the app loaded into the device cloud service
-      Use -i to specify the issuer to use in the tests
-        Currenty supporting acapy-main or a URL to another agent controller
-      Use -v to specify the verifier to use in the tests
-        Currenty supporting acapy-main or a URL to another agent controller
+      Use -i to specify the issuer to use in the tests in the -i "<issuer_name>;<issuer_endpoint>" format
+      Use -v to specify the verifier to use in the tests in the -i "<verifier_name>;<verifier_endpoint>" format
       Use the -r option to output to allure
         (allure is the only supported option)
 LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 
 
     Examples:
-    $0 run -d SauceLabs -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p Android -a app-release.apk -i acapy-main -v acapy-main -t @Connect
-      - Run all tests tagged with Connect on SauceLabs with the app-release.apk app on the Android platform. Use acapy-main as the basis for the issuer and verifier. 
-    $0 run -d SauceLabs -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p iOS -a AriesBCWallet.ipa -i http://0.0.0.0:9020 -v http://0.0.0.0:9030 -t @Connect
+    $0 run -d SauceLabs -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p iOS -a AriesBCWallet.ipa -i "AATH;http://0.0.0.0:9020" -v "AATH;http://0.0.0.0:9030" -t @Connect
       - Run all tests tagged with Connect on SauceLabs with the AriesBCWallet.ipa app on the iOS platform. Use some externaly mamaged and stared agents for the issuer and verifier. 
 
   tags - Get a list of the tags on the features tests
@@ -132,29 +127,6 @@ LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1
 EOF
 exit 1
 }
-  # scenarios - synonym for tests, but longer and harder to spell
-
-  # service [start|stop|logs|clean] service-name
-  #   Run the given service command on the given service. Commands:
-  #     - start: start the service, creating the AATH docker network if necessary.
-  #     - stop: stop the service, deleting the AATH docker network if it's now unused.
-  #     - logs: print the scrolling logs of the service. Ctrl-C to exit.
-  #     - clean: clean up the service containers and build files, if any.
-
-  # start [ -a/b/f/m/d agent ]* [-n]
-  #   Initialize the test harness using the specified agents for Acme, Bob, Faber and Mallory.
-  #     Select the agents for the roles of Acme (-a), Bob (-b), Faber (-f) and Mallory (-m).
-  #     - For all to be set to the same, use "-d" for default.
-  #     - The value for agent must be one of: ${VALID_AGENTS}
-  #   Use the -n option to start ngrok endpoints for each agent
-  #       (this is *required* when testing with a Mobile agent)
-
-  # stop - stop the test harness.
-
-  # rebuild - Rebuild the docker images.
-
-  # dockerhost - Print the ip address of the Docker Host Adapter as it is seen by containers running in docker.
-
 
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
@@ -529,17 +501,23 @@ modifyConfigJson() {
   # If Platform is Android, use the Android.config.json
   if [[ "${DEVICE_PLATFORM}" == "Android" ]]; then
     # copy the Android config.json
-    cp ./aries-mobile-tests/sl_android_config.json ./aries-mobile-tests/config.json
+    if [[ "${DEVICE_CLOUD}" == "SauceLabs" ]]; then
+      cp ./aries-mobile-tests/sl_android_config.json ./aries-mobile-tests/config.json
+    else
+      cp ./aries-mobile-tests/local_android_config.json ./aries-mobile-tests/config.json
+    fi
   fi
 
   contents="$(jq --arg DEVICE_PLATFORM "${DEVICE_PLATFORM}" '.capabilities |= . + { "platformName": $DEVICE_PLATFORM }' ./aries-mobile-tests/config.json)" && \
   echo "${contents}" > ./aries-mobile-tests/config.json
 
-  # contents="$(jq '.capabilities |= . + { "platformName": ${DEVICE_PLATFORM} }' ./aries-mobile-tests/config.json)" && \
-  # echo "${contents}" > ./aries-mobile-tests/config.json
-
-  contents="$(jq --arg APP_NAME "storage:filename=${APP_NAME}" '.capabilities |= . + { "app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
-  echo "${contents}" > ./aries-mobile-tests/config.json
+  if [[ "${DEVICE_CLOUD}" == "SauceLabs" ]]; then
+    contents="$(jq --arg APP_NAME "storage:filename=${APP_NAME}" '.capabilities |= . + { "app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
+    echo "${contents}" > ./aries-mobile-tests/config.json
+  else
+    contents="$(jq --arg APP_NAME "${APP_NAME}" '.capabilities |= . + { "app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
+    echo "${contents}" > ./aries-mobile-tests/config.json  
+  fi
 
   # contents="$(jq '.capabilities |= . + { "appium:platformName": "storage:filename=${APP_NAME}" }' ./aries-mobile-tests/config.json)" && \
   # echo "${contents}" > config.json
@@ -837,6 +815,14 @@ runTests() {
     else
       echo "Executing tests without Allure Reports."
       ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e DEVICE_CLOUD=${DEVICE_CLOUD} -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -D Issuer=${issuerURL} -D Verifier=${verifierURL}
+    fi
+  elif [[ "${DEVICE_CLOUD}" = "LocalAndroid" ]]; then
+    if [[ "${REPORT}" = "allure" ]]; then
+      echo "Executing tests with Allure Reports."
+      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${APP_NAME}:${APP_NAME} -v "${ANDROID_HOME}/emulator/resources/":"${ANDROID_HOME}/emulator/resources/" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e ANDROID_HOME=${ANDROID_HOME} -e DOCKERHOST=${DOCKERHOST} -e DEVICE_CLOUD=${DEVICE_CLOUD} aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=${issuerURL} -D Verifier=${verifierURL}
+    else
+      echo "Executing tests without Allure Reports."
+      ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${APP_NAME}:${APP_NAME} -v "${ANDROID_HOME}/emulator/resources/":"${ANDROID_HOME}/emulator/resources/" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e ANDROID_HOME=${ANDROID_HOME} -e DOCKERHOST=${DOCKERHOST} -e DEVICE_CLOUD=${DEVICE_CLOUD} aries-mobile-test-harness -k ${runArgs} -D Issuer=${issuerURL} -D Verifier=${verifierURL}
     fi
   #else # place holder for other device cloud services like BrowserStack, etc.
   fi
