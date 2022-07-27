@@ -60,8 +60,7 @@ def before_scenario(context, scenario):
     # TODO fullReset may have to be moved to the config files, if dev starts to use the Test Harness they may
     # want tests with previous state maintained. 
     extra_desired_capabilities = {
-        'name': scenario.name,
-        'fullReset':True
+        'name': scenario.name
     }
     device_service_handler.set_desired_capabilities(extra_desired_capabilities)
 

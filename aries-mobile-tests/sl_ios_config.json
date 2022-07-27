@@ -8,6 +8,7 @@
         "platformVersion":"15.3",
         "sessionCreationRetry" : "3",
         "sauceLabsImageInjectionEnabled": true,
-        "autoAcceptAlerts": true
+        "autoAcceptAlerts": true,
+        "fullReset": true
     }
 }

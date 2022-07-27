@@ -42,9 +42,12 @@ class LocalAndroidHandler(DeviceServiceHandlerInterface):
         shutil.copy(
             "qrcode.png", f"{android_home}/emulator/resources/qrcode.png")
 
-    def biometrics_authenticate(self, bool):
+    def biometrics_authenticate(self, authenticate:bool):
         """authenticate when biometrics, ie fingerprint or faceid, true is success, false is fail biometrics"""
-        self._driver.finger_print(1)
+        if authenticate:
+            self._driver.finger_print(1)
+        else:
+            self._driver.finger_print(0)
 
     def supports_test_result(self) -> bool:
         """return true if the device service supports setting a pass or fail flag in thier platform"""

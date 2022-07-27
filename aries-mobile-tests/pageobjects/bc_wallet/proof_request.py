@@ -31,8 +31,11 @@ class ProofRequestPage(BasePage):
 
     def select_share(self):
         if self.on_this_page():
-            self.scroll_to_element(self.share_aid_locator[1])
-            self.find_by(self.share_locator).click()
+            try:
+                self.find_by(self.share_locator).click()
+            except:
+                self.scroll_to_element(self.share_aid_locator[1])
+                self.find_by(self.share_locator).click()
             return SendingInformationSecurelyPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
