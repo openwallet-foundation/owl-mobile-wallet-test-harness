@@ -48,7 +48,7 @@ class DeviceServiceHandlerInterface(ABC):
         """pass the qrcode image to the device in a way that allows for the device to scan it when the camera opens"""
 
     @abstractmethod
-    def biometrics_authenticate(self, bool):
+    def biometrics_authenticate(self, authenticate:bool):
         """authenticate when biometrics, ie fingerprint or faceid, true is success, false is fail biometrics"""
 
     @abstractmethod

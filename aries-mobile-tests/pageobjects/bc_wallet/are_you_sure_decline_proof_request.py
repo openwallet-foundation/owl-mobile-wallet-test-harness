@@ -11,8 +11,8 @@ class AreYouSureDeclineProofRequestPage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Are you sure you want to decline this proof request"
-    no_go_back_locator = (MobileBy.ID, "com.ariesbifold:id/Share")
-    confirm_locator = (MobileBy.ID, "com.ariesbifold:id/Decline")
+    no_go_back_locator = (MobileBy.ID, "com.ariesbifold:id/AbortDeclineButton")
+    confirm_locator = (MobileBy.ID, "com.ariesbifold:id/ConfirmDeclineButton")
 
 
     def on_this_page(self):

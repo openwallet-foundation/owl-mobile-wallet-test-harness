@@ -8,7 +8,8 @@
         "platformVersion":"15.3",
         "sessionCreationRetry" : "3",
         "sauceLabsImageInjectionEnabled": true,
-        "autoAcceptAlerts": true
+        "autoAcceptAlerts": true,
+        "fullReset": true
     }
 }
 
@@ -35,5 +36,6 @@
     "appium:xcodeOrgId": "L796QSLV3E",
     "appium:xcodeSigningId": "Apple Distribution: Her Majesty the Queen in right of the Province of British Columbia (L796QSLV3E)",
     "appium:updatedWDABundleId": "ca.bc.gov.*",
-    "appium:automationName": "XCUITest"
+    "appium:automationName": "XCUITest",
+    "fullReset": false
   }
