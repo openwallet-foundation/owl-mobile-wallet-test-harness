@@ -1,6 +1,7 @@
 from appium.webdriver.common.mobileby import MobileBy
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.home import HomePage
+import time
 
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -23,14 +24,17 @@ class InitializationPage(BasePage):
         except:
             return False
 
-    def wait_until_initialized(self):
+    def wait_until_initialized(self, timeout=300):
         loading = True
+        loop_timeout = time.time() + timeout
         while loading == True:
             try:
                 self.find_by(self.loading_locator, timeout=5)
             except Exception as e:
                 if "Could not find element by" in str(e):
                     loading = False
+                    if time.time() > loop_timeout:
+                        raise Exception(f"App Initialization taking longer than expected. Timeing out at {timeout} seconds.")
                 else:
                     raise e
         return HomePage(self.driver)
