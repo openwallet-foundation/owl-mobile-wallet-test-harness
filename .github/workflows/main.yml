@@ -49,12 +49,13 @@ jobs:
         with:
           USE_NGROK: ""
 
-      - name: run-sauce-connect-tunnel
-        uses: saucelabs/sauce-connect-action@v2
-        with:
-          username: ${{ secrets.SAUCE_USERNAME }}
-          accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          directDomains: aries-mediator-agent-test.apps.silver.devops.gov.bc.ca
+      # - name: run-sauce-connect-tunnel
+      #   uses: saucelabs/sauce-connect-action@v2
+      #   with:
+      #     username: ${{ secrets.SAUCE_USERNAME }}
+      #     accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
+      #     directDomains: aries-mediator-agent-test.apps.silver.devops.gov.bc.ca
+
       #    tunnelIdentifier: github-action-tunnel
       #    region: us-west-1
 
@@ -94,13 +95,13 @@ jobs:
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
-      - name: Shutdown Sauce Connect Tunnel
-        run: |
-          docker ps \
-          --format '{{.ID}} {{.Image}}' | \
-          grep saucelabs/sauce-connect | \
-          awk '{print $1}' | \
-          xargs docker stop
+      # - name: Shutdown Sauce Connect Tunnel
+      #   run: |
+      #     docker ps \
+      #     --format '{{.ID}} {{.Image}}' | \
+      #     grep saucelabs/sauce-connect | \
+      #     awk '{print $1}' | \
+      #     xargs docker stop
 
       - name: Run AMTH Connectionless Tests
         uses: ./.github/workflows/run-test-harness

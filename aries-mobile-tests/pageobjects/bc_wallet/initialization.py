@@ -28,13 +28,13 @@ class InitializationPage(BasePage):
         loading = True
         loop_timeout = time.time() + timeout
         while loading == True:
+            if time.time() > loop_timeout:
+                raise Exception(f"App Initialization taking longer than expected. Timing out at {timeout} seconds.")
             try:
                 self.find_by(self.loading_locator, timeout=5)
             except Exception as e:
                 if "Could not find element by" in str(e):
                     loading = False
-                    if time.time() > loop_timeout:
-                        raise Exception(f"App Initialization taking longer than expected. Timeing out at {timeout} seconds.")
                 else:
                     raise e
         return HomePage(self.driver)
