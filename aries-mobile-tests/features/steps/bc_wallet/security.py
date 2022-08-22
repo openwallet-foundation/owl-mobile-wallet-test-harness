@@ -58,7 +58,8 @@ def step_impl(context):
     context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     #context.device_service_handler.biometrics_authenticate(True)
 
-@then('they land on the Home screen')
+
+@when('initialization ends (failing silently')
 @then('they have access to the app')
 @then('the User has successfully created a PIN')
 def step_impl(context):
@@ -90,6 +91,7 @@ def step_impl(context):
         context.driver.close_app()
 
 
+@when('the holder opens BC Wallet')
 @when('they relaunch the app')
 def step_impl(context):
     if context.driver.capabilities['platformName'] == 'iOS':
