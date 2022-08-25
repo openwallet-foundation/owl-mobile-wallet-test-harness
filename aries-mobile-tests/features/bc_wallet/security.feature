@@ -56,6 +56,7 @@ Feature: Secure your Wallet
     When the User enters the first PIN as "369369"
     And the User re-enters the PIN as "369369"
     And the User selects Create PIN
+    And the User selects to use Biometrics
     Then the User has successfully created a PIN
     And they land on the Home screen
 
@@ -94,7 +95,7 @@ Feature: Secure your Wallet
     Examples:
       | 000000 | Please use only number in your PIN |
 
-  @T004-Security @AcceptanceTest @ExceptionTest @normal @wip
+  @T00x-Security @AcceptanceTest @ExceptionTest @normal @wip
   Scenario: New User Sets Up PIN but not biometrics and authenticates with PIN
     Given the Holder has setup thier Wallet
     And the Holder has selected to use PIN only to unlock BC Wallet
@@ -103,7 +104,7 @@ Feature: Secure your Wallet
     And authenticates with thier PIN as "369369"
     Then they have access to the app
 
-  @T004-Security @AcceptanceTest @ExceptionTest @normal @wip
+  @T00x-Security @AcceptanceTest @ExceptionTest @normal @wip
   Scenario: New User Sets Up PIN but not biometrics and fails to authenticate with PIN once
     Given the Holder has setup thier Wallet
     And the Holder has selected to use PIN only to unlock BC Wallet
@@ -112,7 +113,7 @@ Feature: Secure your Wallet
     And authenticates with thier PIN as "969363"
     Then ?
 
-  @T004-Security @AcceptanceTest @ExceptionTest @normal @wip
+  @T00x-Security @AcceptanceTest @ExceptionTest @normal @wip
   Scenario: New User Sets Up PIN but not biometrics and fails to authenticate with PIN multiple times
     Given the Holder has setup thier Wallet
     And the Holder has selected to use PIN only to unlock BC Wallet

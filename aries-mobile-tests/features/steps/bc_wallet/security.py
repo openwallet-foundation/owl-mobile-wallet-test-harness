@@ -50,13 +50,18 @@ def step_impl(context, pin):
 @then('the User selects Create PIN')
 @when('the User selects Create PIN')
 def step_impl(context):
-    context.thisInitializationPage = context.thisPINSetupPage.create_pin()
+    context.thisOnboardingBiometricsPage = context.thisPINSetupPage.create_pin()
 
+
+@when('the User selects to use Biometrics')
+def step_impl(context):
+    assert context.thisOnboardingBiometricsPage.select_biometrics()
+    context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     #context.device_service_handler.biometrics_authenticate(True)
 
+@then('they land on the Home screen')
 @then('they have access to the app')
 @then('the User has successfully created a PIN')
-@then('they land on the Home screen')
 def step_impl(context):
     # The Home page will not show until the initialization page is done. 
     #assert context.thisInitializationPage.on_this_page()
@@ -72,8 +77,10 @@ def step_impl(context):
 
 @given('the Holder has selected to use biometrics to unlock BC Wallet')
 def step_impl(context):
-    # TODO Implement this when the app has the option in setup
-    pass
+    context.execute_steps('''
+        When the User selects to use Biometrics
+        Then they land on the Home screen
+    ''')
 
 @given('they have closed the app')
 def step_impl(context):

@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.home import HomePage
 from pageobjects.bc_wallet.initialization import InitializationPage
+from pageobjects.bc_wallet.onboarding_biometrics import OnboardingBiometricsPage
 
 
 class PINSetupPage(BasePage):
@@ -92,7 +93,7 @@ class PINSetupPage(BasePage):
             self.find_by(self.create_pin_button_tid_locator).click()
 
             # return the wallet initialization page
-            return InitializationPage(self.driver)
+            return OnboardingBiometricsPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 

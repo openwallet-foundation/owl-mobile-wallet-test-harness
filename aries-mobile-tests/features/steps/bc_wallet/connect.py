@@ -14,15 +14,23 @@ from agent_test_utils import get_qr_code_from_invitation
 # import Page Objects needed
 from pageobjects.bc_wallet.connecting import ConnectingPage
 from pageobjects.bc_wallet.home import HomePage
+from pageobjects.bc_wallet.camera_privacy_policy import CameraPrivacyPolicyPage
 
 @given('a PIN has been set up with "{pin}"')
 def step_impl(context, pin):
+    # context.execute_steps(f'''
+    #     Given the User is on the PIN creation screen
+    #     When the User enters the first PIN as "{pin}"
+    #     And the User re-enters the PIN as "{pin}"
+    #     And the User selects Create PIN
+    #     And the User selects to use Biometrics
+    #     Then the User has successfully created a PIN
+    # ''')
     context.execute_steps(f'''
         Given the User is on the PIN creation screen
         When the User enters the first PIN as "{pin}"
         And the User re-enters the PIN as "{pin}"
         And the User selects Create PIN
-        Then the User has successfully created a PIN
     ''')
 
 @when('the Holder scans the QR code sent by the "{agent}"')
@@ -38,6 +46,11 @@ def step_impl(context, agent):
     context.device_service_handler.inject_qrcode(qrimage)
 
     context.thisConnectingPage = context.thisNavBar.select_scan()
+
+    # If this is the first time the user selects scan, then they will get a Camera Privacy Policy that needs to be dismissed
+    context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
+    if context.thisCameraPrivacyPolicyPage.on_this_page():
+        context.thisCameraPrivacyPolicyPage.select_okay()
 
 
 @when('the Holder is taken to the Connecting Screen/modal')
