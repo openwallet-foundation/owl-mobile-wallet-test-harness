@@ -26,7 +26,7 @@ class OnboardingWelcomePage(BasePage):
         timeout = 10
         if "Local" in os.environ['DEVICE_CLOUD']:
         #if os.environ['DEVICE_CLOUD'] == "Local":
-            timeout = 50
+            timeout = 100
         return super().on_this_page(self.on_this_page_text_locator, timeout)   
 
     def get_onboarding_text(self):

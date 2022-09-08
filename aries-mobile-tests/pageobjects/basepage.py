@@ -1,5 +1,6 @@
 import time
 from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -39,16 +40,16 @@ class BasePage(object):
         self.current_platform = driver.capabilities['platformName']
 
     def find_by(self, locator_tpl: tuple, timeout=20):
-        if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID:
+        if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID or locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
             return self.find_by_accessibility_id(locator_tpl[1], timeout)
-        elif locator_tpl[0] == MobileBy.ID:
+        elif locator_tpl[0] == MobileBy.ID or locator_tpl[0] == AppiumBy.ID:
             return self.find_by_element_id(locator_tpl[1], timeout)
 
 
     def find_multiple_by(self, locator_tpl: tuple, timeout=20):
-        if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID:
+        if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID or locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
             return self.find_multiple_by_accessibility_id(locator_tpl[1], timeout)
-        elif locator_tpl[0] == MobileBy.ID:
+        elif locator_tpl[0] == MobileBy.ID or locator_tpl[0] == AppiumBy.ID:
             # It may be that Android will return none when looking for multiple
             # so if we get an empty element array here try find_by instead.
             elems = self.find_multiple_by_id(locator_tpl[1], timeout)
@@ -64,7 +65,7 @@ class BasePage(object):
             # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located(
-                    (MobileBy.ACCESSIBILITY_ID, locator))
+                    (AppiumBy.ACCESSIBILITY_ID, locator))
             )
         except:
             # try:
@@ -85,7 +86,7 @@ class BasePage(object):
             # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_all_elements_located(
-                    (MobileBy.ACCESSIBILITY_ID, locator))
+                    (AppiumBy.ACCESSIBILITY_ID, locator))
             )
         except:
             raise Exception(
@@ -97,7 +98,7 @@ class BasePage(object):
             # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_all_elements_located(
-                    (MobileBy.ID, locator))
+                    (AppiumBy.ID, locator))
             )
         except:
             raise Exception(
@@ -108,7 +109,7 @@ class BasePage(object):
         try:
             # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
-                EC.presence_of_element_located((MobileBy.ID, locator))
+                EC.presence_of_element_located((AppiumBy.ID, locator))
             )
         except:
             raise Exception(

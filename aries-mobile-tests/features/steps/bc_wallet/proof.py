@@ -211,6 +211,7 @@ def step_impl(context):
 def step_impl(context):
     context.issuer.revoke_credential()
 
+@given('the Holder has setup thier Wallet')
 @given('the PCTF Member has setup thier Wallet')
 def step_impl(context):
     context.execute_steps(f'''

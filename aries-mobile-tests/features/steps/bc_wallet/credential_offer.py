@@ -86,7 +86,7 @@ def step_impl(context):
     assert context.thisCredentialOfferPage.on_this_page()
 
     who, cred_type, attributes, values = get_expected_credential_detail(context)
-    # The below doesn't have locators in build 127. Calibrate in the future fixed build
+    # TODO The below doesn't have locators in build 127. Calibrate in the future fixed build
     #actual_who, actual_cred_type, actual_attributes, actual_values = context.thisCredentialOfferPage.get_credential_details() 
     #assert who in actual_who
     #assert cred_type in actual_cred_type
