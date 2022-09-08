@@ -143,10 +143,10 @@ Feature: Secure your Wallet
     When the Holder opens the app
     Then they are prompted to input their wallet PIN
 
-  @T00X-Security @critical @FunctionalTest @Story_421
+  @T00X-Security @critical @FunctionalTest @Story_421 @wip
   Scenario: Holder chooses biometrics on setup, gets credential, and reopens to biometrics authentication and has access to thier credential
 
-  @T00X-Security @critical @FunctionalTest @ExceptionTest @Story_?
+  @T00X-Security @critical @FunctionalTest @ExceptionTest @Story_? @wip
   Scenario: Holder chooses biometrics on setup, gets credential, and reopens to biometrics authentication but fails once, then authenticates and has access to thier credential
 
   # Below this line has not been decided on and is remaining in the backlog

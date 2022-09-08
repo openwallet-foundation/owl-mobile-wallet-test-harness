@@ -55,7 +55,7 @@ def step_impl(context):
 
 @when('the User selects to use Biometrics')
 def step_impl(context):
-    assert context.thisOnboardingBiometricsPage.select_biometrics()
+    #assert context.thisOnboardingBiometricsPage.select_biometrics()
     context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     #context.device_service_handler.biometrics_authenticate(True)
 

@@ -11,7 +11,7 @@ class BiometricsPage(BasePage):
     """Biometrics enter page object"""
 
     # Locators
-    on_this_page_text_locator = "Authenticate to retrieve secret"
+    on_this_page_text_locator = "Wallet Unlock"
 
 
     def on_this_page(self):   

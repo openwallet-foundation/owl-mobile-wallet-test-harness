@@ -10,8 +10,9 @@ class OnboardingBiometricsPage(BasePage):
     """Onboarding Biometrics page object"""
 
     # Locators
-    on_this_page_text_locator = "Use biometrics to unlock wallet?"
-    use_biometrics_toggle_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleBiometrics")
+    on_this_page_text_locator = "you will need to use biometrics to open your BC Wallet"
+    # toggle no longer exists in build 305
+    #use_biometrics_toggle_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleBiometrics")
     continue_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Continue")
 
 
@@ -21,7 +22,7 @@ class OnboardingBiometricsPage(BasePage):
             timeout = 100
         return super().on_this_page(self.on_this_page_text_locator, timeout)  
 
-
+    # this no longer exists in build 305 but leaving it in as it is uncertain if it will come back.
     def select_biometrics(self):
         if self.on_this_page():
             self.find_by(self.use_biometrics_toggle_locator).click()

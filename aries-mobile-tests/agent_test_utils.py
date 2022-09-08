@@ -10,7 +10,7 @@ def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_co
 
     invitation_url = invitation_json["invitation_url"]
 
-    qr = QRCode(border=1)
+    qr = QRCode(border=20)
     qr.add_data(invitation_url)
     qr.make()
     #img = qr.make_image(fill_color="red", back_color="#23dda0")
