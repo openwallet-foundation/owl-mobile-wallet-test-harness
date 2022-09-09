@@ -58,9 +58,13 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
             if schema is None:
                 self._credential_definition = self.DEFAULT_CRED_DEF_TEMPLATE.copy()
             else:
+                # self._credential_definition = {
+                #     "schema_id": self._schema["schema_id"],
+                #     "tag": str(randint(1, 10000)),
+                # }
                 self._credential_definition = {
                     "schema_id": self._schema["schema_id"],
-                    "tag": str(randint(1, 10000)),
+                    "tag": self._schema["schema_name"],
                 }
             self._create_credential_definition(
                 self._credential_definition, revokable)

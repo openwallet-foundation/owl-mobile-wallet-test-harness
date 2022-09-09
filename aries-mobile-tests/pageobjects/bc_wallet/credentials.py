@@ -16,9 +16,10 @@ class CredentialsPage(BasePage):
     credential_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCard")
     
     #avatar_locator = (MobileBy.ID, "com.ariesbifold:id/AvatarName")
-    credential_name_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialHeader")
+    #credential_name_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCardHeader")
+    credential_name_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialName")
     #credential_version_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialVersion")
-    credential_issued_date_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialFooter")
+    credential_issued_date_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCardFooter")
 
     def on_this_page(self):
 

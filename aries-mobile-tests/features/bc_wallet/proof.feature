@@ -34,8 +34,8 @@ Feature: Proof
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
-         | issuer_agent_type | credential_name |
-         | AATHIssuer        | Test Schema     |
+         | issuer_agent_type | credential_name                           |
+         | AATHIssuer        | Default AATH Issuer Credential Definition |
       And the user has a proof request
       When they select Share
       And the holder is informed that they are sending information securely
@@ -50,6 +50,7 @@ Feature: Proof
       Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name |
@@ -72,6 +73,7 @@ Feature: Proof
       Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
@@ -93,6 +95,7 @@ Feature: Proof
       Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
@@ -115,6 +118,7 @@ Feature: Proof
       Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
@@ -138,6 +142,7 @@ Feature: Proof
       Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
@@ -161,6 +166,7 @@ Feature: Proof
       Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name |
@@ -187,6 +193,7 @@ Feature: Proof
       Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
