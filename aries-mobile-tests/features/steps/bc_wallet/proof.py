@@ -16,6 +16,8 @@ from pageobjects.bc_wallet.information_sent_successfully import InformationSentS
 from pageobjects.bc_wallet.information_approved import InformationApprovedPage
 from pageobjects.bc_wallet.proof_request import ProofRequestPage
 from pageobjects.bc_wallet.home import HomePage
+from pageobjects.bc_wallet.navbar import NavBar
+from pageobjects.bc_wallet.camera_privacy_policy import CameraPrivacyPolicyPage
 
 
 @given('the holder has a Non-Revocable credential')
@@ -218,6 +220,7 @@ def step_impl(context):
             Given the User has skipped on-boarding
             And the User has accepted the Terms and Conditions
             And a PIN has been set up with "369369"
+            And the Holder has selected to use biometrics to unlock BC Wallet
         ''')
     #pass
 
@@ -235,9 +238,21 @@ def step_impl(context, credential):
         Then they are brought to the list of credentials
     ''')
 
+    context.execute_steps(u'''
+        And the credential accepted is at the top of the list
+        {table}
+    '''.format(table=table_to_str(context.table)))
+
 @given('they Scan the credential offer QR Code')
 def step_impl(context):
+    if hasattr(context, 'thisNavBar') == False:
+        context.thisNavBar = NavBar(context.driver)
     context.thisConnectingPage = context.thisNavBar.select_scan()
+
+    # If this is the first time the user selects scan, then they will get a Camera Privacy Policy that needs to be dismissed
+    context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
+    if context.thisCameraPrivacyPolicyPage.on_this_page():
+        context.thisCameraPrivacyPolicyPage.select_okay()
 
 @given('the user has a connectionless proof request for access to PCTF Chat')
 def step_impl(context):
