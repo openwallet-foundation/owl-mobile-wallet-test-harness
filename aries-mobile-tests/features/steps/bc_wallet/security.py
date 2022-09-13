@@ -58,8 +58,8 @@ def step_impl(context):
     context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     #context.device_service_handler.biometrics_authenticate(True)
 
-
-@when('initialization ends (failing silently')
+@then('they land on the Home screen')
+@when('initialization ends (failing silently)')
 @then('they have access to the app')
 @then('the User has successfully created a PIN')
 def step_impl(context):

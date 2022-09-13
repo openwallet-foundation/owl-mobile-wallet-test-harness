@@ -10,21 +10,24 @@ Feature: Wallet Offline Handling
   I want to to know when I loose internet connectivity
 
 
-  @T001-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl @AndroidOnly
+  # This test will remain flacky until we are out of the crawl stage and the test code is refined to properly
+  # use swipe to toggle WiFi on control center on iOS. 
+  # Android in SL has issues when coming back into a closed app, biometrics at times does not display.
+  @T001-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl
   Scenario: Holder opens BC Wallet while mobile phone is offline
     Given the Holder has setup thier Wallet
+    And the Holder has selected to use biometrics to unlock BC Wallet
     And they have closed the app
     And the mobile phone does not have an internet connection
     When the holder opens BC Wallet
-    And authenticates with thier PIN as "369369"
-    And initialization ends (failing silently)
+    #And authenticates with thier biometrics
+    #And initialization ends (failing silently)
     Then they are presented with a dismissible "no internet connection" toast notification
 
 
-  @T002-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl @AndroidOnly
+  @T002-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl
   Scenario Outline: BC Wallet does not detect internet connection while in use
-    Given the Holder has setup thier Wallet
-    And the holder is <using the app>
+    Given the holder is <using the app>
     When the mobile phone does not have an internet connection
     Then they are presented with a dismissible "no internet connection" toast notification
 
@@ -36,10 +39,9 @@ Feature: Wallet Offline Handling
       | Presenting Proof     |
 
 
-  @T003-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl @AndroidOnly
+  @T003-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl @wip
   Scenario Outline: BC Wallet is offline and returns back online
-    Given the Holder has setup thier Wallet
-    And the holder is <using the app>
+    Given the holder is <using the app>
     And the mobile phone does not have an internet connection
     When BC Wallet suddenly goes back online
     Then they are presented with a temporary "Your internet connection is back" toast notification
@@ -53,7 +55,7 @@ Feature: Wallet Offline Handling
       | Presenting Proof     |
 
 
-  @T004-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl
+  @T004-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl @wip
   Scenario Outline: BC Wallet is offline and holder changes screens optional
     Given the Holder has setup thier Wallet
     And the mobile phone does not have an internet connection
