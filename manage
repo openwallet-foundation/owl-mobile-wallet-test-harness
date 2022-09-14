@@ -1,14 +1,11 @@
 #!/bin/bash
 # set -x
 
-# Set of valid agents - add new agents here
-export VALID_AGENTS=$(ls agents/*/Dockerfile.* | sed "s/^.*file.//" |  tr "\n" " " | sort -u)
 
 # Set of valid wallets - Looks in aries-mobile-tests/pageobjects for folders containing wallet page objects
 export VALID_WALLETS=$(ls -d aries-mobile-tests/pageobjects/*/ | awk -F'/' '{ a = length($NF) ? $NF : $(NF-1); print a }' | tr "\n" " " | sort -u)
 
 export MSYS_NO_PATHCONV=1
-# getDockerHost; for details refer to https://github.com/bcgov/DITP-DevOps/tree/main/code/snippets#getdockerhost
 . /dev/stdin <<<"$(cat <(curl -s --raw https://raw.githubusercontent.com/bcgov/DITP-DevOps/main/code/snippets/getDockerHost))" 
 export DOCKERHOST=$(getDockerHost)
 
@@ -29,12 +26,10 @@ LEDGER_URL_HOST="${LEDGER_URL_CONFIG:-http://localhost:9000}"
 LEDGER_URL_INTERNAL="${LEDGER_URL_CONFIG:-http://${DOCKERHOST}:9000}"
 TAILS_SERVER_URL_HOST="${TAILS_SERVER_URL_CONFIG:-http://localhost:6543}"
 TAILS_SERVER_URL_INTERNAL="${TAILS_SERVER_URL_CONFIG:-http://${DOCKERHOST}:6543}"
-#CLOUD_AGENCY_URL="${CLOUD_AGENCY_URL:-http://localhost:8000}"
 # important: inside the internal URLs, we replace "://localhost:" with "://${DOCKERHOST}:"
 #   so it works inside docker.
 LEDGER_URL_INTERNAL="$(echo ${LEDGER_URL_INTERNAL} | sed "s/:\/\/localhost:/:\/\/${DOCKERHOST}:/" )"
 TAILS_SERVER_URL_INTERNAL="$(echo ${TAILS_SERVER_URL_INTERNAL} | sed "s/:\/\/localhost:/:\/\/${DOCKERHOST}:/" )"
-#CLOUD_AGENCY_URL_INTERNAL="$(echo ${CLOUD_AGENCY_URL} | sed "s/:\/\/localhost:/:\/\/${DOCKERHOST}:/" )"
 
 # Running on Windows?
 if [[ "$OSTYPE" == "msys" ]]; then
@@ -195,52 +190,10 @@ function initEnv() {
   export RUST_LOG=${RUST_LOG:-warning}
 }
 
-# TODO: set up image builds so you don't need to use `./manage rebuild` to refresh remote source repo
-# - image Dockerfile has an ARG for the commit hash,
-# - build script grabs the HEAD commit hash from the agent's github repo
-
 # Build images -- add more agents here...
 # TODO: Define args to build only what's needed
 buildImages() {
   args=${@}
-
-  if [[ ${ISSUER_AGENT} ]] || [[ ${VERIFIER_AGENT} ]]; then
-    echo "Agents to build: Issuer:${ISSUER_AGENT}, Verifier:${VERIFIER_AGENT}"
-  fi
-
-  for agent in ${BUILD_AGENTS}; do
-    export AGENT_FOLDER=$(dirname "$(find agents -name *.${agent})" )
-    echo Agent Folder: ${AGENT_FOLDER}
-    if [ -e "${AGENT_FOLDER}/Dockerfile.${agent}" ]; then
-      echo "Building ${agent}-agent ..."
-      local REPO_ARGS
-      REPO_ARGS=
-      if [[ -f "${AGENT_FOLDER}/${agent}.repoenv" ]]; then
-        source "${AGENT_FOLDER}/${agent}.repoenv"
-        if [[ -n "${REPO_URL}" ]]; then
-          local REPO_COMMIT
-          if [[ -z ${REPO_BRANCH} ]]; then
-            REPO_BRANCH=HEAD
-          fi
-          REPO_COMMIT=$(git ls-remote ${REPO_URL} ${REPO_BRANCH} | cut -f1)
-          REPO_ARGS="--build-arg REPO_URL=${REPO_URL} --build-arg REPO_COMMIT=${REPO_COMMIT}"
-        fi
-      fi
-
-      if ! docker build \
-        ${args} \
-        $(initDockerBuildArgs) \
-        ${REPO_ARGS} \
-        -t "${agent}-agent" \
-        -f "${AGENT_FOLDER}/Dockerfile.${agent}" "agents/"; then
-          echo "Docker image build failed."
-          exit 1
-      fi
-    else
-      echo "Unable to find Dockerfile to build agent: ${agent}"
-      echo "Must be one one of: ${VALID_AGENTS}"
-    fi
-  done
 
   echo "Building aries-mobile-test-harness ..."
   if ! docker build \
@@ -253,242 +206,6 @@ buildImages() {
   fi
 }
 
-pingLedger(){
-  ledger_url=${1}
-
-  # ping ledger web browser for genesis txns
-  local rtnCd=$(curl -s --write-out '%{http_code}' --output /dev/null ${ledger_url}/genesis)
-  if (( ${rtnCd} == 200 )); then
-    return 0
-  else
-    return 1
-  fi
-}
-
-waitForLedger(){
-  (
-    # Wait for ledger server to start ...
-    local startTime=${SECONDS}
-    local rtnCd=0
-    printf "waiting for ledger to start"
-    # use ledger URL from host
-    while ! pingLedger "$LEDGER_URL_HOST"; do
-      printf "."
-      local duration=$(($SECONDS - $startTime))
-      if (( ${duration} >= ${LEDGER_TIMEOUT} )); then
-        echoRed "\nThe Indy Ledger failed to start within ${duration} seconds.\n"
-        rtnCd=1
-        break
-      fi
-      sleep 1
-    done
-    echo
-    return ${rtnCd}
-  )
-}
-
-pingTailsServer(){
-  tails_server_url=${1}
-
-  # ping tails server (ask for a non-existant registry and should return 404)
-  local rtnCd=$(curl -s --write-out '%{http_code}' --output /dev/null ${tails_server_url}/404notfound)
-  if (( ${rtnCd} == 404 )); then
-    return 0
-  else
-    return 1
-  fi
-}
-
-waitForTailsServer(){
-  (
-    # Wait for tails server to start ...
-    local startTime=${SECONDS}
-    local rtnCd=0
-    printf "waiting for tails server to start"
-    # use tails server URL from host
-    while ! pingTailsServer "$TAILS_SERVER_URL_HOST"; do
-      printf "."
-      local duration=$(($SECONDS - $startTime))
-      if (( ${duration} >= ${LEDGER_TIMEOUT} )); then
-        echoRed "\nThe tails server failed to start within ${duration} seconds.\n"
-        rtnCd=1
-        break
-      fi
-      sleep 1
-    done
-    echo
-    return ${rtnCd}
-  )
-}
-
-pingCloudAgency(){
-  cloud_agency_url=${1}
-
-  local rtnCd=$(curl -s --write-out '%{http_code}' --output /dev/null ${cloud_agency_url})
-  if (( ${rtnCd} == 200 )); then
-    return 0
-  else
-    return 1
-  fi
-}
-
-pingUniresolver(){
-
-  # ping uniresolver server
-  local rtnCd=$(curl -s --write-out '%{http_code}' --output /dev/null http://localhost:8080)
-  if (( ${rtnCd} == 200 )); then
-    return 0
-  else
-    return 1
-  fi
-}
-
-waitForCloudAgency(){
-  (
-    # Wait for cloud agency to start ...
-    local startTime=${SECONDS}
-    local rtnCd=0
-    printf "waiting for cloud agency to start"
-    while ! pingCloudAgency "$CLOUD_AGENCY_URL"; do
-      printf "."
-      local duration=$(($SECONDS - $startTime))
-      if (( ${duration} >= ${LEDGER_TIMEOUT} )); then
-        echoRed "\nThe agency failed to start within ${duration} seconds.\n"
-        rtnCd=1
-        break
-      fi
-      sleep 1
-    done
-    echo
-    return ${rtnCd}
-  )
-}
-
-waitForUniresolver(){
-  (
-    # Wait for uniresolver to start ...
-    local startTime=${SECONDS}
-    local rtnCd=0
-    printf "waiting for uniresolver to start"
-    while ! pingUniresolver ; do
-      printf "."
-      local duration=$(($SECONDS - $startTime))
-      if (( ${duration} >= ${LEDGER_TIMEOUT} )); then
-        echoRed "\nUniversal Resolver failed to start within ${duration} seconds.\n"
-        rtnCd=1
-        break
-      fi
-      sleep 1
-    done
-    echo
-    return ${rtnCd}
-  )
-}
-
-dockerhost_url_templates() {
-  # generate acapy plugin config file, writing $DOCKERHOST into URLs
-  pushd ${SCRIPT_HOME}/agents/acapy/ > /dev/null
-
-  mkdir -p .build/acapy-main.data
-  mkdir -p .build/acapy.data
-
-  sed "s/REPLACE_WITH_DOCKERHOST/${DOCKERHOST}/g" plugin-config.template | tee > .build/plugin-config.yml
-
-  rm -f .build/acapy-main.data/plugin-config.yml .build/acapy.data/plugin-config.yml
-  cp .build/plugin-config.yml .build/acapy-main.data/plugin-config.yml
-  mv .build/plugin-config.yml .build/acapy.data/plugin-config.yml
-
-  popd > /dev/null
-}
-
-pingAgent(){
-  name=${1}
-  port=${2}
-
-  # ping agent using a backchannel-exposed api
-  rtnCd=$(curl -s --write-out '%{http_code}' --output /dev/null http://localhost:${port}/agent/command/status/)
-  if (( ${rtnCd} == 200 )); then
-    return 0
-  else
-    return 1
-  fi
-}
-
-waitForAgent(){
-  (
-    name=${1}
-
-    # Wait for agent to start ...
-    local startTime=${SECONDS}
-    rtnCd=0
-    printf "waiting for ${name} agent to start"
-    while ! pingAgent ${@}; do
-      printf "."
-      local duration=$(($SECONDS - $startTime))
-      if (( ${duration} >= ${AGENT_TIMEOUT} )); then
-        echoRed "\nThe agent failed to start within ${duration} seconds.\n"
-        rtnCd=1
-        break
-      fi
-      sleep 1
-    done
-    echo
-    return ${rtnCd}
-  )
-}
-
-startAgent() {
-  local NAME=$1
-  local CONTAINER_NAME=$2
-  local IMAGE_NAME=$3
-  local PORT_RANGE=$4
-  local AGENT_PORT=$5
-  local AGENT_ENDPOINT_PORT=$6
-  local AIP_CONFIG=$7
-  local AGENT_NAME=$8
-
-  local AGENT_DIR=$(dirname "$(find agents -name *.${AGENT_NAME})" )
-
-  local ENV_PATH="$(find $AGENT_DIR -name *${AGENT_NAME}.env)"
-  local ENV_FILE_ARG=
-
-  if [[ -n $ENV_PATH ]]; then
-    ENV_FILE_ARG="--env-file=$ENV_PATH"
-    # echo $ENV_FILE_ARG
-  fi
-
-  local DATA_VOLUME_PATH="$(find $AGENT_DIR -wholename */${AGENT_NAME}.data)"
-  local DATA_VOLUME_ARG=
-  # optional data volume folder
-  if [[ -n DATA_VOLUME_PATH  ]]; then
-    DATA_VOLUME_ARG="-v $(pwd)/$DATA_VOLUME_PATH:/data-mount:z"
-  fi
-
-  if [ ! "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
-    if [[ "${USE_NGROK}" = "true" ]]; then
-      echo "Starting ngrok for ${NAME} Agent ..."
-      docker run -d --rm --name "${CONTAINER_NAME}-ngrok" wernight/ngrok ngrok http "${CONTAINER_NAME}:${AGENT_ENDPOINT_PORT}" --log stdout > /dev/null
-      sleep 1
-      export NGROK_NAME="${CONTAINER_NAME}-ngrok"
-      docker network connect amth_network "${CONTAINER_NAME}-ngrok"
-    else
-      export NGROK_NAME=
-    fi
-    echo "Starting ${NAME} Agent using ${IMAGE_NAME} ..."
-    export AGENT_EXTRA_ARGS_NAME="AGENT_EXTRA_${AGENT_NAME//-/_}"
-    export AGENT_EXTRA_ARGS=`echo ${!AGENT_EXTRA_ARGS_NAME}`
-    local container_id=$(docker run -dt --name "${CONTAINER_NAME}" --expose "${PORT_RANGE}" -p "${PORT_RANGE}:${PORT_RANGE}" ${DATA_VOLUME_ARG} ${ENV_FILE_ARG} -e "NGROK_NAME=${NGROK_NAME}" -e "EXTRA_ARGS=${AGENT_EXTRA_ARGS}" -e "DOCKERHOST=${DOCKERHOST}" -e "AGENT_NAME=${NAME}" -e "LEDGER_URL=${LEDGER_URL_INTERNAL}" -e "TAILS_SERVER_URL=${TAILS_SERVER_URL_INTERNAL}" -e "CLOUD_AGENCY_URL=${CLOUD_AGENCY_URL_INTERNAL}" -e "AIP_CONFIG=${AIP_CONFIG}" "${IMAGE_NAME}" -p "${AGENT_PORT}" -i false)
-    sleep 1
-    if [[ "${USE_NGROK}" = "true" ]]; then
-      docker network connect amth_network "${CONTAINER_NAME}"
-    # if [[ "${IMAGE_NAME}" = "mobile-agent-backchannel" ]]; then
-    #   echo "Tail-ing log files for ${NAME} agent in ${container_id}"
-    #   docker logs -f ${container_id} &
-    fi
-  else
-    echo "${NAME} Agent already running, skipping..."
-  fi
-}
 
 # Write some of the info in the appium/Sauce Labs config.json
 modifyConfigJson() {
@@ -536,9 +253,6 @@ modifyConfigJson() {
 # Issuer 
 # Verifier
 writeEnvProperties() {
-  # ISSUER_VERSION=$(getAgentVersion 9020)
-  # VERIFIER_VERSION=$(getAgentVersion 9030)
-  # HOLDER_VERSION=$(getWalletVersion 9040)
 
   env_file="$(pwd)/aries-mobile-tests/allure/allure-results/environment.properties"
   declare -a env_array
@@ -562,11 +276,6 @@ getAgentVersion(){
   # get agent version using a backchannel-exposed api
   version=$(curl -s http://localhost:${port}/agent/command/version/)
   echo "$version"
-  # if (( ${rtnCd} == 200 )); then
-  #   echo "$version"
-  # else
-  #   echo "unknown"
-  # fi
 }
 
 # TODO Do we need this for Mobile? 
@@ -583,137 +292,6 @@ cleanupNetwork() {
   fi
 }
 
-# TODO Probably don't need this for mobile
-auxiliaryService() {
-  local SERVICE_NAME
-  local SERVICE_COMMAND
-  SERVICE_NAME=$1
-  SERVICE_COMMAND=$2
-
-  if [[ -f "./services/${SERVICE_NAME}/wrapper.sh" ]]; then
-    (./services/${SERVICE_NAME}/wrapper.sh $SERVICE_COMMAND)
-  else
-    echo "service ${SERVICE_NAME} doesn't exist"
-  fi
-}
-
-# TODO Probably don't need this for mobile
-startServices() {
-  # sets if services this procedure starts should be stopped automatically
-  local AUTO_CLEANUP
-  if [[ "auto" = $1 ]]; then
-    AUTO_CLEANUP=true
-  else
-    AUTO_CLEANUP=false
-  fi
-
-  if [[ "all" = $1 ]]; then
-    auxiliaryService orb start
-  fi
-
-  # TODO do we need to start a ledger for mobile? Maybe only if the Harness is starting an agent.
-  # if we're *not* using an external VON ledger, start the local one
-  if [[ -z ${LEDGER_URL_CONFIG} ]]; then
-    if [[ -z `docker ps -q --filter="name=von_webserver_1"` ]]; then
-      echo "starting local von-network..."
-      auxiliaryService von-network start
-      if [[ $AUTO_CLEANUP ]]; then
-        export STARTED_LOCAL_LEDGER=true
-      fi
-    fi
-  fi
-
-  if ! waitForLedger; then
-    echoRed "\nThe Indy Ledger is not running.\n"
-    exit 1
-  fi
-
-  # if we're *not* using an external indy tails server, start the local one
-  if [[ -z ${TAILS_SERVER_URL_CONFIG} ]]; then
-    if [[ -z `docker ps -q --filter="name=docker_tails-server_1"` ]]; then
-      echo "starting local indy-tails-server..."
-      auxiliaryService indy-tails start
-      if [[ $AUTO_CLEANUP ]]; then
-        export STARTED_LOCAL_TAILS=true
-      fi
-    fi
-  fi
-
-  if ! waitForTailsServer; then
-    echoRed "\nThe Indy Tails Server is not running.\n"
-    exit 1
-  fi
-}
-
-# TODO Probably din't need this for mobile
-stopServices() {
-  if [[ "auto" = $1 ]]; then
-    if [[ ${STARTED_LOCAL_UNIRESOLVER} ]]; then
-      echo "stopping local uniresolver..."
-      auxiliaryService uniresolver stop
-    fi
-
-    if [[ ${STARTED_LOCAL_TAILS} ]]; then
-      echo "stopping local indy-tails-server..."
-      auxiliaryService indy-tails stop
-    fi
-
-    if [[ ${STARTED_LOCAL_LEDGER} ]]; then
-      echo "stopping local von-network..."
-      auxiliaryService von-network stop
-    fi
-  elif [[ "all" = $1 ]]; then
-    auxiliaryService uniresolver stop
-    auxiliaryService orb stop
-    auxiliaryService indy-tails stop
-    auxiliaryService von-network stop
-  fi
-}
-
-# TODO Probably don't need this for mobile
-serviceCommand() {
-  local SERVICE_COMMAND
-  SERVICE_COMMAND=$1
-  local SERVICE_TARGET
-  SERVICE_TARGET=$2
-
-  # TODO: allow multiple services to be named - but can we handle logs command then?
-#   if [[ "all" = $SERVICE_TARGET ]]; then
-#     case "${SERVICE_COMMAND}" in
-#       start)
-#           createNetwork
-#           startServices all
-#         ;;
-#       stop)
-#           stopServices all
-#           cleanupNetwork
-#         ;;
-#       *)
-#           echo err: \'start\' and \'stop\' are only valid commands for target \'all\'
-#         ;;
-#     esac
-
-#     return
-#   fi
-
-#   case "${SERVICE_COMMAND}" in
-#     start)
-#         createNetwork
-#         auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
-#       ;;
-#     logs)
-#         auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
-#       ;;
-#     stop|clean)
-#         auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
-#         cleanupNetwork
-#       ;;
-#     *)
-#         auxiliaryService ${SERVICE_TARGET} ${SERVICE_COMMAND}
-#       ;;
-#   esac
-}
-
 
 startHarness(){
   echo Agents to be used:
@@ -724,36 +302,8 @@ startHarness(){
 
   createNetwork
 
-  # startServices auto
-
-  # TODO probably don't need this for Mobile
-  dockerhost_url_templates
-
-  #export ISSUER_AGENT=${ISSUER_AGENT:-${ISSUER}-agent}
-  #export ISSUER_AGENT=${ISSUER}-agent
-  #export VERIFIER_AGENT=${VERIFIER_AGENT:-$VERIFIER}-agent}
-  #export VERIFIER_AGENT=${VERIFIER}-agent
-  # export AIP_CONFIG=${AIP_CONFIG:-10}
 
   export PROJECT_ID=${PROJECT_ID:-general}
-
-  # start agents or ...
-  if [[ "$ISSUER_AGENT" != *"http"* ]]; then 
-    export ISSUER_AGENT=${ISSUER}-agent
-    startAgent Issuer issuer_agent "$ISSUER_AGENT" "9020-9029" 9020 9021 "20" "$ISSUER"
-  fi
-  if [[ "$VERIFIER_AGENT" != *"http"* ]]; then
-    export VERIFIER_AGENT=${VERIFIER}-agent
-    startAgent Verifier verifier_agent "$VERIFIER_AGENT" "9030-9039" 9030 9031 "20" "$VERIFIER"
-  fi
-
-  echo
-  if [[ "$ISSUER_AGENT" != *"http"* ]]; then
-    waitForAgent Issuer 9020
-  fi
-  if [[ "$VERIFIER_AGENT" != *"http"* ]]; then
-    waitForAgent Verifier 9030
-  fi
 
   echo
   # config.json file handling
@@ -767,15 +317,6 @@ startHarness(){
   fi
 }
 
-deleteAgents() {
-    deleteAgent issuer_agent
-    deleteAgent verifier_agent
-}
-
-deleteAgent() {
-    agent=$1
-    docker rm -f $agent || 1
-}
 
 runTests() {
   runArgs=${@}
@@ -839,12 +380,7 @@ runTests() {
       docker logs issuer_agent-ngrok > .logs/issuer_agent-ngrok.log
     fi
   fi
-  if [[ "$VERIFIER_AGENT" == *"http"* ]]; then
-    docker logs verifier_agent > .logs/verifier_agent.log
-    if [[ "${USE_NGROK}" = "true" ]]; then
-      docker logs verifier_agent-ngrok > .logs/verifier_agent-ngrok.log
-    fi
-  fi
+
 }
 
 stopIfExists(){
@@ -860,18 +396,7 @@ stopIfExists(){
 
 stopHarness(){
   echo "Cleanup:"
-  echo "  - Shutting down all the agents if running ..."
-  #docker stop issuer_agent verifier_agent > /dev/null
-  #docker rm -v issuer_agent verifier_agent > /dev/null
-  stopIfExists issuer_agent
-  stopIfExists verifier_agent
-
-  stopIfExists issuer_agent-ngrok
-  stopIfExists verifier_agent-ngrok
-
-  printf "Done\n"
-
-  stopServices auto
+  echo "  - Shutting down all the test harness ..."
 
   cleanupNetwork
 
@@ -879,6 +404,8 @@ stopHarness(){
     echo "Exit with error code ${docker_result}"
     exit ${docker_result}
   fi
+
+  printf "Done\n"
 }
 
 isAgent() {
@@ -1037,36 +564,12 @@ if [[ "${COMMAND}" == "build" || "${COMMAND}" == "rebuild" ]]; then
             ;;
         w ) export WALLET_UNDER_TEST=${OPTARG}
             ;;
-        i ) export ISSUER_AGENT=${OPTARG}
-            ;;
-        v ) export VERIFIER_AGENT=${OPTARG}
-            ;;
         * ) usage ;;
     esac
   done
 
   shift $((OPTIND-1))
 
-  # Determine what agents to build. Only build once if Issuer and Verifier are the same. 
-  if [[ "$ISSUER_AGENT" ]]; then 
-    export BUILD_AGENTS="${BUILD_AGENTS} ${ISSUER_AGENT}"
-  fi
-  if [[ "$VERIFIER_AGENT" ]] || [[ "$VERIFIER_AGENT" != "$ISSUER_AGENT" ]]; then
-    export BUILD_AGENTS="${BUILD_AGENTS} ${VERIFIER_AGENT}"
-  fi
-
-    # TODO Check here to see if the wallet passed in is in the VALID_WALLETS list, if not, exit.
-    # if [ "$BUILD_AGENTS" == "" ]; then
-    #   BUILD_AGENTS=${VALID_AGENTS}
-    # fi
-  # echo "Wallet entered is not a valid wallet. See aries-mobile-test-harness/aries-mobile-tests/pageobjects/ for wallets"
-  # echo "If your wallet is not in that location, add pageobjects for your wallet and place it in a directory of your wallet name."
-  # exit 1
-
-  # add the wallet steps to all_steps.py so that all steps are seen by behave. 
-  # the format 
-  # from steps.bifold.connect import *
-  # is used for every file in the steps/wallet package.
   
   # check if steps/WALLET_UNDER_TEST exists, if not, report a bad wallet name.
   if [ -d "aries-mobile-tests/features/steps/${WALLET_UNDER_TEST}" ]; then
@@ -1113,17 +616,8 @@ case "${COMMAND}" in
       echo ""
       stopHarness
     ;;
-  start)
-      startHarness
-    ;;
   test)
       runTests ${TAGS} ${@}
-    ;;
-  stop)
-      stopHarness
-    ;;
-  service)
-      serviceCommand ${@}
     ;;
   tags)
       grep -rh --include \*.feature @ aries-mobile-tests/features/* |  tr " " "\n" | sort -u | fmt

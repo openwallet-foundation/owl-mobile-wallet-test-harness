@@ -178,19 +178,19 @@ def step_impl(context):
 @when('once the proof is verified they are informed of such')
 def step_impl(context):
     # The proof is on the way screen is temporary, loop until it goes away and create the information approved page.
-    timeout=20
-    i=0
-    while context.thisInformationSentSuccessfullyPage.on_this_page() and i < timeout:
-        # need to break out here incase we are stuck.
-        # if we are too long, we need to click the Done button.
-        sleep(1)
-        i+=1
-    if i == 20: # we timed out and it is still connecting
-        context.thisHomePage = context.thisInformationSentSuccessfullyPage.select_back_to_home()
-    else:
+    # timeout=20
+    # i=0
+    # while context.thisInformationSentSuccessfullyPage.on_this_page() and i < timeout:
+    #     # need to break out here incase we are stuck.
+    #     # if we are too long, we need to click the Done button.
+    #     sleep(1)
+    #     i+=1
+    # if i == 20: # we timed out and it is still connecting
+    #     context.thisHomePage = context.thisInformationSentSuccessfullyPage.select_back_to_home()
+    # else:
         #assume credential added
-        context.thisInformationApprovedPage = InformationApprovedPage(context.driver)
-        assert context.thisInformationApprovedPage.on_this_page()
+    context.thisInformationApprovedPage = InformationApprovedPage(context.driver)
+    assert context.thisInformationApprovedPage.on_this_page()
 
 @then('they select Done on the verfified information')
 @when('they select Done on the verfified information')

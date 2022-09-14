@@ -11,7 +11,7 @@ class InformationApprovedPage(BasePage):
     """Proof Information approved page object"""
 
     # Locators
-    on_this_page_text_locator = "Information approved"
+    on_this_page_text_locator = "Information received"
     approval_locator = (MobileBy.ID, "com.ariesbifold:id/SentProofRequest")
     done_locator = (MobileBy.ID, "com.ariesbifold:id/Done")
 
