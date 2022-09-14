@@ -3,7 +3,6 @@
 #
 # -----------------------------------------------------------
 
-from unittest import IsolatedAsyncioTestCase
 from behave import given, when, then
 import json
 import os

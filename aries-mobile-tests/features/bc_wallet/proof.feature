@@ -39,7 +39,7 @@ Feature: Proof
       And the user has a proof request
       When they select Share
       And the holder is informed that they are sending information securely
-      And they are informed that the information sent successfully
+      #And they are informed that the information sent successfully
       And once the proof is verified they are informed of such
       And they select Done on the verfified information
       Then they are brought Home
@@ -58,7 +58,6 @@ Feature: Proof
       And the user has a proof request for <proof>
       When they select Share
       And the holder is informed that they are sending information securely
-      And they are informed that the information sent successfully
       And once the proof is verified they are informed of such
       And they select Done on the verfified information
       Then they are brought Home
@@ -103,7 +102,6 @@ Feature: Proof
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
       And they select Share
       And the holder is informed that they are sending information securely
-      And they are informed that the information sent successfully
       And once the proof is verified they are informed of such
       And they select Done on the verfified information
       Then they are brought Home
@@ -127,7 +125,6 @@ Feature: Proof
       When the user has a proof request for <proof>
       And they select Share
       And the holder is informed that they are sending information securely
-      And they are informed that the information sent successfully
       And once the proof is verified they are informed of such
       And they select Done on the verfified information
       Then they are brought Home
@@ -150,7 +147,6 @@ Feature: Proof
       When the user has a proof request for <proof>
       And they select Share
       And the holder is informed that they are sending information securely
-      And they are informed that the information sent successfully
       And once the proof is verified they are informed of such
       And they select Done on the verfified information
       Then they are brought Home
@@ -178,7 +174,6 @@ Feature: Proof
       Then <credential_name> is selected as the credential to verify the proof
       And they select Share
       And the holder is informed that they are sending information securely
-      And they are informed that the information sent successfully
       And once the proof is verified they are informed of such
       And they select Done on the verfified information
       And they are brought Home
@@ -205,7 +200,6 @@ Feature: Proof
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
       And they select Share
       And the holder is informed that they are sending information securely
-      And they are informed that the information sent successfully
       And once the proof is verified they are informed of such
       And they select Done on the verfified information
       And they are brought Home

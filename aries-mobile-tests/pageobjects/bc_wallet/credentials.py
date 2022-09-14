@@ -22,8 +22,11 @@ class CredentialsPage(BasePage):
     credential_issued_date_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCardFooter")
 
     def on_this_page(self):
-
-        return super().on_this_page(self.credential_locator)
+        # TODO for iOS we are not getting testIDs for AATH creds. Use accessibilty ID for iOS instead.
+        if self.driver.capabilities['platformName'] == 'iOS':
+            return super().on_this_page(self.on_this_page_text_locator)
+        else:
+            return super().on_this_page(self.credential_locator)
 
     def get_credentials(self):
         if self.on_this_page():
