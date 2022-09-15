@@ -211,7 +211,7 @@ def step_impl(context):
 
 @given('the credential has been revoked by the issuer')
 def step_impl(context):
-    context.issuer.revoke_credential()
+    context.issuer.revoke_credential(notify_holder=True)
 
 
 @given('the PCTF Member has setup thier Wallet')

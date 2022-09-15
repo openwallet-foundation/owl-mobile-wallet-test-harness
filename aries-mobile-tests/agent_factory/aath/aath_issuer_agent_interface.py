@@ -110,11 +110,9 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
             "publish_immediately": publish_immediately,
         }
 
-        # TODO get the connection ID for the relationship. Could be in the get_revocation_ids call above. 
+        # If Notification is on then add the connection id to the revoke 
         if notify_holder:
-            # connection_id = context.connection_id_dict[issuer][context.holder_name]
-            # credential_revocation["notify_connection_id"] = connection_id
-            pass
+            credential_revocation["notify_connection_id"] = self.invitation_json['connection_id']
 
         (resp_status, resp_text) = agent_controller_POST(
             self.endpoint + "/agent/command/",
@@ -124,7 +122,7 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
         )
         if resp_status != 200:
             raise Exception(
-                f"Call to send credential failed: {resp_status}; {resp_text}"
+                f"Call to revoke credential failed: {resp_status}; {resp_text}"
             )
         else:
             self.credential_json = json.loads(resp_text)

@@ -15,7 +15,7 @@ class OnboardingStoreCredsSecurelyPage(BasePage):
     # TODO: If Ontario/BC or other wallets are closely alligned and only locators are different, 
     # we could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
-    on_this_page_text_locator = "Store and secure credentials"
+    on_this_page_text_locator = "Digital credentials, stored securley"
     #next_locator = "Next"
     #next_locator = "nextButton"
     skip_locator = "com.ariesbifold:id/Skip"
