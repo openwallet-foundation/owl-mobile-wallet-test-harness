@@ -15,7 +15,7 @@ class OnboardingShareNecessaryPage(BasePage):
     # TODO: If Ontario/BC or other wallets are closely alligned and only locators are different, 
     # we could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
-    on_this_page_text_locator = "Share only what is necessary"
+    on_this_page_text_locator = "Receiving and using credentials"
     page_text_locator = "Page Text"
     skip_locator = "com.ariesbifold:id/Skip"
     back_locator = "com.ariesbifold:id/Back"

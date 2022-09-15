@@ -14,7 +14,7 @@ class OnboardingTakeControlPage(BasePage):
     # TODO: If Ontario/BC or other wallets are closely alligned and only locators are different, 
     # we could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
-    on_this_page_text_locator = "Take control of your information"
+    on_this_page_text_locator = "Privacy and confidentiality"
     page_text_locator = "Page Text"
     learn_more_locator = "Learn more about BC Wallet"
     back_locator = "com.ariesbifold:id/Back"
