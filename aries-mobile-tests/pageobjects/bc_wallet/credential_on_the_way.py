@@ -8,12 +8,12 @@ class CredentialOnTheWayPage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Your credential is on the way"
+    on_this_page_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialOnTheWay")
     home_locator = (MobileBy.ID, "com.ariesbifold:id/BackToHome")
     #cancel_locator = "Cancel"
 
     def on_this_page(self):
-        #print(self.driver.page_source)
-        return super().on_this_page(self.on_this_page_text_locator)
+        return super().on_this_page(self.on_this_page_locator)
 
     def select_home(self):
         if self.on_this_page():

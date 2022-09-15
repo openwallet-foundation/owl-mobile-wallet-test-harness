@@ -1,4 +1,4 @@
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.credentials import CredentialsPage
 
@@ -9,11 +9,11 @@ class CredentialAddedPage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Credential added to your wallet"
-    done_locator = (MobileBy.ID, "com.ariesbifold:id/Done")
+    on_this_page_locator = (AppiumBy.ID, "com.ariesbifold:id/CredentialAddedToYourWallet")
+    done_locator = (AppiumBy.ID, "com.ariesbifold:id/Done")
 
     def on_this_page(self):
-        #print(self.driver.page_source)
-        return super().on_this_page(self.on_this_page_text_locator)
+        return super().on_this_page(self.on_this_page_locator)
 
     def select_done(self):
         if self.on_this_page():

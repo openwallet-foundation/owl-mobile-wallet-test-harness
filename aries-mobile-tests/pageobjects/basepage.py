@@ -18,10 +18,15 @@ class BasePage(object):
 
     def on_this_page(self, locator, timeout=10):
         if type(locator) is tuple:
-            if self.find_by(locator, timeout):
+            try:
+                self.find_by(locator, timeout)
                 return True
-            else:
+            except:
                 return False
+            # if self.find_by(locator, timeout):
+            #     return True
+            # else:
+            #     return False
         else:
             found_locator = False
             i = 0
