@@ -1,5 +1,5 @@
 import time
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
@@ -16,6 +16,7 @@ class OnboardingWelcomePage(BasePage):
     # we could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
     on_this_page_text_locator = "Welcome"
+    on_this_page_locator = (AppiumBy.ACCESSIBILITY_ID, "Welcome")
     skip_locator = "com.ariesbifold:id/Skip"
     # locator changes in 127
     next_locator = "com.ariesbifold:id/Next"
@@ -27,7 +28,7 @@ class OnboardingWelcomePage(BasePage):
         if "Local" in os.environ['DEVICE_CLOUD']:
         #if os.environ['DEVICE_CLOUD'] == "Local":
             timeout = 100
-        return super().on_this_page(self.on_this_page_text_locator, timeout)   
+        return super().on_this_page(self.on_this_page_locator, timeout)   
 
     def get_onboarding_text(self):
         if self.on_this_page():
