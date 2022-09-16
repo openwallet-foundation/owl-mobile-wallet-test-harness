@@ -40,6 +40,7 @@ def step_impl(context):
             When the user selects Skip
         ''')
 
+@given('the User was on the Terms and Conditions screen')
 @given('the User is on the Terms and Conditions screen')
 def step_impl(context):
     context.execute_steps(f'''
@@ -56,12 +57,24 @@ def step_impl(context):
 def step_impl(context):
     context.thisPINSetupPage = context.thisTermsAndConditionsPage.select_continue()
 
+
 @given('the User is on the PIN creation screen')
 @then('the user transitions to the PIN creation screen')
 def step_impl(context):
     context.thisPINSetupPage.on_this_page()
 
 
+@then('they can accept the Terms and conditions')
+def step_impl(context):
+    context.execute_steps(f'''
+            Given the User is on the Terms and Conditions screen
+            Given the users accepts the Terms and Conditions
+            When the user clicks continue
+            Then the user transitions to the PIN creation screen
+        ''')
+        
+
+@given('the user has pressed the back button')
 @when('the User presses the back button')
 def step_impl(context):
     context.thisCurrentOnboardingPage = context.thisTermsAndConditionsPage.select_back()
@@ -69,6 +82,7 @@ def step_impl(context):
 
 
 # TODO change this to any of the onboarding pages. iOS Bug Issue Number: 
+@given('the user was taken back to the on-boarding screen')
 @then('the User goes back to the last on-boarding screen they viewed')
 def step_impl(context):
     assert context.thisOnboardingTakeControlPage.on_this_page()

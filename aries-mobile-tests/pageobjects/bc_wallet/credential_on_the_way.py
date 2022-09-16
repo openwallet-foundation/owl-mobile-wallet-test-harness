@@ -1,4 +1,4 @@
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 
 
@@ -8,9 +8,8 @@ class CredentialOnTheWayPage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Your credential is on the way"
-    on_this_page_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialOnTheWay")
-    home_locator = (MobileBy.ID, "com.ariesbifold:id/BackToHome")
-    #cancel_locator = "Cancel"
+    on_this_page_locator = (AppiumBy.ID, "com.ariesbifold:id/CredentialOnTheWay")
+    home_locator = (AppiumBy.ID, "com.ariesbifold:id/BackToHome")
 
     def on_this_page(self):
         return super().on_this_page(self.on_this_page_locator)
