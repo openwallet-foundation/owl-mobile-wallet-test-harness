@@ -20,14 +20,14 @@ And the User is on the Terms and Conditions screen
 When the User presses the back button
 Then the User goes back to the last on-boarding screen they viewed
 
-@T003-TandC @wip @FunctionalTest @low
+@T003-TandC @FunctionalTest @low
 Scenario: New User Rejects Terms and Conditions and returns to app to accept
 Given the User has completed on-boarding
 And the User was on the Terms and Conditions screen
 And the user has pressed the back button
-And the user was taken back to the on-bording screen
-When they close the app
-And they reopen the app
+And the user was taken back to the on-boarding screen
+When they have closed the app
+And they relaunch the app
 Then they can accept the Terms and conditions
 
 # This is a content test, may be worth while autoamting once the text solidifies but would be fragile otherwise. 

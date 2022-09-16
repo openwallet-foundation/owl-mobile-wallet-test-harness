@@ -48,12 +48,12 @@ Feature: Onboarding
       | Take control of your information screen | Share only what is neccessary screen   |
 
 
-  @T004-Onboarding @wip @FunctionalTest
+  @T004-Onboarding @FunctionalTest
   Scenario Outline: New User quits app mid review of onboarding material
     Given the new user has opened the app for the first time
     And the user is on the onboarding <screen>
-    When the user quits the app
-    And they reopen the app
+    When they have closed the app
+    And they relaunch the app
     Then they land on the Welcome screen
 
     Examples:
@@ -64,9 +64,9 @@ Feature: Onboarding
       | Take control of your information screen |
 
 
-  @T005-Onboarding @wip @FunctionalTest
-  Scenario: New User wants to learn more about BC wallet during onboarding
-    Given the new user has opened the app for the first time
-    And the user is on the "Take control of your information screen"
-    When the user selects Learn more about BC Wallet
-    Then they are brought to thier browser with more info about BC wallet
+  # @T005-Onboarding @wip @FunctionalTest @obsolete
+  # Scenario: New User wants to learn more about BC wallet during onboarding
+  #   Given the new user has opened the app for the first time
+  #   And the user is on the "Take control of your information screen"
+  #   When the user selects Learn more about BC Wallet
+  #   Then they are brought to thier browser with more info about BC wallet

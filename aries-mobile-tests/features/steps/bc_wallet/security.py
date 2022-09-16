@@ -82,6 +82,7 @@ def step_impl(context):
         Then they land on the Home screen
     ''')
 
+@when('they have closed the app')
 @given('they have closed the app')
 def step_impl(context):
     if context.driver.capabilities['platformName'] == 'iOS':

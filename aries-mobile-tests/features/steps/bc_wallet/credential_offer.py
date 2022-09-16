@@ -127,7 +127,7 @@ def step_impl(context):
 @when('once the credential arrives they are informed that the Credential is added to your wallet')
 def step_impl(context):
     # The Cred is on the way screen is temporary, loop until it goes away and create the cred added page.
-    timeout=20
+    timeout=30
     i=0
     while context.thisCredentialOnTheWayPage.on_this_page() and i < timeout:
         # need to break out here incase we are stuck on connecting? 
@@ -145,6 +145,9 @@ def step_impl(context):
 @when('they select Done')
 def step_impl(context):
     # TODO we could be on the home page at this point. Should we fail the last step, fail this one, or try the cred accept again?
+    if hasattr(context, 'thisCredentialsPage') == False:
+        # This means we probably went to the Home Page above. Revisit this if the this happens too much.
+        context.thisCredentialAddedPage = CredentialAddedPage(context.driver)
     context.thisCredentialsPage = context.thisCredentialAddedPage.select_done()
 
 

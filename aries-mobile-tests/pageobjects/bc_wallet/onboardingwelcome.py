@@ -1,7 +1,4 @@
-import time
 from appium.webdriver.common.appiumby import AppiumBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.onboardingstorecredssecurely import OnboardingStoreCredsSecurelyPage
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
@@ -16,17 +13,17 @@ class OnboardingWelcomePage(BasePage):
     # we could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
     on_this_page_text_locator = "Welcome"
-    on_this_page_locator = (AppiumBy.ACCESSIBILITY_ID, "Welcome")
-    skip_locator = "com.ariesbifold:id/Skip"
+    #on_this_page_locator = (AppiumBy.ACCESSIBILITY_ID, "Welcome")
+    on_this_page_locator = (AppiumBy.NAME, "Welcome")
+    skip_locator = (AppiumBy.ID, "com.ariesbifold:id/Skip")
     # locator changes in 127
-    next_locator = "com.ariesbifold:id/Next"
+    next_locator = (AppiumBy.ID, "com.ariesbifold:id/Next")
 
     def on_this_page(self):  
         # Sometimes (especially when running with a local emulator ) where the app is not loaded yet.
         # Appium doesn't seem to let this happen when using Sauce Labs. 
         timeout = 10
         if "Local" in os.environ['DEVICE_CLOUD']:
-        #if os.environ['DEVICE_CLOUD'] == "Local":
             timeout = 100
         return super().on_this_page(self.on_this_page_locator, timeout)   
 
@@ -38,14 +35,14 @@ class OnboardingWelcomePage(BasePage):
 
     def select_next(self):
         if self.on_this_page():
-            self.find_by_element_id(self.next_locator).click()
+            self.find_by(self.next_locator).click()
             return OnboardingStoreCredsSecurelyPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 
     def select_skip(self):
         if self.on_this_page():
-            self.find_by_element_id(self.skip_locator).click()
+            self.find_by(self.skip_locator).click()
             return TermsAndConditionsPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
