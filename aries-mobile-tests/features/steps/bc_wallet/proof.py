@@ -172,7 +172,7 @@ def step_impl(context):
 @when('they are informed that the information sent successfully')
 def step_impl(context):
     context.thisInformationSentSuccessfullyPage = InformationSentSuccessfullyPage(context.driver)
-    #assert context.thisInformationSentSuccessfullyPage.on_this_page()
+    assert context.thisInformationSentSuccessfullyPage.on_this_page()
 
 @then('once the proof is verified they are informed of such')
 @when('once the proof is verified they are informed of such')
@@ -192,11 +192,16 @@ def step_impl(context):
     context.thisInformationApprovedPage = InformationApprovedPage(context.driver)
     assert context.thisInformationApprovedPage.on_this_page()
 
+
+@when('they select Go back to home on information sent successfully')
+def step_impl(context):
+    context.thisHomePage = context.thisInformationSentSuccessfullyPage.select_back_to_home()
+
+
 @then('they select Done on the verfified information')
 @when('they select Done on the verfified information')
 def step_impl(context):
     context.thisHomePage = context.thisInformationApprovedPage.select_done()
-
 
 @then('they select Done on information sent successfully')
 @when('they select Done on information sent successfully')

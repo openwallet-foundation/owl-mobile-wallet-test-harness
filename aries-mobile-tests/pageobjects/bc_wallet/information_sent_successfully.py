@@ -1,7 +1,4 @@
-import time
-from appium.webdriver.common.mobileby import MobileBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 
 
@@ -11,15 +8,16 @@ class InformationSentSuccessfullyPage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Information sent successfully"
-    back_to_home_locator = "Go back to home"
-    done_locator = (MobileBy.ID, "com.ariesbifold:id/Done")
+    on_this_page_locator = (AppiumBy.ID, "com.ariesbifold:id/SentProofRequest")
+    back_to_home_locator = (AppiumBy.ID, "com.ariesbifold:id/BackToHome")
+    done_locator = (AppiumBy.ID, "com.ariesbifold:id/Done")
 
     def on_this_page(self):
-        return super().on_this_page(self.on_this_page_text_locator)
+        return super().on_this_page(self.on_this_page_locator)
 
     def select_back_to_home(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.back_to_home_locator).click()
+            self.find_by(self.back_to_home_locator).click()
             from pageobjects.bc_wallet.home import HomePage
             return HomePage(self.driver)
         else:
