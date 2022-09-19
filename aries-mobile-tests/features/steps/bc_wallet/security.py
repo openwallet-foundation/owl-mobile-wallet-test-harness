@@ -50,11 +50,12 @@ def step_impl(context, pin):
 @when('the User selects Create PIN')
 def step_impl(context):
     context.thisOnboardingBiometricsPage = context.thisPINSetupPage.create_pin()
+    context.thisOnboardingBiometricsPage.on_this_page()
 
 
 @when('the User selects to use Biometrics')
 def step_impl(context):
-    #assert context.thisOnboardingBiometricsPage.select_biometrics()
+    assert context.thisOnboardingBiometricsPage.select_biometrics()
     context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     #context.device_service_handler.biometrics_authenticate(True)
 

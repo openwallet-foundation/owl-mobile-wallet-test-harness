@@ -1,8 +1,5 @@
 import os
-from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.common.appiumby import AppiumBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.initialization import InitializationPage
 
@@ -10,9 +7,9 @@ class OnboardingBiometricsPage(BasePage):
     """Onboarding Biometrics page object"""
 
     # Locators
-    on_this_page_text_locator = "you will need to use biometrics to open your BC Wallet"
-    # toggle no longer exists in build 305
-    #use_biometrics_toggle_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleBiometrics")
+    on_this_page_text_locator = "To keep your information secure"
+    on_this_page_locator = (AppiumBy.NAME, "Biometrics")
+    use_biometrics_toggle_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleBiometrics")
     continue_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Continue")
 
 
@@ -20,7 +17,7 @@ class OnboardingBiometricsPage(BasePage):
         timeout = 50
         if "Local" in os.environ['DEVICE_CLOUD']:
             timeout = 100
-        return super().on_this_page(self.on_this_page_text_locator, timeout)  
+        return super().on_this_page(self.on_this_page_locator, timeout)  
 
     # this no longer exists in build 305 but leaving it in as it is uncertain if it will come back.
     def select_biometrics(self):
