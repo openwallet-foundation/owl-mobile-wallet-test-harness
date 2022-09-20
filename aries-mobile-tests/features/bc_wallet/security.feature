@@ -21,7 +21,7 @@ Feature: Secure your Wallet
     Then they have access to the app
 
 
-  @T002-Security @critical @AcceptanceTest @ExceptionTest @Story_?
+  @T002-Security @critical @AcceptanceTest @ExceptionTest @Story_? @allure.issue:https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/589
   Scenario: Holder chooses biometrics and reopens to biometrics authentication but fails once
     Given the Holder has setup biometrics on thier device
     And the Holder has setup thier Wallet
