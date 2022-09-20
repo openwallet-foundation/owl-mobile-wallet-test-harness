@@ -11,10 +11,11 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
-         | issuer_agent_type | credential_name |
-         | AATHIssuer        | Test Schema     |
+         | issuer_agent_type | credential_name                           |
+         | AATHIssuer        | Default AATH Issuer Credential Definition |
       When the Holder scans the QR code sent by the "verifier"
       And the Holder is taken to the Connecting Screen/modal
       And the Connecting completes successfully

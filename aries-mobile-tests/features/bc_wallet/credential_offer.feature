@@ -37,8 +37,8 @@ Feature: Offer a Credential
       And they select Done
       Then they are brought to the list of credentials
       And the credential accepted is at the top of the list
-         | issuer_agent_type | credential_name |
-         | AATHIssuer        | Test Schema     |
+         | issuer_agent_type | credential_name                           |
+         | AATHIssuer        | Default AATH Issuer Credential Definition |
 
    @T002.1-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario Outline: Holder accepts the credential offer recieved

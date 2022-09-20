@@ -134,7 +134,7 @@ def step_impl(context):
         # if we are too long, we need to click the Go back to home button.
         sleep(1)
         i+=1
-    if i == 20: # we timed out and it is still connecting
+    if i == 30: # we timed out and it is still connecting
         context.thisHomePage = context.thisCredentialOnTheWayPage.select_home()
     else:
         #assume credential added 
