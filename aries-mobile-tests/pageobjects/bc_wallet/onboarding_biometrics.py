@@ -7,8 +7,8 @@ class OnboardingBiometricsPage(BasePage):
     """Onboarding Biometrics page object"""
 
     # Locators
-    on_this_page_text_locator = "To keep your information secure"
-    on_this_page_locator = (AppiumBy.NAME, "Biometrics")
+    on_this_page_text_locator = "Use biometrics to unlock wallet"
+    on_this_page_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleBiometrics")
     use_biometrics_toggle_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleBiometrics")
     continue_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Continue")
 
