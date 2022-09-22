@@ -88,9 +88,9 @@ Feature: Secure your Wallet
 
     Examples:
       # TODO add more examples
-      | pin    | pin_error                             |
-      | 2357   | Your PIN must be six digits in length |
-      | 27463A | Please use only numbers in your PIN   |
+      | pin    | pin_error                           |
+      | 2357   | Your PIN needs to be 6 digits long. |
+      | 27463A | Please use only numbers in your PIN |
     @wip
     Examples:
       | 000000 | Please use only number in your PIN |
@@ -131,14 +131,14 @@ Feature: Secure your Wallet
 
   @Story_421 @AcceptanceTest @wip
   Scenario: Holder selects biometrics option in Onbarding with a device that didn't have biometrics setup beforehand
-  Scenario: Holder does not have biometrics setup in their wallet
+    #Scenario: Holder does not have biometrics setup in their wallet
     Given the Holder does not have biometrics setup in their wallet
     When the Holder selects to use biometrics to unlock BC Wallet
     Then a notification pops up stating that they do not have biometrics unlock and to add it in phone settings
 
   @Story_421 @AcceptanceTest @wip
-  Scenario: Holder has chooses to not use biometrics
-  Scenario: Holder has chooses to use PIN instead of biometrics
+  #Scenario: Holder has chooses to not use biometrics
+  Scenario: Holder chooses to use PIN instead of biometrics
     Given the Holder has selected to use Wallet PIN only to unlock BC Wallet
     When the Holder opens the app
     Then they are prompted to input their wallet PIN
