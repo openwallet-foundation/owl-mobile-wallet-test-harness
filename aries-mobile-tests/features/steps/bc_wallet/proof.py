@@ -219,6 +219,7 @@ def step_impl(context):
     context.issuer.revoke_credential(notify_holder=True)
 
 
+@given('the BCSC holder has setup thier Wallet')
 @given('the PCTF Member has setup thier Wallet')
 def step_impl(context):
     context.execute_steps(f'''
