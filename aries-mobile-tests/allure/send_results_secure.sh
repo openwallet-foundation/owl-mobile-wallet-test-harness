@@ -209,7 +209,7 @@ curl -X POST "$ALLURE_SERVER/allure-docker-service/send-results?project_id=$PROJ
 echo "------------------GENERATE-REPORT------------------"
 #RESPONSE=$(curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID&execution_name=$EXECUTION_NAME&execution_from=$EXECUTION_FROM&execution_type=$EXECUTION_TYPE" $FILES)
 #RESPONSE=$(curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" $FILES)
-curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" -H "X-CSRF-TOKEN: $CRSF_ACCESS_TOKEN_VALUE" -b cookiesFile $FILES
+curl --silent --output /dev/null -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" -H "X-CSRF-TOKEN: $CRSF_ACCESS_TOKEN_VALUE" -b cookiesFile $FILES
 # ALLURE_REPORT=$(grep -o '"report_url":"[^"]*' <<< "$RESPONSE" | grep -o '[^"]*$')
 
 #OR You can use JQ to extract json values -> https://stedolan.github.io/jq/download/
