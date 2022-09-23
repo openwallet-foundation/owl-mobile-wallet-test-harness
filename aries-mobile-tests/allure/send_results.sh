@@ -193,8 +193,7 @@ echo "------------------GENERATE-REPORT------------------"
 
 #You can try with a simple curl
 #RESPONSE=$(curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID&execution_name=$EXECUTION_NAME&execution_from=$EXECUTION_FROM&execution_type=$EXECUTION_TYPE" $FILES)
-RESPONSE=$(curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" $FILES)
-ALLURE_REPORT=$(grep -o '"report_url":"[^"]*' <<< "$RESPONSE" | grep -o '[^"]*$')
+curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" $FILES
 
 #OR You can use JQ to extract json values -> https://stedolan.github.io/jq/download/
 #ALLURE_REPORT=$(echo $RESPONSE | jq '.data.report_url')
