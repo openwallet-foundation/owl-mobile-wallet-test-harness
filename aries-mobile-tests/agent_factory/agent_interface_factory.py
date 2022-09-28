@@ -8,13 +8,15 @@ from agent_factory.aath.aath_issuer_agent_interface import AATHIssuerAgentInterf
 from agent_factory.aath.aath_verifier_agent_interface import AATHVerifierAgentInterface
 from agent_factory.candy_uvp.candy_uvp_issuer_agent_interface import CANdy_UVP_IssuerAgentInterface
 from agent_factory.pcft_chat.pcft_chat_verifier_agent_interface import PCFT_Chat_VerifierAgentInterface
+from agent_factory.bc_vp.bc_vp_issuer_agent_interface import BC_VP_IssuerAgentInterface
 
 
 class AgentInterfaceFactory():
     
     issuer_agent_type_interface_dict = {
         "AATH": AATHIssuerAgentInterface,
-        "CANdy_UVP": CANdy_UVP_IssuerAgentInterface
+        "CANdy_UVP": CANdy_UVP_IssuerAgentInterface,
+        "BC_VP": BC_VP_IssuerAgentInterface
     }
     verifier_agent_type_interface_dict = {
         "AATH": AATHVerifierAgentInterface,

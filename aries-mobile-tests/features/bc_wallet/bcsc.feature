@@ -10,36 +10,26 @@ Feature: BCSC
    @T001-BCSC @critical @AcceptanceTest
    Scenario Outline: BCSC holder aquires BC VC Certificate that in turn allows them to store the BCSC in the BC Wallet
       Given the BCSC holder has setup thier Wallet
-      And the BCSC holder has a <credential>
+      Given the BCSC holder has a <credential>
          | issuer_agent_type | credential_name         |
-         | BCVCIssuer        | BC VC Pilot Certificate |
-      # And the Issuer selects New Invite
-      # And the issuer fills out email, name, and program of IDIM Testing
-      # And the issuer clicks invite
-      # And the BCSC holder opens thier email and clicks the invite link
-      # And they check agree and select agree (has to be on a device that has access to bcvc pilot)
-      # And the Holder select Request Credential
-      # And they select I confirm and agree
-      # And they scan the QR Code presented
-      # And the Holder selects accept in the app
-      # and they recieve the credential
+         | BCVPIssuer        | BC VC Pilot Certificate |
       And they are Home
       When they select Get your BC Digital ID
       And they select Share on the proof request from IDIM
       And they select Log in with BC Services Card in the Create a BC Digital ID Web page
       And they select <setup_option> on the Set up the BC Services Card app
-      And they enter in the <card_serial_number>
-      And they enter in the <passcode>
-      And they select I agree on the Review web page
+      And they enter in <card_serial_number> as the card serial number
+      And they enter in <passcode> as the passcode
+      And they select I agree on the Review page
       And they select Send Credential
       Then they get are told Your Credential has been Issued
-      And they Close and go to Wallet (select home for now)
+      And they Close and go to Wallet
       And they select View on the new Credential Offer
-      And they select Accept on the IDIM Credential
-      And the credential is on the way
-      And the credential is added to your wallet
+      And they select Accept
+      And the holder is informed that their credential is on the way with an indication of loading
+      And once the credential arrives they are informed that the Credential is added to your wallet
       And they select Done
-      And the IDIM Person credential is added at the top
+      And the IDIM Person credential accepted is at the top of the list
       And the BCVC Pilot credential is after the IDIM Person credential
 
       Examples:

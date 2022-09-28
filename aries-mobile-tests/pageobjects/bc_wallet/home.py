@@ -1,11 +1,5 @@
-import time
-import os
-import base64
-from appium.webdriver.common.mobileby import MobileBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.contacts import ContactsPage
 from pageobjects.bc_wallet.connecting import ConnectingPage
 from pageobjects.bc_wallet.settings import SettingsPage
 from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
@@ -25,10 +19,9 @@ class HomePage(BasePage):
     scan_locator = "Scan"
     credentials_locator = "Credentials"
     settings_tid_locator = "com.ariesbifold:id/Settings"
-    contacts_locator = "Contacts"
+    get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/GetBCID")
 
     def on_this_page(self):
-        #print(self.driver.page_source)
         return super().on_this_page(self.on_this_page_text_locator)
 
     def select_credential_offer_notification(self):
@@ -59,16 +52,6 @@ class HomePage(BasePage):
         else:
             raise Exception(f"App not on the {type(self)}")
 
-    def select_contacts(self):
-        if self.on_this_page():
-            self.find_by_accessibility_id(self.contacts_locator).click()
-
-            # return a new page objectfor the Contacts page
-            return ContactsPage(self.driver)
-        else:
-            raise Exception(f"App not on the {type(self)}")
-        # return ContactsPage
-
 
     def select_scan(self):
         # if self.on_this_page():
@@ -81,9 +64,12 @@ class HomePage(BasePage):
         # else:
         #     raise Exception(f"App not on the {type(self)} page")
 
-    def select_credentials(self):
-
-        return CredentialsPage
+    def select_get_bc_digital_id(self):
+        if self.on_this_page():
+            self.find_by(self.get_bc_digital_id_locator).click()
+            return True
+        else:
+            raise Exception(f"App not on the {type(self)} page")
 
     def select_settings(self):
         if self.on_this_page():

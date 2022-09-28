@@ -109,12 +109,13 @@ def step_impl(context, credential):
         Then holder is brought to the credential offer screen
     ''')
 
-
+@then('they select Accept')
 @when('they select Accept')
 def step_impl(context):
     context.thisCredentialOnTheWayPage = context.thisCredentialOfferPage.select_accept(scroll=True)
 
 
+@then('the holder is informed that their credential is on the way with an indication of loading')
 @when('the holder is informed that their credential is on the way with an indication of loading')
 def step_impl(context):
     # sometimes the workflow is farther ahead than the test thinks it is, so put in a soft assert here. 
@@ -124,6 +125,7 @@ def step_impl(context):
         pass
 
 
+@then('once the credential arrives they are informed that the Credential is added to your wallet')
 @when('once the credential arrives they are informed that the Credential is added to your wallet')
 def step_impl(context):
     # The Cred is on the way screen is temporary, loop until it goes away and create the cred added page.
@@ -141,7 +143,7 @@ def step_impl(context):
         context.thisCredentialAddedPage = CredentialAddedPage(context.driver)
         assert context.thisCredentialAddedPage.on_this_page()
 
-
+@then('they select Done')
 @when('they select Done')
 def step_impl(context):
     # TODO we could be on the home page at this point. Should we fail the last step, fail this one, or try the cred accept again?
@@ -156,6 +158,8 @@ def step_impl(context):
     context.thisCredentialsPage.on_this_page()
 
 
+
+@then(u'the IDIM Person credential accepted is at the top of the list')
 @then(u'the credential accepted is at the top of the list')
 def step_impl(context):
     # TODO temporary conditional credential check since testIDs are not there for non-overlayed credentials like AATH creds.
