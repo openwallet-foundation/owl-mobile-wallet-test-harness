@@ -40,6 +40,18 @@ jobs:
           - mobile-platform: "-p iOS"
             app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
             report-project: "ios-multi-device-full"
+          - mobile-platform: "-p Android"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.aab"
+            report-project: "candy-uvp-pcft-chat-android"
+          - mobile-platform: "-p iOS"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
+            report-project: "candy-uvp-pcft-chat-ios"
+          - mobile-platform: "-p Android"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.aab"
+            report-project: "bc-digitial-id-android"
+          - mobile-platform: "-p iOS"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
+            report-project: "bc-digital-id-ios"
     #timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
@@ -99,7 +111,7 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet -t ~@wip -t ~@Connectionless"
+          TEST_SCOPE: "-t @bc_wallet -t ~@wip -t ~@Connectionless -t ~@BCSC"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
@@ -112,7 +124,8 @@ jobs:
           awk '{print $1}' | \
           xargs docker stop
 
-      - name: Run AMTH Connectionless Tests
+      - name: Run AMTH BC Wallet Connectionless Tests
+        if: ${{ contains(matrix.report-project,'candy-uvp-pcft-chat' }}
         uses: ./.github/workflows/run-test-harness
         env:
           LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
@@ -126,7 +139,31 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet -t @Connectionless -t ~@wip"
+          TEST_SCOPE: "-t @bc_wallet -t @Connectionless -t ~@wip -t ~@BCSC"
+          REPORT_PROJECT: ${{ matrix.report-project }}
+        continue-on-error: true
+
+      - name: Run AMTH BC Wallet BC Digital ID Tests
+        #if: ${{ matrix.report-project=='bc-digital-id-ios' || matrix.report-project=='bc-digital-id-android' }}
+        if: ${{ contains(matrix.report-project,'bc-digital-id' }}
+        uses: ./.github/workflows/run-test-harness
+        env:
+          REGION: "us-west-1"
+          BC_VP_USERNAME: ${{ secrets.BC_VP_USERNAME }}
+          BC_VP_PASSWORD: ${{ secrets.BC_VP_PASSWORD }}
+          BC_VP_HOLDER_EMAIL_PASSWORD: ${{ secrets.BC_VP_HOLDER_EMAIL_PASSWORD }}
+          BCSC_ACCOUNT_USER: ${{ secrets.BCSC_ACCOUNT_USER }}
+          BCSC_ACCOUNT_PASSWORD: ${{ secrets.BCSC_ACCOUNT_PASSWORD }}
+        with:
+          MOBILE_WALLET: "-w bc_wallet"
+          ISSUER_AGENT: '-i "BC_VP;https://bcvcpilot-issuer-admin-test.apps.silver.devops.gov.bc.ca"'
+          VERIFIER_AGENT: '-v "AATH;http://0.0.0.0:9030"'
+          DEVICE_CLOUD: "-d SauceLabs"
+          DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
+          DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
+          MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
+          APP_FILE_NAME: ${{ matrix.app-file-name }}
+          TEST_SCOPE: "-t @bc_wallet -t @BCSC -t ~@wip"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
