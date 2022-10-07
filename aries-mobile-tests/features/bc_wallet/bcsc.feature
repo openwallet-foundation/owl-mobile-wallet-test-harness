@@ -10,7 +10,7 @@ Feature: BCSC
    @T001-BCSC @critical @AcceptanceTest
    Scenario Outline: BCSC holder aquires BC VC Certificate that in turn allows them to store the BCSC in the BC Wallet
       Given the BCSC holder has setup thier Wallet
-      Given the BCSC holder has a <credential>
+      And the BCSC holder has a <credential>
          | issuer_agent_type | credential_name         |
          | BCVPIssuer        | BC VC Pilot Certificate |
       And they are Home
@@ -18,8 +18,8 @@ Feature: BCSC
       And they select Share on the proof request from IDIM
       And they select Log in with BC Services Card in the Create a BC Digital ID Web page
       And they select <setup_option> on the Set up the BC Services Card app
-      And they enter in <card_serial_number> as the card serial number
-      And they enter in <passcode> as the passcode
+      And they enter in <username> as the username
+      And they enter in <password> as the password
       And they select I agree on the Review page
       And they select Send Credential
       Then they get are told Your Credential has been Issued
@@ -29,12 +29,18 @@ Feature: BCSC
       And the holder is informed that their credential is on the way with an indication of loading
       And once the credential arrives they are informed that the Credential is added to your wallet
       And they select Done
-      And the IDIM Person credential accepted is at the top of the list
+      And the credential accepted is at the top of the list
+         | issuer_agent_type | credential_name |
+         | BCVPIssuer        | Person          |
       And the BCVC Pilot credential is after the IDIM Person credential
+         | issuer_agent_type | credential_name         |
+         | BCVPIssuer        | BC VC Pilot Certificate |
 
+      # username and passwords are pointers to env vars that hold the actual values
       Examples:
-         | setup_option    | card_serial_number | passcode |
-         | Virtual testing | Wallet03           | 2022     |
+         | setup_option                    | username          | password              |
+         | Test with username and password | BCSC_ACCOUNT_USER | BCSC_ACCOUNT_PASSWORD |
+
 
    @T00X-BCSC @Normal @FunctionalTest
    Scenario: BCSC holder removes the IDIM Person credential and can get the IDIM credential again with the button on the home page

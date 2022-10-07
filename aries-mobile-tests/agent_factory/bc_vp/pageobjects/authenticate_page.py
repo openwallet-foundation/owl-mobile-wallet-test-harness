@@ -12,7 +12,7 @@ class AuthenticatePage(WebBasePage):
     username_locator = (By.ID, 'login_field')
     password_locator = (By.ID, 'password')
     #sign_in_locator = (By.CLASS_NAME, 'btn btn-primary btn-block js-sign-in-button')
-    sign_in_locator = (By.XPATH, '//*[@id="login"]/div[3]/form/div/input[12]')
+    sign_in_locator = (By.XPATH, '//*[@id="login"]/div[3]/form/div/input[11]')
 
     def on_this_page(self):     
         return super().on_this_page(self.on_this_page_text_locator) 

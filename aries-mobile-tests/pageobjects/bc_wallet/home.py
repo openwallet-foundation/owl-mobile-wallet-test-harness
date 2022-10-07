@@ -14,7 +14,7 @@ class HomePage(BasePage):
     on_this_page_text_locator = "Home"
     on_this_page_notification_locator = "New Credential Offer"
     on_this_page_proof_notification_locator = "New Proof Request"
-    view_notification_button_locator = "View"
+    view_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/View")
     home_locator = "Home"
     scan_locator = "Scan"
     credentials_locator = "Credentials"
@@ -26,12 +26,12 @@ class HomePage(BasePage):
 
     def select_credential_offer_notification(self):
         if super().on_this_page(self.on_this_page_notification_locator):
-            sleep(20)
-            #print(self.driver.page_source)
-            if self.current_platform == "iOS":
-                self.find_by_accessibility_id(self.view_notification_button_locator).click()
-            else:
-                self.find_by_element_id(self.view_notification_button_locator).click()
+            #sleep(20)
+            self.find_by(self.view_notification_button_locator).click()
+            # if self.current_platform == "iOS":
+            #     self.find_by_accessibility_id(self.view_notification_button_locator).click()
+            # else:
+            #     self.find_by_element_id(self.view_notification_button_locator).click()
 
             # return a new page objectfor the Contacts page
             return CredentialOfferPage(self.driver)
@@ -43,7 +43,8 @@ class HomePage(BasePage):
             sleep(20)
             #print(self.driver.page_source)
             # if self.current_platform == "iOS":
-            self.find_by_accessibility_id(self.view_notification_button_locator).click()
+            self.find_by(self.view_notification_button_locator).click()
+            #self.find_by_accessibility_id(self.view_notification_button_locator).click()
             # else:
             #     self.find_by_element_id(self.view_notification_button_locator).click()
 

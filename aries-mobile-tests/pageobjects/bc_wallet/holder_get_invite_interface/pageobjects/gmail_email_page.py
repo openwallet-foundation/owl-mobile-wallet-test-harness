@@ -11,9 +11,13 @@ class GmailEmailPage(WebBasePage):
 
     # Locators
     on_this_page_text_locator = "Primary"
-    latest_email_locator = (By.ID, ":2c")
+    latest_email_locator = (By.ID, ":24")
+    # <span class="bqe" data-thread-id="#thread-f:1745870413865589327" data-legacy-thread-id="183a93e432529a4f" data-legacy-last-message-id="183aa57ef028fb34" data-legacy-last-non-draft-message-id="183aa57ef028fb34">Invite from BC VC Pilot Issuer TEST</span>
+    #//*[@id=":24"]
+    #//*[@id=":2b"]
     #//*[@id=":2c"]/span
     #invitation_link_locator = (By.XPATH, '//*[@id=":8r"]/p/b/a')
+    
     invitation_link_locator = (By.XPATH, "//a[contains(@href, 'https://bcvcpilot-issuer-test.apps.silver.devops.gov.bc.ca/?invite_token=')]")
     #//*[@id=":8s"]/p/b/a
     #https://bcvcpilot-issuer-test.apps.silver.devops.gov.bc.ca/?invite_token=e2ab167c-a0d6-4eb3-bc40-f4a3c61a750e
@@ -31,7 +35,7 @@ class GmailEmailPage(WebBasePage):
 
     def open_latest_email(self):
         if self.on_this_page():
-            self.find_by(self.latest_email_locator).click()
+            self.find_by(self.latest_email_locator, 50).click()
             #return InvitePage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

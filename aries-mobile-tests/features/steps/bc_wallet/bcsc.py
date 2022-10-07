@@ -5,6 +5,8 @@
 
 from time import sleep
 from behave import given, when, then
+from decouple import config
+from steps.bc_wallet.credential_offer import get_expected_credential_name
 
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
@@ -39,13 +41,13 @@ def step_impl(context):
 @given('the BCSC holder gets the invite QR Code from their email')
 def step_impl(context):
     context.holderGetInviteInterface = BCVPHolderGetInviteInterface("http://www.gmail.com")
-    #sleep(2)
+    #sleep(5) # wait for email to come in with invitation.
     assert context.holderGetInviteInterface.open_invitation_email()
     assert context.holderGetInviteInterface.select_invitation_link()
     qrcode =  context.holderGetInviteInterface.get_qr_code_invitation()
     context.device_service_handler.inject_qrcode(qrcode)
 
-@then('they Close and go to Wallet')
+#@then('they Close and go to Wallet')
 @given('they are Home')
 def step_impl(context):
     context.thisHomePage = context.thisNavBar.select_home()
@@ -74,8 +76,21 @@ def step_impl(context):
 
 @when('they select {setup_option} on the Set up the BC Services Card app')
 def step_impl(context, setup_option): 
+    #webview = context.driver.contexts[1]
+    #context.driver.switch_to.context(webview)
     if setup_option == "Virtual testing":
         context.thisBCServicesCardLoginVTCSNPage = context.thisBCServicesCardLoginPage.select_virtual_testing()
+    elif setup_option == "Test with username and password":
+        context.thisBCServicesCardLoginUNPWPage = context.thisBCServicesCardLoginPage.select_test_with_username_password()
+
+@when('they enter in {username} as the username')
+def step_impl(context, username): 
+    assert context.thisBCServicesCardLoginUNPWPage.enter_username(config(username))
+
+@when('they enter in {password} as the password')
+def step_impl(context, password): 
+    assert context.thisBCServicesCardLoginUNPWPage.enter_password(config(password))
+    context.thisBCServicesCardReviewPage = context.thisBCServicesCardLoginUNPWPage.select_continue()
 
 @when('they enter in {card_serial_number} as the card serial number')
 def step_impl(context, card_serial_number): 
@@ -91,6 +106,7 @@ def step_impl(context, passcode):
 @when('they select I agree on the Review page')
 def step_impl(context): 
     context.thisBCServicesCardReviewPage.i_agree()
+    #context.driver.switch_to.context('NATIVE_APP')
     
 
 @when('they select Send Credential')
@@ -102,17 +118,21 @@ def step_impl(context):
 def step_impl(context): 
     assert context.thisBCServicesCardCredentialIssuedPage.on_this_page()
 
-# # they Close and go to Wallet (select home for now)
-# @then('they Close and go to Wallet')
-# def step_impl(context): 
-#     pass
+# they Close and go to Wallet (select home for now)
+@then('they Close and go to Wallet')
+def step_impl(context): 
+    context.thisInformationSentSuccessfullyPage = context.thisBCServicesCardCredentialIssuedPage.close_and_go_to_wallet()
+    context.execute_steps('''
+        When they select Go back to home on information sent successfully
+    ''')
 
 
 @then('they select View on the new Credential Offer')
 def step_impl(context): 
-    context.thisCredentialOfferPage = context.thisHomePage.select_view_credential_offer()
+    context.thisCredentialOfferPage = context.thisHomePage.select_credential_offer_notification()
 
 
 @then('the BCVC Pilot credential is after the IDIM Person credential')
 def step_impl(context): 
-    pass
+    json_elems = context.thisCredentialsPage.get_credentials()
+    assert get_expected_credential_name(context) in json_elems["credentials"][1]["text"]

@@ -7,7 +7,7 @@ class CreateABCDigitalIDPage(BasePage):
     """Create a BC Digitial ID web(internal to the app) page object"""
 
     # Locators
-    on_this_page_text_locator = "Create a BC Digital ID"
+    on_this_page_text_locator = "Create a Person credential"
     log_in_with_bc_services_card_locator = (AppiumBy.ACCESSIBILITY_ID, "Log in with BC Services Card")
 
 
