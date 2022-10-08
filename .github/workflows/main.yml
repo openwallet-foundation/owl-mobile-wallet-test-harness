@@ -125,7 +125,7 @@ jobs:
           xargs docker stop
 
       - name: Run AMTH BC Wallet Connectionless Tests
-        if: ${{ contains(matrix.report-project,'candy-uvp-pcft-chat' }}
+        if: ${{ contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-test-harness
         env:
           LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
@@ -145,7 +145,7 @@ jobs:
 
       - name: Run AMTH BC Wallet BC Digital ID Tests
         #if: ${{ matrix.report-project=='bc-digital-id-ios' || matrix.report-project=='bc-digital-id-android' }}
-        if: ${{ contains(matrix.report-project,'bc-digital-id' }}
+        if: ${{ contains(matrix.report-project,'bc-digital-id') }}
         uses: ./.github/workflows/run-test-harness
         env:
           REGION: "us-west-1"
