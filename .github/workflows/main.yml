@@ -48,7 +48,7 @@ jobs:
             report-project: "candy-uvp-pcft-chat-ios"
           - mobile-platform: "-p Android"
             app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.aab"
-            report-project: "bc-digitial-id-android"
+            report-project: "bc-digital-id-android"
           - mobile-platform: "-p iOS"
             app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
             report-project: "bc-digital-id-ios"
@@ -139,7 +139,7 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet -t @Connectionless -t ~@wip -t ~@BCSC"
+          TEST_SCOPE: "-t @bc_wallet,@Connectionless -t ~@wip -t ~@BCSC"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
@@ -163,7 +163,7 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet -t @BCSC -t ~@wip"
+          TEST_SCOPE: "-t @bc_wallet,@BCSC -t ~@wip"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 

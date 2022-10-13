@@ -38,6 +38,8 @@ class WebBasePage(object):
                     (locator_tpl[0], locator_tpl[1]))
             )
         except:
+            #self.driver.save_screenshot(f"CouldNotFindElement_{locator_tpl[0]}.png")
+            #print(self.driver.page_source)
             raise Exception(
                 f"Could not find element {locator_tpl[0]} with Locator {locator_tpl[1]}")
 
