@@ -12,7 +12,10 @@ class GmailLoginPage(WebBasePage):
     #next_locator = (By.XPATH, '//*[@id="identifierNext"]/div/button/div[3]')
     next_locator = (By.ID, 'identifierNext')
     #//*[@id="identifierId"]
-    password_locator = (By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')
+    #password_locator = (By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')
+    password_locator = (By.XPATH, ' //input[@name="Passwd"]')
+    #//input[@name='Passwd']
+    #input[name='Passwd']
     password_next_locator = (By.ID, 'passwordNext')
     #password_next_locator = (By.XPATH, '//*[@id="passwordNext"]/div/button/div[3]')
     
