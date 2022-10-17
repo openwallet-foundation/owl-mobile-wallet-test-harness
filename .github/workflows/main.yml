@@ -139,7 +139,7 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet,@Connectionless -t ~@wip -t ~@BCSC"
+          TEST_SCOPE: "-t @bc_wallet -t @Connectionless -t ~@wip -t ~@BCSC"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
@@ -163,7 +163,7 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet,@BCSC -t ~@wip"
+          TEST_SCOPE: "-t @bc_wallet -t @BCSC -t ~@wip"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
