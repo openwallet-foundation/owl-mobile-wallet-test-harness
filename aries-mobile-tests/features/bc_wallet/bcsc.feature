@@ -11,8 +11,8 @@ Feature: BCSC
    Scenario Outline: BCSC holder aquires BC VC Certificate that in turn allows them to store the BCSC in the BC Wallet
       Given the BCSC holder has setup thier Wallet
       And the BCSC holder has a <credential>
-         | issuer_agent_type | credential_name         |
-         | BCVPIssuer        | BC VC Pilot Certificate |
+         | issuer_agent_type | credential_name  |
+         | BCVPIssuer        | Pilot Invitation |
       And they are Home
       When they select Get your BC Digital ID
       And they select Share on the proof request from IDIM
@@ -33,8 +33,8 @@ Feature: BCSC
          | issuer_agent_type | credential_name |
          | BCVPIssuer        | Person          |
       And the BCVC Pilot credential is after the IDIM Person credential
-         | issuer_agent_type | credential_name         |
-         | BCVPIssuer        | BC VC Pilot Certificate |
+         | issuer_agent_type | credential_name  |
+         | BCVPIssuer        | Pilot Invitation |
 
       # username and passwords are pointers to env vars that hold the actual values
       Examples:
@@ -42,8 +42,8 @@ Feature: BCSC
          | Test with username and password | BCSC_ACCOUNT_USER | BCSC_ACCOUNT_PASSWORD |
 
 
-   @T00X-BCSC @Normal @FunctionalTest
+   @T00X-BCSC @Normal @FunctionalTest @wip
    Scenario: BCSC holder removes the IDIM Person credential and can get the IDIM credential again with the button on the home page
 
-   @T00X-BCSC @Normal @FunctionalTest
+   @T00X-BCSC @Normal @FunctionalTest @wip
    Scenario: BCSC holder removes the IDIM Person credential and the BCVC Certificate and can get the IDIM credential again repeating the credential request

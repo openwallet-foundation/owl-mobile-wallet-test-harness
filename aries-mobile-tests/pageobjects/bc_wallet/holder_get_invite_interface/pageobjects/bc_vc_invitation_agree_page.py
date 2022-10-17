@@ -8,11 +8,11 @@ class BCVCInvitationAgreePage(WebBasePage):
 
     # Locators
     on_this_page_text_locator = "BC VC Pilot Credential"
-    i_agree_locator = (By.XPATH, '//*[@id="app"]/div/main/div/div/div/div[2]/div[1]/div/div/div/div[1]/div/div')
+    #i_agree_locator = (By.XPATH, '//*[@id="app"]/div/main/div/div/div/div[2]/div[1]/div/div/div/div[1]/div/div')
+    i_agree_locator = (By.XPATH, '//div[@class="v-input--selection-controls__ripple"]')
 
-    agree_locator = (By.XPATH, '//*[@id="app"]/div/main/div/div/div/div[2]/div[2]/div/a')
-    #//*[@id="app"]/div/main/div/div/div/div[2]/div[2]/div/a
-    #/html/body/div/div/main/div/div/div/div[2]/div[2]/div/a
+    #agree_locator = (By.XPATH, '//*[@id="app"]/div/main/div/div/div/div[2]/div[2]/div/a')
+    agree_locator = (By.XPATH, '//a[@class="v-btn v-btn--outlined v-btn--router theme--light v-size--default success--text"]')
 
 
     def on_this_page(self):    
