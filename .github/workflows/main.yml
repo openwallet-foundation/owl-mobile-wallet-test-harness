@@ -98,6 +98,7 @@ jobs:
       #       saucelabs/sauce-connect
 
       - name: Run AMTH All Tests
+        if: ${{ contains(matrix.report-project,'multi-device-full') }}
         uses: ./.github/workflows/run-test-harness
         env:
           LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
