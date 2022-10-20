@@ -1,6 +1,7 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.bc_services_card_credential_issued import BCServicesCardCredentialIssuedPage
+from pageobjects.bc_wallet.information_sent_successfully import InformationSentSuccessfullyPage
 
 class BCServicesCardReviewPage(BasePage):
     """BC Services Card Login with Username and Password page object"""
@@ -26,6 +27,7 @@ class BCServicesCardReviewPage(BasePage):
     def send_credential(self):
         if self.on_this_page():
             self.find_by(self.send_credential_locator).click()
-            return BCServicesCardCredentialIssuedPage(self.driver)
+            #return BCServicesCardCredentialIssuedPage(self.driver)
+            return InformationSentSuccessfullyPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

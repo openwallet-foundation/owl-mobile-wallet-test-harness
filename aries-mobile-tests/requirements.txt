@@ -11,4 +11,4 @@ psutil==5.7.2
 #Appium-Python-Client==1.0.2;python_version >= '3.0'
 Appium-Python-Client
 qrcode[pil]~=6.1
-webdriver-manager
+webdriver-manager==3.8.3

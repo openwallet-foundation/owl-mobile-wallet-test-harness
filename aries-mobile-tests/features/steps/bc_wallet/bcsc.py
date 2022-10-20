@@ -111,7 +111,8 @@ def step_impl(context):
 
 @when('they select Send Credential')
 def step_impl(context): 
-    context.thisBCServicesCardCredentialIssuedPage = context.thisBCServicesCardReviewPage.send_credential()
+    #context.thisBCServicesCardCredentialIssuedPage = context.thisBCServicesCardReviewPage.send_credential()
+    context.thisInformationSentSuccessfullyPage = context.thisBCServicesCardReviewPage.send_credential()
 
 
 @then('they get are told Your Credential has been Issued')
@@ -121,7 +122,7 @@ def step_impl(context):
 # they Close and go to Wallet (select home for now)
 @then('they Close and go to Wallet')
 def step_impl(context): 
-    context.thisInformationSentSuccessfullyPage = context.thisBCServicesCardCredentialIssuedPage.close_and_go_to_wallet()
+    #context.thisInformationSentSuccessfullyPage = context.thisBCServicesCardCredentialIssuedPage.close_and_go_to_wallet()
     context.execute_steps('''
         When they select Go back to home on information sent successfully
     ''')

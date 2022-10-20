@@ -10,7 +10,7 @@ class NavBar(BasePage):
 
     # Locators
     scan_locator = (AppiumBy.ACCESSIBILITY_ID, "Scan")
-    home_locator = (AppiumBy.ACCESSIBILITY_ID, "Home")
+    home_locator = (AppiumBy.ACCESSIBILITY_ID, "Home (0 Notifications)")
     credentials_locator = (AppiumBy.ACCESSIBILITY_ID, "Credentials")
     settings_locator = (AppiumBy.ACCESSIBILITY_ID, "Settings")
 
