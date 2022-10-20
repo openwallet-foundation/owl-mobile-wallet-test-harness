@@ -22,8 +22,8 @@ Feature: BCSC
       And they enter in <password> as the password
       And they select I agree on the Review page
       And they select Send Credential
-      Then they get are told Your Credential has been Issued
-      And they Close and go to Wallet
+      #Then they get are told Your Credential has been Issued
+      Then they Close and go to Wallet
       And they select View on the new Credential Offer
       And they select Accept
       And the holder is informed that their credential is on the way with an indication of loading
