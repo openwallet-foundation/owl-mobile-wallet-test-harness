@@ -3,6 +3,7 @@
 # 
 # -----------------------------------------------------------
 
+from pageobjects.bc_wallet.navbar import NavBar
 from behave import given, when, then
 import json
 from time import sleep
@@ -45,6 +46,8 @@ def step_impl(context, agent):
 
     context.device_service_handler.inject_qrcode(qrimage)
 
+    if hasattr(context, 'thisNavBar') == False:
+        context.thisNavBar = NavBar(context.driver)
     context.thisConnectingPage = context.thisNavBar.select_scan()
 
     # If this is the first time the user selects scan, then they will get a Camera Privacy Policy that needs to be dismissed

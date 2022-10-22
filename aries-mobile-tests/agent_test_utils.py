@@ -7,8 +7,14 @@ from qrcode import QRCode
 from PIL import Image
 
 def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_code=False):
-
-    invitation_url = invitation_json["invitation_url"]
+    if "invitation_url" in invitation_json:
+        invite_url_key = "invitation_url"
+    elif "invitationUrl" in invitation_json:
+        invite_url_key = "invitationUrl"
+    else:
+        raise Exception(
+            f"Could not find an invitation url in invitation json {invitation_json}")
+    invitation_url = invitation_json[invite_url_key]
 
     qr = QRCode(border=20)
     qr.add_data(invitation_url)

@@ -8,7 +8,8 @@ class InvitePage(WebBasePage):
     # Locators
     on_this_page_text_locator = "Invite"
     #name_locator = (By.ID, "sq_118i")
-    name_locator = (By.XPATH, '//*[@id="sq_100i"]')
+    #name_locator = (By.XPATH, '//*[@id="sq_100i"]')
+    name_locator = (By.XPATH, '//input[@id="sq_100i"]')
     #first_email_locator = (By.ID, "input-1348")
     first_email_locator = (By.XPATH, '//*[@id="input-92"]')
     #second_email_locator = (By.ID, "sq_119i")
