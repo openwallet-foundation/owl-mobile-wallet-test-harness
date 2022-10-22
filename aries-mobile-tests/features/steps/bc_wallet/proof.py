@@ -105,6 +105,7 @@ def step_impl(context):
     assert all(item in values for item in actual_values)
 
 
+@when('the user has a proof request')
 @given('the user has a proof request')
 def step_impl(context):
     context.execute_steps(f'''

@@ -15,6 +15,32 @@ from agent_test_utils import get_qr_code_from_invitation, table_to_str, create_n
 from pageobjects.bc_wallet.holder_get_invite_interface.bc_vp_holder_get_invite_interface import BCVPHolderGetInviteInterface
 from pageobjects.bc_wallet.create_bc_digital_id import CreateABCDigitalIDPage
 
+@given('the BCSC holder has the BC Person Credential with {setup_option}, {username}, and {password}')
+def step_impl(context, setup_option, username, password):
+    context.execute_steps(f'''
+        Given they are Home
+        When they select Get your BC Digital ID
+        And they select Share on the proof request from IDIM
+        And they select Log in with BC Services Card in the Create a BC Digital ID Web page
+        And they select {setup_option} on the Set up the BC Services Card app
+        And they enter in {username} as the username
+        And they enter in {password} as the password
+        And they select I agree on the Review page
+        And they select Send Credential
+        Then they Close and go to Wallet
+        And they select View on the new Credential Offer
+        And they select Accept
+        And the holder is informed that their credential is on the way with an indication of loading
+        And once the credential arrives they are informed that the Credential is added to your wallet
+        And they select Done
+    ''')
+
+    context.execute_steps(u'''
+        Then the credential accepted is at the top of the list
+        {table}
+    '''.format(table=table_to_str(context.table)))
+
+
 @given('the BCSC holder has a {credential}')
 def step_impl(context, credential):
     context.execute_steps(f'''
@@ -137,3 +163,4 @@ def step_impl(context):
 def step_impl(context): 
     json_elems = context.thisCredentialsPage.get_credentials()
     assert get_expected_credential_name(context) in json_elems["credentials"][1]["text"]
+

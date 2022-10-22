@@ -9,11 +9,11 @@ class NavBar(BasePage):
     """Nav Bar Footer object"""
 
     # Locators
-    scan_locator = (AppiumBy.ACCESSIBILITY_ID, "Scan")
-    home_locator = (AppiumBy.ACCESSIBILITY_ID, "Home (0 Notifications)")
-    credentials_locator = (AppiumBy.ACCESSIBILITY_ID, "Credentials")
-    settings_locator = (AppiumBy.ACCESSIBILITY_ID, "Settings")
-
+    scan_locator = (AppiumBy.ID, "com.ariesbifold:id/Scan")
+    home_locator = (AppiumBy.ID, "com.ariesbifold:id/Home")
+    credentials_locator = (AppiumBy.ID, "com.ariesbifold:id/Credentials")
+    settings_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
+    
 
     def select_home(self):
         self.find_by(self.home_locator).click()

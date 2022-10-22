@@ -42,6 +42,28 @@ Feature: BCSC
          | Test with username and password | BCSC_ACCOUNT_USER | BCSC_ACCOUNT_PASSWORD |
 
 
+   @T002-BCSC @critical @AcceptanceTest @wip
+   Scenario Outline: BCSC holder aquires the BC Person Credential and uses it in a Proof
+      Given the BCSC holder has setup thier Wallet
+      # And the BCSC holder has a <credential>
+      #    | issuer_agent_type | credential_name  |
+      #    | BCVPIssuer        | Pilot Invitation |
+      # And the BCSC holder has the BC Person Credential with <setup_option>, <username>, and <password>
+      #    | issuer_agent_type | credential_name |
+      #    | BCVPIssuer        | Person          |
+      When the user has a proof request
+      And they select Share
+      And the holder is informed that they are sending information securely
+      Then they are informed that the information sent successfully
+      And the verifier reports a successful proof
+      #And they select Go back to home on information sent successfully
+      #Then they are brought Home
+
+      # username and passwords are pointers to env vars that hold the actual values
+      Examples:
+         | setup_option                    | username          | password              |
+         | Test with username and password | BCSC_ACCOUNT_USER | BCSC_ACCOUNT_PASSWORD |
+
    @T00X-BCSC @Normal @FunctionalTest @wip
    Scenario: BCSC holder removes the IDIM Person credential and can get the IDIM credential again with the button on the home page
 

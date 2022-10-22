@@ -15,10 +15,10 @@ class HomePage(BasePage):
     on_this_page_notification_locator = "New Credential Offer"
     on_this_page_proof_notification_locator = "New Proof Request"
     view_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/View")
-    home_locator = "Home"
-    scan_locator = "Scan"
+    scan_locator = (AppiumBy.ID, "com.ariesbifold:id/Scan")
     credentials_locator = "Credentials"
     settings_tid_locator = "com.ariesbifold:id/Settings"
+    settings_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
     get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/GetBCID")
 
     def on_this_page(self):
@@ -57,7 +57,7 @@ class HomePage(BasePage):
     def select_scan(self):
         # if self.on_this_page():
 
-        self.find_by_accessibility_id(self.scan_locator).click()
+        self.find_by(self.scan_locator).click()
 
         # return a new page object? The scan page.
         return ConnectingPage(self.driver)
@@ -74,7 +74,7 @@ class HomePage(BasePage):
 
     def select_settings(self):
         if self.on_this_page():
-            self.find_by_element_id(self.settings_tid_locator).click()
+            self.find_by(self.settings_locator).click()
 
             # return a new page object for the settings page
             return SettingsPage(self.driver)
