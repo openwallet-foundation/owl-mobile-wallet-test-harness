@@ -1,4 +1,5 @@
-from appium.webdriver.common.mobileby import MobileBy
+from asyncio import sleep
+from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.home import HomePage
 import time
@@ -10,7 +11,7 @@ class InitializationPage(BasePage):
 
     # Locators
     #on_this_page_text_locator = (MobileBy.ID, "com.ariesbifold:id/LoadingActivityIndicator")
-    loading_locator = (MobileBy.ID, "com.ariesbifold:id/LoadingActivityIndicator")
+    loading_locator = (AppiumBy.ID, "com.ariesbifold:id/LoadingActivityIndicator")
 
     def on_this_page(self):
         #return super().on_this_page(self.on_this_page_text_locator)
@@ -27,6 +28,8 @@ class InitializationPage(BasePage):
     def wait_until_initialized(self, timeout=300):
         loading = True
         loop_timeout = time.time() + timeout
+        # temporary sleep since it seems that accessing the initialization sceeen with appium has an affect on its ability to fully initialize
+        sleep(10)
         while loading == True:
             if time.time() > loop_timeout:
                 raise Exception(f"App Initialization taking longer than expected. Timing out at {timeout} seconds.")

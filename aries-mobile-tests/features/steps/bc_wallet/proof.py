@@ -194,6 +194,7 @@ def step_impl(context):
     assert context.thisInformationApprovedPage.on_this_page()
 
 
+@then('they select Go back to home on information sent successfully')
 @when('they select Go back to home on information sent successfully')
 def step_impl(context):
     context.thisHomePage = context.thisInformationSentSuccessfullyPage.select_back_to_home()
@@ -241,6 +242,8 @@ def step_impl(context):
 
 @given('the PCTF member has an Unverified Person {credential}')
 def step_impl(context, credential):
+    if "PerformanceTest" in context.tags:
+        context.issuer.restart_issue_credential()
     context.execute_steps(f'''
         Given the Holder receives a credential offer of {credential}
         And they Scan the credential offer QR Code
