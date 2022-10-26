@@ -24,7 +24,7 @@ Feature: BCSC
       And they select Send Credential
       #Then they get are told Your Credential has been Issued
       Then they Close and go to Wallet
-      And they select View on the new Credential Offer
+      #And they select View on the new Credential Offer
       And they select Accept
       And the holder is informed that their credential is on the way with an indication of loading
       And once the credential arrives they are informed that the Credential is added to your wallet
@@ -42,20 +42,20 @@ Feature: BCSC
          | Test with username and password | BCSC_ACCOUNT_USER | BCSC_ACCOUNT_PASSWORD |
 
 
-   @T002-BCSC @critical @AcceptanceTest @wip
+   @T002-BCSC @critical @AcceptanceTest
    Scenario Outline: BCSC holder aquires the BC Person Credential and uses it in a Proof
       Given the BCSC holder has setup thier Wallet
-      # And the BCSC holder has a <credential>
-      #    | issuer_agent_type | credential_name  |
-      #    | BCVPIssuer        | Pilot Invitation |
-      # And the BCSC holder has the BC Person Credential with <setup_option>, <username>, and <password>
-      #    | issuer_agent_type | credential_name |
-      #    | BCVPIssuer        | Person          |
+      And the BCSC holder has a <credential>
+         | issuer_agent_type | credential_name  |
+         | BCVPIssuer        | Pilot Invitation |
+      And the BCSC holder has the BC Person Credential with <setup_option>, <username>, and <password>
+         | issuer_agent_type | credential_name |
+         | BCVPIssuer        | Person          |
       When the user has a proof request
       And they select Share
       And the holder is informed that they are sending information securely
       Then they are informed that the information sent successfully
-      And the verifier reports a successful proof
+      #And the verifier reports a successful proof
       #And they select Go back to home on information sent successfully
       #Then they are brought Home
 

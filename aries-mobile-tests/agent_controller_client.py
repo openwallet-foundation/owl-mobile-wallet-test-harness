@@ -64,11 +64,14 @@ def agent_controller_GET(url, topic, operation=None, id=None) -> (int, str):
     return (resp_status, resp_text)
 
 
-def agent_controller_POST(url, topic, operation=None, id=None, data=None) -> (int, str):
+def agent_controller_POST(url, topic, operation=None, id=None, data=None, wrap_data_with_data=True) -> (int, str):
     agent_url = url + topic + "/"
     payload = {}
     if data:
-        payload["data"] = data
+        if wrap_data_with_data:
+            payload["data"] = data
+        else:
+            payload = data
     if operation:
         agent_url = agent_url + operation
     if id:

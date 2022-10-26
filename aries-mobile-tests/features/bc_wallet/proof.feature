@@ -167,7 +167,7 @@ Feature: Proof
 
 
    # if a non-revokable credential can be presented then that should take precedent over revokable credentials since it de facto satisfies proof of non-revocation.
-   @T007-Proof @normal @AcceptanceTest @Revocation @wip
+   @T007-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked credential and presents a non-revokable credential
       Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
@@ -181,13 +181,11 @@ Feature: Proof
          | issuer_agent_type | credential_name    |
          | AATHIssuer        | Photo Id Revokable |
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
-      Then <credential_name> is selected as the credential to verify the proof
-      And they select Share
+      #Then <credential_name> is selected as the credential to verify the proof
+      Then they select Share
       And the holder is informed that they are sending information securely
       And they are informed that the information sent successfully
       And they select Go back to home on information sent successfully
-      #And once the proof is verified they are informed of such
-      #And they select Done on the verfified information
       And they are brought Home
 
       Examples:
@@ -195,7 +193,7 @@ Feature: Proof
          | cred_data_photo_id | cred_data_photo_id_revokable | proof_photo_id_revokable_no_schema_restriction | now:now  |
 
 
-   @T008-Proof @critical @AcceptanceTest @Revocation @wip
+   @T008-Proof @critical @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked credential and presents a non-revokable credential that has been revoked and reissued
       Given the User has skipped on-boarding
       And the User has accepted the Terms and Conditions
@@ -212,9 +210,8 @@ Feature: Proof
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
       And they select Share
       And the holder is informed that they are sending information securely
-      And once the proof is verified they are informed of such
-      And they select Done on the verfified information
-      And they are brought Home
+      And they are informed that the information sent successfully
+      Then they are brought Home
 
       Examples:
          | credential                   | proof                    | interval |

@@ -1,4 +1,4 @@
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.credential_on_the_way import CredentialOnTheWayPage
 
@@ -14,14 +14,14 @@ class CredentialOfferPage(BasePage):
     cred_type_locator = "credential type"
     attribute_locator = "attribute"
     value_locator = "value"
-    accept_locator = (MobileBy.ID, "com.ariesbifold:id/AcceptCredentialOffer")
-    accept_aid_locator = (MobileBy.ACCESSIBILITY_ID, "Accept")
-    decline_locator = (MobileBy.ID, "com.ariesbifold:id/DeclineCredentialOffer")
-    decline_aid_locator = (MobileBy.ACCESSIBILITY_ID, "Decline")
+    accept_locator = (AppiumBy.ID, "com.ariesbifold:id/AcceptCredentialOffer")
+    accept_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Accept")
+    decline_locator = (AppiumBy.ID, "com.ariesbifold:id/DeclineCredentialOffer")
+    decline_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Decline")
 
     def on_this_page(self):
-        return super().on_this_page(self.on_this_page_text_locator, 30)
-        #return super().on_this_page(self.accept_locator, 30)
+        #return super().on_this_page(self.on_this_page_text_locator, 30)
+        return super().on_this_page(self.accept_locator, 30)
 
     def select_accept(self, scroll=False):
         if self.on_this_page():
