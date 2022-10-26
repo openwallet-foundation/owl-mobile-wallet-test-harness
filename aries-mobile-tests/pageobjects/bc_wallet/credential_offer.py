@@ -14,6 +14,7 @@ class CredentialOfferPage(BasePage):
     cred_type_locator = "credential type"
     attribute_locator = "attribute"
     value_locator = "value"
+    credential_offer_card_locator = (AppiumBy.ID, "com.ariesbifold:id/CredentialCard")
     accept_locator = (AppiumBy.ID, "com.ariesbifold:id/AcceptCredentialOffer")
     accept_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Accept")
     decline_locator = (AppiumBy.ID, "com.ariesbifold:id/DeclineCredentialOffer")
@@ -21,7 +22,7 @@ class CredentialOfferPage(BasePage):
 
     def on_this_page(self):
         #return super().on_this_page(self.on_this_page_text_locator, 30)
-        return super().on_this_page(self.accept_locator, 30)
+        return super().on_this_page(self.credential_offer_card_locator, 30)
 
     def select_accept(self, scroll=False):
         if self.on_this_page():
