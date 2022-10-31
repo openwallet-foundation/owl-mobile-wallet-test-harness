@@ -1,4 +1,4 @@
-from asyncio import sleep
+from time import sleep
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.home import HomePage

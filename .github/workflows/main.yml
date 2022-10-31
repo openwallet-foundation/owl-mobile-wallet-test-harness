@@ -116,14 +116,14 @@ jobs:
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
-      - name: Shutdown Sauce Connect Tunnel
-        if: ${{ matrix.mobile-platform=='-p iOS' }}
-        run: |
-          docker ps \
-          --format '{{.ID}} {{.Image}}' | \
-          grep saucelabs/sauce-connect | \
-          awk '{print $1}' | \
-          xargs docker stop
+      # - name: Shutdown Sauce Connect Tunnel
+      #   if: ${{ matrix.mobile-platform=='-p iOS' }}
+      #   run: |
+      #     docker ps \
+      #     --format '{{.ID}} {{.Image}}' | \
+      #     grep saucelabs/sauce-connect | \
+      #     awk '{print $1}' | \
+      #     xargs docker stop
 
       - name: Run AMTH BC Wallet Connectionless Tests
         if: ${{ contains(matrix.report-project,'candy-uvp-pcft-chat') }}
