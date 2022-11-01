@@ -22,6 +22,9 @@ class CredentialOfferPage(BasePage):
 
     def on_this_page(self):
         #return super().on_this_page(self.on_this_page_text_locator, 30)
+        if self.current_platform == 'iOS':
+            if '14' in self.driver.capabilities['platformVersion']:
+                return super().on_this_page(self.on_this_page_text_locator, 30)
         return super().on_this_page(self.credential_offer_card_locator, 30)
 
     def select_accept(self, scroll=False):
