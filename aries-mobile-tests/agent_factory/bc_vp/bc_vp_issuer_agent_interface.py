@@ -10,7 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.utils import ChromeType
 # import Page Objects needed
-from pageobjects.bc_wallet.issuer_get_authcode_interface.bc_vp_issuer_get_authcode_interface import BCVPIssuerGetAuthCodeInterface
+from pageobjects.bc_wallet.issuer_get_authcode_interface.bc_vp_issuer_get_authcode_interface_gapi import BCVPIssuerGetAuthCodeInterface
 from agent_factory.bc_vp.pageobjects.authenticate_with_page import AuthenticateWithPage
 from agent_factory.bc_vp.pageobjects.authenticate_page import AuthenticatePage
 from agent_factory.bc_vp.pageobjects.authcode_page import AuthCodePage
@@ -143,8 +143,8 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
             issuerGetAuthCodeInterface = BCVPIssuerGetAuthCodeInterface("http://www.gmail.com")
             auth_code =  issuerGetAuthCodeInterface.get_auth_code()
             # close the get auth code driver
-            issuerGetAuthCodeInterface.driver.close()
-            auth_code_page = AuthCodePage()
+            #issuerGetAuthCodeInterface.driver.close()
+            auth_code_page = AuthCodePage(self.driver)
             auth_code_page.enter_auth_code(auth_code)
 
         if not self._invites_page.on_this_page():
