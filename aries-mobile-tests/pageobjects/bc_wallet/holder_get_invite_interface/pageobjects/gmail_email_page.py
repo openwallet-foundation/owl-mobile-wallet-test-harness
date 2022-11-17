@@ -31,7 +31,7 @@ class GmailEmailPage(WebBasePage):
 
     def select_invitation_link(self):
         #if self.on_this_page():
-        if super().on_this_page(self.invitation_link_locator, timeout=1000):
+        if super().on_this_page(self.invitation_link_locator, timeout=2000):
             self.find_by(self.invitation_link_locator).click()
             return BCVCInvitationAgreePage(self.driver)
         else:
@@ -39,7 +39,7 @@ class GmailEmailPage(WebBasePage):
 
     def open_latest_email(self):
         if self.on_this_page():
-            self.find_by(self.latest_email_locator, 50).click()
+            self.find_by(self.latest_email_locator, timeout=50).click()
             #return InvitePage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

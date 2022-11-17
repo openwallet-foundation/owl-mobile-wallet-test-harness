@@ -15,6 +15,7 @@ import hmac
 from hashlib import md5
 from agent_factory.agent_interface_factory import AgentInterfaceFactory
 from device_service_handler.device_service_handler_factory import DeviceServiceHandlerFactory
+from behave.contrib.scenario_autoretry import patch_scenario_with_autoretry
 
 # Get teh Device Cloud Service passed in from manage
 device_cloud_service = config('DEVICE_CLOUD')
@@ -48,6 +49,10 @@ def before_feature(context, feature):
     context.print_page_source_on_failure = eval(context.config.userdata['print_page_source_on_failure'])
     context.print_qr_code_on_creation = eval(context.config.userdata['print_qr_code_on_creation'])
     context.save_qr_code_on_creation = eval(context.config.userdata['save_qr_code_on_creation'])
+
+    # retry failed tests 
+    for scenario in feature.scenarios:
+        patch_scenario_with_autoretry(scenario, max_attempts=eval(context.config.userdata['test_retry_attempts']))
 
 
 

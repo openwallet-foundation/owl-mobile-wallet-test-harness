@@ -20,7 +20,6 @@ def step_impl(context, setup_option, username, password):
     context.execute_steps(f'''
         Given they are Home
         When they select Get your BC Digital ID
-        And they select Share on the proof request from IDIM
         And they select Log in with BC Services Card in the Create a BC Digital ID Web page
         And they select {setup_option} on the Set up the BC Services Card app
         And they enter in {username} as the username

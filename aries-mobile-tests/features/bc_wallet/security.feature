@@ -181,3 +181,9 @@ Feature: Secure your Wallet
 
   @Story_425 @ExeptionTest @FunctionalTest @wip
   Scenario: Force PIN entry on app resume if biometrics have changed and is unsuccessful in PIN entry
+
+  @AcceptanceTest @wip
+  Scenario: Holder enables Biometrics when onboarding, then disables, then re-enables in app settings
+  
+  @AcceptanceTest @wip
+  Scenario: Holder leaves Biometrics off when onboarding, then enables, then disables in app settings
