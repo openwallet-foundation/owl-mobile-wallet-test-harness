@@ -291,6 +291,12 @@ setDockerEnv() {
   if ! [ -z "$BCSC_ACCOUNT_PASSWORD" ]; then
     DOCKER_ENV="${DOCKER_ENV} -e BCSC_ACCOUNT_PASSWORD=${BCSC_ACCOUNT_PASSWORD}"
   fi
+  if ! [ -z "$GOOGLE_API_TOKEN" ]; then
+    DOCKER_ENV="${DOCKER_ENV} -e GOOGLE_API_TOKEN=${GOOGLE_API_TOKEN}"
+  fi
+  if ! [ -z "$GOOGLE_API_CREDENTIALS" ]; then
+    DOCKER_ENV="${DOCKER_ENV} -e GOOGLE_API_CREDENTIALS=${GOOGLE_API_CREDENTIALS}"
+  fi
 }
 
 # TODO Do we need this for Mobile? 
