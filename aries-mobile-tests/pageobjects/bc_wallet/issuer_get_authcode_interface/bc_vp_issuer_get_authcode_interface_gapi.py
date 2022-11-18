@@ -4,7 +4,6 @@ Class for interfacing with gmail client getting a IDIM Verified Person Credentia
 from sys import platform
 from time import sleep
 from decouple import config
-from bs4 import BeautifulSoup
 import re
 import base64
 import json
@@ -101,15 +100,9 @@ class BCVPIssuerGetAuthCodeInterface():
                 if subject == "[GitHub] Please verify your device" and sender == "GitHub <noreply@github.com>":
                     # The Body of the message is in Encrypted format. So, we have to decode it.
                     # Get the data and decode it with base 64 decoder.
-                    #parts = payload.get('parts')[0]
                     data = payload['body']['data']
-                    #data = data.replace("-","+").replace("_","/")
                     decoded_data = base64.b64decode(data)
-        
-                    # Now, the data obtained is in lxml. So, we will parse 
-                    # it with BeautifulSoup library
-                    #soup = BeautifulSoup(decoded_data , "lxml") # may not need this, could just parde the decoded_data for the number
-                    #body = soup.body()
+    
         
                     auth_code = re.sub("\D", "", str(decoded_data))
 
@@ -122,10 +115,5 @@ class BCVPIssuerGetAuthCodeInterface():
 
                     return auth_code
 
-                    # Printing the subject, sender's email and message
-                    # print("Subject: ", subject)
-                    # print("From: ", sender)
-                    # print("Message: ", body)
-                    # print('\n')
             except:
                 raise
