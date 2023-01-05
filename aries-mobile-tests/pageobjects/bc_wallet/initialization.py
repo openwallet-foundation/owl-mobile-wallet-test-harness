@@ -1,6 +1,9 @@
 from time import sleep
 from appium.webdriver.common.appiumby import AppiumBy
+import logging
+from selenium.common.exceptions import TimeoutException
 from pageobjects.basepage import BasePage
+from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.home import HomePage
 import time
 
@@ -25,20 +28,24 @@ class InitializationPage(BasePage):
         except:
             return False
 
-    def wait_until_initialized(self, timeout=300):
-        loading = True
-        loop_timeout = time.time() + timeout
-        # temporary sleep since it seems that accessing the initialization sceeen with appium has an affect on its ability to fully initialize
-        sleep(10)
-        while loading == True:
-            if time.time() > loop_timeout:
-                raise Exception(f"App Initialization taking longer than expected. Timing out at {timeout} seconds.")
-            try:
-                self.find_by(self.loading_locator, timeout=5)
-            except Exception as e:
-                if "Could not find element by" in str(e):
-                    loading = False
-                else:
-                    raise e
-        return HomePage(self.driver)
 
+    def wait_until_initialized(self, timeout=300):
+        # Set up logging
+        logger = logging.getLogger(__name__)
+
+        # Wait for the loading indicator to disappear
+        try:
+            self.find_by(self.loading_locator, timeout, WaitCondition.INVISIBILITY_OF_ELEMENT_LOCATED)
+            logger.debug("Loading indicator disappeared")
+        except TimeoutException:
+            logger.error(f"App Initialization taking longer than expected. Timing out at {timeout} seconds.")
+            raise
+
+        # Check for the presence of an error message
+        # if self.is_element_present(self.error_message_locator):
+        #     error_message = self.find_by(self.error_message_locator).text
+        #     logger.error(f"Error message found: {error_message}")
+        #     raise Exception(f"Error occurred during app initialization: {error_message}")
+
+        # Return the HomePage object
+        return HomePage(self.driver)

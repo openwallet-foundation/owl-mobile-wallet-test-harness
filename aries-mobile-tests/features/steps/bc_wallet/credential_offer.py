@@ -128,20 +128,12 @@ def step_impl(context):
 @then('once the credential arrives they are informed that the Credential is added to your wallet')
 @when('once the credential arrives they are informed that the Credential is added to your wallet')
 def step_impl(context):
-    # The Cred is on the way screen is temporary, loop until it goes away and create the cred added page.
-    timeout=40
-    i=0
-    while context.thisCredentialOnTheWayPage.on_this_page() and i < timeout:
-        # need to break out here incase we are stuck on connecting? 
-        # if we are too long, we need to click the Go back to home button.
-        sleep(1)
-        i+=1
-    if i == 40: # we timed out and it is still connecting
-        context.thisHomePage = context.thisCredentialOnTheWayPage.select_home()
-    else:
-        #assume credential added 
-        context.thisCredentialAddedPage = CredentialAddedPage(context.driver)
+    try:
+        context.thisCredentialAddedPage = context.thisCredentialOnTheWayPage.wait_for_credential()
         assert context.thisCredentialAddedPage.on_this_page()
+    except:
+        context.thisHomePage = context.thisCredentialOnTheWayPage.select_home()
+
 
 @then('they select Done')
 @when('they select Done')
