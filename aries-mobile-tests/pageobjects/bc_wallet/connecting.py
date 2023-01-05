@@ -4,6 +4,9 @@ from appium.webdriver.common.mobileby import MobileBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
+import logging
+from selenium.common.exceptions import TimeoutException
+from pageobjects.basepage import WaitCondition
 
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -28,3 +31,18 @@ class ConnectingPage(BasePage):
             return HomePage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
+
+    def wait_for_connection(self, timeout=300):
+        # Set up logging
+        logger = logging.getLogger(__name__)
+
+        # Wait for the Connection indicator to disappear
+        try:
+            self.find_by(self.on_this_page_locator, timeout, WaitCondition.INVISIBILITY_OF_ELEMENT_LOCATED)
+            logger.debug("Connecting indicator disappeared")
+        except TimeoutException:
+            logger.error(f"Connecting taking longer than expected. Timing out at {timeout} seconds.")
+            raise
+
+        # Return the True if done connecting
+        return True

@@ -1,30 +1,72 @@
 import time
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.contacts import ContactsPage
-from pageobjects.bc_wallet.connecting import ConnectingPage
+from pageobjects.basepage import WaitCondition
+from pageobjects.bc_wallet.developer_settings import DeveloperSettingsPage
 
 
 class SettingsPage(BasePage):
-    """Home page object"""
+    """Settings page object"""
 
     # Locators
-    on_this_page_text_locator = "App Preferences"
-    back_locator = "Go Back"
+    on_this_page_text_locator = "App Settings"
+    back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
     contacts_locator = "Contacts"
+    version_locator = (AppiumBy.ID, "com.ariesbifold:id/Version")
+    version_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Version")
+    intro_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Introduction to the app")
+    intro_locator = (AppiumBy.ID, "com.ariesbifold:id/IntroductionToTheApp")
+    developer_locator = (AppiumBy.ID, "com.ariesbifold:id/DeveloperOptions")
+
 
     def on_this_page(self):     
         return super().on_this_page(self.on_this_page_text_locator) 
 
+
+    def enable_developer_mode(self):
+        # TODO check if Developer Mode is already enabled
+
+        # Check if the app is on the correct page
+        if not self.on_this_page():
+            raise Exception(f"App not on the {type(self)} page")
+
+        self.scroll_to_bottom()
+        version_element = self.find_by(self.version_locator)
+
+        # Click the version element 10 times to enable Developer Mode
+        for i in range(10):
+            version_element.click()
+
+        # TODO: check if Developer Mode is now enabled
+
+
+    def select_developer(self):
+        #if self.on_this_page():
+        self.find_by(self.developer_locator).click()
+
+        return DeveloperSettingsPage(self.driver)
+        # else:
+        #     raise Exception(f"App not on the {type(self)} page")
+
+    def select_back(self):
+        # Don't check if on this page becasue android (unless you scroll back to the top) can't see the App Settings accessibility ID
+        # if self.on_this_page():
+        self.find_by(self.back_locator).click()
+        from pageobjects.bc_wallet.home import HomePage
+        return HomePage(self.driver)
+        # else:
+        #     raise Exception(f"App not on the {type(self)} page")
+
     def select_notification(self, context):
         search_element = WebDriverWait(context.driver, 10).until(
-            EC.presence_of_element_located((MobileBy.ACCESSIBILITY_ID, "Search Wikipedia"))
+            EC.presence_of_element_located((AppiumBy.ACCESSIBILITY_ID, "Search Wikipedia"))
         )
         search_element.click()
         search_input = WebDriverWait(context.driver, 30).until(
-            EC.element_to_be_clickable((MobileBy.ID, "org.wikipedia.alpha:id/search_src_text"))
+            EC.element_to_be_clickable((AppiumBy.ID, "org.wikipedia.alpha:id/search_src_text"))
         )
         search_input.send_keys(keyword)
         time.sleep(5)

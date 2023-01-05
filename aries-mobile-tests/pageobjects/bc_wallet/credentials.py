@@ -16,7 +16,9 @@ class CredentialsPage(BasePage):
     credential_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCard")
     
     #avatar_locator = (MobileBy.ID, "com.ariesbifold:id/AvatarName")
-    #credential_name_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCardHeader")
+    # get credential name from CredentialCardHeader on iOS
+    credential_card_header_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCardHeader")
+    # get credential name from CredentialName on Android
     credential_name_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialName")
     #credential_version_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialVersion")
     credential_issued_date_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCardFooter")
@@ -30,7 +32,10 @@ class CredentialsPage(BasePage):
 
     def get_credentials(self):
         if self.on_this_page():
-            elems = self.find_multiple_by(self.credential_name_locator)
+            if self.current_platform == "iOS":
+                elems = self.find_multiple_by(self.credential_card_header_locator)
+            else:
+                elems = self.find_multiple_by(self.credential_name_locator)
             json_elems = {
                 "credentials": [
                 ],

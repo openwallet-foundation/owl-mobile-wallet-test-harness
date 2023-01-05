@@ -70,6 +70,23 @@ def step_impl(context):
     context.thisNavBar = NavBar(context.driver)
     assert context.thisHomePage.on_this_page()
 
+    # set the environment to TEST instead of PROD which is default as of build 575
+    env = "Test"
+    context.execute_steps(f'''
+        Given the App environment is set to {env}
+    ''')
+
+
+@given('the App environment is set to {env}')
+def step_impl(context, env):
+    context.thisSettingsPage = context.thisHomePage.select_settings()
+    context.thisSettingsPage.enable_developer_mode()
+    context.thisDeveloperSettingsPage = context.thisSettingsPage.select_developer()
+    context.thisDeveloperSettingsPage.select_env(env)
+    context.thisSettingsPage = context.thisDeveloperSettingsPage.select_back()
+    context.thisSettingsPage.select_back()
+    assert context.thisHomePage.on_this_page()
+
 
 @given('the Holder has setup biometrics on thier device')
 def step_impl(context):
