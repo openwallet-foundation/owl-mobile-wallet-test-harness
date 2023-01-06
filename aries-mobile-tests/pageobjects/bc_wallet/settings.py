@@ -16,7 +16,7 @@ class SettingsPage(BasePage):
     back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
     contacts_locator = "Contacts"
     version_locator = (AppiumBy.ID, "com.ariesbifold:id/Version")
-    version_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Version")
+    version_partial_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Version")
     intro_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Introduction to the app")
     intro_locator = (AppiumBy.ID, "com.ariesbifold:id/IntroductionToTheApp")
     developer_locator = (AppiumBy.ID, "com.ariesbifold:id/DeveloperOptions")
@@ -34,7 +34,15 @@ class SettingsPage(BasePage):
             raise Exception(f"App not on the {type(self)} page")
 
         self.scroll_to_bottom()
-        version_element = self.find_by(self.version_locator)
+        #version_element = self.find_by(self.version_locator)
+        if self.current_platform == "iOS" and self.driver.capabilities['platformVersion'] <= '15':
+            # Need to find the element py partial text or accessibility id for iOS 14 and lower
+            version_elements = self.driver.find_elements(AppiumBy.XPATH, "//*[contains(@label, '{}')]".format(self.version_partial_aid_locator[1]))
+            # take the last one on the page
+            version_element = version_elements[len(version_elements)-1]
+        else:
+            # this works for iOS 15+ and Android only
+            version_element = self.find_by(self.version_locator)
 
         # Click the version element 10 times to enable Developer Mode
         for i in range(10):
