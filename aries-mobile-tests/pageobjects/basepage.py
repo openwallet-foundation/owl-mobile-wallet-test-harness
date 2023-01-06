@@ -52,7 +52,7 @@ class BasePage(object):
 
     def find_by(self, locator_tpl: tuple, timeout=20, wait_condition:WaitCondition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED):
         if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID or locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
-            return self.find_by_accessibility_id(locator_tpl[1], timeout)
+            return self.find_by_accessibility_id(locator_tpl[1], timeout, wait_condition)
         elif locator_tpl[0] == MobileBy.ID or locator_tpl[0] == AppiumBy.ID:
             return self.find_by_element_id(locator_tpl[1], timeout, wait_condition)
 
@@ -71,11 +71,11 @@ class BasePage(object):
             #return self.find_multiple_by_id(locator_tpl[1], timeout)
 
     # Locate by Accessibility id
-    def find_by_accessibility_id(self, locator, timeout=20):
+    def find_by_accessibility_id(self, locator, timeout=20, wait_condition:WaitCondition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED):
         try:
             # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
-                EC.presence_of_element_located(
+                wait_condition(
                     (AppiumBy.ACCESSIBILITY_ID, locator))
             )
         except:
