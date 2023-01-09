@@ -31,6 +31,7 @@ def step_impl(context):
 def step_impl(context):
     context.issuer.send_credential()
 
+    assert context.thisConnectingPage.wait_for_connection()
     # context.thisCredentialOfferNotificationPage = CredentialOfferNotificationPage(context.driver)
     # assert context.thisCredentialOfferNotificationPage.on_this_page()
 

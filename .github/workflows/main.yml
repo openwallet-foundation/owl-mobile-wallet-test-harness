@@ -74,7 +74,7 @@ jobs:
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          directDomains: aries-mediator-agent-test.apps.silver.devops.gov.bc.ca
+          directDomains: aries-mediator-agent.vonx.io
 
       #    tunnelIdentifier: github-action-tunnel
       #    region: us-west-1

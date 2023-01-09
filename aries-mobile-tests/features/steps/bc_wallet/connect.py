@@ -100,8 +100,6 @@ def step_impl(context):
         # One last check
         assert context.issuer.connected()
 
-    # Make sure the App has progressed from the connecting page as well. 
-    assert context.thisConnectingPage.wait_for_connection()
 
 @then('there is a connection between "{agent}" and Holder')
 def step_impl(context, agent):
