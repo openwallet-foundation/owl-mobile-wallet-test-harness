@@ -65,7 +65,7 @@ jobs:
 
       - name: run-aath-agents-ngrok
         #if: ${{ matrix.mobile-platform=='-p Android' }} && ${{ !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
-        if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+        if: ${{ matrix.mobile-platform=='-p Android' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-aath-agents
         with:
           USE_NGROK: "-n"
