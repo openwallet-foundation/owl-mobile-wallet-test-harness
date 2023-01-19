@@ -1,5 +1,6 @@
 from agent_factory.candy_uvp.pageobjects.webbasepage import WebBasePage
 from selenium.webdriver.common.by import By
+from pageobjects.basepage import WaitCondition
 from agent_factory.candy_uvp.pageobjects.request_credential_page import RequestCredentialPage
 
 # These classes can inherit from a BasePage to do commone setup and functions
@@ -27,7 +28,7 @@ class TermsOfServicePage(WebBasePage):
 
     def agree(self):
         if self.on_this_page():
-            self.find_by(self.agree_button_locator).click()
+            self.find_by(self.agree_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
             # Maybe should check if it is checked or let the test call is_accept_checked()? 
             # return a new page object? The Pin Setup page.

@@ -1,5 +1,6 @@
 from agent_factory.candy_uvp.pageobjects.webbasepage import WebBasePage
 from selenium.webdriver.common.by import By
+from pageobjects.basepage import WaitCondition
 from agent_factory.candy_uvp.pageobjects.review_and_confirm_page import ReviewAndConfirmPage
 
 # These classes can inherit from a BasePage to do commone setup and functions
@@ -22,11 +23,11 @@ class RequestCredentialPage(WebBasePage):
         return super().on_this_page(self.on_this_page_text_locator) 
 
     def enter_first_name(self, first_name):
-        if self.on_this_page():
-            self.find_by(self.first_name_locator).send_keys(first_name)
-            return True
-        else:
-            raise Exception(f"App not on the {type(self)} page")
+        # if self.on_this_page():
+        self.find_by(self.first_name_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).send_keys(first_name)
+        return True
+        # else:
+        #     raise Exception(f"App not on the {type(self)} page")
 
     def enter_last_name(self, last_name):
         if self.on_this_page():

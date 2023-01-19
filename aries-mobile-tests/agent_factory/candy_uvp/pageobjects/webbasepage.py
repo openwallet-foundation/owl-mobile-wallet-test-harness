@@ -2,6 +2,7 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from pageobjects.basepage import WaitCondition
 
 # BasePage to do common setup and functions
 
@@ -31,10 +32,10 @@ class WebBasePage(object):
     def __init__(self, driver):
         self.driver = driver
 
-    def find_by(self, locator_tpl: tuple, timeout=20):
+    def find_by(self, locator_tpl: tuple, timeout=20, wait_condition:WaitCondition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED):
         try:
             return WebDriverWait(self.driver, timeout).until(
-                EC.presence_of_element_located(
+                wait_condition(
                     (locator_tpl[0], locator_tpl[1]))
             )
         except:
