@@ -268,9 +268,11 @@ def step_impl(context):
     context.thisConnectingPage = context.thisNavBar.select_scan()
 
     # If this is the first time the user selects scan, then they will get a Camera Privacy Policy that needs to be dismissed
-    context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
-    if context.thisCameraPrivacyPolicyPage.on_this_page():
-        context.thisCameraPrivacyPolicyPage.select_okay()
+    #if autoGrantPermissions is in Capabilities = True, and platform is Android, skip this
+    if ('autoGrantPermissions' in context.driver.capabilities and context.driver.capabilities['autoGrantPermissions'] == False) or (context.driver.capabilities['platformName'] == 'iOS'):
+        context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
+        if context.thisCameraPrivacyPolicyPage.on_this_page():
+            context.thisCameraPrivacyPolicyPage.select_okay()
 
 @given('the user has a connectionless proof request for access to PCTF Chat')
 def step_impl(context):

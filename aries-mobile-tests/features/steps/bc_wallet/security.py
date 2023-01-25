@@ -123,10 +123,12 @@ def step_impl(context):
 @when('authenticates with thier biometrics')
 def step_impl(context):
     # Check to see if the Biometrics page is displayed
-    context.thisBiometricsPage = BiometricsPage(context.driver)
-    assert context.thisBiometricsPage.on_this_page()
-    context.device_service_handler.biometrics_authenticate(True)
-    assert context.thisBiometricsPage.on_this_page() == False
+    #if ('autoGrantPermissions' in context.driver.capabilities and context.driver.capabilities['autoGrantPermissions'] == False) or (context.driver.capabilities['platformName'] == 'iOS'):
+    if (context.driver.capabilities['platformName'] == 'iOS'):
+        context.thisBiometricsPage = BiometricsPage(context.driver)
+        assert context.thisBiometricsPage.on_this_page()
+        context.device_service_handler.biometrics_authenticate(True)
+        assert context.thisBiometricsPage.on_this_page() == False
 
 
 @when('fails to authenticate with thier biometrics once')

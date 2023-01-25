@@ -2,6 +2,7 @@ from appium.webdriver.common.mobileby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
+from pageobjects.basepage import WaitCondition
 
 
 # These classes can inherit from a BasePage to do commone setup and functions
@@ -13,6 +14,7 @@ class CameraPrivacyPolicyPage(BasePage):
     on_this_page_locator = (AppiumBy.ID, "com.ariesbifold:id/AllowCameraUse")
     allow_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Allow")
     not_now_button_locator = (AppiumBy.ID, "com.ariesbifold:id/NotNow")
+    system_allow_while_using_app =  (AppiumBy.ID, "com.android.permissioncontroller:id/permission_allow_foreground_only_button")
 
 
     def on_this_page(self):    
@@ -28,6 +30,11 @@ class CameraPrivacyPolicyPage(BasePage):
     def select_okay(self):
         if self.on_this_page():
             self.find_by(self.allow_button_locator).click()
+            if self.driver.capabilities['platformName'] == 'Android':
+                self.select_system_allow_while_using_app()
             return True
         else:
             raise Exception(f"App not on the {type(self)} page")
+
+    def select_system_allow_while_using_app(self):
+        self.find_by(self.system_allow_while_using_app, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
