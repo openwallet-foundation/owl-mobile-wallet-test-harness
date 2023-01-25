@@ -78,8 +78,30 @@ def step_impl(context):
 
 @then('holder is brought to the credential offer screen')
 def step_impl(context):
+    # Workaround for bug 645
+    context.execute_steps(f'''
+        When the connection takes too long reopen app and select notification
+    ''')
+
+    #assert context.thisConnectingPage.wait_for_connection()
+
     context.thisCredentialOfferPage = CredentialOfferPage(context.driver)
     assert context.thisCredentialOfferPage.on_this_page()
+
+@when('the connection takes too long reopen app and select notification')
+def step_impl(context):
+    # Workaround for bug 645
+    if "Workaround645" in context.tags:
+        if context.thisConnectingPage.is_connecting_taking_too_long():
+            context.thisHomePage = context.thisConnectingPage.select_go_back_to_home()
+            context.execute_steps(f'''
+                When they have closed the app
+                When they relaunch the app
+                When authenticates with thier biometrics
+            ''')
+            # Check for the notification on the Home Page
+            context.thisHomePage.select_credential_offer_notification()
+
 
 
 @then('they can view the contents of the credential')

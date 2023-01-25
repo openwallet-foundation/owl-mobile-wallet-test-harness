@@ -1,6 +1,7 @@
 from PIL import Image
 from agent_factory.candy_uvp.pageobjects.webbasepage import WebBasePage
 from selenium.webdriver.common.by import By
+from pageobjects.basepage import WaitCondition
 import base64
 #from candy_uvp.pageobjects.connect_with_issuer_page import ConnectWithIssuerPage
 
@@ -13,17 +14,16 @@ class ConnectWithIssuerPage(WebBasePage):
     qr_code_locator = (By.XPATH, '//*[@id="app"]/div/main/div/div/div/img')
 
 
-    def on_this_page(self):   
-        #print(self.driver.page_source)     
+    def on_this_page(self):     
         return super().on_this_page(self.on_this_page_text_locator) 
 
     def get_qr_code(self):
-        if self.on_this_page():
-            qrcode_element = self.find_by(self.qr_code_locator)
-            self.driver.save_screenshot("qrcode.png")
-            #qrcode = Image.open("qrcode.png")
-            qrcode = base64.b64encode(open("qrcode.png", "rb").read())
-            return qrcode.decode('utf-8')
+        # if self.on_this_page():
+        qrcode_element = self.find_by(self.qr_code_locator, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED)
+        self.driver.save_screenshot("qrcode.png")
+        #qrcode = Image.open("qrcode.png")
+        qrcode = base64.b64encode(open("qrcode.png", "rb").read())
+        return qrcode.decode('utf-8')
             
-        else:
-            raise Exception(f"App not on the {type(self)} page")
+        # else:
+        #     raise Exception(f"App not on the {type(self)} page")
