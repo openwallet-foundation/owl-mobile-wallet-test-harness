@@ -1,5 +1,6 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
+from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.credential_on_the_way import CredentialOnTheWayPage
 
 
@@ -25,7 +26,11 @@ class CredentialOfferPage(BasePage):
         if self.current_platform == 'iOS':
             if '14' in self.driver.capabilities['platformVersion']:
                 return super().on_this_page(self.on_this_page_text_locator, 30)
-        return super().on_this_page(self.credential_offer_card_locator, 30)
+        #return super().on_this_page(self.credential_offer_card_locator, 30)
+        if self.find_by(self.credential_offer_card_locator, timeout=40, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED):
+            return True
+        else:
+            return False
 
     def select_accept(self, scroll=False):
         if self.on_this_page():
