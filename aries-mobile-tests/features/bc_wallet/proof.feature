@@ -218,7 +218,7 @@ Feature: Proof
          | cred_data_photo_id_revokable | proof_photo_id_revokable | now:now  |
 
 
-   @T009-Proof @critical @AcceptanceTest @Connectionless
+   @T009-Proof @critical @AcceptanceTest @Connectionless @allure.issue:https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/bcgov/bc-wallet-mobile/645 @Workaround645 
    Scenario Outline: Pan Canadian Trust Framework Member aquires access to PCTF Chat with a connectionless proof request
       Given the PCTF Member has setup thier Wallet
       And the PCTF member has an Unverified Person <credential>
