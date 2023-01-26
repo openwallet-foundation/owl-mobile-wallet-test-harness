@@ -34,7 +34,7 @@ class ConnectingPage(BasePage):
             raise Exception(f"App not on the {type(self)} page")
 
     def is_connecting_taking_too_long(self):
-        if self.find_by(self.taking_too_long_locator, timeout=40, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED):
+        if self.find_by(self.taking_too_long_locator, timeout=60, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED):
             return True
         else:
             return False
