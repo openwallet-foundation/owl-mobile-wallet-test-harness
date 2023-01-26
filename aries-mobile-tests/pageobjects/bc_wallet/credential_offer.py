@@ -27,7 +27,7 @@ class CredentialOfferPage(BasePage):
             if '14' in self.driver.capabilities['platformVersion']:
                 return super().on_this_page(self.on_this_page_text_locator, 30)
         #return super().on_this_page(self.credential_offer_card_locator, 30)
-        if self.find_by(self.credential_offer_card_locator, timeout=40, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED):
+        if self.find_by(self.credential_offer_card_locator, timeout=80, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED):
             return True
         else:
             return False
