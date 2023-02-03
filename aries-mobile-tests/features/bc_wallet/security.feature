@@ -173,6 +173,14 @@ Feature: Secure your Wallet
     And a button to dismiss the notification
 
   @Story_422 @AcceptanceTest @wip
+  Scenario: Holder enables Biometrics in app after not being enabled in app
+    Given the Holders device has fingerprint or facial data stored within their device security
+    When the Holder selects to enable Biometrics in BC Wallet
+    Then the holder is prompted enter their wallet PIN
+    Then the holder is prompted to confirm their biometrics
+    And the toggle button switches to "ON" state when fingerprint or face is verified.
+
+  @Story_422 @AcceptanceTest @wip
   Scenario: Holder enables Biometrics in app
     Given Biometrics is enabled on their device
     When the Holder selects to enable Biometrics in BC Wallet
