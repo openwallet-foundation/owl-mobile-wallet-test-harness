@@ -66,7 +66,7 @@ def step_impl(context):
 def step_impl(context):
     # The Home page will not show until the initialization page is done. 
     #assert context.thisInitializationPage.on_this_page()
-    context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
+    context.thisHomePage = context.thisInitializationPage.wait_until_initialized(timeout=600)
     context.thisNavBar = NavBar(context.driver)
     assert context.thisHomePage.on_this_page()
 
@@ -129,6 +129,7 @@ def step_impl(context):
         assert context.thisBiometricsPage.on_this_page()
         context.device_service_handler.biometrics_authenticate(True)
         assert context.thisBiometricsPage.on_this_page() == False
+        context.thisInitialzationPage.wait_until_initialized(600)
 
 
 @when('fails to authenticate with thier biometrics once')
