@@ -51,8 +51,12 @@ def before_feature(context, feature):
     context.save_qr_code_on_creation = eval(context.config.userdata['save_qr_code_on_creation'])
 
     # retry failed tests 
+    try: 
+        test_retry_attempts = int(config('TEST_RETRY_ATTEMPTS_OVERRIDE'))
+    except:
+        test_retry_attempts = int(eval(context.config.userdata['test_retry_attempts']))
     for scenario in feature.scenarios:
-        patch_scenario_with_autoretry(scenario, max_attempts=eval(context.config.userdata['test_retry_attempts']))
+        patch_scenario_with_autoretry(scenario, max_attempts=test_retry_attempts)
 
 
 

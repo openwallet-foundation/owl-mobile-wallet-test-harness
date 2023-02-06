@@ -103,6 +103,7 @@ jobs:
         env:
           LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
           REGION: "us-west-1"
+          TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
         with:
           MOBILE_WALLET: "-w bc_wallet"
           ISSUER_AGENT: '-i "AATH;http://0.0.0.0:9020"'
@@ -131,6 +132,7 @@ jobs:
         env:
           LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
           REGION: "us-west-1"
+          TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
         with:
           MOBILE_WALLET: "-w bc_wallet"
           ISSUER_AGENT: '-i "CANdy_UVP;https://openvp-candy-issuer-test.apps.silver.devops.gov.bc.ca/"'
@@ -157,6 +159,7 @@ jobs:
           BCSC_ACCOUNT_PASSWORD: ${{ secrets.BCSC_ACCOUNT_PASSWORD }}
           GOOGLE_API_TOKEN: ${{ secrets.GOOGLE_API_TOKEN }}
           GOOGLE_API_CREDENTIALS: ${{ secrets.GOOGLE_API_CREDENTIALS }}
+          TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
         with:
           MOBILE_WALLET: "-w bc_wallet"
           ISSUER_AGENT: '-i "BC_VP;https://bcvcpilot-issuer-admin-test.apps.silver.devops.gov.bc.ca"'
