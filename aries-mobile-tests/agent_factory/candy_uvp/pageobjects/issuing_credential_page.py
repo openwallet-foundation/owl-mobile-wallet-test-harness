@@ -16,7 +16,7 @@ class IssuingCredentialPage(WebBasePage):
 
 
     def on_this_page(self):     
-        return super().on_this_page(self.on_this_page_locator) 
+        return super().on_this_page(self.on_this_page_locator, timeout=20) 
 
     def connected(self):
         if self.on_this_page():
