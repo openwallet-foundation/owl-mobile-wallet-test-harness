@@ -297,6 +297,9 @@ setDockerEnv() {
   if ! [ -z "$GOOGLE_API_CREDENTIALS" ]; then
     DOCKER_ENV="${DOCKER_ENV} -e GOOGLE_API_CREDENTIALS='${GOOGLE_API_CREDENTIALS}'"
   fi
+  if ! [ -z "$TEST_RETRY_ATTEMPTS_OVERRIDE" ]; then
+    DOCKER_ENV="${DOCKER_ENV} -e TEST_RETRY_ATTEMPTS_OVERRIDE='${TEST_RETRY_ATTEMPTS_OVERRIDE}'"
+  fi
 }
 
 # TODO Do we need this for Mobile? 
