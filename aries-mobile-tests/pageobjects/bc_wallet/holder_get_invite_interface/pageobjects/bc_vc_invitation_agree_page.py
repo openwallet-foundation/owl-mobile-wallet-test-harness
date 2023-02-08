@@ -7,7 +7,7 @@ class BCVCInvitationAgreePage(WebBasePage):
     """CANdy UVP Issuer Review and Confirm page object"""
 
     # Locators
-    on_this_page_text_locator = "BC VC Pilot Credential"
+    on_this_page_text_locator = "Person credential invitation"
     #i_agree_locator = (By.XPATH, '//*[@id="app"]/div/main/div/div/div/div[2]/div[1]/div/div/div/div[1]/div/div')
     i_agree_locator = (By.XPATH, '//div[@class="v-input--selection-controls__ripple"]')
 

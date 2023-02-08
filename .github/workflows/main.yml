@@ -154,6 +154,7 @@ jobs:
           REGION: "us-west-1"
           BC_VP_USERNAME: ${{ secrets.BC_VP_USERNAME }}
           BC_VP_PASSWORD: ${{ secrets.BC_VP_PASSWORD }}
+          BC_VP_HOLDER_EMAIL: ${{ secrets.BC_VP_HOLDER_EMAIL }}
           BC_VP_HOLDER_EMAIL_PASSWORD: ${{ secrets.BC_VP_HOLDER_EMAIL_PASSWORD }}
           BCSC_ACCOUNT_USER: ${{ secrets.BCSC_ACCOUNT_USER }}
           BCSC_ACCOUNT_PASSWORD: ${{ secrets.BCSC_ACCOUNT_PASSWORD }}

@@ -16,7 +16,13 @@ from agent_factory.bc_vp.pageobjects.authenticate_page import AuthenticatePage
 from agent_factory.bc_vp.pageobjects.authcode_page import AuthCodePage
 from agent_factory.bc_vp.pageobjects.invites_page import InvitesPage
 from agent_factory.bc_vp.pageobjects.invite_page import InvitePage
+from enum import Enum
+from enum import auto
 
+class LoginBy(Enum):
+    USERNAME_PASSWORD = auto()
+    IDIM = auto()
+    GITHUB = auto()
 
 class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
 
@@ -127,7 +133,28 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
             credential_data[attribute["name"]] = attribute["value"]
         return credential_data
 
-    def _login(self, username: str, password: str):
+    def _login(self, username: str, password: str, login_by:LoginBy=LoginBy.USERNAME_PASSWORD):
+        if login_by == LoginBy.USERNAME_PASSWORD:
+            self._login_with_unpw(username, password)
+        elif login_by == LoginBy.GITHUB:
+            self._login_with_github(username, password)
+        elif login_by == LoginBy.IDIM:
+            raise Exception(
+                'Login to BCVC Pilot Issuer by IDIM account is not implemented')
+        else:
+            raise Exception(
+                'Invalid login_by for Login to BCVC Pilot Issuer')
+
+    def _login_with_unpw(self, username: str, password: str):
+        self._authenticate_with_page.enter_username(username)
+        self._authenticate_with_page.enter_password(password)
+        self._invites_page = self._authenticate_with_page.sign_in()
+
+        if not self._invites_page.on_this_page():
+            raise Exception(
+                'Something is wrong, not logged in on the Invites Page for the BC VP Issuer')
+
+    def _login_with_github(self, username: str, password: str):
         self._authenticate_page = self._authenticate_with_page.github()
         if not self._authenticate_page.on_this_page():
             raise Exception(
