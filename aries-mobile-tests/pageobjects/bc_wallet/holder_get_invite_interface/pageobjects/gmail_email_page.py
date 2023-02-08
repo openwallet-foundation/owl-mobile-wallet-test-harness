@@ -2,6 +2,7 @@ from agent_factory.candy_uvp.pageobjects.webbasepage import WebBasePage
 from selenium.webdriver.common.by import By
 import re
 #from agent_factory.bc_vp.pageobjects.invite_page import InvitePage
+from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.holder_get_invite_interface.pageobjects.bc_vc_invitation_agree_page import BCVCInvitationAgreePage
 
 # These classes can inherit from a BasePage to do commone setup and functions
@@ -32,7 +33,7 @@ class GmailEmailPage(WebBasePage):
     def select_invitation_link(self):
         #if self.on_this_page():
         if super().on_this_page(self.invitation_link_locator, timeout=2000):
-            self.find_by(self.invitation_link_locator).click()
+            self.find_by(self.invitation_link_locator, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED).click()
             return BCVCInvitationAgreePage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

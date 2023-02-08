@@ -51,7 +51,7 @@ class BCVPHolderGetInviteInterface():
         if not self._gmail_login_page.on_this_page():
             raise Exception(
                 'Something is wrong, not on the Gmail login Page for the BC VP Issuer')
-        username = config('BC_VP_USERNAME')
+        username = config('BC_VP_HOLDER_EMAIL')
         password = config('BC_VP_HOLDER_EMAIL_PASSWORD')
         self._login(username, password)
 
