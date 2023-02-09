@@ -5,6 +5,7 @@ from pageobjects.bc_wallet.connecting import ConnectingPage
 from pageobjects.bc_wallet.settings import SettingsPage
 from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
 from pageobjects.bc_wallet.proof_request import ProofRequestPage
+from pageobjects.bc_wallet.get_person_credential import GetPersonCredentialPage
 from time import sleep
 
 
@@ -22,7 +23,9 @@ class HomePage(BasePage):
     credentials_locator = "Credentials"
     settings_tid_locator = "com.ariesbifold:id/Settings"
     settings_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
-    get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/GetBCID")
+    #get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/GetBCID")
+    get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewCustom")
+    
 
     def on_this_page(self):
         return super().on_this_page(self.on_this_page_text_locator)
@@ -70,7 +73,7 @@ class HomePage(BasePage):
     def select_get_bc_digital_id(self):
         if self.on_this_page():
             self.find_by(self.get_bc_digital_id_locator).click()
-            return True
+            return GetPersonCredentialPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 

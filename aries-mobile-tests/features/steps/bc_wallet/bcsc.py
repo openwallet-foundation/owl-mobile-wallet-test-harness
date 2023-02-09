@@ -19,7 +19,7 @@ from pageobjects.bc_wallet.create_bc_digital_id import CreateABCDigitalIDPage
 def step_impl(context, setup_option, username, password):
     context.execute_steps(f'''
         Given they are Home
-        When they select Get your BC Digital ID
+        When they select Get your Person Credential
         And they select Log in with BC Services Card in the Create a BC Digital ID Web page
         And they select {setup_option} on the Set up the BC Services Card app
         And they enter in {username} as the username
@@ -80,9 +80,14 @@ def step_impl(context):
     assert context.thisHomePage.on_this_page()
 
 
-@when('they select Get your BC Digital ID')
+@when('they select to start getting the Person credential')
 def step_impl(context):
-    context.thisHomePage.select_get_bc_digital_id()
+    context.thisGetPersonCredentialPage = context.thisHomePage.select_get_bc_digital_id()
+
+
+@when('they select Get your Person credential')
+def step_impl(context):
+    context.thisGetPersonCredentialPage.select_get_your_person_credential()
 
 
 @when('they select Share on the proof request from IDIM')

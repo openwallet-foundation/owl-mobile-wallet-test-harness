@@ -16,8 +16,10 @@ class CredentialsPage(BasePage):
     credential_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCard")
     
     #avatar_locator = (MobileBy.ID, "com.ariesbifold:id/AvatarName")
-    # get credential name from CredentialCardHeader on iOS
+    # get credential name from CredentialCardHeader on iOS for AATH and BC UVP creds
     credential_card_header_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCardHeader")
+    #BCSC seems to have a differnt TestID
+    #credential_card_header_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialCard")
     # get credential name from CredentialName on Android
     credential_name_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialName")
     #credential_version_locator = (MobileBy.ID, "com.ariesbifold:id/CredentialVersion")
