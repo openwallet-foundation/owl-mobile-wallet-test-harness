@@ -177,12 +177,8 @@ def step_impl(context):
 @then(u'the IDIM Person credential accepted is at the top of the list')
 @then(u'the credential accepted is at the top of the list')
 def step_impl(context):
-    # TODO temporary conditional credential check since testIDs are not there for non-overlayed credentials like AATH creds.
-    if context.driver.capabilities['platformName'] == 'iOS' and 'AATH' in context.issuer.get_issuer_type():
-        assert get_expected_credential_name(context) in context.driver.page_source
-    else:
-        json_elems = context.thisCredentialsPage.get_credentials()
-        assert get_expected_credential_name(context) in json_elems["credentials"][0]["text"]
+    json_elems = context.thisCredentialsPage.get_credentials()
+    assert get_expected_credential_name(context) in json_elems["credentials"][0]["text"]
         #assert context.thisCredentialsPage.credential_exists(get_expected_credential_name(context))
 
 def get_expected_credential_name(context):

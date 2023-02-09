@@ -14,8 +14,8 @@ Feature: BCSC
          | issuer_agent_type | credential_name  |
          | BCVPIssuer        | Pilot Invitation |
       And they are Home
-      When they select Get your BC Digital ID
-      #And they select Share on the proof request from IDIM
+      When they select to start getting the Person credential
+      And they select Get your Person credential
       And they select Log in with BC Services Card in the Create a BC Digital ID Web page
       And they select <setup_option> on the Set up the BC Services Card app
       And they enter in <username> as the username
@@ -40,6 +40,7 @@ Feature: BCSC
       Examples:
          | setup_option                    | username          | password              |
          | Test with username and password | BCSC_ACCOUNT_USER | BCSC_ACCOUNT_PASSWORD |
+#         | BC Services Card app            | BCSC_ACCOUNT_USER | BCSC_ACCOUNT_PASSWORD |
 
 
    @T002-BCSC @critical @AcceptanceTest
