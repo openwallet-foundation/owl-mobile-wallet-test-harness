@@ -60,6 +60,8 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
         self._authenticate_with_page = AuthenticateWithPage(self.driver)
         # make sure we are on the first page, the authenticate with page
         if not self._authenticate_with_page.on_this_page():
+            # self.driver.get_screenshot_as_file( 'authenticate_page_screenshot.png' )
+            # print("Screenshot saved to screenshot.png")
             raise Exception(
                 'Something is wrong, not on the Authenticate With Page for the BC VP Issuer')
         username = config('BC_VP_USERNAME')
@@ -147,10 +149,14 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
 
     def _login_with_unpw(self, username: str, password: str):
         self._authenticate_with_page.enter_username(username)
+        #self.driver.get_screenshot_as_file( 'Invites_page_username_screenshot.png' )
         self._authenticate_with_page.enter_password(password)
+        #self.driver.get_screenshot_as_file( 'Invites_page_password_screenshot.png' )
         self._invites_page = self._authenticate_with_page.sign_in()
 
         if not self._invites_page.on_this_page():
+            # self.driver.get_screenshot_as_file( 'Invites_page_screenshot.png' )
+            # print("Invites page screenshot saved to Invites_page_screenshot.png")
             raise Exception(
                 'Something is wrong, not logged in on the Invites Page for the BC VP Issuer')
 
@@ -175,5 +181,7 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
             auth_code_page.enter_auth_code(auth_code)
 
         if not self._invites_page.on_this_page():
+            # self.driver.get_screenshot_as_file( 'Invites_page_screenshot.png' )
+            # print("Screenshot saved to screenshot.png")
             raise Exception(
                 'Something is wrong, not logged in on the Invites Page for the BC VP Issuer')
