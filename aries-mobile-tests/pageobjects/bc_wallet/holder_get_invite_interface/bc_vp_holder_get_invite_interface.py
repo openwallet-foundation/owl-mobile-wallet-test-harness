@@ -86,10 +86,16 @@ class BCVPHolderGetInviteInterface():
                 'Something is wrong, not on the Gmail login Page for the BC VP Issuer')
 
         self._gmail_login_page.enter_username(username)
+        #self.driver.get_screenshot_as_file( 'gmail_username_page_screenshot.png' )
         self._gmail_login_page.next()
+        #self.driver.get_screenshot_as_file( 'gmail_next_page_screenshot.png' )
         self._gmail_login_page.enter_password(password)
+        #self.driver.get_screenshot_as_file( 'gmail_password_page_screenshot.png' )
         self._gmail_email_page = self._gmail_login_page.sign_in()
+        #self.driver.get_screenshot_as_file( 'gmail_signin_page_screenshot.png' )
 
         if not self._gmail_email_page.on_this_page():
+            # self.driver.get_screenshot_as_file( 'gmail_page_screenshot.png' )
+            # print("gmail page screenshot saved to gmail_page_screenshot.png")
             raise Exception(
                 'Something is wrong, not logged in to gmail')
