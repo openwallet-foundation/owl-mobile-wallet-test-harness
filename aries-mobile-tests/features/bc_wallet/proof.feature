@@ -236,3 +236,25 @@ Feature: Proof
       Examples:
          | credential                  |
          | cred_data_unverified_person |
+
+   @T010.1-Proof @normal @AcceptanceTest
+   Scenario: Holder accepts a proof request with multiple credentials
+      Given the Holder has setup thier wallet
+      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the holder has a credential
+         | credential                   | revokable | issuer_agent_type | credential_name                           |
+         | cred_data_photo_id_revokable | true      | AATHIssuer        | Default AATH Issuer Credential Definition |
+      And the holder has a credential
+         | credential                   | revokable | issuer_agent_type | credential_name |
+         | cred_data_photo_id_revokable | true      | AATHIssuer        | Photo Id        |
+      #When the user has a proof request for <proof>
+      When the user has a proof request
+         | proof            |
+         | multi_cred_proof |
+      And they select Share
+      And the holder is informed that they are sending information securely
+      Then they are informed that the information sent successfully
+
+# Examples:
+#    | credential                   | proof                    |
+#    | cred_data_photo_id_revokable | proof_photo_id_revokable |
