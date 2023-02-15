@@ -1,6 +1,7 @@
 """
 Class for actual IDIM Verified Person Credetial issuer agent
 """
+from time import sleep
 from agent_factory.issuer_agent_interface import IssuerAgentInterface
 from sys import platform
 from decouple import config
@@ -30,6 +31,7 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
     _authenticate_page: AuthenticatePage
     _invites_page: InvitesPage
     _invite_page: InvitePage
+    _invitation_url: str
 
     # Default schema and cred
     DEFAULT_CREDENTIAL_DATA = {
@@ -107,15 +109,25 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
             self._invite_page.enter_program(
                 self.DEFAULT_CREDENTIAL_DATA["program"])
 
-        # TODO Temporarily comment the sending of the invite out until things are running smoothly, don't want to load up the service with invites.
         self._invites_page = self._invite_page.save()
         if not self._invites_page.on_this_page():
             raise Exception(
                 'Something is wrong, on the Invites Page after sending invite for the BC VP Issuer')
 
+
+        self._invitation_url= self._get_invitation_url()
+
         return True
-        # Could use the invite URL in on the invite details page of the issuer and generate a QR code to return here. 
-        # Fall back plan if using email is not viable.
+        
+    def _get_invitation_url(self):
+        # Get the invitation url from the invites page
+        self._invites_page.search(self.DEFAULT_CREDENTIAL_DATA["email"])
+        sleep(5)
+        self._invites_page.select_edit_invite(1)
+        return self._invites_page.get_invitation_url()
+    
+    def get_invitation_url(self):
+        return self._invitation_url
 
     def restart_issue_credential(self):
         # go to the issuer endpoint in the browser
