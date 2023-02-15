@@ -241,12 +241,10 @@ Feature: Proof
    Scenario: Holder accepts a proof request with multiple credentials
       Given the Holder has setup thier wallet
       And the Holder has selected to use biometrics to unlock BC Wallet
-      And the holder has a credential
-         | credential                   | revokable | issuer_agent_type | credential_name                           |
-         | cred_data_photo_id_revokable | true      | AATHIssuer        | Default AATH Issuer Credential Definition |
-      And the holder has a credential
-         | credential                   | revokable | issuer_agent_type | credential_name |
-         | cred_data_photo_id_revokable | true      | AATHIssuer        | Photo Id        |
+      And the holder has credentials
+         | credential                | revokable | issuer_agent_type | credential_name |
+         | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
+         | cred_data_photo_id        | True      | AATHIssuer        | Photo Id        |
       #When the user has a proof request for <proof>
       When the user has a proof request
          | proof            |
