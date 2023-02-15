@@ -33,6 +33,19 @@ def step_impl(context):
         {table}
     '''.format(table=table_to_str(context.table)))
 
+@given('the holder has credentials')
+def step_impl(context):
+    for row in context.table:
+        context.execute_steps(u'''
+            Given the user has a credential offer of {row["credential"]} with revocable set as {row["revocable"]}
+            When they select Accept
+            And the holder is informed that their credential is on the way with an indication of loading
+            And once the credential arrives they are informed that the Credential is added to your wallet
+            And they select Done
+            Then they are brought to the list of credentials
+            And the credential {row["credential_name"]} is accepted is at the top of the list
+        ''')
+
 @given('the holder has a credential of {credential}')
 def step_impl(context, credential):
     context.execute_steps(f'''

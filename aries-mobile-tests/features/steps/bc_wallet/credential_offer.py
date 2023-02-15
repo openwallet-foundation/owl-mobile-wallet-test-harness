@@ -35,39 +35,56 @@ def step_impl(context):
     # context.thisCredentialOfferNotificationPage = CredentialOfferNotificationPage(context.driver)
     # assert context.thisCredentialOfferNotificationPage.on_this_page()
 
+
+
 @given('the Holder receives a credential offer of {credential}')
 @when('the Holder receives a credential offer of {credential}')
-def step_impl(context, credential):
+@when('the Holder receives a credential offer of {credential} with revocable set as {revocation}') 
+def step_impl(context, credential, revocation=None):
     # Open cred data file
     try:
-        credential_json_file = open("features/data/" + credential.lower() + ".json")
+        credential_json_file = open(
+            "features/data/" + credential.lower() + ".json")
         credential_json = json.load(credential_json_file)
 
-        if context.issuer.get_issuer_type() == "AATHIssuer": # add others here as they come up that may need a schema and cred def.
+        # add others here as they come up that may need a schema and cred def.
+        if context.issuer.get_issuer_type() == "AATHIssuer":
             # get schema name from cred data
             cred_type = credential_json['schema_name']
             # open schema file
             try:
-                cred_type_json_file = open(f"features/data/schema_{cred_type.lower()}.json")
+                cred_type_json_file = open(
+                    f"features/data/schema_{cred_type.lower()}.json")
                 cred_type_json = json.load(cred_type_json_file)
                 # check if the credential is revokable
-                if "support_revocation" in cred_type_json and cred_type_json["support_revocation"] == True:
-                    rev = True
+                if revocation == None:
+                    if "support_revocation" in cred_type_json and cred_type_json["support_revocation"] == True:
+                        rev = True
+                    else:
+                        rev = False
                 else:
-                    rev = False
-                context.issuer.send_credential(schema=cred_type_json, credential_offer=credential_json, revokable=rev)
+                    if revocation == "True":
+                        rev = True
+                    else:
+                        rev = False
+                context.issuer.send_credential(
+                    schema=cred_type_json, credential_offer=credential_json, revokable=rev)
             except FileNotFoundError:
-                print(f"FileNotFoundError: features/data/schema_{cred_type.lower()}.json")
+                print(
+                    f"FileNotFoundError: features/data/schema_{cred_type.lower()}.json")
         else:
             if "Connectionless" in context.tags:
                 # We are expecting a QR code on the send credential if connectionless
-                qrimage = context.issuer.send_credential(credential_offer=credential_json)
+                qrimage = context.issuer.send_credential(
+                    credential_offer=credential_json)
                 context.device_service_handler.inject_qrcode(qrimage)
             else:
-                context.issuer.send_credential(credential_offer=credential_json)
+                context.issuer.send_credential(
+                    credential_offer=credential_json)
 
     except FileNotFoundError:
-        print("FileNotFoundError: features/data/" + credential.lower() + ".json")
+        print("FileNotFoundError: features/data/" +
+              credential.lower() + ".json")
 
 
 @when('the Holder taps on the credential offer notification')
@@ -88,6 +105,7 @@ def step_impl(context):
     context.thisCredentialOfferPage = CredentialOfferPage(context.driver)
     assert context.thisCredentialOfferPage.on_this_page()
 
+
 @when('the connection takes too long reopen app and select notification')
 def step_impl(context):
     # Workaround for bug 645
@@ -103,14 +121,14 @@ def step_impl(context):
             context.thisHomePage.select_credential_offer_notification()
 
 
-
 @then('they can view the contents of the credential')
 def step_impl(context):
     assert context.thisCredentialOfferPage.on_this_page()
 
-    who, cred_type, attributes, values = get_expected_credential_detail(context)
+    who, cred_type, attributes, values = get_expected_credential_detail(
+        context)
     # TODO The below doesn't have locators in build 127. Calibrate in the future fixed build
-    #actual_who, actual_cred_type, actual_attributes, actual_values = context.thisCredentialOfferPage.get_credential_details() 
+    #actual_who, actual_cred_type, actual_attributes, actual_values = context.thisCredentialOfferPage.get_credential_details()
     #assert who in actual_who
     #assert cred_type in actual_cred_type
     #assert attributes in actual_attributes
@@ -125,23 +143,35 @@ def step_impl(context):
     ''')
 
 
+
 @given('the user has a credential offer of {credential}')
-def step_impl(context, credential):
+@given('the user has a credential offer of {credential} with revocable set as {revocation}')
+def step_impl(context, credential, revocation=None):
+    if revocation == None:
+        context.execute_steps(f'''
+            When the Holder receives a credential offer of {credential}
+        ''')
+    else:
+        context.execute_steps(f'''
+            When the Holder receives a credential offer of {credential} with revocable set as {revocation}
+        ''')
+
     context.execute_steps(f'''
-        When the Holder receives a credential offer of {credential}
-        Then holder is brought to the credential offer screen
-    ''')
+            Then holder is brought to the credential offer screen
+        ''')
+
 
 @then('they select Accept')
 @when('they select Accept')
 def step_impl(context):
-    context.thisCredentialOnTheWayPage = context.thisCredentialOfferPage.select_accept(scroll=True)
+    context.thisCredentialOnTheWayPage = context.thisCredentialOfferPage.select_accept(
+        scroll=True)
 
 
 @then('the holder is informed that their credential is on the way with an indication of loading')
 @when('the holder is informed that their credential is on the way with an indication of loading')
 def step_impl(context):
-    # sometimes the workflow is farther ahead than the test thinks it is, so put in a soft assert here. 
+    # sometimes the workflow is farther ahead than the test thinks it is, so put in a soft assert here.
     if context.thisCredentialOnTheWayPage.on_this_page():
         assert True
     else:
@@ -173,13 +203,17 @@ def step_impl(context):
     context.thisCredentialsPage.on_this_page()
 
 
-
+@then(u'the credential {credential_name} is accepted is at the top of the list')
 @then(u'the IDIM Person credential accepted is at the top of the list')
 @then(u'the credential accepted is at the top of the list')
-def step_impl(context):
+def step_impl(context, credential_name=None):
     json_elems = context.thisCredentialsPage.get_credentials()
-    assert get_expected_credential_name(context) in json_elems["credentials"][0]["text"]
-        #assert context.thisCredentialsPage.credential_exists(get_expected_credential_name(context))
+    if credential_name == None:
+        credential_name = get_expected_credential_name(context)
+
+    assert credential_name in json_elems["credentials"][0]["text"]
+    #assert context.thisCredentialsPage.credential_exists(get_expected_credential_name(context))
+
 
 def get_expected_credential_name(context):
     issuer_type_in_use = context.issuer.get_issuer_type()
@@ -195,6 +229,7 @@ def get_expected_credential_name(context):
             f"No credential name in table data for {issuer_type_in_use}"
         )
     return cred_name
+
 
 def get_expected_credential_detail(context):
     issuer_type_in_use = context.issuer.get_issuer_type()
