@@ -66,10 +66,11 @@ def step_impl(context):
     
 @given('the BCSC holder gets the invite QR Code from their email')
 def step_impl(context):
-    context.holderGetInviteInterface = BCVPHolderGetInviteInterface("http://www.gmail.com")
-    #sleep(5) # wait for email to come in with invitation.
-    assert context.holderGetInviteInterface.open_invitation_email()
-    assert context.holderGetInviteInterface.select_invitation_link()
+    #context.holderGetInviteInterface = BCVPHolderGetInviteInterface("http://www.gmail.com")
+    context.holderGetInviteInterface = BCVPHolderGetInviteInterface(context.issuer.get_invitation_url())
+
+    #assert context.holderGetInviteInterface.open_invitation_email()
+    #assert context.holderGetInviteInterface.select_invitation_link()
     qrcode =  context.holderGetInviteInterface.get_qr_code_invitation()
     context.device_service_handler.inject_qrcode(qrcode)
 
