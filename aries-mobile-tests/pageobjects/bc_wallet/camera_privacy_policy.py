@@ -18,23 +18,19 @@ class CameraPrivacyPolicyPage(BasePage):
 
 
     def on_this_page(self):    
-        return super().on_this_page(self.on_this_page_locator) 
+        #return super().on_this_page(self.on_this_page_locator) 
+        #return super().on_this_page(self.allow_button_locator)
+        return super().on_this_page(self.on_this_page_text_locator)
 
     def select_not_now(self):
-        if self.on_this_page():
-            self.find_by(self.not_now_button_locator).click()
-            return True
-        else:
-            raise Exception(f"App not on the {type(self)} page")
+        self.find_by(self.not_now_button_locator).click()
+        return True
 
     def select_okay(self):
-        if self.on_this_page():
-            self.find_by(self.allow_button_locator).click()
-            if self.driver.capabilities['platformName'] == 'Android':
-                self.select_system_allow_while_using_app()
-            return True
-        else:
-            raise Exception(f"App not on the {type(self)} page")
+        self.find_by(self.allow_button_locator).click()
+        if self.driver.capabilities['platformName'] == 'Android':
+            self.select_system_allow_while_using_app()
+        return True
 
     def select_system_allow_while_using_app(self):
         self.find_by(self.system_allow_while_using_app, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()

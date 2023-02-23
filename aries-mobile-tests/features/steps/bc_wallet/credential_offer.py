@@ -47,6 +47,11 @@ def step_impl(context, credential, revocation=None):
             "features/data/" + credential.lower() + ".json")
         credential_json = json.load(credential_json_file)
 
+        # add the credential json to a collection on the context so that it can be used in other steps
+        if hasattr(context, 'credential_json_collection') == False:
+            context.credential_json_collection = {}
+        context.credential_json_collection[credential] = credential_json
+
         # add others here as they come up that may need a schema and cred def.
         if context.issuer.get_issuer_type() == "AATHIssuer":
             # get schema name from cred data
@@ -207,12 +212,17 @@ def step_impl(context):
 @then(u'the IDIM Person credential accepted is at the top of the list')
 @then(u'the credential accepted is at the top of the list')
 def step_impl(context, credential_name=None):
-    json_elems = context.thisCredentialsPage.get_credentials()
-    if credential_name == None:
-        credential_name = get_expected_credential_name(context)
+    # if the platform is iOS 15+ or android 
+    if (context.driver.capabilities['platformName'] and context.driver.capabilities['platformVersion'] >= '15') or context.driver.capabilities['platformName'] == "Android":
+        json_elems = context.thisCredentialsPage.get_credentials()
+        if credential_name == None:
+            credential_name = get_expected_credential_name(context)
 
-    assert credential_name in json_elems["credentials"][0]["text"]
-    #assert context.thisCredentialsPage.credential_exists(get_expected_credential_name(context))
+        assert credential_name in json_elems["credentials"][0]["text"]
+    else:
+        if credential_name == None:
+            credential_name = get_expected_credential_name(context)
+        assert context.thisCredentialsPage.credential_exists(credential_name)
 
 
 def get_expected_credential_name(context):
