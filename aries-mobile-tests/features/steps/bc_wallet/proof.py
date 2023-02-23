@@ -35,15 +35,23 @@ def step_impl(context):
 
 @given('the holder has credentials')
 def step_impl(context):
+    # context.execute_steps(f'''
+    #     Given a connection has been successfully made
+    # ''')
+
     for row in context.table:
-        context.execute_steps(u'''
-            Given the user has a credential offer of {row["credential"]} with revocable set as {row["revocable"]}
+        credential = row["credential"]
+        revokable = row["revocable"]
+        credential_name = row["credential_name"]
+        context.execute_steps(f'''
+            Given a connection has been successfully made
+            Given the user has a credential offer of {credential} with revocable set as {revokable}
             When they select Accept
             And the holder is informed that their credential is on the way with an indication of loading
             And once the credential arrives they are informed that the Credential is added to your wallet
             And they select Done
             Then they are brought to the list of credentials
-            And the credential {row["credential_name"]} is accepted is at the top of the list
+            And the credential {credential_name} is accepted is at the top of the list
         ''')
 
 @given('the holder has a credential of {credential}')
@@ -83,6 +91,11 @@ def step_impl(context, proof=None, interval=None):
             # check if we are adding a revocation interval to the proof request and add it.
             if interval:
                 proof_json["non_revoked"] = (create_non_revoke_interval(interval)["non_revoked"])
+            
+            # Add the proof json to the context so we can use it later steps for test verification
+            context.proof_json = proof_json
+
+            # send the proof request
             context.verifier.send_proof_request(request_for_proof=proof_json)
         except FileNotFoundError:
             print("FileNotFoundError: features/data/" + proof.lower() + ".json")
@@ -96,6 +109,11 @@ def step_impl(context):
 
 @then('they can only select Decline')
 def step_impl(context):
+    context.thisAreYouSureDeclineProofRequest = context.thisProofRequestPage.select_decline()
+
+@when('they select Decline')
+def step_impl(context):
+    context.thisProofRequestPage.select_decline()
     context.thisAreYouSureDeclineProofRequest = context.thisProofRequestPage.select_decline()
 
 @then('they are asked if they are sure they want to decline the Proof')
@@ -118,16 +136,85 @@ def step_impl(context):
     assert all(item in values for item in actual_values)
 
 
+@when('the request informs them of the attributes and credentials they came from')
+def step_impl(context):
+
+    # For every name or names in context.proof_json get the credential name from the context.credential_json_collection that has that name as an attribute.
+    credential_attributes = []
+    for attribute in context.proof_json["requested_attributes"]:
+        names = attribute["names"]
+
+        # Get the credential name from the context.credential_json_collection that has that name as an attribute.
+        for credential in context.credential_json_collection:
+            if names in credential["attributes"]:
+                credential_name = credential["schema_name"]
+                # Remove any underscores from the credential name, replace it with spaces and capitialize the first letter of each word
+                credential_name = credential_name.replace("_", " ").title()
+
+                # create a new collection of credential names that hold the attributes
+                credential_attributes.append({"credential_name": credential_name, "attributes": names})
+                break
+
+    # do the same for each predicate in the context.proof_json
+    for predicate in context.proof_json["requested_predicates"]:
+        names = predicate["name"]
+
+        # Get the credential name from the context.credential_json_collection that has that name as an attribute.
+        for credential in context.credential_json_collection:
+            if names in credential["attributes"]:
+                credential_name = credential["schema_name"]
+                # Remove any underscores from the credential name, replace it with spaces and capitialize the first letter of each word
+                credential_name = credential_name.replace("_", " ").title()
+
+                # create a new collection of credential names that hold the attributes
+                credential_attributes.append({"credential_name": credential_name, "attributes": names})
+                break
+
+    # for each credential_name and attributes in the credential_attributes collection check to see if they are on the page
+    for credential in credential_attributes:
+        credential_name = credential["credential_name"]
+        attributes = credential["attributes"]
+        assert credential_name in context.driver.page_source
+        assert attributes in context.driver.page_source
+        # TODO When the page is implemented change the check in page_source to use the page object by find_by testID for each credential name and attribute
+        # actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
+        # assert credential_name in actual_who
+        # assert all(item in attributes for item in actual_attributes)
+
+
+    # who, attributes, values, credential_name=get_expected_proof_request_detail_from_credential(
+    #     context)
+    # # Get the actual values from the page object per credential and compare them to the expected values including the credential name
+    # actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
+    # assert who in actual_who
+    # assert all(item in attributes for item in actual_attributes)
+    # assert all(item in values for item in actual_values)
+
+
+
 @when('the user has a proof request')
 @given('the user has a proof request')
 def step_impl(context):
-    context.execute_steps(f'''
-        When the Holder scans the QR code sent by the "verifier"
-        And the Holder is taken to the Connecting Screen/modal
-        And the Connecting completes successfully
-        And the Holder receives a proof request
-        Then holder is brought to the proof request
-    ''')
+    # if the context has a table then use the table to create the proof request
+    if context.table:
+        proof = context.table[0]["proof"]
+        # get the interval for revocation as well, if it doesn't exist in the table then just move on.
+        try:
+            interval = context.table[0]["interval"]
+        except KeyError:
+            interval = None
+        
+        context.execute_steps(f'''
+            When the user has a proof request for {proof}
+        ''')
+    else:
+        context.execute_steps(f'''
+            When the Holder scans the QR code sent by the "verifier"
+            And the Holder is taken to the Connecting Screen/modal
+            And the Connecting completes successfully
+            And the Holder receives a proof request
+            Then holder is brought to the proof request
+        ''')
 
 @when('the user has a connectionless proof request for {proof}')
 @when('the user has a proof request for {proof}')
@@ -317,3 +404,20 @@ def get_expected_proof_request_detail(context):
             f"No credential details in table data for {verifier_type_in_use}"
         )
     return who, attributes, values
+
+def get_expected_proof_request_detail_from_credential(context):
+    verifier_type_in_use=context.verifier.get_issuer_type()
+    found=False
+    for row in context.table:
+        if row["verifier_agent_type"] == verifier_type_in_use:
+            who=row["who"]
+            attributes=row["attributes"].split(';')
+            values=row["values"].split(';')
+            found=True
+            # get out of loop at the first found row. Can't see a reason for multiple rows of the same agent type
+            break
+    if found == False:
+        raise Exception(
+            f"No credential details in table data for {verifier_type_in_use}"
+        )
+    return who, attributes, values, credential_name
