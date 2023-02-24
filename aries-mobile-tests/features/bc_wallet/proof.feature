@@ -1,4 +1,5 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/29
+# https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/bcgov/bc-wallet-mobile/614
 @Proof @bc_wallet @Story_29
 Feature: Proof
    In order to easily prove my credential details to a verifier
@@ -237,18 +238,19 @@ Feature: Proof
          | credential                  |
          | cred_data_unverified_person |
 
-   @T010.1-Proof @normal @AcceptanceTest
+   @T010.1-Proof @normal @AcceptanceTest @Story_614
    Scenario: Holder accepts a proof request with multiple credentials
       Given the Holder has setup thier wallet
       And the Holder has selected to use biometrics to unlock BC Wallet
       And the holder has credentials
-         | credential                | revokable | issuer_agent_type | credential_name |
+         | credential                | revocable | issuer_agent_type | credential_name |
          | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
          | cred_data_photo_id        | True      | AATHIssuer        | Photo Id        |
       #When the user has a proof request for <proof>
       When the user has a proof request
          | proof            |
          | multi_cred_proof |
+      And the request informs them of the attributes and credentials they came from
       And they select Share
       And the holder is informed that they are sending information securely
       Then they are informed that the information sent successfully
@@ -256,3 +258,22 @@ Feature: Proof
 # Examples:
 #    | credential                   | proof                    |
 #    | cred_data_photo_id_revokable | proof_photo_id_revokable |
+
+   @T010.2-Proof @normal @AcceptanceTest @Story_614
+   Scenario: Holder declines a proof request with multiple credentials
+      Given the Holder has setup thier wallet
+      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the holder has credentials
+         | credential                | revocable | issuer_agent_type | credential_name |
+         | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
+         | cred_data_photo_id        | True      | AATHIssuer        | Photo Id        |
+      #When the user has a proof request for <proof>
+      When the user has a proof request
+         | proof            |
+         | multi_cred_proof |
+      And the request informs them of the attributes and credentials they came from
+      And they select Decline
+      Then they are asked if they are sure they want to decline the Proof
+      And they Confirm the decline
+      And they are brought home
+

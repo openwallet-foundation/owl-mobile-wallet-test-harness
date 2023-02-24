@@ -141,33 +141,47 @@ def step_impl(context):
 
     # For every name or names in context.proof_json get the credential name from the context.credential_json_collection that has that name as an attribute.
     credential_attributes = []
-    for attribute in context.proof_json["requested_attributes"]:
-        names = attribute["names"]
+    
+    names = {}
+    for attr in context.proof_json["requested_attributes"].values():
+        names.update({name: attr["names"] for name in attr})
 
         # Get the credential name from the context.credential_json_collection that has that name as an attribute.
-        for credential in context.credential_json_collection:
-            if names in credential["attributes"]:
-                credential_name = credential["schema_name"]
-                # Remove any underscores from the credential name, replace it with spaces and capitialize the first letter of each word
-                credential_name = credential_name.replace("_", " ").title()
+        break_out = False
+        for credential in context.credential_json_collection.values():
+            # Check if each name in the names list is in any of the credential attributes.
+            for name in names.values():
+                if any(name == name for name in credential["attributes"]):
+                    credential_name = credential["schema_name"]
+                    # Remove any underscores from the credential name, replace it with spaces and capitialize the first letter of each word
+                    credential_name = credential_name.replace("_", " ").title()
 
-                # create a new collection of credential names that hold the attributes
-                credential_attributes.append({"credential_name": credential_name, "attributes": names})
+                    # create a new collection of credential names that hold the attributes
+                    credential_attributes.append({"credential_name": credential_name, "attributes": name})
+                    break_out = True
+            if break_out == True:
                 break
 
+
     # do the same for each predicate in the context.proof_json
-    for predicate in context.proof_json["requested_predicates"]:
-        names = predicate["name"]
+    names = {}
+    for predicate in context.proof_json["requested_predicates"].values():
+        names.update({name: predicate["name"] for name in predicate})
 
         # Get the credential name from the context.credential_json_collection that has that name as an attribute.
-        for credential in context.credential_json_collection:
-            if names in credential["attributes"]:
-                credential_name = credential["schema_name"]
-                # Remove any underscores from the credential name, replace it with spaces and capitialize the first letter of each word
-                credential_name = credential_name.replace("_", " ").title()
+        break_out = False
+        for credential in context.credential_json_collection.values():
+            # Check if each name in the names list is in any of the credential predicates.
+            for name in names.values():
+                if any(name == name for name in credential["attributes"]):
+                    credential_name = credential["schema_name"]
+                    # Remove any underscores from the credential name, replace it with spaces and capitialize the first letter of each word
+                    credential_name = credential_name.replace("_", " ").title()
 
-                # create a new collection of credential names that hold the attributes
-                credential_attributes.append({"credential_name": credential_name, "attributes": names})
+                    # create a new collection of credential names that hold the attributes
+                    credential_attributes.append({"credential_name": credential_name, "attributes": name})
+                    break_out = True
+            if break_out == True:
                 break
 
     # for each credential_name and attributes in the credential_attributes collection check to see if they are on the page
