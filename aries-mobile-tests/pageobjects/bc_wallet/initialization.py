@@ -15,6 +15,11 @@ class InitializationPage(BasePage):
     # Locators
     #on_this_page_text_locator = (MobileBy.ID, "com.ariesbifold:id/LoadingActivityIndicator")
     loading_locator = (AppiumBy.ID, "com.ariesbifold:id/LoadingActivityIndicator")
+    error_intializing_locator = (AppiumBy.ID, "com.ariesbifold:id/HeaderText")
+    error_message_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
+    error_details_link_locator = (AppiumBy.ID, "com.ariesbifold:id/ShowDetails") 
+    error_details_locator = (AppiumBy.ID, "com.ariesbifold:id/DetailsText")
+    error_okay_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Okay")
 
     def on_this_page(self):
         #return super().on_this_page(self.on_this_page_text_locator)
@@ -29,7 +34,7 @@ class InitializationPage(BasePage):
             return False
 
 
-    def wait_until_initialized(self, timeout=300):
+    def wait_until_initialized(self, timeout=100):
         # Set up logging
         logger = logging.getLogger(__name__)
 
@@ -38,14 +43,19 @@ class InitializationPage(BasePage):
             self.find_by(self.loading_locator, timeout, WaitCondition.INVISIBILITY_OF_ELEMENT_LOCATED)
             logger.debug("Loading indicator disappeared")
         except TimeoutException:
+            # TODO add in a check for the timeout error message from the app. 
             logger.error(f"App Initialization taking longer than expected. Timing out at {timeout} seconds.")
+            logger.error(f"Checking Initialization for error...")
+            if self.find_by(self.error_intializing_locator):
+                error_title = self.find_by(self.error_intializing_locator).text
+                error_message = self.find_by(self.error_message_locator).text
+                self.find_by(self.error_details_link_locator).click()
+                error_details = self.find_by(self.error_message_locator).text
+                logger.error(f"BC Wallet Error: {error_title}\n{error_message}\n{error_details}")
+                self.find_by(self.error_okay_button_locator).click()
+                # not sure what to do after this? Should I try and restart the app?
+                #raise Exception(f"Error occurred during app initialization: {error_message}")
             raise
-
-        # Check for the presence of an error message
-        # if self.is_element_present(self.error_message_locator):
-        #     error_message = self.find_by(self.error_message_locator).text
-        #     logger.error(f"Error message found: {error_message}")
-        #     raise Exception(f"Error occurred during app initialization: {error_message}")
 
         # Return the HomePage object
         return HomePage(self.driver)

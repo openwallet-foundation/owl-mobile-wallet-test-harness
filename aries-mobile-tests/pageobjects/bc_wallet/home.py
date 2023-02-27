@@ -17,7 +17,7 @@ class HomePage(BasePage):
     on_this_page_notification_locator = "New Credential Offer"
     on_this_page_proof_notification_locator = "New Proof Request"
     view_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/View")
-    view_credential_offer_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewCredentialOffer")
+    view_credential_offer_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewOffer")
     view_proof_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewProofRecord")
     scan_locator = (AppiumBy.ID, "com.ariesbifold:id/Scan")
     credentials_locator = "Credentials"
@@ -32,7 +32,7 @@ class HomePage(BasePage):
 
     def select_credential_offer_notification(self):
         if super().on_this_page(self.on_this_page_notification_locator):
-            self.find_by(self.view_notification_button_locator, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED).click()
+            self.find_by(self.view_notification_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
             # if self.current_platform == "iOS":
             #     self.find_by_accessibility_id(self.view_notification_button_locator).click()
             # else:

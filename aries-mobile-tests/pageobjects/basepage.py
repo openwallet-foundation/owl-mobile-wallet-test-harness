@@ -5,6 +5,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 class WaitCondition(Enum):
     ELEMENT_TO_BE_CLICKABLE = EC.element_to_be_clickable
@@ -122,6 +123,8 @@ class BasePage(object):
             return WebDriverWait(self.driver, timeout).until(
                 wait_condition((AppiumBy.ID, locator))
             )
+        except TimeoutException:
+            raise
         except:
             raise Exception(
                 f"Could not find element by element id Locator {locator}")
