@@ -13,6 +13,7 @@ class NavBar(BasePage):
     home_locator = (AppiumBy.ID, "com.ariesbifold:id/Home")
     credentials_locator = (AppiumBy.ID, "com.ariesbifold:id/Credentials")
     settings_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
+    notification_locator = (AppiumBy.ID, "com.ariesbifold:id/Notification")
     
 
     def select_home(self):
@@ -34,3 +35,14 @@ class NavBar(BasePage):
 
         # return a new page objectfor the settings page
         return SettingsPage(self.driver)
+
+    def has_notification(self):
+        try:
+            # get the home element and check for the word notifications on the element text.
+            home_element = self.find_by(self.home_locator)
+            if "0 Notifications" in home_element.text:
+                return False
+            else:
+                return True
+        except:
+            return False

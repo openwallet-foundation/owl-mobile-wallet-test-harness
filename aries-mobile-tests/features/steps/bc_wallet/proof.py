@@ -18,6 +18,7 @@ from pageobjects.bc_wallet.proof_request import ProofRequestPage
 from pageobjects.bc_wallet.home import HomePage
 from pageobjects.bc_wallet.navbar import NavBar
 from pageobjects.bc_wallet.camera_privacy_policy import CameraPrivacyPolicyPage
+from pageobjects.bc_wallet.credentials import CredentialsPage
 
 
 @given('the holder has a Non-Revocable credential')
@@ -58,6 +59,21 @@ def step_impl(context):
 def step_impl(context, credential):
     context.execute_steps(f'''
         Given the user has a credential offer of {credential}
+    ''')
+
+    # Check to see if they have an credential offer notification on the home icon
+    # If they do, go to the home screen and click on the notification
+    # if we are on the credentials page, then check the home icon for a notification
+    if hasattr(context, 'thisCredentialsPage') == False:
+        context.thisCredentialsPage = CredentialsPage(context.driver)
+    if context.thisCredentialsPage.on_this_page():
+        # sleep a little bit to wait for a notification
+        sleep(5)
+        if context.thisNavBar.has_notification():
+            context.thisHomePage = context.thisNavBar.select_home()
+            context.thisCredentialOfferPage = context.thisHomePage.select_credential_offer_notification()
+
+    context.execute_steps(f'''
         When they select Accept
         And the holder is informed that their credential is on the way with an indication of loading
         And once the credential arrives they are informed that the Credential is added to your wallet
