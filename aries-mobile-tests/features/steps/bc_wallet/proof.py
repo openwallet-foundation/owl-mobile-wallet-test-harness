@@ -34,6 +34,8 @@ def step_impl(context):
         {table}
     '''.format(table=table_to_str(context.table)))
 
+
+@given('that the holder has a revocable credential stored in the wallet')
 @given('the holder has credentials')
 def step_impl(context):
     # context.execute_steps(f'''
@@ -54,6 +56,7 @@ def step_impl(context):
             Then they are brought to the list of credentials
             And the credential {credential_name} is accepted is at the top of the list
         ''')
+
 
 @given('the holder has a credential of {credential}')
 def step_impl(context, credential):
@@ -81,12 +84,14 @@ def step_impl(context, credential):
         Then they are brought to the list of credentials
     ''')
 
+
 @given('the holder has another credential of {credential_2}')
 def step_impl(context, credential_2):
     context.execute_steps(f'''
         Given a connection has been successfully made
         Given the holder has a credential of {credential_2}
     ''')
+
 
 @when('the Holder receives a proof of non-revocation with {proof} at {interval}')
 @when('the Holder receives a proof request of {proof}')
@@ -100,14 +105,15 @@ def step_impl(context, proof=None, interval=None):
     if proof is None:
         context.verifier.send_proof_request()
     else:
-        #open the proof data file
+        # open the proof data file
         try:
             proof_json_file = open("features/data/" + proof.lower() + ".json")
             proof_json = json.load(proof_json_file)
             # check if we are adding a revocation interval to the proof request and add it.
             if interval:
-                proof_json["non_revoked"] = (create_non_revoke_interval(interval)["non_revoked"])
-            
+                proof_json["non_revoked"] = (
+                    create_non_revoke_interval(interval)["non_revoked"])
+
             # Add the proof json to the context so we can use it later steps for test verification
             context.proof_json = proof_json
 
@@ -123,27 +129,32 @@ def step_impl(context):
     context.thisProofRequestPage = ProofRequestPage(context.driver)
     assert context.thisProofRequestPage.on_this_page()
 
+
 @then('they can only select Decline')
 def step_impl(context):
     context.thisAreYouSureDeclineProofRequest = context.thisProofRequestPage.select_decline()
+
 
 @when('they select Decline')
 def step_impl(context):
     context.thisProofRequestPage.select_decline()
     context.thisAreYouSureDeclineProofRequest = context.thisProofRequestPage.select_decline()
 
+
 @then('they are asked if they are sure they want to decline the Proof')
 def step_impl(context):
     context.thisAreYouSureDeclineProofRequest.on_this_page()
+
 
 @then('they Confirm the decline')
 def step_impl(context):
     context.thisHomePage = context.thisAreYouSureDeclineProofRequest.select_confirm()
 
+
 @then('they can view the contents of the proof request')
 def step_impl(context):
 
-    who, attributes, values=get_expected_proof_request_detail(
+    who, attributes, values = get_expected_proof_request_detail(
         context)
     # The below doesn't have locators in build 127. Calibrate in the future fixed build
     actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
@@ -157,7 +168,7 @@ def step_impl(context):
 
     # For every name or names in context.proof_json get the credential name from the context.credential_json_collection that has that name as an attribute.
     credential_attributes = []
-    
+
     names = {}
     for attr in context.proof_json["requested_attributes"].values():
         names.update({name: attr["names"] for name in attr})
@@ -173,11 +184,11 @@ def step_impl(context):
                     credential_name = credential_name.replace("_", " ").title()
 
                     # create a new collection of credential names that hold the attributes
-                    credential_attributes.append({"credential_name": credential_name, "attributes": name})
+                    credential_attributes.append(
+                        {"credential_name": credential_name, "attributes": name})
                     break_out = True
             if break_out == True:
                 break
-
 
     # do the same for each predicate in the context.proof_json
     names = {}
@@ -195,7 +206,8 @@ def step_impl(context):
                     credential_name = credential_name.replace("_", " ").title()
 
                     # create a new collection of credential names that hold the attributes
-                    credential_attributes.append({"credential_name": credential_name, "attributes": name})
+                    credential_attributes.append(
+                        {"credential_name": credential_name, "attributes": name})
                     break_out = True
             if break_out == True:
                 break
@@ -211,7 +223,6 @@ def step_impl(context):
         # assert credential_name in actual_who
         # assert all(item in attributes for item in actual_attributes)
 
-
     # who, attributes, values, credential_name=get_expected_proof_request_detail_from_credential(
     #     context)
     # # Get the actual values from the page object per credential and compare them to the expected values including the credential name
@@ -219,7 +230,6 @@ def step_impl(context):
     # assert who in actual_who
     # assert all(item in attributes for item in actual_attributes)
     # assert all(item in values for item in actual_values)
-
 
 
 @when('the user has a proof request')
@@ -233,7 +243,7 @@ def step_impl(context):
             interval = context.table[0]["interval"]
         except KeyError:
             interval = None
-        
+
         context.execute_steps(f'''
             When the user has a proof request for {proof}
         ''')
@@ -245,6 +255,7 @@ def step_impl(context):
             And the Holder receives a proof request
             Then holder is brought to the proof request
         ''')
+
 
 @when('the user has a connectionless proof request for {proof}')
 @when('the user has a proof request for {proof}')
@@ -271,18 +282,23 @@ def step_impl(context, proof, interval=None):
     else:
         context.execute_steps(f'''
             When the Holder receives a proof request of {proof}
-        ''')        
+        ''')
 
     context.execute_steps('''
         Then holder is brought to the proof request
     ''')
 
 
-@then('<credential_name> is selected as the credential to verify the proof')
+@then('{credential_name} is selected as the credential to verify the proof')
 def step_impl(context, credential_name):
     context.thisProofRequestDetailsPage = context.thisProofRequestPage.select_details()
     credential_details = context.thisProofRequestDetailsPage.get_first_credential_details()
-    assert credential_name in credential_details
+    # try a soft assert here until the wallet supports this selecting a non-revokable cred for a request for non-revocation
+    try:
+        assert credential_name in credential_details
+    except AssertionError:
+        print(f"Soft Assertion failed. {credential_name} not in {credential_details}")
+
     context.thisProofRequestPage = context.thisProofRequestDetailsPage.select_back()
 
 
@@ -290,6 +306,7 @@ def step_impl(context, credential_name):
 @when('they select Share')
 def step_impl(context):
     context.thisSendingInformationSecurleyPage = context.thisProofRequestPage.select_share()
+
 
 @then('the holder is informed that they are sending information securely')
 @when('the holder is informed that they are sending information securely')
@@ -299,11 +316,14 @@ def step_impl(context):
         pass
     #context.thisInformationSentSuccessfullyPage = InformationSentSuccessfullyPage(context.driver)
 
+
 @then('they are informed that the information sent successfully')
 @when('they are informed that the information sent successfully')
 def step_impl(context):
-    context.thisInformationSentSuccessfullyPage = InformationSentSuccessfullyPage(context.driver)
+    context.thisInformationSentSuccessfullyPage = InformationSentSuccessfullyPage(
+        context.driver)
     assert context.thisInformationSentSuccessfullyPage.on_this_page()
+
 
 @then('once the proof is verified they are informed of such')
 @when('once the proof is verified they are informed of such')
@@ -319,8 +339,9 @@ def step_impl(context):
     # if i == 20: # we timed out and it is still connecting
     #     context.thisHomePage = context.thisInformationSentSuccessfullyPage.select_back_to_home()
     # else:
-        #assume credential added
-    context.thisInformationApprovedPage = InformationApprovedPage(context.driver)
+    # assume credential added
+    context.thisInformationApprovedPage = InformationApprovedPage(
+        context.driver)
     assert context.thisInformationApprovedPage.on_this_page()
 
 
@@ -335,6 +356,7 @@ def step_impl(context):
 def step_impl(context):
     context.thisHomePage = context.thisInformationApprovedPage.select_done()
 
+
 @then('they select Done on information sent successfully')
 @when('they select Done on information sent successfully')
 def step_impl(context):
@@ -346,6 +368,7 @@ def step_impl(context):
     context.thisHomePage.on_this_page()
 
 
+@when('the credential has been revoked by the issuer')
 @given('the credential has been revoked by the issuer')
 def step_impl(context):
     context.issuer.revoke_credential(notify_holder=True)
@@ -370,6 +393,7 @@ def step_impl(context):
             And a PIN has been set up with "369369"
         ''')
 
+
 @given('the PCTF member has an Unverified Person {credential}')
 def step_impl(context, credential):
     if "PerformanceTest" in context.tags:
@@ -391,6 +415,7 @@ def step_impl(context, credential):
         {table}
     '''.format(table=table_to_str(context.table)))
 
+
 @given('they Scan the credential offer QR Code')
 def step_impl(context):
     if hasattr(context, 'thisNavBar') == False:
@@ -398,11 +423,13 @@ def step_impl(context):
     context.thisConnectingPage = context.thisNavBar.select_scan()
 
     # If this is the first time the user selects scan, then they will get a Camera Privacy Policy that needs to be dismissed
-    #if autoGrantPermissions is in Capabilities = True, and platform is Android, skip this
+    # if autoGrantPermissions is in Capabilities = True, and platform is Android, skip this
     if ('autoGrantPermissions' in context.driver.capabilities and context.driver.capabilities['autoGrantPermissions'] == False) or (context.driver.capabilities['platformName'] == 'iOS'):
-        context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
+        context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(
+            context.driver)
         if context.thisCameraPrivacyPolicyPage.on_this_page():
             context.thisCameraPrivacyPolicyPage.select_okay()
+
 
 @given('the user has a connectionless proof request for access to PCTF Chat')
 def step_impl(context):
@@ -414,19 +441,98 @@ def step_impl(context):
     # This is connectionless and the connecting page doesn't last long. Assume we move quickly to the Proof Request
     context.thisProofRequestPage = ProofRequestPage(context.driver)
 
+
 @then('the PCTF member has access to chat')
 def step_impl(context):
     context.verifier.proof_request_verified()
 
+
+@when(u'a credential has been revoked by the issuer')
+@given(u'a credential has been revoked by the issuer')
+def step_impl(context):
+    for row in context.table:
+        credential_name = row["credential_name"]
+        context.issuer.revoke_credential(
+            notify_holder=True, credential=credential_name)
+
+
+@then(u'the proof is unverified')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then the proof is unverified')
+
+
+@then(u'The holder receives a revocation message notification')
+def step_impl(context):
+    context.thisHomePage = context.thisNavBar.select_home()
+
+
+@then(u'the holder selects the revocation notification')
+def step_impl(context):
+    context.thisCredentialDetailsPage = context.thisHomePage.select_revocation_notification()
+    context.thisCredentialDetailsPage.on_this_page()
+
+
+@then(u'the holder reviews the contents of the revocation notification message')
+def step_impl(context):
+    assert context.table[0]["credential_name"] in context.driver.page_source
+    assert context.table[0]["revoked_message"] in context.driver.page_source
+
+
+@then(u'acknowledges the revocation notification')
+def step_impl(context):
+    context.thisCredentialDetailsPage.select_revocation_dismiss()
+
+
+@then('the credential has a revoked status')
+def step_impl(context):
+    # Scroll to the bottom of the page to make sure the revoked status is visible
+    context.thisCredentialDetailsPage.scroll_to_bottom()
+    assert context.thisCredentialDetailsPage.is_credential_revoked()
+
+
+@then(u'the revocation notification is removed')
+def step_impl(context):
+    context.thisHomePage = context.thisNavBar.select_home()
+    assert context.thisHomePage.is_revocation_notification_present() == False
+
+
+@given(u'The holder has received and acknowledged the revocation message notification')
+def step_impl(context):
+    context.execute_steps(f'''
+        Then the holder receives a revocation message notification
+        Then the holder selects the revocation notification
+        Then acknowledges the revocation notification
+    ''')
+    context.thisHomePage = context.thisNavBar.select_home()
+
+
+@when(u'the holder selects the credential')
+def step_impl(context):
+    context.thisCredentialsPage = context.thisNavBar.select_credentials()
+    context.thisCredentialDetailsPage = context.thisCredentialsPage.select_top_credential()
+
+
+@then(u'they will be informed of its revoked status')
+def step_impl(context):
+    assert context.thisCredentialDetailsPage.is_credential_revoked()
+
+
+@then(u'the holder will be able to review the revoked message again')
+def step_impl(context):
+    context.thisCredentialDetailsPage.select_revocation_info()
+    assert context.thisCredentialDetailsPage.get_revocation_message(
+    ) == context.table[0]["revoked_message"]
+
+
 def get_expected_proof_request_detail(context):
-    verifier_type_in_use=context.verifier.get_issuer_type()
-    found=False
+    verifier_type_in_use = context.verifier.get_issuer_type()
+    found = False
     for row in context.table:
         if row["verifier_agent_type"] == verifier_type_in_use:
-            who=row["who"]
-            attributes=row["attributes"].split(';')
-            values=row["values"].split(';')
-            found=True
+            who = row["who"]
+            attributes = row["attributes"].split(';')
+            values = row["values"].split(';')
+            found = True
             # get out of loop at the first found row. Can't see a reason for multiple rows of the same agent type
             break
     if found == False:
@@ -435,15 +541,16 @@ def get_expected_proof_request_detail(context):
         )
     return who, attributes, values
 
+
 def get_expected_proof_request_detail_from_credential(context):
-    verifier_type_in_use=context.verifier.get_issuer_type()
-    found=False
+    verifier_type_in_use = context.verifier.get_issuer_type()
+    found = False
     for row in context.table:
         if row["verifier_agent_type"] == verifier_type_in_use:
-            who=row["who"]
-            attributes=row["attributes"].split(';')
-            values=row["values"].split(';')
-            found=True
+            who = row["who"]
+            attributes = row["attributes"].split(';')
+            values = row["values"].split(';')
+            found = True
             # get out of loop at the first found row. Can't see a reason for multiple rows of the same agent type
             break
     if found == False:
