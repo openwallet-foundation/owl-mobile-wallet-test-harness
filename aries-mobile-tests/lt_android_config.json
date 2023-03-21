@@ -1,0 +1,14 @@
+{
+  "capabilities": {
+    "platformName": "android",
+    "deviceName": "Galaxy Note10",
+    "platformVersion": "11",
+    "app": "lt://APP1016046941679068172674216",
+    "build": "Python Vanilla Android",
+    "name": "Sample Test",
+    "project": "Portefeuille Mobile QC",
+    "deviceOrientation": "portrait",
+    "autoGrantPermissions": true,
+    "isRealMobile": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "capabilities": {
+    "deviceName": "iPhone.*",
+    "platformName": "ios",
+    "platformVersion": "11",
+    "app": "YOUR_APP_URL",
+    "build": "Python Vanilla iOS",
+    "name": "Sample Test iOS - Python",
+    "network": true,
+    "visual": true,
+    "video": true,
+    "console": true,
+    "isRealMobile": true,
+    "project": "PortefeuilleMobile QC"
+  }
+}
