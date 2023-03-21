@@ -19,14 +19,14 @@ from pageobjects.bc_wallet.create_bc_digital_id import CreateABCDigitalIDPage
 def step_impl(context, setup_option, username, password):
     context.execute_steps(f'''
         Given they are Home
-        When they select Get your Person Credential
+        When they select to start getting the Person credential
+        And they select Get your Person Credential
         And they select Log in with BC Services Card in the Create a BC Digital ID Web page
         And they select {setup_option} on the Set up the BC Services Card app
         And they enter in {username} as the username
         And they enter in {password} as the password
         And they select I agree on the Review page
         And they select Send Credential
-        Then they Close and go to Wallet
         And they select Accept
         And the holder is informed that their credential is on the way with an indication of loading
         And once the credential arrives they are informed that the Credential is added to your wallet
@@ -62,7 +62,7 @@ def step_impl(context, credential):
 
 @given('the BCVC Issuer sends a BC VC Pilot Certificate')
 def step_impl(context):
-    context.issuer.send_credential()
+    context.issuer.send_credential(reuse_invitation=True)
     
 @given('the BCSC holder gets the invite QR Code from their email')
 def step_impl(context):

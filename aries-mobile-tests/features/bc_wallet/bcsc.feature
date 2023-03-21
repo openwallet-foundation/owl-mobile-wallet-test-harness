@@ -22,14 +22,11 @@ Feature: BCSC
       And they enter in <password> as the password
       And they select I agree on the Review page
       And they select Send Credential
-      #Then they get are told Your Credential has been Issued
-      Then they Close and go to Wallet
-      #And they select View on the new Credential Offer
       And they select Accept
       And the holder is informed that their credential is on the way with an indication of loading
       And once the credential arrives they are informed that the Credential is added to your wallet
       And they select Done
-      And the credential accepted is at the top of the list
+      Then the credential accepted is at the top of the list
          | issuer_agent_type | credential_name |
          | BCVPIssuer        | Person          |
       And the BCVC Pilot credential is after the IDIM Person credential
