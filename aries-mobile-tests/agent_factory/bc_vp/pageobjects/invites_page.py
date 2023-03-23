@@ -40,12 +40,9 @@ class InvitesPage(WebBasePage):
             raise Exception(f"App not on the {type(self)} page")
 
     def uncheck_issued(self):
-        if self.on_this_page():
-            # TODO check if already unchecked
-            self.find_by(self.credential_has_been_issued_locator).click()
-            return True
-        else:
-            raise Exception(f"App not on the {type(self)} page")
+        # TODO check if already unchecked
+        self.find_by(self.credential_has_been_issued_locator).click()
+        return True
 
     def save_invite(self):
         self.find_by(self.save_locator).click()
