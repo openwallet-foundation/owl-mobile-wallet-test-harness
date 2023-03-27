@@ -46,7 +46,7 @@ class LambdaTestHandler(DeviceServiceHandlerInterface):
                 access_key = config('LAMBDA_ACCESS_KEY')
 
         if command_executor_url == None:
-            self._url = 'http://%s:%s@mobile-hub.lambdatest.com/wd/hub:443' % (
+            self._url = 'http://%s:%s@mobile-hub.lambdatest.com/wd/hub' % (
                 username, access_key)
         else:
             self._url = command_executor_url

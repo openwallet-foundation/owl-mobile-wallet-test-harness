@@ -217,7 +217,7 @@ modifyConfigJson() {
   echo "${contents}" > ./aries-mobile-tests/config.json
 
   if [[ "${DEVICE_CLOUD}" == "SauceLabs" ]]; then
-    contents="$(jq --arg APP_NAME "storage:filename=${APP_NAME}" '.capabilities |= . + { "app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
+    contents="$(jq --arg APP_NAME "storage:filename=${APP_NAME}" '.capabilities |= . + { "appium:app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
     echo "${contents}" > ./aries-mobile-tests/config.json
   else
     contents="$(jq --arg APP_NAME "${APP_NAME}" '.capabilities |= . + { "app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
@@ -400,21 +400,7 @@ runTests() {
     if [[ "${REPORT}" = "allure" ]]; then
       echo "Executing tests with Allure Reports."
       if [[ $$DOCKER_ENV == *"GOOGLE_API_TOKEN"* ]]; then
-        #${terminalEmu} 
-        #docker run ${INTERACTIVE} --rm --network="host" 
-        #-v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini 
-        #-v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" 
-        #-v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" 
-        #-e DEVICE_CLOUD=${DEVICE_CLOUD} 
-        #-e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} 
-        #-e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} 
-        #-e SL_REGION=${SL_REGION} aries-mobile-test-harness 
-        #-k ${runArgs} 
-        #-f allure_behave.formatter:AllureFormatter 
-        #-o ./allure/allure-results 
-        #-f progress 
-        #-D Issuer=${issuerURL} 
-        #-D Verifier=${verifierURL}
+        #${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e DEVICE_CLOUD=${DEVICE_CLOUD} -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME} -e SAUCE_ACCESS_KEY=${DEVICE_CLOUD_ACCESS_KEY} -e SL_REGION=${SL_REGION} aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=${issuerURL} -D Verifier=${verifierURL}
         eval ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" $DOCKER_ENV aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=${issuerURL} -D Verifier=${verifierURL}
       else
         ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" $DOCKER_ENV aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=${issuerURL} -D Verifier=${verifierURL}
@@ -432,35 +418,11 @@ runTests() {
   elif [[ "${DEVICE_CLOUD}" = "LocalAndroid" ]]; then
     if [[ "${REPORT}" = "allure" ]]; then
       echo "Executing tests with Allure Reports."
-      #${terminalEmu} 
-      #docker run ${INTERACTIVE} --rm --network="host" 
-      #-v ${APP_NAME}:${APP_NAME} -v 
-      #"${ANDROID_HOME}/emulator/resources/":"${ANDROID_HOME}/emulator/resources/" 
-      #-v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini 
-      #-v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" 
-      #-v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" 
-      #-e ANDROID_HOME=${ANDROID_HOME} -e DOCKERHOST=${DOCKERHOST} 
-      #-e DEVICE_CLOUD=${DEVICE_CLOUD} aries-mobile-test-harness 
-      #-k ${runArgs} -f allure_behave.formatter:AllureFormatter 
-      #-o ./allure/allure-results 
-      #-f progress 
-      #-D Issuer=${issuerURL} 
-      #-D Verifier=${verifierURL}
+      #${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${APP_NAME}:${APP_NAME} -v "${ANDROID_HOME}/emulator/resources/":"${ANDROID_HOME}/emulator/resources/" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e ANDROID_HOME=${ANDROID_HOME} -e DOCKERHOST=${DOCKERHOST} -e DEVICE_CLOUD=${DEVICE_CLOUD} aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=${issuerURL} -D Verifier=${verifierURL}
       ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${APP_NAME}:${APP_NAME} -v "${ANDROID_HOME}/emulator/resources/":"${ANDROID_HOME}/emulator/resources/" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/allure/allure-results:/aries-mobile-test-harness/aries-mobile-tests/allure/allure-results/" -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" $DOCKER_ENV aries-mobile-test-harness -k ${runArgs} -f allure_behave.formatter:AllureFormatter -o ./allure/allure-results -f progress -D Issuer=${issuerURL} -D Verifier=${verifierURL}
     else
       echo "Executing tests without Allure Reports."
-      #${terminalEmu} 
-      #docker run ${INTERACTIVE} --rm --network="host" 
-      #-v ${APP_NAME}:${APP_NAME} 
-      #-v "${ANDROID_HOME}/emulator/resources/":"${ANDROID_HOME}/emulator/resources/" 
-      #-v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini 
-      #-v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" 
-      #-e ANDROID_HOME=${ANDROID_HOME} 
-      #-e DOCKERHOST=${DOCKERHOST} 
-      #-e DEVICE_CLOUD=${DEVICE_CLOUD} aries-mobile-test-harness 
-      #-k ${runArgs} 
-      #-D Issuer=${issuerURL} 
-      #-D Verifier=${verifierURL}
+      #${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${APP_NAME}:${APP_NAME} -v "${ANDROID_HOME}/emulator/resources/":"${ANDROID_HOME}/emulator/resources/" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e ANDROID_HOME=${ANDROID_HOME} -e DOCKERHOST=${DOCKERHOST} -e DEVICE_CLOUD=${DEVICE_CLOUD} aries-mobile-test-harness -k ${runArgs} -D Issuer=${issuerURL} -D Verifier=${verifierURL}
       ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${APP_NAME}:${APP_NAME} -v "${ANDROID_HOME}/emulator/resources/":"${ANDROID_HOME}/emulator/resources/" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" $DOCKER_ENV aries-mobile-test-harness -k ${runArgs} -D Issuer=${issuerURL} -D Verifier=${verifierURL}
     fi
   #else # place holder for other device cloud services like BrowserStack, etc.

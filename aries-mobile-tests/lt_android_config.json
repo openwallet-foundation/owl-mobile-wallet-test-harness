@@ -1,14 +1,13 @@
 {
   "capabilities": {
-    "platformName": "android",
-    "deviceName": "Galaxy Note10",
-    "platformVersion": "11",
+    "deviceName": "Galaxy S20",
+    "platformName": "Android",
+    "platformVersion": "10",
+    "build": "Python Behave - Android",
+    "name": "Sample Test Android",
     "app": "lt://APP1016046941679068172674216",
-    "build": "Python Vanilla Android",
-    "name": "Sample Test",
-    "project": "Portefeuille Mobile QC",
-    "deviceOrientation": "portrait",
-    "autoGrantPermissions": true,
-    "isRealMobile": true
+    "isRealMobile": true,
+    "visual": true,
+    "video": true
   }
 }
