@@ -114,3 +114,60 @@ def step_impl(context, agent):
     #assert context.issuer.connected()
     
     
+
+@given('the holder is connected to an Issuer')
+def step_impl(context):
+    context.execute_steps('''
+        Given the Holder has setup thier wallet
+        And the Holder has selected to use biometrics to unlock BC Wallet
+        And a connection has been successfully made
+    ''')
+
+@given('there are {no_credentials} issued by this Contact in the holders wallet')
+def step_impl(context, no_credentials):
+
+    if no_credentials == "Offered and Rejected":
+        context.execute_steps('''
+            Given the user has a credential offer
+            And the holder declines the credential offer
+        ''')
+
+    elif no_credentials == "Issued and Deleted":
+        pass
+    elif no_credentials == "Issued Revoked and Deleted":
+        pass
+
+
+@when('the holder Removes this Contact')
+def step_impl(context):
+    context.thisSettingsPage = context.thisHomePage.select_settings()
+    context.thisContactsPage = context.thisSettingsPage.select_contacts()
+    context.thisContactsPage.select_contact(context.issuer.get_name())
+    context.thisContactsPage.select_remove_contact(context.issuer.name)
+
+
+@when(u'the holder reviews more details on removing Contacts')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: When the holder reviews more details on removing Contacts')
+
+
+@when(u'the holder confirms to Remove this Contact')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: When the holder confirms to Remove this Contact')
+
+
+@then(u'the holder is taken to the Contact list')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then the holder is taken to the Contact list')
+
+
+@then(u'the holder is informed that the Contact has been removed')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then the holder is informed that the Contact has been removed')
+
+
+@then(u'the Contact is removed from the wallet')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then the Contact is removed from the wallet')
+
+    

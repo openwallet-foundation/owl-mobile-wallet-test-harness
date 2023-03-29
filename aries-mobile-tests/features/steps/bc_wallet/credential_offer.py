@@ -172,6 +172,12 @@ def step_impl(context):
     context.thisCredentialOnTheWayPage = context.thisCredentialOfferPage.select_accept(
         scroll=True)
 
+@given('the holder declines the credential offer')
+def step_impl(context):
+    context.thisDeclineCredentialOffer = context.thisCredentialOfferPage.select_decline(
+        scroll=True)
+    context.thisCredentialDeclinedPage = context.thisDeclineCredentialOffer.select_decline()
+    context.thisHomePage = context.thisCredentialDeclinedPage.select_done()
 
 @then('the holder is informed that their credential is on the way with an indication of loading')
 @when('the holder is informed that their credential is on the way with an indication of loading')

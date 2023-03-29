@@ -17,7 +17,7 @@ class HomePage(BasePage):
     on_this_page_text_locator = "Home"
     on_this_page_notification_locator = "New Credential Offer"
     on_this_page_proof_notification_locator = "New Proof Request"
-    on_this_page_revocation_notification_locator = "revoked"
+    on_this_page_revocation_notification_locator = "Credential revoked"
     view_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/View")
     view_credential_offer_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewOffer")
     view_proof_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewProofRecord")
