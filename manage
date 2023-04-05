@@ -224,8 +224,6 @@ modifyConfigJson() {
     echo "${contents}" > ./aries-mobile-tests/config.json  
   fi
 
-  jq . ./aries-mobile-tests/config.json
-
   # contents="$(jq '.capabilities |= . + { "appium:platformName": "storage:filename=${APP_NAME}" }' ./aries-mobile-tests/config.json)" && \
   # echo "${contents}" > config.json
 
