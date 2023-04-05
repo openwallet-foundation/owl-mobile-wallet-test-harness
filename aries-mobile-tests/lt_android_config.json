@@ -1,0 +1,13 @@
+{
+  "capabilities": {
+    "deviceName": "Galaxy S20",
+    "platformName": "Android",
+    "platformVersion": "10",
+    "build": "Python Behave - Android",
+    "name": "Sample Test Android",
+    "app": "lt://APP1016046941679068172674216",
+    "isRealMobile": true,
+    "visual": true,
+    "video": true
+  }
+}
