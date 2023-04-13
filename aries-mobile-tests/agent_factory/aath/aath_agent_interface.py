@@ -11,6 +11,7 @@ from agent_controller_client import agent_controller_GET, agent_controller_POST,
 class AATHAgentInterface():
 
     _oob = False
+    name = str
 
     def create_invitation_util(self, oob=False, print_qrcode=False, save_qrcode=False):
         """create an invitation and return the json back to the caller """
@@ -34,8 +35,16 @@ class AATHAgentInterface():
             )
         else:
             self.invitation_json = json.loads(resp_text)
+            if "label" in self.invitation_json["invitation"]:
+                self.name = self.invitation_json["invitation"]["label"]
             qrimage = get_qr_code_from_invitation(self.invitation_json, print_qrcode, save_qrcode)
             return qrimage
+
+    def get_name(self):
+        if self.name:
+            return self.name
+        else:
+            raise Exception("Agent name not set")
 
     def connected_util(self):
         """return True/False indicating if this issuer is connected to the wallet holder """
