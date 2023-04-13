@@ -11,14 +11,24 @@ class CredentialDetailsPage(BasePage):
     
     # Locators
     on_this_page_text_locator = "Credential Details"
+    #back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
+    back_locator = (AppiumBy.ACCESSIBILITY_ID, "Tab Stack, back")
     revocation_dismiss_locator = (AppiumBy.ID, "com.ariesbifold:id/Okay")
     revocation_message_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
-    revocation_status_locator = (AppiumBy.ID, "com.ariesbifold:id/Revoked")
+    revocation_status_locator = (AppiumBy.ID, "com.ariesbifold:id/RevokedDate")
     revocation_info_locator = (AppiumBy.ID, "com.ariesbifold:id/RevocationInfo")
 
 
     def on_this_page(self):
         return super().on_this_page(self.on_this_page_text_locator)
+
+    def select_back(self):
+        if self.on_this_page():
+            self.find_by(self.back_locator).click()
+            from pageobjects.bc_wallet.home import HomePage
+            return HomePage(self.driver)
+        else:
+            raise Exception(f"App not on the {type(self)} page")
 
     def select_revocation_dismiss(self):
         if self.on_this_page():

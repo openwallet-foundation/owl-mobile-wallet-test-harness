@@ -142,32 +142,41 @@ def step_impl(context, no_credentials):
 def step_impl(context):
     context.thisSettingsPage = context.thisHomePage.select_settings()
     context.thisContactsPage = context.thisSettingsPage.select_contacts()
-    context.thisContactsPage.select_contact(context.issuer.get_name())
-    context.thisContactsPage.select_remove_contact(context.issuer.name)
+    context.thisContactPage = context.thisContactsPage.select_contact(context.issuer.get_name())
+    context.thisContactDetailsPage = context.thisContactPage.select_info()
+    context.thisRemoveFromWalletPage = context.thisContactDetailsPage.select_remove_from_wallet()
 
 
 @when(u'the holder reviews more details on removing Contacts')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When the holder reviews more details on removing Contacts')
+    # get the details from the context table object.
+    details = context.table[0]["details"]
+    assert details in context.thisRemoveFromWalletPage.get_details_text()
 
 
 @when(u'the holder confirms to Remove this Contact')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When the holder confirms to Remove this Contact')
+    context.thisContactsPage = context.thisRemoveFromWalletPage.select_remove_from_wallet()
 
 
 @then(u'the holder is taken to the Contact list')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the holder is taken to the Contact list')
+    context.thisContactsPage.on_this_page()
 
 
 @then(u'the holder is informed that the Contact has been removed')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the holder is informed that the Contact has been removed')
+    # this message is displayed for a few seconds then disappears. 
+    # TODO: need to think of a foolproof way to get a handle on this. With appium being so slow if may already be gone.
+    # pass for now and chekc that the contact is correctly removed from the list
+    pass
 
 
 @then(u'the Contact is removed from the wallet')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the Contact is removed from the wallet')
+    # check that the contact is not in the list
+    #assert context.issuer.get_name() not in context.thisContactsPage.get_contact_list()
+    #context.thisContactsPage.select_contact(context.issuer.get_name())
+    assert context.thisContactsPage.is_contact_present(context.issuer.get_name()) == False
 
     

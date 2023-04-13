@@ -62,23 +62,25 @@ Feature: Connect to an Issuer/Scan QR Code for Credential
       Then the screen automatically takes the Holder to the offer screen
 
 
-   @T005.1-Connect @RemoveContact @normal @AcceptanceTest @Story_231 @wip
+   @T005.1-Connect @RemoveContact @normal @AcceptanceTest @Story_231
    Scenario Outline: Remove an Issuer contact where no credentials are issued from that contact
       Given the holder is connected to an Issuer
       And there are <no_credentials> issued by this Contact in the holders wallet
       And the holder is viewing that Contact's details
       When the holder Removes this Contact
       And the holder reviews more details on removing Contacts
+         | details                                                            |
+         | To add credentials, the issuing organization needs to be a contact |
       And the holder confirms to Remove this Contact
       Then the holder is taken to the Contact list
       And the holder is informed that the Contact has been removed
       And the Contact is removed from the wallet
 
       Examples:
-         | no_credentials             |
-         | Offered and Rejected       |
-         #| Issued and Deleted         |
-         #| Issued Revoked and Deleted |
+         | no_credentials       |
+         | Offered and Rejected |
+   #| Issued and Deleted         |
+   #| Issued Revoked and Deleted |
 
 
    @T005.2-Connect @RemoveContact @normal @AcceptanceTest @Story_231 @wip
@@ -153,8 +155,8 @@ Feature: Connect to an Issuer/Scan QR Code for Credential
       And the issuer will be informed that the connection is invalid?
 
       Examples:
-         | no credentials             |
-         | Issued and Deleted         |
+         | no credentials     |
+         | Issued and Deleted |
 
    @T005.7-Connect @RemoveContact @minor @ExceptionTest @Story_231 @wip
    Scenario: Remove a Verifier contact then try to request a proof based on that connection
