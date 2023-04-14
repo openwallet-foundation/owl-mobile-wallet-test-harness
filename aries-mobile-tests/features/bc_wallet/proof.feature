@@ -299,7 +299,7 @@ Feature: Proof
       And the proof is unverified
 
 
-   @T011.1-Proof @normal @RevocationNotification @AcceptanceTest @Story_63 @wip
+   @T011.1-Proof @normal @RevocationNotification @AcceptanceTest @Story_63
    Scenario: Holder is notified that their credential has been revoked and is acknowledged
       Given the Holder has setup thier wallet
       And the Holder has selected to use biometrics to unlock BC Wallet

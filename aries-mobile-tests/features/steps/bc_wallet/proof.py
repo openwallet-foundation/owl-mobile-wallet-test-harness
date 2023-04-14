@@ -492,7 +492,8 @@ def step_impl(context):
 
 @then(u'the revocation notification is removed')
 def step_impl(context):
-    context.thisHomePage = context.thisNavBar.select_home()
+    context.thisHomePage = context.thisCredentialDetailsPage.select_back()
+    #context.thisHomePage = context.thisNavBar.select_home()
     assert context.thisHomePage.is_revocation_notification_present() == False
 
 

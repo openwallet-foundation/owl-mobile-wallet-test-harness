@@ -2,7 +2,7 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/82
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/bcgov/bc-wallet-mobile/231
 @Connect @bc_wallet @Story_76
-Feature: Connect to an Issuer/Scan QR Code for Credential
+Feature: Connections
 
 
    @T001-Connect @wip @critical @AcceptanceTest
