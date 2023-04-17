@@ -22,6 +22,7 @@ class HomePage(BasePage):
     view_credential_offer_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewOffer")
     view_proof_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewProofRecord")
     view_revocation_notification_button_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewRevocation")
+    view_revocation_notification_button_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "View")
     scan_locator = (AppiumBy.ID, "com.ariesbifold:id/Scan")
     credentials_locator = "Credentials"
     settings_tid_locator = "com.ariesbifold:id/Settings"
@@ -49,7 +50,15 @@ class HomePage(BasePage):
 
     def select_revocation_notification(self):
         if super().on_this_page(self.on_this_page_revocation_notification_locator, timeout=20):
-            self.find_by(self.view_revocation_notification_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+            if self.current_platform == "iOS" and self.driver.capabilities['platformVersion'] <= '15':
+                #self.find_by(self.view_revocation_notification_button_aid_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+                # Need to find the element py partial text or accessibility id for iOS 14 and lower
+                view_notification_elements = self.driver.find_elements(AppiumBy.XPATH, "//*[contains(@label, '{}')]".format(self.view_revocation_notification_button_aid_locator[1]))
+                # take the last one on the page
+                view_notification_element = view_notification_elements[len(view_notification_elements)-5]
+                view_notification_element.click()
+            else:
+                self.find_by(self.view_revocation_notification_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
             # return a new page object for the Revocation page
             return CredentialDetailsPage(self.driver)
