@@ -1,4 +1,5 @@
 from appium.webdriver.common.appiumby import AppiumBy
+from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.onboarding_biometrics import OnboardingBiometricsPage
 from pageobjects.bc_wallet.pinsetup import PINSetupPage
 
@@ -32,13 +33,33 @@ class PINSetupPageQC(PINSetupPage):
         else:
             raise Exception(f"App not on the {type(self)} page")
     
-    def create_pin(self):
+    def create_pin_throw_error(self):
         if self.on_this_page():
-            self.find_by(self.create_pin_button_tid_locator).click()
+            try:
+                self.find_by(self.create_pin_button_tid_locator).click()
+                self.find_by(self.modal_message_ok_locator)
+            except:
+                raise Exception("Unable to locate create pin button and modal error box")
+        else:
+            raise Exception(f"App not on the {type(self)} page")
 
-            if self.find_by(self.modal_message_ok_locator).is_displayed():
-                return PINSetupPageQC(self.driver)
-            # return the wallet initialization page
-            return OnboardingBiometricsPage(self.driver)
+    def create_pin(self):
+        return super().create_pin()
+
+    def select_ok_on_modal(self):
+        # On Android the modal hides all the other PIN setup page elements, so we can't check on this page
+        # if self.on_this_page():
+        self.find_by(self.modal_message_ok_locator, timeout=30, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+
+        return True
+        # else:
+        #     raise Exception(f"App not on the {type(self)} page
+
+    def does_pin_match(self, header: str = "PINs do not match"):
+        if self.on_this_page():
+            if self.find_by(self.modal_message_title_locator).text == header:
+                return True
+            else:
+                return False
         else:
             raise Exception(f"App not on the {type(self)} page")

@@ -1,4 +1,5 @@
 from time import sleep
+from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.pinsetup import PINSetupPage
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 from pageobjects.qc_wallet.pinsetup import PINSetupPageQC
@@ -10,6 +11,20 @@ class TermsAndConditionsPageQC(TermsAndConditionsPage):
 
     def __init__(self, driver):
         super().__init__(driver)
+
+    def select_accept(self):
+        if self.on_this_page():
+            try:
+                self.scroll_to_element(self.back_aid_locator[1])
+            except:
+                # Sometimes it seems that scrolling may try to access the element by accessibility id before it appears
+                # if we get this failure then just sleep and try again. 
+                sleep(5)
+                self.scroll_to_element(self.back_aid_locator[1])
+            self.find_by(self.terms_and_conditions_accept_locator, timeout=30, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+            return True
+        else:
+            raise Exception(f"App not on the {type(self)} page")
 
     def select_continue(self):
         if self.on_this_page():

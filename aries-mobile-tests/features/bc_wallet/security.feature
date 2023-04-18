@@ -4,7 +4,7 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/426
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/425
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/422
-@Security @bc_wallet
+@Security @bc_wallet @qc_wallet
 Feature: Secure your Wallet
   In order to be reassured that my digital wallet will not be used maliciously
   As a person who is curious but cautious of digital wallets
@@ -32,7 +32,7 @@ Feature: Secure your Wallet
     #And authenticates with thier biometrics
     And they enter thier PIN as "369369"
     Then they have access to the app
-
+    
 
   @T003-Security @critical @AcceptanceTest @ExceptionTest @Story_426 @wip
   Scenario: Holder has multiple failed attempts to authenticate the app
@@ -76,7 +76,7 @@ Feature: Secure your Wallet
   # And the User has successfully created a PIN
   # And they land on the Home screen
 
-  @T006-Security @FunctionalTest @ExceptionTest @normal
+  @T006-Security @FunctionalTest @ExceptionTest @normal @qc_wallet_not
   Scenario Outline: New User Sets Up PIN but does not follow conventions
     Given the User has skipped on-boarding
     And the User has accepted the Terms and Conditions
