@@ -14,11 +14,13 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
     _my_public_did: str
     _schema: dict
     _credential_definition: dict
+    _credential_json_dict: dict
 
     def __init__(self, endpoint):
         self._my_public_did = None
         self._schema = None
         self._credential_definition = None
+        self._credential_json_dict = {}
         super().__init__(endpoint)
 
     def get_issuer_type(self) -> str:
@@ -97,12 +99,19 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
             )
         else:
             self.credential_json = json.loads(resp_text)
+            # also add it to the credential json dict just in case we the tests are using multiple credentials
+            self._credential_json_dict[self._credential_definition["tag"]] = self.credential_json
 
-    def revoke_credential(self, publish_immediately=True, notify_holder=False):
+
+    def revoke_credential(self, publish_immediately=True, notify_holder=False, credential=None):
         """revoke a credential"""
         topic = "revocation"
 
-        cred_rev_id, rev_reg_id = self._get_revocation_ids(self.credential_json["thread_id"]);
+        if credential:
+            # get the cred_rev_id and rev_reg_id from the credential given the credential name
+            cred_rev_id, rev_reg_id = self._get_revocation_ids(self._credential_json_dict[credential]["thread_id"]);
+        else:
+            cred_rev_id, rev_reg_id = self._get_revocation_ids(self.credential_json["thread_id"]);
 
         credential_revocation = {
             "cred_rev_id": cred_rev_id,

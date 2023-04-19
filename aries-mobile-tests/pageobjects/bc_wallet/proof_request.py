@@ -27,7 +27,7 @@ class ProofRequestPage(BasePage):
 
     def on_this_page(self):
         #return super().on_this_page(self.on_this_page_text_locator)
-        return super().on_this_page(self.who_locator)
+        return super().on_this_page(self.who_locator, timeout=20)
 
     def select_share(self):
         if self.on_this_page():
