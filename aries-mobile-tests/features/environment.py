@@ -48,7 +48,7 @@ def before_feature(context, feature):
     context.verifier = aif.create_verifier_agent_interface(verifier_type, verifier_endpoint)
     context.print_page_source_on_failure = eval(context.config.userdata['print_page_source_on_failure'])
     context.print_qr_code_on_creation = eval(context.config.userdata['print_qr_code_on_creation'])
-    context.save_qr_code_on_creation = eval(context.config.userdata['save_qr_code_on_creation'])
+    context.save_qr_code_on_creation = True if device_cloud_service == 'LocalAndroid' else eval(context.config.userdata['save_qr_code_on_creation'])
 
     # retry failed tests 
     try: 
