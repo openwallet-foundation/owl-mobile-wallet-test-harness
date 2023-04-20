@@ -51,9 +51,11 @@ def step_impl(context, agent):
     context.thisConnectingPage = context.thisNavBar.select_scan()
 
     # If this is the first time the user selects scan, then they will get a Camera Privacy Policy that needs to be dismissed
-    context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
-    if context.thisCameraPrivacyPolicyPage.on_this_page():
-        context.thisCameraPrivacyPolicyPage.select_okay()
+    # TODO only do this if the platorm is iOS. Android is not showing the policy page at present in Sauce Labs becasue we have autoGrantPermissions on. 
+    if context.driver.capabilities['platformName'] == 'iOS':
+        context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
+        if context.thisCameraPrivacyPolicyPage.on_this_page():
+            context.thisCameraPrivacyPolicyPage.select_okay()
 
 
 @when('the Holder is taken to the Connecting Screen/modal')
@@ -93,8 +95,8 @@ def step_impl(context):
     while context.issuer.connected() == False and i < timeout:
         sleep(1)
         i+=1
-    if i == 20: # we timed out and it is still connecting
-        raise Exception(f'Failed to connected in timeout of {timeout} seconds')
+    if i == timeout: # we timed out and it is still connecting
+        raise Exception(f'Failed to connect. Checked connection status {timeout} times.')
         #context.thisHomePage = context.thisConnectingPage.select_go_back_to_home()
     else:
         # One last check
