@@ -16,7 +16,7 @@ def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_co
             f"Could not find an invitation url in invitation json {invitation_json}")
     invitation_url = invitation_json[invite_url_key]
 
-    qr = QRCode(border=20)
+    qr = QRCode(border=40)
     qr.add_data(invitation_url)
     qr.make()
     #img = qr.make_image(fill_color="red", back_color="#23dda0")

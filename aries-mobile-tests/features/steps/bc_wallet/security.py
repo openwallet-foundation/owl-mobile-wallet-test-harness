@@ -68,6 +68,8 @@ def step_impl(context):
     #assert context.thisInitializationPage.on_this_page()
     context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     context.thisNavBar = NavBar(context.driver)
+    if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
+        context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
     assert context.thisHomePage.on_this_page()
 
     # set the environment to TEST instead of PROD which is default as of build 575
