@@ -12,16 +12,16 @@ class CameraPrivacyPolicyPage(BasePage):
     # Locators
     on_this_page_text_locator = "Allow camera use"
     on_this_page_locator = (AppiumBy.ID, "com.ariesbifold:id/AllowCameraUse")
-    #allow_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Allow")
-    allow_button_locator = (AppiumBy.ACCESSIBILITY_ID, "Allow")
+    allow_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Allow")
+    #allow_button_locator = (AppiumBy.ACCESSIBILITY_ID, "Allow")
     not_now_button_locator = (AppiumBy.ID, "com.ariesbifold:id/NotNow")
     system_allow_while_using_app =  (AppiumBy.ID, "com.android.permissioncontroller:id/permission_allow_foreground_only_button")
 
 
     def on_this_page(self):    
         #return super().on_this_page(self.on_this_page_locator) 
-        #return super().on_this_page(self.allow_button_locator)
-        return super().on_this_page(self.on_this_page_text_locator)
+        return super().on_this_page(self.allow_button_locator, timeout=5)
+        #return super().on_this_page(self.on_this_page_text_locator)
 
     def select_not_now(self):
         self.find_by(self.not_now_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
