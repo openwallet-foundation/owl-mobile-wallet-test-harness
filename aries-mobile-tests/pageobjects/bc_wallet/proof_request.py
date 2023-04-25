@@ -34,7 +34,7 @@ class ProofRequestPage(BasePage):
             try:
                 self.find_by(self.share_locator).click()
             except:
-                self.scroll_to_element(self.share_aid_locator[1])
+                self.scroll_to_bottom()
                 self.find_by(self.share_locator).click()
             return SendingInformationSecurelyPage(self.driver)
         else:

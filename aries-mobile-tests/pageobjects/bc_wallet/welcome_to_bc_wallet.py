@@ -26,8 +26,10 @@ class WelcomeToBCWalletModal(BasePage):
         return self.on_this_page()
 
     def select_dismiss(self):
-        self.find_by(self.use_app_guides_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+        self.find_by(self.dismiss_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
+    def select_use_app_guides(self):
+        self.find_by(self.use_app_guides_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
     def select_dont_use_app_guides(self):
         self.find_by(self.dont_use_app_guides_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
