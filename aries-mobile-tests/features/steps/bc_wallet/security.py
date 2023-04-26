@@ -87,6 +87,8 @@ def step_impl(context, env):
     context.thisDeveloperSettingsPage.select_env(env)
     context.thisSettingsPage = context.thisDeveloperSettingsPage.select_back()
     context.thisSettingsPage.select_back()
+    if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
+        context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
     assert context.thisHomePage.on_this_page()
 
 
