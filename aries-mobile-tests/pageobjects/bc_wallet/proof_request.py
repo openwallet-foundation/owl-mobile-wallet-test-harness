@@ -34,7 +34,8 @@ class ProofRequestPage(BasePage):
             try:
                 self.find_by(self.share_locator).click()
             except:
-                self.scroll_to_bottom()
+                if self.current_platform == 'Android':
+                    self.scroll_to_bottom()
                 self.find_by(self.share_locator).click()
             return SendingInformationSecurelyPage(self.driver)
         else:
