@@ -35,7 +35,7 @@ class CredentialOfferPage(BasePage):
 
     def select_accept(self, scroll=False):
         if self.on_this_page():
-            if scroll == True:
+            if scroll == True and self.current_platform == 'Android':
                 self.scroll_to_bottom()
             self.find_by(self.accept_locator).click()
             return CredentialOnTheWayPage(self.driver)
