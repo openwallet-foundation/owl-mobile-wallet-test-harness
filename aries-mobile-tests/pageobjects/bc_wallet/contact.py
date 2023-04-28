@@ -12,7 +12,8 @@ class ContactPage(BasePage):
 
     # Locator
     #on_this_page_text_locator = "Contacts"
-    contact_locator = (AppiumBy.ACCESSIBILITY_ID, "Settings")
+    contact_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
+    
 
     def on_this_page(self):     
         return super().on_this_page(self.contact_locator) 
