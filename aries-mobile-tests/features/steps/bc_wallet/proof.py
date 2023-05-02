@@ -169,68 +169,52 @@ def step_impl(context):
     # For every name or names in context.proof_json get the credential name from the context.credential_json_collection that has that name as an attribute.
     credential_attributes = []
 
-    names = {}
-    for attr in context.proof_json["requested_attributes"].values():
-        names.update({name: attr["names"] for name in attr})
+    # Get the attribute values and modified schema names
+    attribute_info = []
+    requested_attributes = context.proof_json['requested_attributes']
+    for attribute in requested_attributes.values():
+        names = attribute['names']
+        schema_name = attribute['restrictions'][0]['schema_name']
+        modified_schema_name = schema_name.replace('_', ' ').title()
+        attribute_info.extend([(modified_schema_name, name) for name in names])
 
-        # Get the credential name from the context.credential_json_collection that has that name as an attribute.
-        break_out = False
-        for credential in context.credential_json_collection.values():
-            # Check if each name in the names list is in any of the credential attributes.
-            for name in names.values():
-                if any(name == name for name in credential["attributes"]):
-                    credential_name = credential["schema_name"]
-                    # Remove any underscores from the credential name, replace it with spaces and capitialize the first letter of each word
-                    credential_name = credential_name.replace("_", " ").title()
 
-                    # create a new collection of credential names that hold the attributes
-                    credential_attributes.append(
-                        {"credential_name": credential_name, "attributes": name})
-                    break_out = True
-            if break_out == True:
+
+
+    # # do the same for each predicate in the context.proof_json
+    # names = {}
+    # for predicate in context.proof_json["requested_predicates"].values():
+    #     names.update({name: predicate["name"] for name in predicate})
+
+    #     # Get the credential name from the context.credential_json_collection that has that name as an attribute.
+    #     break_out = False
+    #     for credential in context.credential_json_collection.values():
+    #         # Check if each name in the names list is in any of the credential predicates.
+    #         for name in names.values():
+    #             if any(name == name for name in credential["attributes"]):
+    #                 credential_name = credential["schema_name"]
+    #                 # Remove any underscores from the credential name, replace it with spaces and capitialize the first letter of each word
+    #                 credential_name = credential_name.replace("_", " ").title()
+
+    #                 # create a new collection of credential names that hold the attributes
+    #                 credential_attributes.append(
+    #                     {"credential_name": credential_name, "attributes": name})
+    #                 break_out = True
+    #         if break_out == True:
+    #             break
+
+
+    # for each credential_name and attributes in the credential_attributes collection check to see if they are in the correct credential card
+    credential_card_text_list = context.thisProofRequestPage.get_text_in_all_credential_cards_in_proof_request()
+    for credential_attribute in attribute_info:
+        credential_name = credential_attribute[0]
+        attribute = credential_attribute[1]
+        # for each credential card in the list check to see if the credential name is in the card
+        for credential_card_text in credential_card_text_list:
+            if credential_name in credential_card_text:
+                # if the credential name is in the card check to see if the attributes are in the card
+                assert attribute.replace("_", " ").title() in credential_card_text
                 break
-
-    # do the same for each predicate in the context.proof_json
-    names = {}
-    for predicate in context.proof_json["requested_predicates"].values():
-        names.update({name: predicate["name"] for name in predicate})
-
-        # Get the credential name from the context.credential_json_collection that has that name as an attribute.
-        break_out = False
-        for credential in context.credential_json_collection.values():
-            # Check if each name in the names list is in any of the credential predicates.
-            for name in names.values():
-                if any(name == name for name in credential["attributes"]):
-                    credential_name = credential["schema_name"]
-                    # Remove any underscores from the credential name, replace it with spaces and capitialize the first letter of each word
-                    credential_name = credential_name.replace("_", " ").title()
-
-                    # create a new collection of credential names that hold the attributes
-                    credential_attributes.append(
-                        {"credential_name": credential_name, "attributes": name})
-                    break_out = True
-            if break_out == True:
-                break
-
-    # for each credential_name and attributes in the credential_attributes collection check to see if they are on the page
-    for credential in credential_attributes:
-        credential_name = credential["credential_name"]
-        attributes = credential["attributes"]
-        assert credential_name in context.driver.page_source
-        assert attributes in context.driver.page_source
-        # TODO When the page is implemented change the check in page_source to use the page object by find_by testID for each credential name and attribute
-        # actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
-        # assert credential_name in actual_who
-        # assert all(item in attributes for item in actual_attributes)
-
-    # who, attributes, values, credential_name=get_expected_proof_request_detail_from_credential(
-    #     context)
-    # # Get the actual values from the page object per credential and compare them to the expected values including the credential name
-    # actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
-    # assert who in actual_who
-    # assert all(item in attributes for item in actual_attributes)
-    # assert all(item in values for item in actual_values)
-
 
 @when('the user has a proof request')
 @given('the user has a proof request')
