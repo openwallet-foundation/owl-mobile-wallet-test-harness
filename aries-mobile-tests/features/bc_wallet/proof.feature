@@ -247,7 +247,6 @@ Feature: Proof
          | credential                | revocable | issuer_agent_type | credential_name |
          | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
          | cred_data_photo_id        | True      | AATHIssuer        | Photo Id        |
-      #When the user has a proof request for <proof>
       When the user has a proof request
          | proof            |
          | multi_cred_proof |
@@ -268,7 +267,6 @@ Feature: Proof
          | credential                | revocable | issuer_agent_type | credential_name |
          | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
          | cred_data_photo_id        | True      | AATHIssuer        | Photo Id        |
-      #When the user has a proof request for <proof>
       When the user has a proof request
          | proof            |
          | multi_cred_proof |

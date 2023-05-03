@@ -137,7 +137,6 @@ def step_impl(context):
 
 @when('they select Decline')
 def step_impl(context):
-    context.thisProofRequestPage.select_decline()
     context.thisAreYouSureDeclineProofRequest = context.thisProofRequestPage.select_decline()
 
 
@@ -148,7 +147,8 @@ def step_impl(context):
 
 @then('they Confirm the decline')
 def step_impl(context):
-    context.thisHomePage = context.thisAreYouSureDeclineProofRequest.select_confirm()
+    context.thisProofRequestDeclinedPage = context.thisAreYouSureDeclineProofRequest.select_confirm()
+    context.thisHomePage = context.thisProofRequestDeclinedPage.select_done()
 
 
 @then('they can view the contents of the proof request')
