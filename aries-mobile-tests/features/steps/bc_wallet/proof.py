@@ -412,7 +412,7 @@ def step_impl(context):
         context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(
             context.driver)
         if context.thisCameraPrivacyPolicyPage.on_this_page():
-            context.thisCameraPrivacyPolicyPage.select_okay()
+            context.thisCameraPrivacyPolicyPage.select_allow()
 
 
 @given('the user has a connectionless proof request for access to PCTF Chat')
