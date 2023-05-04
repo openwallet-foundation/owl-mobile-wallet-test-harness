@@ -19,16 +19,29 @@ class CameraPrivacyPolicyPage(BasePage):
 
 
     def on_this_page(self):    
-        #return super().on_this_page(self.on_this_page_locator) 
-        return super().on_this_page(self.allow_button_locator, timeout=5)
-        #return super().on_this_page(self.on_this_page_text_locator)
+        # 8 sec
+        return super().on_this_page(self.on_this_page_locator) 
+        # 14 sec
+        #return super().on_this_page(self.allow_button_locator, timeout=5)
+        # 19 sec
+        return super().on_this_page(self.on_this_page_text_locator)
 
     def select_not_now(self):
         self.find_by(self.not_now_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+        #self.find_by(self.not_now_button_locator, wait_condition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED).click()
+        # 26 sec
+        #self.find_by(self.not_now_button_locator, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED).click()
         return True
 
-    def select_okay(self):
-        self.find_by(self.allow_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+    def select_allow(self):
+        # 26 sec
+        #self.find_by(self.allow_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+        # 19 sec
+        self.find_by(self.allow_button_locator, wait_condition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED).click()
+        # 28 sec
+        #self.find_by(self.allow_button_locator, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED).click()
+        # 22 sec
+        #self.find_by((AppiumBy.ACCESSIBILITY_ID, "Allow"), wait_condition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED).click()
         if self.driver.capabilities['platformName'] == 'Android':
             self.select_system_allow_while_using_app()
         return True
