@@ -24,7 +24,7 @@ Upload an app to SauceLabs
 Upload an app to LambdaTest
 
 ```bash
-./upload_app_to_LT.sh <device_cloud_username> <device_cloud_access_key> /<full path to app>/apps/bifold-bc/app-release.apk
+./upload_app_to_LT.sh <device_cloud_username> <device_cloud_access_key> /<full path to app>/apps/bifold-bc/app-release.apk "Android Bifold BC App"
 ```
 
 Build and run the tests
