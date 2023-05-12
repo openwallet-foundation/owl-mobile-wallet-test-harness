@@ -86,6 +86,7 @@ usage () {
       Use -k to specify the access key for the given device cloud service.
       Use -p to specify the mobile device platform
         "-p iOS" or "-p Android"
+      use -b to specify the build name (useful for LambdaTest automation)
       Use -a to specify the app name or id of the app loaded into the device cloud service
       Use -i to specify the issuer to use in the tests in the -i "<issuer_name>;<issuer_endpoint>" format
       Use -v to specify the verifier to use in the tests in the -i "<verifier_name>;<verifier_endpoint>" format
@@ -204,13 +205,20 @@ modifyConfigJson() {
     else
       cp ./aries-mobile-tests/local_android_config.json ./aries-mobile-tests/config.json
     fi
-  fi
+  fi 
 
   contents="$(jq --arg DEVICE_PLATFORM "${DEVICE_PLATFORM}" '.capabilities |= . + { "platformName": $DEVICE_PLATFORM }' ./aries-mobile-tests/config.json)" && \
   echo "${contents}" > ./aries-mobile-tests/config.json
 
+  build_name="Wallet-Build $(date +'%m/%d/%y %H:%M:%S')"
+
   if [[ "${DEVICE_CLOUD}" == "SauceLabs" ]]; then
     contents="$(jq --arg APP_NAME "storage:filename=${APP_NAME}" '.capabilities |= . + { "app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
+    echo "${contents}" > ./aries-mobile-tests/config.json
+  elif [[ "${DEVICE_CLOUD}" == "LambdaTest" ]]; then
+    contents="$(jq --arg APP_NAME "${APP_NAME}" --arg BUILD "${BUILD:=$build_name}" '.capabilities."lt:options" |= . + {"app": $APP_NAME, "build": $BUILD }' ./aries-mobile-tests/config.json)" && \
+    echo "${contents}" > ./aries-mobile-tests/config.json
+    contents="$(jq 'del(.capabilities.platformName)' ./aries-mobile-tests/config.json)"
     echo "${contents}" > ./aries-mobile-tests/config.json
   else
     contents="$(jq --arg APP_NAME "${APP_NAME}" '.capabilities |= . + { "app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
@@ -219,9 +227,14 @@ modifyConfigJson() {
 
   # contents="$(jq '.capabilities |= . + { "appium:platformName": "storage:filename=${APP_NAME}" }' ./aries-mobile-tests/config.json)" && \
   # echo "${contents}" > config.json
-
-  export DEVICE=$(echo $contents | jq -r '(.capabilities |= . "deviceName")[]')
-  export OS_VERSION=$(echo $contents | jq -r '(.capabilities |= . "platformVersion")[]')
+  
+  if [[ "${DEVICE_CLOUD}" == "LambdaTest" ]]; then
+    export DEVICE=$(echo $contents | jq -r '.capabilities["lt:options"].deviceName')
+    export OS_VERSION=$(echo $contents | jq -r '.capabilities["lt:options"].platformVersion') 
+  else
+    export DEVICE=$(echo $contents | jq -r '(.capabilities |= . "deviceName")[]')
+    export OS_VERSION=$(echo $contents | jq -r '(.capabilities |= . "platformVersion")[]')
+  fi
 
   #docker cp ./aries-mobile-tests/config.json aries-mobile-test-harness:/aries-mobile-test-harness/aries-mobile-tests/config.json
 }
@@ -252,7 +265,7 @@ writeEnvProperties() {
 }
 
 setDockerEnv() {
-  DOCKER_ENV="-e DEVICE_CLOUD=${DEVICE_CLOUD}"
+  DOCKER_ENV="-e DEVICE_CLOUD=${DEVICE_CLOUD} -e DEVICE_PLATFORM=${DEVICE_PLATFORM}"
   if [[ "${DEVICE_CLOUD}" = "SauceLabs" ]]; then
     if ! [ -z "$DEVICE_CLOUD_USERNAME" ]; then
       DOCKER_ENV="${DOCKER_ENV} -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME}"
@@ -347,6 +360,7 @@ startHarness(){
 
 runTests() {
   runArgs=${@}
+  echo $runArgs
 
   if [[ "${TAGS}" ]]; then
       echo "Tags: ${TAGS}"
@@ -375,7 +389,7 @@ runTests() {
   setDockerEnv
 
   echo "Running with Device Cloud Service ${DEVICE_CLOUD}"
-  if [[ "${DEVICE_CLOUD}" = "SauceLabs" ]]; then
+  if [ "${DEVICE_CLOUD}" = "SauceLabs" ] || [ "${DEVICE_CLOUD}" = "LambdaTest" ]; then
     # if Region is not set default to us-west-1
     # if [[ -z ${SL_REGION} ]]; then
     #   export SL_REGION="us-west-1"
@@ -408,8 +422,8 @@ runTests() {
       #${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${APP_NAME}:${APP_NAME} -v "${ANDROID_HOME}/emulator/resources/":"${ANDROID_HOME}/emulator/resources/" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" -e ANDROID_HOME=${ANDROID_HOME} -e DOCKERHOST=${DOCKERHOST} -e DEVICE_CLOUD=${DEVICE_CLOUD} aries-mobile-test-harness -k ${runArgs} -D Issuer=${issuerURL} -D Verifier=${verifierURL}
       ${terminalEmu} docker run ${INTERACTIVE} --rm --network="host" -v ${APP_NAME}:${APP_NAME} -v "${ANDROID_HOME}/emulator/resources/":"${ANDROID_HOME}/emulator/resources/" -v ${BEHAVE_INI_TMP}:/aries-mobile-tests/behave.ini -v "$(pwd)/aries-mobile-tests/config.json:/aries-mobile-test-harness/aries-mobile-tests/config.json" $DOCKER_ENV aries-mobile-test-harness -k ${runArgs} -D Issuer=${issuerURL} -D Verifier=${verifierURL}
     fi
-  #else # place holder for other device cloud services like BrowserStack, etc.
   fi
+  #else # place holder for other device cloud services like BrowserStack, etc.
 
   local docker_result=$?
   rm ${BEHAVE_INI_TMP}
@@ -542,7 +556,7 @@ if [[ "${COMMAND}" == "run" || "${COMMAND}" == "start" || "${COMMAND}" == "test"
   TAGS=""
   BEHAVE_INI=aries-mobile-tests/behave.ini
 
-  while getopts ":d:u:k:p:a:i:v:r:t:" FLAG; do
+  while getopts ":d:u:k:p:a:b:i:v:r:t:" FLAG; do
     case $FLAG in
       h ) usage ;;
       : ) usage ;;
@@ -551,6 +565,8 @@ if [[ "${COMMAND}" == "run" || "${COMMAND}" == "start" || "${COMMAND}" == "test"
       usage
           ;;
       r ) export REPORT=${OPTARG}
+          ;;
+      b ) export BUILD=${OPTARG}
           ;;
       d ) export DEVICE_CLOUD=${OPTARG}
           ;;
