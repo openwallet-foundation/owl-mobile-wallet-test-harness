@@ -46,14 +46,20 @@ class BCVPHolderGetInviteInterface():
         # go to the issuer endpoint in the browser
         self.driver.get(self.endpoint)
         # instantiate intial page objects
-        self._gmail_login_page = GmailLoginPage(self.driver)
-        # make sure we are on the first page, the authenticate with page
-        if not self._gmail_login_page.on_this_page():
-            raise Exception(
-                'Something is wrong, not on the Gmail login Page for the BC VP Issuer')
-        username = config('BC_VP_HOLDER_EMAIL')
-        password = config('BC_VP_HOLDER_EMAIL_PASSWORD')
-        self._login(username, password)
+        if "gmail" in self.endpoint:
+            self._gmail_login_page = GmailLoginPage(self.driver)
+            # make sure we are on the first page, the authenticate with page
+            if not self._gmail_login_page.on_this_page():
+                raise Exception(
+                    'Something is wrong, not on the Gmail login Page for the BC VP Issuer')
+            username = config('BC_VP_HOLDER_EMAIL')
+            password = config('BC_VP_HOLDER_EMAIL_PASSWORD')
+            self._login(username, password)
+        else:
+            self._bc_vc_invitation_agree_page = BCVCInvitationAgreePage(self.driver)
+            if not self._bc_vc_invitation_agree_page.on_this_page():
+                raise Exception(
+                    'Something is wrong, not on the Invitation Agree Page for the BC VP Issuer')
 
     def open_invitation_email(self):
         """send a credential to the holder, return True if invite is successfully sent to email"""
@@ -70,9 +76,11 @@ class BCVPHolderGetInviteInterface():
 
     def get_qr_code_invitation(self):
         """send a credential to the holder, return True if invite is successfully sent to email"""
-        tab2 = self.driver.window_handles[1]
-        self.driver.switch_to.window(tab2)
-        self.driver.implicitly_wait(1000)
+
+        # tab2 = self.driver.window_handles[1]
+        # self.driver.switch_to.window(tab2)
+        # self.driver.implicitly_wait(1000)
+            
         self._bc_vc_invitation_agree_page.i_agree()
         self._bc_vc_request_credential_page = self._bc_vc_invitation_agree_page.agree()
         self._bc_vc_invitation_review_page = self._bc_vc_request_credential_page.request_credential()

@@ -1,0 +1,15 @@
+{
+   "requested_attributes": {
+      "photo_attrs": {
+         "name": "photo"
+      }
+   },
+   "requested_predicates": {
+      "age": {
+         "name": "birth_dateint",
+         "p_type": ">",
+         "p_value": 19420116
+      }
+   },
+   "version": "0.1.0"
+}

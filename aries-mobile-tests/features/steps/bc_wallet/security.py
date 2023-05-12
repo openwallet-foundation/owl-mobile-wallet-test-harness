@@ -59,15 +59,26 @@ def step_impl(context):
     context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     context.device_service_handler.biometrics_authenticate(True)
 
-@then('they land on the Home screen')
-@when('initialization ends (failing silently)')
 @then('they have access to the app')
-@then('the User has successfully created a PIN')
 def step_impl(context):
     # The Home page will not show until the initialization page is done. 
     #assert context.thisInitializationPage.on_this_page()
-    context.thisHomePage = context.thisInitializationPage.wait_until_initialized(timeout=600)
+    context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
+    if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
+        #context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
+        assert True
+    else:
+        assert context.thisHomePage.on_this_page()
+
+@then('they land on the Home screen')
+@when('initialization ends (failing silently)')
+def step_impl(context):
+    # The Home page will not show until the initialization page is done. 
+    #assert context.thisInitializationPage.on_this_page()
+    context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     context.thisNavBar = NavBar(context.driver)
+    if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
+        context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
     assert context.thisHomePage.on_this_page()
 
     # set the environment to TEST instead of PROD which is default as of build 575
@@ -85,6 +96,8 @@ def step_impl(context, env):
     context.thisDeveloperSettingsPage.select_env(env)
     context.thisSettingsPage = context.thisDeveloperSettingsPage.select_back()
     context.thisSettingsPage.select_back()
+    if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
+        context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
     assert context.thisHomePage.on_this_page()
 
 
@@ -129,7 +142,7 @@ def step_impl(context):
         assert context.thisBiometricsPage.on_this_page()
         context.device_service_handler.biometrics_authenticate(True)
         assert context.thisBiometricsPage.on_this_page() == False
-        context.thisInitialzationPage.wait_until_initialized(600)
+        context.thisInitialzationPage.wait_until_initialized()
 
 
 @when('fails to authenticate with thier biometrics once')

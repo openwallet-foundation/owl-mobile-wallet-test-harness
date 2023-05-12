@@ -1,6 +1,7 @@
 """
 Class for actual IDIM Verified Person Credetial issuer agent
 """
+from time import sleep
 from agent_factory.issuer_agent_interface import IssuerAgentInterface
 from sys import platform
 from decouple import config
@@ -30,6 +31,7 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
     _authenticate_page: AuthenticatePage
     _invites_page: InvitesPage
     _invite_page: InvitePage
+    _invitation_url: str
 
     # Default schema and cred
     DEFAULT_CREDENTIAL_DATA = {
@@ -37,6 +39,9 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
         "email": "vc.tester.extra@gmail.com",
         "program": "IDIM Testing",
     }
+
+    # Default invitation url for reuse
+    DEFAULT_INVITATION_URL = "https://bcvcpilot-issuer-test.apps.silver.devops.gov.bc.ca/?invite_token=23974aa6-009d-405a-a60b-0891c55cf277"
 
     def __init__(self, endpoint):
         # Standup Selenuim Driver with endpoint
@@ -85,37 +90,61 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
         #return self._invites_page.connected()
         return Exception('Function not supported for BC VP Issuer')
 
-    def send_credential(self, version=1, schema=None, credential_offer=None, revokable=False):
+    def send_credential(self, version=1, schema=None, credential_offer=None, revokable=False, reuse_invitation=False):
         """send a credential to the holder, return True if invite is successfully sent to email"""
-        self._invite_page = self._invites_page.new_invite()
+        
+        if reuse_invitation:
+            # Search for and edit based on the email address on the invites page
+            # Set the credential issued flag to off and save the page
+            # This is a temporary fix until search is fixed in the Issuer page
+            self._invites_page.search(self.DEFAULT_CREDENTIAL_DATA["email"])
+            sleep(5)
+            self._invites_page.select_edit_invite(1)
+            self._invites_page.uncheck_issued()
+            self._invites_page.save_invite()
 
-        if credential_offer:
-            # Make credential_offer format into name value pairs
-            credential_data = self._create_name_value_pairs_from_credential_offer(
-                credential_offer)
-            self._invite_page.enter_name(
-                credential_data["first_name"])
-            self._request_credential_page.enter_email(
-                credential_data["email"])
-            self._request_credential_page.enter_program(
-                credential_data["program"])
+            # set the invitation url to the one we are reusing
+            self._invitation_url = self.DEFAULT_INVITATION_URL
         else:
-            self._invite_page.enter_name(
-                self.DEFAULT_CREDENTIAL_DATA["name"])
-            self._invite_page.enter_email(
-                self.DEFAULT_CREDENTIAL_DATA["email"])
-            self._invite_page.enter_program(
-                self.DEFAULT_CREDENTIAL_DATA["program"])
+            self._invite_page = self._invites_page.new_invite()
 
-        # TODO Temporarily comment the sending of the invite out until things are running smoothly, don't want to load up the service with invites.
-        self._invites_page = self._invite_page.save()
-        if not self._invites_page.on_this_page():
-            raise Exception(
-                'Something is wrong, on the Invites Page after sending invite for the BC VP Issuer')
+            if credential_offer:
+                # Make credential_offer format into name value pairs
+                credential_data = self._create_name_value_pairs_from_credential_offer(
+                    credential_offer)
+                self._invite_page.enter_name(
+                    credential_data["first_name"])
+                self._request_credential_page.enter_email(
+                    credential_data["email"])
+                self._request_credential_page.enter_program(
+                    credential_data["program"])
+            else:
+                self._invite_page.enter_name(
+                    self.DEFAULT_CREDENTIAL_DATA["name"])
+                self._invite_page.enter_email(
+                    self.DEFAULT_CREDENTIAL_DATA["email"])
+                self._invite_page.enter_program(
+                    self.DEFAULT_CREDENTIAL_DATA["program"])
+
+            self._invites_page = self._invite_page.save()
+            if not self._invites_page.on_this_page():
+                raise Exception(
+                    'Something is wrong, on the Invites Page after sending invite for the BC VP Issuer')
+
+
+            self._invitation_url= self._get_invitation_url()
 
         return True
-        # Could use the invite URL in on the invite details page of the issuer and generate a QR code to return here. 
-        # Fall back plan if using email is not viable.
+        
+    def _get_invitation_url(self):
+        # Get the invitation url from the invites page
+        self._invites_page.search(self.DEFAULT_CREDENTIAL_DATA["email"])
+        sleep(5)
+        self._invites_page.select_edit_invite(1)
+        return self._invites_page.get_invitation_url()
+    
+    def get_invitation_url(self):
+        return self._invitation_url
 
     def restart_issue_credential(self):
         # go to the issuer endpoint in the browser

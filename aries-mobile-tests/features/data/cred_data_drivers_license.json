@@ -1,0 +1,46 @@
+{
+   "schema_name": "drivers_license",
+   "schema_version": "1.0.0",
+   "attributes": [
+      {
+         "name": "name",
+         "value": "Betty Naroff"
+      },
+      {
+         "name": "civic_address",
+         "value": "159 Cedar Street, Sudbury, ON"
+      },
+      {
+         "name": "city",
+         "value": "Sudbury"
+      },
+      {
+         "name": "province",
+         "value": "ON"
+      },
+      {
+         "name": "country",
+         "value": "Canada"
+      },
+      {
+         "name": "postal_code",
+         "value": "P3E 1B1"
+      },
+      {
+         "name": "birth_dateint",
+         "value": "19420117"
+      },
+      {
+         "name": "id",
+         "value": "123456789"
+      },
+      {
+         "name": "issue_date",
+         "value": "2022-04-04T13:32:55.455Z"
+      },
+      {
+         "name": "expiry_date",
+         "value": "2027-04-04T13:32:55.455Z"
+      }
+   ]
+}

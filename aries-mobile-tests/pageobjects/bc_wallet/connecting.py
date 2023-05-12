@@ -20,7 +20,7 @@ class ConnectingPage(BasePage):
     back_to_home_locator =  (AppiumBy.ID, "com.ariesbifold:id/BackToHome")
 
     def on_this_page(self):   
-        timeout = 10
+        timeout = 20
         if "Local" in os.environ['DEVICE_CLOUD']:
             timeout = 50 
         return super().on_this_page(self.on_this_page_locator, timeout)

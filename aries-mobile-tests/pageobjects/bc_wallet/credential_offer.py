@@ -2,6 +2,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.credential_on_the_way import CredentialOnTheWayPage
+from pageobjects.bc_wallet.decline_credential_offer import DeclineCredentialOfferPage
 
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -34,24 +35,25 @@ class CredentialOfferPage(BasePage):
 
     def select_accept(self, scroll=False):
         if self.on_this_page():
-            # if the credential has a lot of attributes it could need to scroll
-            if scroll == True:
-                try:
-                    self.find_by(self.accept_locator).click()
-                except:
-                    self.scroll_to_element(self.decline_aid_locator[1])
-                    self.find_by(self.accept_locator).click()
-            else:
-                self.find_by(self.accept_locator).click()
+            if scroll == True and self.current_platform == 'Android':
+                self.scroll_to_bottom()
+            self.find_by(self.accept_locator).click()
             return CredentialOnTheWayPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 
-    def select_decline(self):
+    def select_decline(self, scroll=False):
         if self.on_this_page():
-            self.find_by(self.decline_locator).click()
-            # Not sure what is returned here yet
-            # return CredentialOfferPage(self.driver)
+            # if the credential has a lot of attributes it could need to scroll
+            if scroll == True:
+                try:
+                    self.find_by(self.decline_locator).click()
+                except:
+                    self.scroll_to_element(self.decline_aid_locator[1])
+                    self.find_by(self.decline_locator).click()
+            else:
+                self.find_by(self.decline_locator).click()
+            return DeclineCredentialOfferPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 

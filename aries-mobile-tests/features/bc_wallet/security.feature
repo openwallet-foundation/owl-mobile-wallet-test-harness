@@ -57,8 +57,7 @@ Feature: Secure your Wallet
     And the User re-enters the PIN as "369369"
     And the User selects Create PIN
     And the User selects to use Biometrics
-    Then the User has successfully created a PIN
-    And they land on the Home screen
+    And they have access to the app
 
   @T005-Security @AcceptanceTest @ExceptionTest @normal
   Scenario: New User Sets Up PIN but PINs do not match

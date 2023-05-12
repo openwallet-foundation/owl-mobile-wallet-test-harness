@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.developer_settings import DeveloperSettingsPage
+from pageobjects.bc_wallet.contacts import ContactsPage
 
 
 class SettingsPage(BasePage):
@@ -14,7 +15,7 @@ class SettingsPage(BasePage):
     # Locators
     on_this_page_text_locator = "App Settings"
     back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
-    contacts_locator = "Contacts"
+    contacts_locator = (AppiumBy.ID, "com.ariesbifold:id/Contacts")
     version_locator = (AppiumBy.ID, "com.ariesbifold:id/Version")
     version_partial_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Version")
     intro_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Introduction to the app")
@@ -79,16 +80,15 @@ class SettingsPage(BasePage):
         search_input.send_keys(keyword)
         time.sleep(5)
 
-
     def select_contacts(self):
         if self.on_this_page():
-            self.find_by_accessibility_id(self.contacts_locator).click()
+            self.find_by(self.contacts_locator).click()
 
-            # return a new page objectfor the Contacts page
+            # return a new page object for the Contacts page
             return ContactsPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)}") 
-        #return ContactsPage
+
 
     def select_scan(self):
         if self.on_this_page():

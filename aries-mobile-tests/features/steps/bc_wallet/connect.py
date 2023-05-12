@@ -51,9 +51,11 @@ def step_impl(context, agent):
     context.thisConnectingPage = context.thisNavBar.select_scan()
 
     # If this is the first time the user selects scan, then they will get a Camera Privacy Policy that needs to be dismissed
-    context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
-    if context.thisCameraPrivacyPolicyPage.on_this_page():
-        context.thisCameraPrivacyPolicyPage.select_okay()
+    # TODO only do this if the platorm is iOS. Android is not showing the policy page at present in Sauce Labs becasue we have autoGrantPermissions on. 
+    if context.driver.capabilities['platformName'] == 'iOS':
+        context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
+        if context.thisCameraPrivacyPolicyPage.on_this_page():
+            context.thisCameraPrivacyPolicyPage.select_allow()
 
 
 @when('the Holder is taken to the Connecting Screen/modal')
@@ -93,8 +95,8 @@ def step_impl(context):
     while context.issuer.connected() == False and i < timeout:
         sleep(1)
         i+=1
-    if i == 20: # we timed out and it is still connecting
-        raise Exception(f'Failed to connected in timeout of {timeout} seconds')
+    if i == timeout: # we timed out and it is still connecting
+        raise Exception(f'Failed to connect. Checked connection status {timeout} times.')
         #context.thisHomePage = context.thisConnectingPage.select_go_back_to_home()
     else:
         # One last check
@@ -113,4 +115,70 @@ def step_impl(context, agent):
         raise Exception(f"Invalid agent type: {agent}")
     #assert context.issuer.connected()
     
+    
+
+@given('the holder is connected to an Issuer')
+def step_impl(context):
+    context.execute_steps('''
+        Given the Holder has setup thier wallet
+        And the Holder has selected to use biometrics to unlock BC Wallet
+        And a connection has been successfully made
+    ''')
+
+@given('there are {no_credentials} issued by this Contact in the holders wallet')
+def step_impl(context, no_credentials):
+
+    if no_credentials == "Offered and Rejected":
+        context.execute_steps('''
+            Given the user has a credential offer
+            And the holder declines the credential offer
+        ''')
+
+    elif no_credentials == "Issued and Deleted":
+        pass
+    elif no_credentials == "Issued Revoked and Deleted":
+        pass
+
+
+@when('the holder Removes this Contact')
+def step_impl(context):
+    context.thisSettingsPage = context.thisHomePage.select_settings()
+    context.thisContactsPage = context.thisSettingsPage.select_contacts()
+    context.thisContactPage = context.thisContactsPage.select_contact(context.issuer.get_name())
+    context.thisContactDetailsPage = context.thisContactPage.select_info()
+    context.thisRemoveFromWalletPage = context.thisContactDetailsPage.select_remove_from_wallet()
+
+
+@when(u'the holder reviews more details on removing Contacts')
+def step_impl(context):
+    # get the details from the context table object.
+    details = context.table[0]["details"]
+    assert details in context.thisRemoveFromWalletPage.get_details_text()
+
+
+@when(u'the holder confirms to Remove this Contact')
+def step_impl(context):
+    context.thisContactsPage = context.thisRemoveFromWalletPage.select_remove_from_wallet()
+
+
+@then(u'the holder is taken to the Contact list')
+def step_impl(context):
+    context.thisContactsPage.on_this_page()
+
+
+@then(u'the holder is informed that the Contact has been removed')
+def step_impl(context):
+    # this message is displayed for a few seconds then disappears. 
+    # TODO: need to think of a foolproof way to get a handle on this. With appium being so slow if may already be gone.
+    # pass for now and chekc that the contact is correctly removed from the list
+    pass
+
+
+@then(u'the Contact is removed from the wallet')
+def step_impl(context):
+    # check that the contact is not in the list
+    #assert context.issuer.get_name() not in context.thisContactsPage.get_contact_list()
+    #context.thisContactsPage.select_contact(context.issuer.get_name())
+    assert context.thisContactsPage.is_contact_present(context.issuer.get_name()) == False
+
     
