@@ -2,7 +2,6 @@ from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.credential_declined import CredentialDeclinedPage
 
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -10,8 +9,8 @@ class DeclineCredentialOfferPage(BasePage):
     """Comfirm the decline of a Credential Offer page object"""
 
     # Locators
-    on_this_page_text_locator = "Are you sure you want to decline this credential"
-    no_go_back_locator = (AppiumBy.ID, "com.ariesbifold:id/AbortDeclineButton")
+    on_this_page_text_locator = "Decline credential offer?"
+    no_go_back_locator = (AppiumBy.ID, "com.ariesbifold:id/CancelDeclineButton")
     confirm_locator = (AppiumBy.ID, "com.ariesbifold:id/ConfirmDeclineButton")
 
 
@@ -21,7 +20,8 @@ class DeclineCredentialOfferPage(BasePage):
     def select_decline(self):
         if self.on_this_page():
             self.find_by(self.confirm_locator).click()
-            return CredentialDeclinedPage(self.driver)
+            from pageobjects.bc_wallet.home import HomePage
+            return HomePage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 
