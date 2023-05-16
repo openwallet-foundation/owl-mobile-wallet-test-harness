@@ -1,8 +1,9 @@
 import time
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
+from pageobjects.bc_wallet.proof_request_declined import ProofRequestDeclinedPage
 
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -11,8 +12,8 @@ class AreYouSureDeclineProofRequestPage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Are you sure you want to decline this proof request"
-    no_go_back_locator = (MobileBy.ID, "com.ariesbifold:id/AbortDeclineButton")
-    confirm_locator = (MobileBy.ID, "com.ariesbifold:id/ConfirmDeclineButton")
+    no_go_back_locator = (AppiumBy.ID, "com.ariesbifold:id/AbortDeclineButton")
+    confirm_locator = (AppiumBy.ID, "com.ariesbifold:id/ConfirmDeclineButton")
 
 
     def on_this_page(self):
@@ -22,8 +23,7 @@ class AreYouSureDeclineProofRequestPage(BasePage):
     def select_confirm(self):
         if self.on_this_page():
             self.find_by(self.confirm_locator).click()
-            from pageobjects.bc_wallet.home import HomePage
-            return HomePage(self.driver)
+            return ProofRequestDeclinedPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 

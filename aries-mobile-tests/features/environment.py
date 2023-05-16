@@ -19,6 +19,10 @@ from behave.contrib.scenario_autoretry import patch_scenario_with_autoretry
 
 # Get teh Device Cloud Service passed in from manage
 device_cloud_service = config('DEVICE_CLOUD')
+
+# Get the Device Platform
+device_platform_name = config('DEVICE_PLATFORM')
+
 # Check if there is a config file override. If not, use the default
 try: 
     config_file_path = config('CONFIG_FILE_OVERRIDE')
@@ -48,7 +52,7 @@ def before_feature(context, feature):
     context.verifier = aif.create_verifier_agent_interface(verifier_type, verifier_endpoint)
     context.print_page_source_on_failure = eval(context.config.userdata['print_page_source_on_failure'])
     context.print_qr_code_on_creation = eval(context.config.userdata['print_qr_code_on_creation'])
-    context.save_qr_code_on_creation = True if device_cloud_service == 'LocalAndroid' else eval(context.config.userdata['save_qr_code_on_creation'])
+    context.save_qr_code_on_creation = True if device_cloud_service == 'LocalAndroid' or device_cloud_service == 'LambdaTest' else eval(context.config.userdata['save_qr_code_on_creation'])
 
     # retry failed tests 
     try: 
@@ -92,33 +96,35 @@ def after_scenario(context, scenario):
 
 
 
-        # Add the sauce Labs results and video url to the allure results
-        # Link that requires a sauce labs account and login
-        testobject_test_report_url = context.driver.capabilities["testobject_test_report_url"]
-        allure.attach(testobject_test_report_url, "Sauce Labs Report and Video (Login required)")
-        print(f"Sauce Labs Report and Video (Login required): {testobject_test_report_url}")
+        if device_cloud_service == 'SauceLabs':
+            # Add the sauce Labs results and video url to the allure results
+            # Link that requires a sauce labs account and login
+            testobject_test_report_url = context.driver.capabilities["testobject_test_report_url"]
+            allure.attach(testobject_test_report_url, "Sauce Labs Report and Video (Login required)")
+            print(f"Sauce Labs Report and Video (Login required): {testobject_test_report_url}")
 
-        # Since every test scenario is a new session with potentially a different device
-        # write the capabilities info as an attachment to the test scenario to keep track
-        allure.attach(json.dumps(context.driver.capabilities,indent=4), "Complete Appium/Sauce Labs Test Environment Configuration")
+            # Since every test scenario is a new session with potentially a different device
+            # write the capabilities info as an attachment to the test scenario to keep track
+            allure.attach(json.dumps(context.driver.capabilities,indent=4), "Complete Appium/Sauce Labs Test Environment Configuration")
 
-        # Link does not require a sauce labs account and login. Token generated.
-        # # TODO This isn't working. Have contacted Sauce Labs. 
-        # test_id = testobject_test_report_url.rpartition('/')[-1]
-        # session_id = context.driver.session_id
-        # key = f"{username}:{access_key}"
-        # sl_token = hmac.new(key.encode("ascii"), None, md5).hexdigest()
-        # url = f"{testobject_test_report_url}?auth={sl_token}"
-        # allure.attach(url, "Public Sauce Labs Report and Video (Login not required) (Nonfunctional at this time)")
-        # print(f"Public Sauce Labs Report and Video (Login not required): {url} (Nonfunctional at this time)")
+            # Link does not require a sauce labs account and login. Token generated.
+            # # TODO This isn't working. Have contacted Sauce Labs. 
+            # test_id = testobject_test_report_url.rpartition('/')[-1]
+            # session_id = context.driver.session_id
+            # key = f"{username}:{access_key}"
+            # sl_token = hmac.new(key.encode("ascii"), None, md5).hexdigest()
+            # url = f"{testobject_test_report_url}?auth={sl_token}"
+            # allure.attach(url, "Public Sauce Labs Report and Video (Login not required) (Nonfunctional at this time)")
+            # print(f"Public Sauce Labs Report and Video (Login not required): {url} (Nonfunctional at this time)")
 
-    # elif device_cloud_service == "something else in the future":
-    
-    # if context.driver.capabilities['platformName'] == "iOS":
-    #     context.driver.close_app()
-    #     context.driver.launch_app()
-    # else:
-    #     context.driver.reset()
+        # elif device_cloud_service == "LambdaTest":
+            # TODO 
+
+        # if context.driver.capabilities['platformName'] == "iOS":
+        #     context.driver.close_app()
+        #     context.driver.launch_app()
+        # else:
+        #     context.driver.reset()
 
     if hasattr(context, 'driver'):
         context.driver.quit()

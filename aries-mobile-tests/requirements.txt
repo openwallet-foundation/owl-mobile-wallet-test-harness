@@ -5,13 +5,14 @@ browserstack-local==1.2.2
 SauceClient
 paver==1.3.4
 #selenium==3.141.0
-selenium
+selenium==4.9.0
 psutil==5.7.2
 #Appium-Python-Client==0.52;python_version < '3.0'
 #Appium-Python-Client==1.0.2;python_version >= '3.0'
-Appium-Python-Client
+Appium-Python-Client==2.9.0
 qrcode[pil]~=6.1
 webdriver-manager==3.8.3
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
+aiohttp

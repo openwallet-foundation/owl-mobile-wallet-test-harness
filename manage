@@ -80,12 +80,13 @@ usage () {
       Use -t option(s) to indicate tests with the gives tag(s) are to be executed.
         -t options can NOT have spaces, even if the option is quoted; use a behave INI file instead (-i option)
         For not running tagged tests, specify a ~ before the tag, e.g. "-t ~@wip" runs tests that don't have the "@wip" tag
-      Use -d to specify the Device Cloud Service to be used, SauceLabs and LambdaTest is currently supported
-        "-d SauceLabs" or "-d LambdaTest"
+      Use -d to specify the Device Cloud Service to be used, SauceLabs and LambdaTest and LambdaTest is currently supported
+        "-d SauceLabs" or "-d LambdaTest" or "-d LambdaTest"
       Use -u to specify the username for the given device cloud service.
       Use -k to specify the access key for the given device cloud service.
       Use -p to specify the mobile device platform
         "-p iOS" or "-p Android"
+      use -b to specify the build name (useful for LambdaTest automation)
       Use -a to specify the app name or id of the app loaded into the device cloud service
       Use -i to specify the issuer to use in the tests in the -i "<issuer_name>;<issuer_endpoint>" format
       Use -v to specify the verifier to use in the tests in the -i "<verifier_name>;<verifier_endpoint>" format
@@ -93,8 +94,12 @@ usage () {
 LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 
 
     Examples:
-    $0 run -d LambdaTest -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p iOS -a AriesBCWallet.ipa -i "AATH;http://0.0.0.0:9020" -v "AATH;http://0.0.0.0:9030" -t @Connect
-      - Run all tests tagged with Connect on LambdaTest with the AriesBCWallet.ipa app on the iOS platform. Use some externaly mamaged and stared agents for the issuer and verifier. 
+    $0 run -d SauceLabs -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p iOS -a AriesBCWallet.ipa -i "AATH;http://0.0.0.0:9020" -v "AATH;http://0.0.0.0:9030" -t @Connect
+      - Run all tests tagged with Connect on SauceLabs with the AriesBCWallet.ipa app on the iOS platform. Use some externaly mamaged and stared agents for the issuer and verifier.
+
+    $0 run -d LambdaTest -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p iOS -a app_url -i "AATH;http://0.0.0.0:9020" -v "AATH;http://0.0.0.0:9030" -t @Connect
+      - Run all tests tagged with Connect on LambdaTest with the app_url on the iOS platform. Use some externaly mamaged and stared agents for the issuer and verifier. 
+      - You can get the app_url by using the script upload_app_LT.sh to upload the app to LambdaTest.
 
   tags - Get a list of the tags on the features tests
 
@@ -211,13 +216,20 @@ modifyConfigJson() {
     else
       cp ./aries-mobile-tests/local_android_config.json ./aries-mobile-tests/config.json
     fi
-  fi
+  fi 
 
   contents="$(jq --arg DEVICE_PLATFORM "${DEVICE_PLATFORM}" '.capabilities |= . + { "platformName": $DEVICE_PLATFORM }' ./aries-mobile-tests/config.json)" && \
   echo "${contents}" > ./aries-mobile-tests/config.json
 
+  build_name="Wallet-Build $(date +'%m/%d/%y %H:%M:%S')"
+
   if [[ "${DEVICE_CLOUD}" == "SauceLabs" ]]; then
     contents="$(jq --arg APP_NAME "storage:filename=${APP_NAME}" '.capabilities |= . + { "appium:app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
+    echo "${contents}" > ./aries-mobile-tests/config.json
+  elif [[ "${DEVICE_CLOUD}" == "LambdaTest" ]]; then
+    contents="$(jq --arg APP_NAME "${APP_NAME}" --arg BUILD "${BUILD:=$build_name}" '.capabilities."lt:options" |= . + {"app": $APP_NAME, "build": $BUILD }' ./aries-mobile-tests/config.json)" && \
+    echo "${contents}" > ./aries-mobile-tests/config.json
+    contents="$(jq 'del(.capabilities.platformName)' ./aries-mobile-tests/config.json)"
     echo "${contents}" > ./aries-mobile-tests/config.json
   else
     contents="$(jq --arg APP_NAME "${APP_NAME}" '.capabilities |= . + { "app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
@@ -226,9 +238,14 @@ modifyConfigJson() {
 
   # contents="$(jq '.capabilities |= . + { "appium:platformName": "storage:filename=${APP_NAME}" }' ./aries-mobile-tests/config.json)" && \
   # echo "${contents}" > config.json
-
-  export DEVICE=$(echo $contents | jq -r '(.capabilities |= . "deviceName")[]')
-  export OS_VERSION=$(echo $contents | jq -r '(.capabilities |= . "platformVersion")[]')
+  
+  if [[ "${DEVICE_CLOUD}" == "LambdaTest" ]]; then
+    export DEVICE=$(echo $contents | jq -r '.capabilities["lt:options"].deviceName')
+    export OS_VERSION=$(echo $contents | jq -r '.capabilities["lt:options"].platformVersion') 
+  else
+    export DEVICE=$(echo $contents | jq -r '(.capabilities |= . "deviceName")[]')
+    export OS_VERSION=$(echo $contents | jq -r '(.capabilities |= . "platformVersion")[]')
+  fi
 
   #docker cp ./aries-mobile-tests/config.json aries-mobile-test-harness:/aries-mobile-test-harness/aries-mobile-tests/config.json
 }
@@ -259,7 +276,7 @@ writeEnvProperties() {
 }
 
 setDockerEnv() {
-  DOCKER_ENV="-e DEVICE_CLOUD=${DEVICE_CLOUD}"
+  DOCKER_ENV="-e DEVICE_CLOUD=${DEVICE_CLOUD} -e DEVICE_PLATFORM=${DEVICE_PLATFORM}"
   if [[ "${DEVICE_CLOUD}" = "SauceLabs" ]]; then
     if ! [ -z "$DEVICE_CLOUD_USERNAME" ]; then
       DOCKER_ENV="${DOCKER_ENV} -e SAUCE_USERNAME=${DEVICE_CLOUD_USERNAME}"
@@ -576,7 +593,7 @@ if [[ "${COMMAND}" == "run" || "${COMMAND}" == "start" || "${COMMAND}" == "test"
   TAGS=""
   BEHAVE_INI=aries-mobile-tests/behave.ini
 
-  while getopts ":d:u:k:p:a:i:v:r:t:" FLAG; do
+  while getopts ":d:u:k:p:a:b:i:v:r:t:" FLAG; do
     case $FLAG in
       h ) usage ;;
       : ) usage ;;
@@ -585,6 +602,8 @@ if [[ "${COMMAND}" == "run" || "${COMMAND}" == "start" || "${COMMAND}" == "test"
       usage
           ;;
       r ) export REPORT=${OPTARG}
+          ;;
+      b ) export BUILD=${OPTARG}
           ;;
       d ) export DEVICE_CLOUD=${OPTARG}
           ;;

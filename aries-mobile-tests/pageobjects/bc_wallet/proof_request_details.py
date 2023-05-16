@@ -16,7 +16,6 @@ class ProofRequestDetailsPage(BasePage):
 
 
     def on_this_page(self):
-        print(self.driver.page_source)
         return super().on_this_page(self.on_this_page_text_locator)
 
     def select_back(self):
