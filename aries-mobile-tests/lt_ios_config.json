@@ -1,16 +1,18 @@
 {
   "capabilities": {
-    "deviceName": "iPhone.*",
-    "platformName": "ios",
-    "platformVersion": "11",
-    "app": "YOUR_APP_URL",
-    "build": "Python Vanilla iOS",
-    "name": "Sample Test iOS - Python",
-    "network": true,
-    "visual": true,
-    "video": true,
-    "console": true,
-    "isRealMobile": true,
-    "project": "PortefeuilleMobile QC"
+    "lt:options": {
+      "w3c": true,
+      "deviceName": "iPhone.*",
+      "platformName": "iOS",
+      "build": "QCWallet-XXX",
+      "name": "Sample Test iOS - Python",
+      "app": "app_url_lt",
+      "autoGrantPermissions": true,
+      "enableImageInjection": true,
+      "media": "lt://MEDIA14a54efe064642f9a9cf39ab5d189751",
+      "isRealMobile": true,
+      "visual": true,
+      "video": true
+    }
   }
 }

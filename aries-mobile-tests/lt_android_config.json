@@ -1,13 +1,19 @@
 {
   "capabilities": {
-    "deviceName": "Galaxy S20",
-    "platformName": "Android",
-    "platformVersion": "10",
-    "build": "Python Behave - Android",
-    "name": "Sample Test Android",
-    "app": "lt://APP1016046941679068172674216",
-    "isRealMobile": true,
-    "visual": true,
-    "video": true
+    "lt:options": {
+      "w3c": true,
+      "deviceName": "Galaxy.*,Pixel.*,Nexus.*",
+      "platformName": "Android",
+      "platformVersion": "10",
+      "build": "QCWallet-XXX",
+      "name": "Sample Test Android - Python",
+      "app": "lt://APP1016045801683122334603392",
+      "autoGrantPermissions": true,
+      "enableImageInjection": true,
+      "media": "lt://MEDIA14a54efe064642f9a9cf39ab5d189751",
+      "isRealMobile": true,
+      "visual": true,
+      "video": true
+    }
   }
 }
