@@ -80,8 +80,8 @@ usage () {
       Use -t option(s) to indicate tests with the gives tag(s) are to be executed.
         -t options can NOT have spaces, even if the option is quoted; use a behave INI file instead (-i option)
         For not running tagged tests, specify a ~ before the tag, e.g. "-t ~@wip" runs tests that don't have the "@wip" tag
-      Use -d to specify the Device Cloud Service to be used, SauceLabs and LambdaTest is currently supported
-        "-d SauceLabs" or "-d LambdaTest"
+      Use -d to specify the Device Cloud Service to be used, SauceLabs and LambdaTest and LambdaTest is currently supported
+        "-d SauceLabs" or "-d LambdaTest" or "-d LambdaTest"
       Use -u to specify the username for the given device cloud service.
       Use -k to specify the access key for the given device cloud service.
       Use -p to specify the mobile device platform
@@ -94,8 +94,12 @@ usage () {
 LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io REGION=us-west-1 
 
     Examples:
-    $0 run -d LambdaTest -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p iOS -a AriesBCWallet.ipa -i "AATH;http://0.0.0.0:9020" -v "AATH;http://0.0.0.0:9030" -t @Connect
-      - Run all tests tagged with Connect on LambdaTest with the AriesBCWallet.ipa app on the iOS platform. Use some externaly mamaged and stared agents for the issuer and verifier. 
+    $0 run -d SauceLabs -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p iOS -a AriesBCWallet.ipa -i "AATH;http://0.0.0.0:9020" -v "AATH;http://0.0.0.0:9030" -t @Connect
+      - Run all tests tagged with Connect on SauceLabs with the AriesBCWallet.ipa app on the iOS platform. Use some externaly mamaged and stared agents for the issuer and verifier.
+
+    $0 run -d LambdaTest -u oauth-my.username-35de1 -k 4dba5e68-16c1-4632-b44e-4a543601610d -p iOS -a app_url -i "AATH;http://0.0.0.0:9020" -v "AATH;http://0.0.0.0:9030" -t @Connect
+      - Run all tests tagged with Connect on LambdaTest with the app_url on the iOS platform. Use some externaly mamaged and stared agents for the issuer and verifier. 
+      - You can get the app_url by using the script upload_app_LT.sh to upload the app to LambdaTest.
 
   tags - Get a list of the tags on the features tests
 

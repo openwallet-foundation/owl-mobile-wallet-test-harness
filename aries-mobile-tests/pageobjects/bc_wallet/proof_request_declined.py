@@ -5,11 +5,11 @@ from pageobjects.basepage import BasePage
 
 
 # These classes can inherit from a BasePage to do common setup and functions
-class CredentialDeclinedPage(BasePage):
-    """Final Credential Declined Notification page object"""
-
+class ProofRequestDeclinedPage(BasePage):
+    """Proof Request Declined page object"""
+    
     # Locators
-    on_this_page_text_locator = "Credential declined"
+    on_this_page_text_locator = "Proof request declined"
     done_locator = (AppiumBy.ID, "com.ariesbifold:id/Done")
 
 
@@ -23,4 +23,3 @@ class CredentialDeclinedPage(BasePage):
             return HomePage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
-

@@ -66,7 +66,6 @@ Feature: Connections
    Scenario Outline: Remove an Issuer contact where no credentials are issued from that contact
       Given the holder is connected to an Issuer
       And there are <no_credentials> issued by this Contact in the holders wallet
-      And the holder is viewing that Contact's details
       When the holder Removes this Contact
       And the holder reviews more details on removing Contacts
          | details                                                            |

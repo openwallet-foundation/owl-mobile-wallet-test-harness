@@ -97,21 +97,6 @@ def before_scenario(context, scenario):
                 else:
                     extra_desired_capabilities[key] = test_config[key]
 
-    # if test_id == "TCL_PNG_ACC_009":
-    #     extra_desired_capabilities['idleTimeout'] = 320
-    #
-    #
-    # if device_platform_name == 'Android':
-    #     extra_desired_capabilities["locale"] = "CA"
-    # else:
-    #     extra_desired_capabilities["locale"] = "en_CA"
-    #
-    # if "language" in scenario.name and "1.2" in scenario.name:
-    #     extra_desired_capabilities["language"] = "fr"
-    #     if device_platform_name == 'Android':
-    #         extra_desired_capabilities["locale"] = "CA" 
-    #     else:
-    #         extra_desired_capabilities["locale"] = "fr_CA"
 
     device_service_handler.set_desired_capabilities(extra_desired_capabilities)
 
@@ -133,10 +118,10 @@ def after_scenario(context, scenario):
             device_service_handler.set_test_result(True)
 
         
-        if device_cloud_service == 'SauceLabs':
 
-        # Add the sauce Labs results and video url to the allure results
-        # Link that requires a sauce labs account and login
+        if device_cloud_service == 'SauceLabs':
+            # Add the sauce Labs results and video url to the allure results
+            # Link that requires a sauce labs account and login
             testobject_test_report_url = context.driver.capabilities["testobject_test_report_url"]
             allure.attach(testobject_test_report_url, "Sauce Labs Report and Video (Login required)")
             print(f"Sauce Labs Report and Video (Login required): {testobject_test_report_url}")
@@ -156,13 +141,14 @@ def after_scenario(context, scenario):
         # print(f"Public Sauce Labs Report and Video (Login not required): {url} (Nonfunctional at this time)")
  
 
-    # elif device_cloud_service == "something else in the future":
-    
-    # if context.driver.capabilities['platformName'] == "iOS":
-    #     context.driver.close_app()
-    #     context.driver.launch_app()
-    # else:
-    #     context.driver.reset()
+        # elif device_cloud_service == "LambdaTest":
+            # TODO 
+
+        # if context.driver.capabilities['platformName'] == "iOS":
+        #     context.driver.close_app()
+        #     context.driver.launch_app()
+        # else:
+        #     context.driver.reset()
 
     if hasattr(context, 'driver'):
         context.driver.quit()

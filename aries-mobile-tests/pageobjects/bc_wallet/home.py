@@ -7,6 +7,7 @@ from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
 from pageobjects.bc_wallet.proof_request import ProofRequestPage
 from pageobjects.bc_wallet.get_person_credential import GetPersonCredentialPage
 from pageobjects.bc_wallet.credential_details import CredentialDetailsPage
+from pageobjects.bc_wallet.welcome_to_bc_wallet import WelcomeToBCWalletModal
 from time import sleep
 
 
@@ -29,7 +30,14 @@ class HomePage(BasePage):
     settings_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
     #get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/GetBCID")
     get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewCustom")
+
+    # Modals and Alerts for Home page
+    welcome_to_bc_wallet_modal = WelcomeToBCWalletModal
     
+    def __init__(self, driver):
+        super().__init__(driver)
+        self.welcome_to_bc_wallet_modal = WelcomeToBCWalletModal(driver)
+
 
     def on_this_page(self):
         if "language" in self.driver.capabilities:
@@ -37,6 +45,7 @@ class HomePage(BasePage):
         elif "locale" in self.driver.capabilities:
             self.on_this_page_text_locator = "Home" if "en" in self.driver.capabilities["locale"] else "Accueil"
         return super().on_this_page(self.on_this_page_text_locator)
+
 
     def select_credential_offer_notification(self):
         if super().on_this_page(self.on_this_page_notification_locator):
