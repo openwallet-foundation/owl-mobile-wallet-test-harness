@@ -32,28 +32,8 @@ class LambdaTestHandler(DeviceServiceHandlerInterface):
             for key in list(config):
                 self._CONFIG['capabilities']['lt:options'][key] = config[key]
                 config.pop(key)
-        # Handle posiible special options
-        # if 'name' in config:
-        #     self._CONFIG['capabilities']['lt:options']['name'] = config['name']
-        #     config.pop('name')
-        #
-        # if 'language' in config: 
-        #     self._CONFIG['capabilities']['lt:options']['language'] = config['language']
-        #     config.pop('language')
-        #
-        # if 'locale' in config:
-        #     self._CONFIG['capabilities']['lt:options']['locale'] = config['locale']
-        #     config.pop('locale')
-        #
-        # if 'idleTimeout' in config:
-        #     self._CONFIG['capabilities']['lt:options']['idleTimeout'] = config['idleTimeout']
-        #     config.pop('idleTimeout')
+                self._desired_capabilities = self._CONFIG['capabilities']
 
-
-        # Handle common options and capabilities
-            # for item in config:
-            #     self._CONFIG['capabilities'][item] = config[item]
-        self._desired_capabilities = self._CONFIG['capabilities']
         print("\n\nDesired Capabilities passed to Appium:")
         print(json.dumps(self._desired_capabilities, indent=4))
 
