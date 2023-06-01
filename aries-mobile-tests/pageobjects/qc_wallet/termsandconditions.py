@@ -22,13 +22,6 @@ class TermsAndConditionsPageQC(TermsAndConditionsPage):
                 self.swipe_down()
                 el_visible = self.is_element_visible(self.terms_and_conditions_accept_locator)
                 timeout-=1
-            # try:
-            #     self.scroll_to_element(self.back_aid_locator[1])
-            # except:
-            #     # Sometimes it seems that scrolling may try to access the element by accessibility id before it appears
-            #     # if we get this failure then just sleep and try again. 
-            #     sleep(5)
-            #     self.scroll_to_element(self.back_aid_locator[1])
             self.find_by(self.terms_and_conditions_accept_locator).click()
             return True
         else:
@@ -42,13 +35,6 @@ class TermsAndConditionsPageQC(TermsAndConditionsPage):
                 self.swipe_down()
                 el_visible = self.is_element_visible(self.continue_button_locator)
                 timeout-=1
-            # try:
-            #     self.scroll_to_element(self.back_aid_locator[1])
-            # except:
-            #     # Sometimes it seems that scrolling may try to access the element by accessibility id before it appears
-            #     # if we get this failure then just sleep and try again. 
-            #     sleep(5)
-            #     self.scroll_to_element(self.back_aid_locator[1])
             self.find_by(self.continue_button_locator).click()
 
             # Maybe should check if it is checked or let the test call is_accept_checked()? 
