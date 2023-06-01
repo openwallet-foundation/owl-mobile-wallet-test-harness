@@ -1,5 +1,5 @@
 import time
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
@@ -16,13 +16,14 @@ class ProofRequestPage(BasePage):
     # Wireframes state different text here, so it will probably change to this
     #on_this_page_text_locator = "is requesting the following"
     on_this_page_text_locator = "is requesting you to share"
-    who_locator = (MobileBy.ID, "com.ariesbifold:id/HeaderText")
-    attribute_locator = (MobileBy.ID, "com.ariesbifold:id/AttributeName")
-    value_locator = (MobileBy.ID, "com.ariesbifold:id/AttributeValue")
-    details_locator = (MobileBy.ID, "com.ariesbifold:id/Details")
-    share_locator = (MobileBy.ID, "com.ariesbifold:id/Share")
-    share_aid_locator = (MobileBy.ACCESSIBILITY_ID, "Share")
-    decline_locator = (MobileBy.ID, "com.ariesbifold:id/Decline")
+    who_locator = (AppiumBy.ID, "com.ariesbifold:id/HeaderText")
+    attribute_locator = (AppiumBy.ID, "com.ariesbifold:id/AttributeName")
+    value_locator = (AppiumBy.ID, "com.ariesbifold:id/AttributeValue")
+    details_locator = (AppiumBy.ID, "com.ariesbifold:id/Details")
+    share_locator = (AppiumBy.ID, "com.ariesbifold:id/Share")
+    share_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Share")
+    decline_locator = (AppiumBy.ID, "com.ariesbifold:id/Decline")
+    credential_card_locator = (AppiumBy.ID, "com.ariesbifold:id/CredentialCard")
 
 
     def on_this_page(self):
@@ -34,7 +35,8 @@ class ProofRequestPage(BasePage):
             try:
                 self.find_by(self.share_locator).click()
             except:
-                self.scroll_to_element(self.share_aid_locator[1])
+                if self.current_platform == 'Android':
+                    self.scroll_to_bottom()
                 self.find_by(self.share_locator).click()
             return SendingInformationSecurelyPage(self.driver)
         else:
@@ -68,5 +70,24 @@ class ProofRequestPage(BasePage):
             for value in value_elements:
                 values.append(value.text)
             return who, attributes, values
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+
+    # def get_credentials_in_proof_request(self):
+    #     if self.on_this_page():
+    #         credential_card_elements = self.find_multiple_by(self.credential_card_locator)
+    #         return credential_card_elements[0].text
+    #     else:
+    #         raise Exception(f"App not on the {type(self)} page")
+        
+    def get_text_in_all_credential_cards_in_proof_request(self) ->list:
+        if self.on_this_page():
+            credential_card_elements = self.find_multiple_by(self.credential_card_locator)
+            # for each credential card, get the text and append to a list
+            credential_card_text_list = []
+            for credential_card in credential_card_elements:
+                credential_card_text_list.append(credential_card.text)
+            # If the list is empty, there is no credential on the proof request screen
+            return credential_card_text_list
         else:
             raise Exception(f"App not on the {type(self)} page")

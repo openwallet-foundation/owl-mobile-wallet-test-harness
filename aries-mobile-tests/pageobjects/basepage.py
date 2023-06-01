@@ -6,6 +6,7 @@ from appium.webdriver.common.touch_action import TouchAction
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+import xml.etree.ElementTree as ET
 
 class WaitCondition(Enum):
     ELEMENT_TO_BE_CLICKABLE = EC.element_to_be_clickable
@@ -197,8 +198,16 @@ class BasePage(object):
                     pass
 
             # Get the current scroll position
-            window_rect = self.driver.get_window_rect()
-            current_scroll_position = window_rect['y'] + screen_height
+            if self.current_platform == 'iOS':
+                after_source_ios = self.driver.page_source
+                # Parse the hierarchies using an XML parser
+                root = ET.fromstring(before_source_ios.encode('utf-8'))
+                new_root = ET.fromstring(after_source_ios.encode('utf-8'))
+                if ET.tostring(root) == ET.tostring(new_root):
+                    break
+            else:
+                window_rect = self.driver.get_window_rect()
+                current_scroll_position = window_rect['y'] + screen_height
 
             # Check if the bottom of the page has been reached
             if current_scroll_position >= screen_size['height']:
@@ -218,3 +227,4 @@ class BasePage(object):
         y_end=int(int(screen_size['height']) * 0.2)
         touch_action = TouchAction(self.driver)
         touch_action.press(x=x, y=y_start).wait(500).move_to(x=x, y=y_end).release().perform()
+

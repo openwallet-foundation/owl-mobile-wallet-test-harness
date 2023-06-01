@@ -57,8 +57,7 @@ Feature: Secure your Wallet
     And the User re-enters the PIN as "369369"
     And the User selects Create PIN
     And the User selects to use Biometrics
-    Then the User has successfully created a PIN
-    And they land on the Home screen
+    Then they have access to the app
 
   @T005-Security @AcceptanceTest @ExceptionTest @normal
   Scenario: New User Sets Up PIN but PINs do not match
@@ -88,9 +87,9 @@ Feature: Secure your Wallet
 
     Examples:
       # TODO add more examples
-      | pin    | pin_error                           |
-      | 2357   | Your PIN needs to be 6 digits long. |
-      | 27463A | Please use only numbers in your PIN |
+      | pin    | pin_error                                                |
+      | 2357   | Your PIN is too short. Please try again.                 |
+      | 27463A | Your PIN needs to only contain digits. Please try again. |
     @wip
     Examples:
       | 000000 | Please use only number in your PIN |
@@ -210,6 +209,6 @@ Feature: Secure your Wallet
 
   @AcceptanceTest @wip
   Scenario: Holder enables Biometrics when onboarding, then disables, then re-enables in app settings
-  
+
   @AcceptanceTest @wip
   Scenario: Holder leaves Biometrics off when onboarding, then enables, then disables in app settings

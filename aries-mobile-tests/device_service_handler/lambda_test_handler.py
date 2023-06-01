@@ -108,6 +108,7 @@ class LambdaTestHandler(DeviceServiceHandlerInterface):
     def supports_biometrics(self) -> bool:
         return False
 
+
     def biometrics_authenticate(self, authenticate:bool):
         """authenticate when biometrics, ie fingerprint or faceid, true is success, false is fail biometrics"""
         return authenticate
