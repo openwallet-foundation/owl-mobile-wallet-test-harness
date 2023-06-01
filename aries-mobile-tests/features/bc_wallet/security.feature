@@ -10,7 +10,7 @@ Feature: Secure your Wallet
   As a person who is curious but cautious of digital wallets
   I want to set my security settings to maximum security
 
-  @T001-Security @critical @AcceptanceTest @Story_421
+  @T001-Security @critical @AcceptanceTest @Story_421 
   Scenario: Holder chooses biometrics and reopens to biometrics authentication
     Given the Holder has setup biometrics on thier device
     And the Holder has setup thier Wallet
@@ -113,14 +113,32 @@ Feature: Secure your Wallet
     And authenticates with thier PIN as "969363"
     Then ?
 
-  @T00x-Security @AcceptanceTest @ExceptionTest @normal @wip
-  Scenario: New User Sets Up PIN but not biometrics and fails to authenticate with PIN multiple times
+  @T009-Security @AcceptanceTest @ExceptionTest @normal
+  Scenario Outline: New User Sets Up PIN but not biometrics and fails to authenticate with PIN multiple times
     Given the Holder has setup thier Wallet
     And the Holder has selected to use PIN only to unlock BC Wallet
-    And they have closed the app
-    When they relaunch the app
-    And authenticates with thier PIN as "969363"
-    Then ?
+    Then they have access to the app
+    When they have closed the app
+    And they relaunch the app
+    And the Holder authenticates with thier incorrect PIN as <pin>
+    Then they are informed of <pin_error>
+    And they select ok on PINs error
+    When the Holder authenticates with thier incorrect PIN as <pin>
+    Then they are informed of <pin_error>
+    And they select ok on PINs error
+    When the Holder authenticates with thier incorrect PIN as <pin>
+    Then they are informed of <pin_error>
+    And they select ok on PINs error
+    When the Holder authenticates with thier incorrect PIN as <pin>
+    Then they are informed of <pin_error>
+    And they select ok on PINs error
+    When the Holder authenticates with thier incorrect PIN as <pin>
+    Then the application is locked for 1 minute 
+
+    Examples:
+      | pin    | pin_error     |
+      | 969363 | Incorrect PIN |
+
 
   @Story_421 @AcceptanceTest @wip
   Scenario: Holder selects biometrics option in Onbarding with a device that had biometrics setup beforehand

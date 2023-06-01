@@ -3,6 +3,7 @@
 # 
 # -----------------------------------------------------------
 
+from time import sleep
 from behave import given, when, then
 import json
 import os
@@ -10,6 +11,7 @@ import os
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
 from agent_test_utils import get_qr_code_from_invitation
+from pageobjects.bc_wallet.temporarily_locked import TemporarilyLockedPage
 # import Page Objects needed
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 from pageobjects.bc_wallet.secure import SecurePage
@@ -52,12 +54,18 @@ def step_impl(context):
     context.thisOnboardingBiometricsPage = context.thisPINSetupPage.create_pin()
     context.thisOnboardingBiometricsPage.on_this_page()
 
+@given('the Holder has selected to use PIN only to unlock BC Wallet')
+def step_impl(context):
+    context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
 
 @when('the User selects to use Biometrics')
 def step_impl(context):
-    assert context.thisOnboardingBiometricsPage.select_biometrics()
-    context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
-    context.device_service_handler.biometrics_authenticate(True)
+    if context.device_service_handler.supports_biometrics():
+        assert context.thisOnboardingBiometricsPage.select_biometrics()
+        context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
+        context.device_service_handler.biometrics_authenticate(True)
+    else:
+        context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
 
 @then('they land on the Home screen')
 @when('initialization ends (failing silently)')
@@ -103,9 +111,10 @@ def step_impl(context):
 @when('they have closed the app')
 @given('they have closed the app')
 def step_impl(context):
-    if context.driver.capabilities['platformName'] == 'iOS':
-        # don't do anything here since driver.launch_app will close and relaunch for iOS
-        pass
+    if str(context.driver.capabilities['platformName']).lower() == 'iOS'.lower():
+        context.driver.terminate_app(context.driver.capabilities['bundleId'])
+        # print(context.driver.query_app_state(context.driver.capabilities['bundleId'])) 
+        # it should return 1 : application is not running 
     else:
         context.driver.close_app()
 
@@ -113,9 +122,9 @@ def step_impl(context):
 @when('the holder opens BC Wallet')
 @when('they relaunch the app')
 def step_impl(context):
-    if context.driver.capabilities['platformName'] == 'iOS':
-        #context.driver.activate_app(context.driver.capabilities['bundleId'])
-        context.driver.launch_app()
+    if str(context.driver.capabilities['platformName']).lower() == 'iOS'.lower():
+        # context.driver.launch_app() -> there is a bug where this method is not closing and relaunch in iOS. It just closes the app
+        context.driver.activate_app(context.driver.capabilities['bundleId'])
     else:
         context.driver.activate_app(context.driver.capabilities['appPackage'])
 
@@ -142,6 +151,19 @@ def step_impl(context):
     #assert context.thisBiometricsPage.on_this_page()
 
 
+@when('the Holder authenticates with thier incorrect PIN as {pin}')
+@when('authenticates with thier PIN as "{pin}"')
+def step_impl(context, pin):
+    if hasattr(context, 'thisPINPage') == False:
+        context.thisPINPage = PINPage(context.driver)
+    context.thisPINPage.enter_pin(pin)
+    context.thisPINPage.select_enter()
+
+@then('the application is locked for 1 minute')
+def step_impl(context):
+    context.thisTemporarilyLockedPage = TemporarilyLockedPage(context.driver)
+    assert context.thisTemporarilyLockedPage.on_this_page()
+    
 @when('they enter thier PIN as "{pin}"')
 def step_impl(context, pin):
     if hasattr(context, 'thisPINPage') == False:
@@ -164,4 +186,7 @@ def step_impl(context):
 
 @then('they are informed of {pin_error}')
 def step_impl(context, pin_error):
-    assert context.thisPINSetupPage.get_pin_error() == pin_error
+    if hasattr(context, "thisPINPage") == True:
+        assert context.thisPINPage.get_error() == pin_error
+    else:
+        assert context.thisPINSetupPage.get_error() == pin_error            

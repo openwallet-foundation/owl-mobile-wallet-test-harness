@@ -33,3 +33,16 @@ Feature: Secure your Wallet
     When the User re-enters the PIN as "278596"
     Then they select visibility toggle on the second PIN as "278596"
 
+  @TCL_PNG_ACC_009 @FunctionalTest @extra_config_security_idle_timeout
+  Scenario: Holder has app locked after 5 minutes of inactivity
+    Given the Holder has setup thier Wallet
+    And the Holder has selected to use PIN only to unlock BC Wallet
+    Then they land on the Home screen
+    When the Holder stops interacting with the app 
+    Then the app is locked for security reasons and a message is shown to the Holder
+      | lock_time | lock_message      |
+      | 300       | You're logged out |
+
+    
+
+
