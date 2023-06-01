@@ -5,19 +5,6 @@ Feature: Language
   As a holder
   I want to be able to change the language of the app
 
-  # @T001-Language @AcceptanceTest
-  # Scenario Outline: Existing holder changes language
-  #   Given the holder has initially selected <language> as the language
-  #   And the holder is in the language settings
-  #   When the holder changes app language to <different_language>
-  #   Then the language changes automatically to <different_language>
-  #
-  #   Examples:
-  #     | language | different_language |
-  #     | English  | French             |
-  #     | French   | English            |
-
-
   @T001.1-Language @AcceptanceTest @extra_config_language_1
   Scenario: Existing holder changes language from English to French
     Given the holder has initially selected "English" as the language

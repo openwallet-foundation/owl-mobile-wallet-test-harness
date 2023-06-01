@@ -1,4 +1,5 @@
 from appium.webdriver.common.appiumby import AppiumBy
+from appium.webdriver.common.touch_action import TouchAction
 from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.onboarding_biometrics import OnboardingBiometricsPage
 from pageobjects.bc_wallet.pinsetup import PINSetupPage
@@ -36,6 +37,11 @@ class PINSetupPageQC(PINSetupPage):
     def create_pin_throw_error(self):
         if self.on_this_page():
             try:
+                screen_size = self.driver.get_window_size()
+                x = int(int(screen_size['width']) * 0.5)
+                y=int(int(screen_size['height']) * 0.2)
+                touch_action = TouchAction(self.driver)
+                touch_action.tap(x=x, y=y).perform()
                 self.find_by(self.create_pin_button_tid_locator).click()
                 self.find_by(self.modal_message_ok_locator)
             except:

@@ -86,7 +86,7 @@ class PINSetupPage(BasePage):
         # else:
         #     raise Exception(f"App not on the {type(self)} page")
 
-    def get_pin_error(self):
+    def get_error(self):
         # On Android the modal hides all the other PIN setup page elements, so we can't check on this page
         # if self.on_this_page():
         return self.find_by(self.modal_message_body_locator).text
