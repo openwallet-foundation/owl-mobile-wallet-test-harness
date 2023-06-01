@@ -1,3 +1,4 @@
+from time import sleep
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.onboardingstorecredssecurely import OnboardingStoreCredsSecurelyPage
@@ -35,14 +36,24 @@ class OnboardingWelcomePage(BasePage):
 
     def select_next(self):
         if self.on_this_page():
-            self.find_by(self.next_locator).click()
+            try:
+                self.find_by(self.next_locator).click()
+            except:
+                print("Element not found. Waiting 10 seconds and trying again...")
+                sleep(10)
+                self.find_by(self.next_locator).click()
             return OnboardingStoreCredsSecurelyPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 
     def select_skip(self):
         if self.on_this_page():
-            self.find_by(self.skip_locator).click()
+            try:
+                self.find_by(self.skip_locator).click()
+            except:
+                print("Element not found. Waiting 10 seconds and trying again...")
+                sleep(10)
+                self.find_by(self.skip_locator).click()
             return TermsAndConditionsPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

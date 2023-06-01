@@ -73,6 +73,9 @@ class SauceLabsHandler(DeviceServiceHandlerInterface):
         """pass the qrcode image to the device in a way that allows for the device to scan it when the camera opens"""
         self._driver.execute_script(f"sauce:inject-image={image}")
 
+    def supports_biometrics(self) -> bool:
+        return True
+
     def biometrics_authenticate(self, authenticate:bool):
         """authenticate when biometrics, ie fingerprint or faceid, true is success, false is fail biometrics"""
         if authenticate:

@@ -5,6 +5,8 @@
 # https://behave.readthedocs.io/en/latest/tutorial.html#environmental-controls
 #  
 # -----------------------------------------------------------
+from typing import Any, Dict
+import asyncio
 from appium import webdriver
 from behave.model_core import Status
 import allure
@@ -12,6 +14,7 @@ from sauceclient import SauceClient
 from decouple import config
 import os, json
 import hmac
+import inspect
 from hashlib import md5
 from agent_factory.agent_interface_factory import AgentInterfaceFactory
 from device_service_handler.device_service_handler_factory import DeviceServiceHandlerFactory
@@ -71,10 +74,30 @@ def before_scenario(context, scenario):
     # pass some extra capabilities and options to the device service. If it can't do anything with them then fine.
     # ie. Local devices won't do anything with a scenario name.
     # TODO fullReset may have to be moved to the config files, if dev starts to use the Test Harness they may
-    # want tests with previous state maintained. 
-    extra_desired_capabilities = {
-        'name': scenario.name
+    # want tests with previous state maintained.
+    test_id = [tag for tag in scenario.tags if tag.startswith('T')][0]
+    feature = scenario.feature.name
+    extra_configs = [tag for tag in scenario.tags if tag.startswith('extra_config')]
+    extra_desired_capabilities: Dict[str, Any] = {
+        'name': f"{feature}:{test_id}:{scenario.name}",
+        'language': 'en',
+        'locale': 'CA' if device_platform_name == 'Android' else 'en_CA',
+        'idleTimeout': 120
     }
+
+    if len(extra_configs) > 0:
+        extra_config_file_name = extra_configs[0]
+        extra_config_file_path = os.path.join(os.path.dirname(__file__), '..', f"{extra_config_file_name}.json")
+        with open(extra_config_file_path) as config_file_path:
+            test_config: Dict[str, Any] = json.load(config_file_path)
+            for key in test_config:
+                if type(test_config[key]) is dict:
+                    for inner_key in test_config[device_platform_name]:
+                        extra_desired_capabilities[inner_key] = test_config[device_platform_name][inner_key]
+                else:
+                    extra_desired_capabilities[key] = test_config[key]
+
+
     device_service_handler.set_desired_capabilities(extra_desired_capabilities)
 
     context.driver = device_service_handler.initialize_driver()
@@ -94,7 +117,7 @@ def after_scenario(context, scenario):
         elif scenario.status == Status.passed:
             device_service_handler.set_test_result(True)
 
-
+        
 
         if device_cloud_service == 'SauceLabs':
             # Add the sauce Labs results and video url to the allure results
@@ -103,19 +126,20 @@ def after_scenario(context, scenario):
             allure.attach(testobject_test_report_url, "Sauce Labs Report and Video (Login required)")
             print(f"Sauce Labs Report and Video (Login required): {testobject_test_report_url}")
 
-            # Since every test scenario is a new session with potentially a different device
-            # write the capabilities info as an attachment to the test scenario to keep track
+        # Since every test scenario is a new session with potentially a different device
+        # write the capabilities info as an attachment to the test scenario to keep track
             allure.attach(json.dumps(context.driver.capabilities,indent=4), "Complete Appium/Sauce Labs Test Environment Configuration")
 
-            # Link does not require a sauce labs account and login. Token generated.
-            # # TODO This isn't working. Have contacted Sauce Labs. 
-            # test_id = testobject_test_report_url.rpartition('/')[-1]
-            # session_id = context.driver.session_id
-            # key = f"{username}:{access_key}"
-            # sl_token = hmac.new(key.encode("ascii"), None, md5).hexdigest()
-            # url = f"{testobject_test_report_url}?auth={sl_token}"
-            # allure.attach(url, "Public Sauce Labs Report and Video (Login not required) (Nonfunctional at this time)")
-            # print(f"Public Sauce Labs Report and Video (Login not required): {url} (Nonfunctional at this time)")
+        # Link does not require a sauce labs account and login. Token generated.
+        # # TODO This isn't working. Have contacted Sauce Labs. 
+        # test_id = testobject_test_report_url.rpartition('/')[-1]
+        # session_id = context.driver.session_id
+        # key = f"{username}:{access_key}"
+        # sl_token = hmac.new(key.encode("ascii"), None, md5).hexdigest()
+        # url = f"{testobject_test_report_url}?auth={sl_token}"
+        # allure.attach(url, "Public Sauce Labs Report and Video (Login not required) (Nonfunctional at this time)")
+        # print(f"Public Sauce Labs Report and Video (Login not required): {url} (Nonfunctional at this time)")
+ 
 
         # elif device_cloud_service == "LambdaTest":
             # TODO 

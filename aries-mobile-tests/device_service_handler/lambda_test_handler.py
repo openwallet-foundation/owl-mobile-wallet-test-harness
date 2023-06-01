@@ -6,7 +6,6 @@ from device_service_handler.device_service_handler_interface import DeviceServic
 import json
 from decouple import config
 from appium import webdriver
-import requests
 import aiohttp
 import asyncio
 import os 
@@ -29,16 +28,12 @@ class LambdaTestHandler(DeviceServiceHandlerInterface):
     def set_desired_capabilities(self, config: dict = None):
         """set extra capabilities above what was in the config file"""
 
-        # Handle posiible special options
-        if 'name' in config:
-            self._CONFIG['capabilities']['lt:options']['name'] = config['name']
-            config.pop('name')
+        if type(config) is dict:
+            for key in list(config):
+                self._CONFIG['capabilities']['lt:options'][key] = config[key]
+                config.pop(key)
+                self._desired_capabilities = self._CONFIG['capabilities']
 
-        # Handle common options and capabilities
-        for item in config:
-            self._CONFIG['capabilities'][item] = config[item]
-        #self._CONFIG['capabilities']['fullReset'] = True
-        self._desired_capabilities = self._CONFIG['capabilities']
         print("\n\nDesired Capabilities passed to Appium:")
         print(json.dumps(self._desired_capabilities, indent=4))
 
@@ -82,7 +77,6 @@ class LambdaTestHandler(DeviceServiceHandlerInterface):
         """save qrcode image to the device in lambda test in a way that allows for the device to scan it when the camera opens"""
         # get current directory
         with open(os.path.dirname(__file__) + '/../qrcode.png', 'rb') as img:
-            print(img)
             payload = {
                 'media_file': img,
                 'type': 'image',
@@ -90,6 +84,10 @@ class LambdaTestHandler(DeviceServiceHandlerInterface):
             }
             image_url = asyncio.run(self.save_qr_code_to_lambda_test(payload))
             self._driver.execute_script(f"lambda-image-injection={image_url}")
+
+    def supports_biometrics(self) -> bool:
+        return False
+
 
     def biometrics_authenticate(self, authenticate:bool):
         """authenticate when biometrics, ie fingerprint or faceid, true is success, false is fail biometrics"""

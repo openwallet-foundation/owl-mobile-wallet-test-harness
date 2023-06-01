@@ -43,6 +43,9 @@ class LocalAndroidHandler(DeviceServiceHandlerInterface):
         shutil.copy(
             "qrcode.png", f"{android_home}/emulator/resources/qrcode.png")
 
+    def supports_biometrics(self) -> bool:
+        return True
+
     def biometrics_authenticate(self, authenticate: bool, finger_id: int = 1):
         """authenticate when biometrics, ie fingerprint or faceid, true is success, false is fail biometrics"""
         if authenticate:

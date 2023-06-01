@@ -40,6 +40,10 @@ class HomePage(BasePage):
 
 
     def on_this_page(self):
+        if "language" in self.driver.capabilities:
+            self.on_this_page_text_locator = "Home" if self.driver.capabilities["language"] == "en" else "Accueil"
+        elif "locale" in self.driver.capabilities:
+            self.on_this_page_text_locator = "Home" if "en" in self.driver.capabilities["locale"] else "Accueil"
         return super().on_this_page(self.on_this_page_text_locator)
 
 

@@ -22,7 +22,9 @@ class TermsAndConditionsPage(BasePage):
     back_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Back")
 
 
-    def on_this_page(self):       
+    def on_this_page(self):      
+        if "language" in self.driver.capabilities:
+            self.back_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Back") if self.driver.capabilities["language"] == "en" else (AppiumBy.ACCESSIBILITY_ID, "Précédent")
         return super().on_this_page(self.on_this_page_locator) 
 
     def select_accept(self):
