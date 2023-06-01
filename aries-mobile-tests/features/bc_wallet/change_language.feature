@@ -1,38 +1,57 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/74
-@Language @bc_wallet @Story_74 @normal
+@Language @bc_wallet @qc_wallet @Story_74 @normal
 Feature: Language
   In order to use the app in my preferred language
   As a holder
   I want to be able to change the language of the app
 
+  # @T001-Language @AcceptanceTest
+  # Scenario Outline: Existing holder changes language
+  #   Given the holder has initially selected <language> as the language
+  #   And the holder is in the language settings
+  #   When the holder changes app language to <different_language>
+  #   Then the language changes automatically to <different_language>
+  #
+  #   Examples:
+  #     | language | different_language |
+  #     | English  | French             |
+  #     | French   | English            |
 
-  @T001-Language @wip @AcceptanceTest
-  Scenario Outline: Existing holder changes language
-    Given the holder has initially selected <language> as the language
+
+  @T001.1-Language @AcceptanceTest @extra_config_language_1
+  Scenario: Existing holder changes language from English to French
+    Given the holder has initially selected "English" as the language
     And the holder is in the language settings
-    When the ID holder selects <different language>
-    Then the language changes automatically to <different language>
+    When the holder changes app language to "French"
+    Then the language changes automatically to "French"
 
-    Examples:
-      | language | different language |
-      | English  | French             |
-      | French   | English            |
-
-
-  @T002-Language @wip @FunctionalTest
-  Scenario Outline: Holder quits app after changing language
-    Given the holder has initially selected <language> as the language
+  @T001.2-Language @AcceptanceTest @extra_config_language_2
+  Scenario: Existing holder changes language from French to English
+    Given the holder has initially selected "French" as the language
     And the holder is in the language settings
-    And they have selected a <different language>
-    When they quit the app
-    And they reopen the app
-    Then the language is set to <different language>
+    When the holder changes app language to "English"
+    Then the language changes automatically to "English"
 
-    Examples:
-      | language | different language |
-      | English  | French             |
-      | French   | English            |
 
+  @T002.1-Language @FunctionalTest @extra_config_language_1
+  Scenario: Holder quits app after changing language
+    Given the holder has initially selected "English" as the language
+    And the holder is in the language settings
+    And they have selected "French"
+    Then the language changes automatically to "French"
+    When they have closed the app
+    And they relaunch the app
+    Then the language is set to "French"
+
+  @T002.2-Language @FunctionalTest @extra_config_language_2
+  Scenario: Holder quits app after changing language
+    Given the holder has initially selected "French" as the language
+    And the holder is in the language settings
+    And they have selected "English"
+    Then the language changes automatically to "English"
+    When they have closed the app
+    And they relaunch the app
+    Then the language is set to "English"
 
 
   @T00X-Language @wip @OutOfScope

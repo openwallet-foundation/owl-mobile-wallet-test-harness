@@ -6,6 +6,10 @@ from device_service_handler.device_service_handler_interface import DeviceServic
 import json
 from decouple import config
 from appium import webdriver
+import aiohttp
+import asyncio
+import os 
+
 
 
 class LambdaTestHandler(DeviceServiceHandlerInterface):
@@ -13,14 +17,42 @@ class LambdaTestHandler(DeviceServiceHandlerInterface):
     _url: str
     _desired_capabilities: dict
     _driver: webdriver
+    _api_endpoint: str
+    _lambda_username: str
+    _lambda_access_key: str
+
+    def __init__(self, config_file_path: str):
+        super().__init__(config_file_path)
+        self._api_endpoint = 'https://mobile-mgm.lambdatest.com/mfs/v1.0/media/upload'
 
     def set_desired_capabilities(self, config: dict = None):
         """set extra capabilities above what was in the config file"""
 
+        if type(config) is dict:
+            for key in list(config):
+                self._CONFIG['capabilities']['lt:options'][key] = config[key]
+                config.pop(key)
+        # Handle posiible special options
+        # if 'name' in config:
+        #     self._CONFIG['capabilities']['lt:options']['name'] = config['name']
+        #     config.pop('name')
+        #
+        # if 'language' in config: 
+        #     self._CONFIG['capabilities']['lt:options']['language'] = config['language']
+        #     config.pop('language')
+        #
+        # if 'locale' in config:
+        #     self._CONFIG['capabilities']['lt:options']['locale'] = config['locale']
+        #     config.pop('locale')
+        #
+        # if 'idleTimeout' in config:
+        #     self._CONFIG['capabilities']['lt:options']['idleTimeout'] = config['idleTimeout']
+        #     config.pop('idleTimeout')
+
+
         # Handle common options and capabilities
-        for item in config:
-            self._CONFIG['capabilities'][item] = config[item]
-        #self._CONFIG['capabilities']['fullReset'] = True
+            # for item in config:
+            #     self._CONFIG['capabilities'][item] = config[item]
         self._desired_capabilities = self._CONFIG['capabilities']
         print("\n\nDesired Capabilities passed to Appium:")
         print(json.dumps(self._desired_capabilities, indent=4))
@@ -30,33 +62,51 @@ class LambdaTestHandler(DeviceServiceHandlerInterface):
         """Order of presededence is options parameter, then the config.json file, then environment variables"""
         # if username, access key, and region are not in the config, check the environment.
         if options and 'LAMBDA_USERNAME' in options:
-            username = options['LAMBDA_USERNAME']
+            self._lambda_username = options['LAMBDA_USERNAME']
         else:
             if 'LAMBDA_USERNAME' in self._CONFIG:
-                username = self._CONFIG['LAMBDA_USERNAME']
+                self._lambda_username = self._CONFIG['LAMBDA_USERNAME']
             else:
-                username = config('LAMBDA_USERNAME')
+                self._lambda_username = config('LAMBDA_USERNAME')
 
         if options and 'LAMBDA_ACCESS_KEY' in options:
-            username = options['LAMBDA_ACCESS_KEY']
+            self._lambda_access_key = options['LAMBDA_ACCESS_KEY']
         else:
             if 'LAMBDA_ACCESS_KEY' in self._CONFIG:
-                access_key = self._CONFIG['LAMBDA_ACCESS_KEY']
+                self._lambda_access_key = self._CONFIG['LAMBDA_ACCESS_KEY']
             else:
-                access_key = config('LAMBDA_ACCESS_KEY')
+                self._lambda_access_key = config('LAMBDA_ACCESS_KEY')
 
         if command_executor_url == None:
             self._url = 'http://%s:%s@mobile-hub.lambdatest.com/wd/hub' % (
-                username, access_key)
+                self._lambda_username, self._lambda_access_key)
         else:
             self._url = command_executor_url
 
         # print(url)
 
+    async def save_qr_code_to_lambda_test(self, data):
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self._api_endpoint, auth=aiohttp.BasicAuth(self._lambda_username, self._lambda_access_key), data=data) as resp:
+                result = await resp.json()
+                return result['media_url']
+
+
 
     def inject_qrcode(self, image):
-        """pass the qrcode image to the device in a way that allows for the device to scan it when the camera opens"""
-        self._driver.execute_script(f"lambda-image-injection={image}")
+        """save qrcode image to the device in lambda test in a way that allows for the device to scan it when the camera opens"""
+        # get current directory
+        with open(os.path.dirname(__file__) + '/../qrcode.png', 'rb') as img:
+            payload = {
+                'media_file': img,
+                'type': 'image',
+                'custom_id': 'QRCodeImage'
+            }
+            image_url = asyncio.run(self.save_qr_code_to_lambda_test(payload))
+            self._driver.execute_script(f"lambda-image-injection={image_url}")
+
+    def supports_biometrics(self) -> bool:
+        return False
 
     def biometrics_authenticate(self, authenticate:bool):
         """authenticate when biometrics, ie fingerprint or faceid, true is success, false is fail biometrics"""
@@ -69,6 +119,6 @@ class LambdaTestHandler(DeviceServiceHandlerInterface):
     def set_test_result(self, passed: bool):
         """set the test result on the device platform. True is pass, False is failure"""
         if passed == False:
-            self._driver.execute_script('sauce:job-result=failed')
+            self._driver.execute_script('lambda-status=failed')
         elif passed == True:
-            self._driver.execute_script('sauce:job-result=passed')
+            self._driver.execute_script('lambda-status=passed')

@@ -7,6 +7,7 @@ from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.developer_settings import DeveloperSettingsPage
 from pageobjects.bc_wallet.contacts import ContactsPage
+from pageobjects.bc_wallet.languageform import LanguageFormPage
 
 
 class SettingsPage(BasePage):
@@ -16,6 +17,7 @@ class SettingsPage(BasePage):
     on_this_page_text_locator = "App Settings"
     back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
     contacts_locator = (AppiumBy.ID, "com.ariesbifold:id/Contacts")
+    language_locator = (AppiumBy.ID, "com.ariesbifold:id/Language")
     version_locator = (AppiumBy.ID, "com.ariesbifold:id/Version")
     version_partial_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Version")
     intro_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Introduction to the app")
@@ -24,7 +26,18 @@ class SettingsPage(BasePage):
 
 
     def on_this_page(self):     
+        if "language" in self.driver.capabilities:
+            self.on_this_page_text_locator = "App Settings" if self.driver.capabilities["language"] == "en" else "Paramètres de l'application"
+        elif "locale" in self.driver.capabilities:
+            self.on_this_page_text_locator = "App Settings" if "en" in self.driver.capabilities["locale"] else "Paramètres de l'application"
         return super().on_this_page(self.on_this_page_text_locator) 
+
+    def select_language(self):
+        if self.on_this_page():
+            self.find_by(self.language_locator).click()
+            return LanguageFormPage(self.driver)
+        else:
+            raise Exception(f"App not on the {type(self)} page")
 
 
     def enable_developer_mode(self):

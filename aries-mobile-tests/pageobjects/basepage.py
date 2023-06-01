@@ -49,7 +49,7 @@ class BasePage(object):
 
     def __init__(self, driver):
         self.driver = driver
-        self.current_platform = driver.capabilities['platformName']
+        self.current_platform = str(driver.capabilities['platformName'])
 
     def find_by(self, locator_tpl: tuple, timeout=20, wait_condition:WaitCondition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED):
         if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID or locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
@@ -169,9 +169,9 @@ class BasePage(object):
         """ Scroll to the element based on the accessibility id given. """
         """ The locator MUST be an accessibility id. """
         """ Can give a direction and the direction only applies to iOS. Default is down. """
-        
+
         # Works great for Android, but iOS has different parameters
-        if self.current_platform == "Android":
+        if self.current_platform.lower() == "Android".lower():
             self.driver.execute_script('mobile: scroll', {"strategy": 'accessibility id', "selector": locator})
         else:
             # Message: Mobile scroll supports the following strategies: name, direction, predicateString, and toVisible. Specify one of these
@@ -186,7 +186,7 @@ class BasePage(object):
 
         # Scroll down the page until the bottom is reached
         while True:
-            if self.current_platform == 'iOS':
+            if self.current_platform.lower() == 'iOS'.lower():
                 self.driver.execute_script('mobile: scroll', {'direction': 'down'})
             else:
                 # Scroll for android takes an accessibility id, however it will scroll to the bottom looking for that id and if it doesn't exist,
@@ -203,3 +203,18 @@ class BasePage(object):
             # Check if the bottom of the page has been reached
             if current_scroll_position >= screen_size['height']:
                 break
+
+    def is_element_visible(self, locator, timeout=2):
+        try:
+            self.find_by(locator, timeout=timeout)
+            return True
+        except:
+            return False
+
+    def swipe_down(self):
+        screen_size = self.driver.get_window_size()
+        x = int(int(screen_size['width']) * 0.5)
+        y_start=int(int(screen_size['height']) * 0.8) 
+        y_end=int(int(screen_size['height']) * 0.2)
+        touch_action = TouchAction(self.driver)
+        touch_action.press(x=x, y=y_start).wait(500).move_to(x=x, y=y_end).release().perform()

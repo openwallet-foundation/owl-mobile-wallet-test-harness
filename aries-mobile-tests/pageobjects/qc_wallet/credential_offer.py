@@ -1,5 +1,4 @@
 from time import sleep
-from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
 from pageobjects.bc_wallet.credential_on_the_way import CredentialOnTheWayPage
 from pageobjects.qc_wallet.are_you_sure_decline_credential import AreYouSureDeclineCredentialPageQC
@@ -14,14 +13,15 @@ class CredentialOfferPageQC(CredentialOfferPage):
         if self.on_this_page():
             # if the credential has a lot of attributes it could need to scroll
             if scroll == True:
-                try: 
-                    self.scroll_to_element(self.accept_aid_locator[1])
-                except:
-                    sleep(5)
-                    self.scroll_to_element(self.accept_aid_locator[1])
-                self.find_by(self.accept_locator, timeout=30, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+                el_visible = self.is_element_visible(self.accept_locator)
+                timeout=30
+                while not el_visible and timeout > 0:
+                    self.swipe_down()
+                    el_visible = self.is_element_visible(self.accept_locator)
+                    timeout-=1
+                self.find_by(self.accept_locator).click()
             else:
-                self.find_by(self.accept_locator, timeout=30, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+                self.find_by(self.accept_locator).click()
             return CredentialOnTheWayPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
@@ -30,11 +30,13 @@ class CredentialOfferPageQC(CredentialOfferPage):
         if self.on_this_page():
             # if the credential has a lot of attributes it could need to scroll
             if scroll == True:
-                try: 
-                    self.find_by(self.decline_locator, timeout=30, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
-                except:
-                    self.scroll_to_element(self.accept_aid_locator[1])
-                    self.find_by(self.decline_locator, timeout=30, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+                el_visible = self.is_element_visible(self.decline_locator)
+                timeout=30
+                while not el_visible and timeout > 0:
+                    self.swipe_down()
+                    el_visible = self.is_element_visible(self.decline_locator)
+                    timeout-=1
+                self.find_by(self.decline_locator).click()
             else:
                 self.find_by(self.decline_locator).click()
             return AreYouSureDeclineCredentialPageQC(self.driver)

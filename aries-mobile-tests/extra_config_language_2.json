@@ -1,0 +1,10 @@
+{
+  "iOS": {
+    "language": "fr",
+    "locale": "fr_CA"
+  },
+  "Android": {
+    "language": "fr",
+    "locale": "CA"
+  }
+}

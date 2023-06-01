@@ -23,6 +23,10 @@ class DeviceServiceHandlerInterface(ABC):
         self.set_device_service_specific_options()
 
     @abstractmethod
+    def supports_biometrics(self) -> bool:
+        """return true if the device service supports biometrics authentication"""
+
+    @abstractmethod
     def set_device_service_specific_options(self, options:dict=None, command_executor_url:str=None):
         """set any specific device options before initialize_driver is called """
 
