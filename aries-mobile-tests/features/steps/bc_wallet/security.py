@@ -57,6 +57,7 @@ def step_impl(context):
 @given('the Holder has selected to use PIN only to unlock BC Wallet')
 def step_impl(context):
     context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
+    sleep(3)
 
 @when('the User selects to use Biometrics')
 def step_impl(context):
@@ -66,6 +67,7 @@ def step_impl(context):
         context.device_service_handler.biometrics_authenticate(True)
     else:
         context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
+        sleep(3)
 
 @then('they have access to the app')
 def step_impl(context):

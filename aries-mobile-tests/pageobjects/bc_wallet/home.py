@@ -103,6 +103,7 @@ class HomePage(BasePage):
         # if self.on_this_page():
 
         self.find_by(self.scan_locator).click()
+        sleep(20)
 
         # return a new page object? The scan page.
         return ConnectingPage(self.driver)

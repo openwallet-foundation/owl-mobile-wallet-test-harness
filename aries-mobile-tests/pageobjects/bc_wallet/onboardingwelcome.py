@@ -24,8 +24,10 @@ class OnboardingWelcomePage(BasePage):
         # Sometimes (especially when running with a local emulator ) where the app is not loaded yet.
         # Appium doesn't seem to let this happen when using Sauce Labs. 
         timeout = 10
-        if "Local" in os.environ['DEVICE_CLOUD']:
+        if "Local" in os.environ['DEVICE_CLOUD']: 
             timeout = 100
+        if "LambdaTest" in os.environ['DEVICE_CLOUD']:
+            sleep(10)
         return super().on_this_page(self.on_this_page_locator, timeout)   
 
     def get_onboarding_text(self):

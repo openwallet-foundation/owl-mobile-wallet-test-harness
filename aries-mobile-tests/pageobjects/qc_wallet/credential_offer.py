@@ -1,6 +1,7 @@
 from time import sleep
 from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
 from pageobjects.bc_wallet.credential_on_the_way import CredentialOnTheWayPage
+from pageobjects.bc_wallet.decline_credential_offer import DeclineCredentialOfferPage
 from pageobjects.qc_wallet.are_you_sure_decline_credential import AreYouSureDeclineCredentialPageQC
 
 class CredentialOfferPageQC(CredentialOfferPage):
@@ -39,6 +40,6 @@ class CredentialOfferPageQC(CredentialOfferPage):
                 self.find_by(self.decline_locator).click()
             else:
                 self.find_by(self.decline_locator).click()
-            return AreYouSureDeclineCredentialPageQC(self.driver)
+            return DeclineCredentialOfferPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
