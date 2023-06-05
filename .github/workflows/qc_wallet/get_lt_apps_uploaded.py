@@ -36,7 +36,7 @@ resp_json = resp.json()
 if resp.status_code == 200:
     latest_app_json = find_latest_app(resp_json)
 else:
-    raise Exception(f"There was a problem getting the list of available apps in Sauce Labs: {resp_json}")
+    raise Exception(f"There was a problem getting the list of available apps in LambdaTest: {resp_json}")
 
 local_latest_app_json_file = Path(local_latest_app_json_filename)
 local_latest_app_json_file.touch(exist_ok=True)
@@ -48,8 +48,8 @@ if os.stat(local_latest_app_json_filename).st_size != 0: # Local json file is no
             with open(local_latest_app_json_filename, 'w') as outfile:
                 #outfile.write(json.dumps(infile))
                 print('true')
-                file_name, ext = os.path.splitext(latest_app_json['name'])
-                print(file_name)
+                app_url, ext = os.path.splitext(latest_app_json['app_id'])
+                print(app_url)
                 json.dump(latest_app_json, outfile)
         else:
             print('false')
