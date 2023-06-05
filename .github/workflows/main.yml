@@ -22,7 +22,7 @@ jobs:
           echo ${output[@]}
           echo ${output[0]}
           echo ${output[1]}
-          echo "APP_IS_NEW=lt://${output[0]}" >> $GITHUB_OUTPUT
+          echo "APP_IS_NEW=${output[0]}" >> $GITHUB_OUTPUT
           echo "NEW_APP_URL=lt://${output[1]}" >> $GITHUB_OUTPUT
   run-on-device-tests:
     needs: [check-app-updated]
