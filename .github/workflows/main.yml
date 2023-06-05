@@ -23,7 +23,7 @@ jobs:
           echo ${output[0]}
           echo ${output[1]}
           echo "APP_IS_NEW=${output[0]}" >> $GITHUB_OUTPUT
-          echo "NEW_APP_URL=${output[1]}" >> $GITHUB_OUTPUT
+          echo "NEW_APP_URL=lt://${output[1]}" >> $GITHUB_OUTPUT
   run-on-device-tests:
     needs: [check-app-updated]
     #needs: [check-app-updated-ios, check-app-updated-android]
@@ -35,22 +35,22 @@ jobs:
       matrix:
         include:
           - mobile-platform: "-p Android"
-            app-file-name: "-a lt://${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
             report-project: "android-multi-device-full"
           - mobile-platform: "-p iOS"
-            app-file-name: "-a lt://${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
             report-project: "ios-multi-device-full"
           - mobile-platform: "-p Android"
-            app-file-name: "-a lt://${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
             report-project: "candy-uvp-pcft-chat-android"
           - mobile-platform: "-p iOS"
-            app-file-name: "-a lt://${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
             report-project: "candy-uvp-pcft-chat-ios"
           - mobile-platform: "-p Android"
-            app-file-name: "-a lt://${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
             report-project: "bc-digital-id-android"
           - mobile-platform: "-p iOS"
-            app-file-name: "-a lt://${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
             report-project: "bc-digital-id-ios"
     #timeout-minutes: 60
     steps:
