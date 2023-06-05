@@ -47,10 +47,10 @@ jobs:
             app-file-name: "-a lt://${{ needs.check-app-updated.outputs.NEW_APP_NAME }}"
             report-project: "candy-uvp-pcft-chat-ios"
           - mobile-platform: "-p Android"
-            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
+            app-file-name: "-a lt://${{ needs.check-app-updated.outputs.NEW_APP_NAME }}"
             report-project: "bc-digital-id-android"
           - mobile-platform: "-p iOS"
-            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
+            app-file-name: "-a lt://${{ needs.check-app-updated.outputs.NEW_APP_NAME }}"
             report-project: "bc-digital-id-ios"
     #timeout-minutes: 60
     steps:
@@ -68,13 +68,13 @@ jobs:
         with:
           USE_NGROK: "-n"
 
-      - name: run-sauce-connect-tunnel
-        if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
-        uses: saucelabs/sauce-connect-action@v2
-        with:
-          username: ${{ secrets.SAUCE_USERNAME }}
-          accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          directDomains: aries-mediator-agent.vonx.io
+      # - name: run-sauce-connect-tunnel
+      #   if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+      #   uses: saucelabs/sauce-connect-action@v2
+      #   with:
+      #     username: ${{ secrets.SAUCE_USERNAME }}
+      #     accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
+      #     directDomains: aries-mediator-agent.vonx.io
 
       #    tunnelIdentifier: github-action-tunnel
       #    region: us-west-1
