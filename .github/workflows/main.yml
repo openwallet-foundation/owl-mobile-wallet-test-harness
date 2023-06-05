@@ -7,7 +7,7 @@ on:
     - cron: "0 0 * * *" # every day at midnight
 
 jobs:
-  check-app-updated:
+  check-app-updated-android:
     runs-on: ubuntu-latest
     outputs:
       APP_IS_NEW: ${{ steps.check-app-updated-on-lt.outputs.APP_IS_NEW }}
@@ -26,10 +26,28 @@ jobs:
           echo "APP_IS_NEW=${output[0]}" >> "$GITHUB_OUTPUT"
           echo "NEW_APP_URL=${output[1]}" >> "$GITHUB_OUTPUT"
           echo "BUILD_NAME=${output[2]}" >> "$GITHUB_OUTPUT"
+  check-app-updated-ios:
+    runs-on: ubuntu-latest
+    outputs:
+      APP_IS_NEW: ${{ steps.check-app-updated-on-lt.outputs.APP_IS_NEW }}
+      NEW_APP_URL: ${{ steps.check-app-updated-on-lt.outputs.NEW_APP_URL }}
+      BUILD_NAME: ${{ steps.check-app-updated-on-lt.outputs.BUILD_NAME }}
+    steps:
+      - name: checkout-test-harness
+        uses: actions/checkout@v3
+      - name: check-app-updated-on-lt
+        id: check-app-updated-on-lt
+        run: |
+          output=($(python .github/workflows/qc_wallet/get_lt_apps_uploaded.py ${{ secrets.LAMBDA_USERNAME }} ${{ secrets.LAMBDA_ACCESS_KEY }} iOS .github/workflows/qc_wallet/latest_app.json ))
+          echo ${output[@]}
+          echo ${output[0]}
+          echo ${output[1]}
+          echo "APP_IS_NEW=${output[0]}" >> "$GITHUB_OUTPUT"
+          echo "NEW_APP_URL=${output[1]}" >> "$GITHUB_OUTPUT"
+          echo "BUILD_NAME=${output[2]}" >> "$GITHUB_OUTPUT"
   run-on-device-tests:
-    needs: [check-app-updated]
-    #needs: [check-app-updated-ios, check-app-updated-android]
-    if: ${{ needs.check-app-updated.outputs.APP_IS_NEW }} == 'true'
+    needs: [check-app-updated-ios, check-app-updated-android]
+    if: ${{ needs.check-app-updated-ios.outputs.APP_IS_NEW }} == 'true' && ${{ needs.check-app-updated-android.outputs.APP_IS_NEW }} == 'true'
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
@@ -37,28 +55,28 @@ jobs:
       matrix:
         include:
           - mobile-platform: "-p Android"
-            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
+            app-file-name: "-a ${{ needs.check-app-updated-android.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated-android.outputs.BUILD_NAME }}"
             report-project: "android-multi-device-full"
           - mobile-platform: "-p iOS"
-            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
+            app-file-name: "-a ${{ needs.check-app-updated-ios.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated-ios.outputs.BUILD_NAME }}"
             report-project: "ios-multi-device-full"
           - mobile-platform: "-p Android"
-            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
+            app-file-name: "-a ${{ needs.check-app-updated-android.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated-android.outputs.BUILD_NAME }}"
             report-project: "candy-uvp-pcft-chat-android"
           - mobile-platform: "-p iOS"
-            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
+            app-file-name: "-a ${{ needs.check-app-updated-ios.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated-ios.outputs.BUILD_NAME }}"
             report-project: "candy-uvp-pcft-chat-ios"
           - mobile-platform: "-p Android"
-            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
+            app-file-name: "-a ${{ needs.check-app-updated-android.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated-android.outputs.BUILD_NAME }}"
             report-project: "bc-digital-id-android"
           - mobile-platform: "-p iOS"
-            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
+            app-file-name: "-a ${{ needs.check-app-updated-ios.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated-ios.outputs.BUILD_NAME }}"
             report-project: "bc-digital-id-ios"
     #timeout-minutes: 60
     steps:
