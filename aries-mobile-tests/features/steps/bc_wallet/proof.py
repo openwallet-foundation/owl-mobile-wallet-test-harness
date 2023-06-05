@@ -415,6 +415,20 @@ def step_impl(context):
             context.thisCameraPrivacyPolicyPage.select_allow()
 
 
+@given('the user has a connectionless {proof} request for access to PCTF')
+def step_impl(context, proof):
+    # load the proof request json from the file name in proof 
+    proof_json_file = open("features/data/" + proof.lower() + ".json")
+    proof_json = json.load(proof_json_file)
+    # send the proof request
+    qrcode = context.verifier.send_proof_request(request_for_proof=proof_json, connectionless=True)
+
+    context.device_service_handler.inject_qrcode(qrcode)
+
+    context.thisConnectingPage = context.thisNavBar.select_scan()
+    # This is connectionless and the connecting page doesn't last long. Assume we move quickly to the Proof Request
+    context.thisProofRequestPage = ProofRequestPage(context.driver)
+
 @given('the user has a connectionless proof request for access to PCTF Chat')
 def step_impl(context):
     qrcode = context.verifier.send_proof_request()

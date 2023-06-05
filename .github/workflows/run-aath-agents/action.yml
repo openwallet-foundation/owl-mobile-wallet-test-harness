@@ -12,11 +12,13 @@ inputs:
     default: "-a acapy-main -b acapy-main"
   LEDGER_URL_CONFIG:
     description: "Ledger to use"
-    required: true
-    default: "http://test.bcovrin.vonx.io"
+    required: false
+  GENESIS_URL:
+    description: "Ledger to use"
+    required: false
   TAILS_SERVER_URL_CONFIG:
     description: "Tails Server to use"
-    required: true
+    required: false
     default: "https://tails.vonx.io"
   AGENT_CONFIG_FILE:
     description: "Customized agent args to use"

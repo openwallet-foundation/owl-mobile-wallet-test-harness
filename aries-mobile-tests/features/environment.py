@@ -21,7 +21,7 @@ from behave.contrib.scenario_autoretry import patch_scenario_with_autoretry
 device_cloud_service = config('DEVICE_CLOUD')
 
 # Get the Device Platform
-device_platform_name = config('DEVICE_PLATFORM')
+#device_platform_name = config('DEVICE_PLATFORM')
 
 # Check if there is a config file override. If not, use the default
 try: 
