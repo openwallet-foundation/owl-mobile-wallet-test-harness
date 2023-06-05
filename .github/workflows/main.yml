@@ -12,6 +12,7 @@ jobs:
     outputs:
       APP_IS_NEW: ${{ steps.check-app-updated-on-lt.outputs.APP_IS_NEW }}
       NEW_APP_URL: ${{ steps.check-app-updated-on-lt.outputs.NEW_APP_URL }}
+      BUILD_NAME: ${{ steps.check-app-updated-on-lt.outputs.BUILD_NAME }}
     steps:
       - name: checkout-test-harness
         uses: actions/checkout@v3
@@ -23,7 +24,8 @@ jobs:
           echo ${output[0]}
           echo ${output[1]}
           echo "APP_IS_NEW=${output[0]}" >> "$GITHUB_OUTPUT"
-          echo "NEW_APP_URL=lt://${output[1]}" >> "$GITHUB_OUTPUT"
+          echo "NEW_APP_URL=${output[1]}" >> "$GITHUB_OUTPUT"
+          echo "BUILD_NAME=${output[2]}" >> "$GITHUB_OUTPUT"
   run-on-device-tests:
     needs: [check-app-updated]
     #needs: [check-app-updated-ios, check-app-updated-android]
@@ -35,26 +37,32 @@ jobs:
       matrix:
         include:
           - mobile-platform: "-p Android"
-            app-file-name: "-a ${{needs.check-app-updated.outputs.NEW_APP_URL}}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
             report-project: "android-multi-device-full"
           - mobile-platform: "-p iOS"
-            app-file-name: "-a ${{needs.check-app-updated.outputs.NEW_APP_URL}}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
             report-project: "ios-multi-device-full"
           - mobile-platform: "-p Android"
-            app-file-name: "-a ${{needs.check-app-updated.outputs.NEW_APP_URL}}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
             report-project: "candy-uvp-pcft-chat-android"
           - mobile-platform: "-p iOS"
-            app-file-name: "-a ${{needs.check-app-updated.outputs.NEW_APP_URL}}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
             report-project: "candy-uvp-pcft-chat-ios"
           - mobile-platform: "-p Android"
-            app-file-name: "-a ${{needs.check-app-updated.outputs.NEW_APP_URL}}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
             report-project: "bc-digital-id-android"
           - mobile-platform: "-p iOS"
-            app-file-name: "-a ${{needs.check-app-updated.outputs.NEW_APP_URL}}"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_URL }}"
+            build-name: "-b ${{ needs.check-app-updated.outputs.BUILD_NAME }}"
             report-project: "bc-digital-id-ios"
     #timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: run-aath-agents
         if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
@@ -113,6 +121,7 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.LAMBDA_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
+          BUILD_NAME: ${{ matrix.build-name }}
           TEST_SCOPE: "-t @qc_wallet -t ~@wip -t ~@Connectionless -t ~@BCSC -t ~@qc_wallet_not"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true

@@ -48,8 +48,10 @@ if os.stat(local_latest_app_json_filename).st_size != 0: # Local json file is no
             with open(local_latest_app_json_filename, 'w') as outfile:
                 #outfile.write(json.dumps(infile))
                 print('true')
-                app_url, ext = os.path.splitext(latest_app_json['app_id'])
+                file_name, ext = os.path.splitext(latest_app_json['name'])
+                app_url = f"lt://{latest_app_json['app_id']}"
                 print(app_url)
+                print(f"{file_name}-{platform}")
                 json.dump(latest_app_json, outfile)
         else:
             print('false')
@@ -57,6 +59,8 @@ else: # Local json file is new, just use the latest app found
     with open(local_latest_app_json_filename, 'w') as outfile:
         print('true')
         file_name, ext = os.path.splitext(latest_app_json['name'])
-        print(file_name)
+        app_url = f"lt://{latest_app_json['app_url']}"
+        print(app_url)
+        print(f"{file_name}-{platform}")
         json.dump(latest_app_json, outfile)
 
