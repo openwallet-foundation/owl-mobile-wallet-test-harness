@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       APP_IS_NEW: ${{ steps.check-app-updated-on-lt.outputs.APP_IS_NEW }}
-      NEW_APP_NAME: ${{ steps.check-app-updated-on-lt.outputs.NEW_APP_URL }}
+      NEW_APP_URL: ${{ steps.check-app-updated-on-lt.outputs.NEW_APP_URL }}
     steps:
       - name: checkout-test-harness
         uses: actions/checkout@v3
