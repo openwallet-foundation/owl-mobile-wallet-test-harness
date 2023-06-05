@@ -52,10 +52,13 @@ def step_impl(context, agent):
 
     # If this is the first time the user selects scan, then they will get a Camera Privacy Policy that needs to be dismissed
     # TODO only do this if the platorm is iOS. Android is not showing the policy page at present in Sauce Labs becasue we have autoGrantPermissions on. 
-    if context.driver.capabilities['platformName'] == 'iOS':
+    if context.driver.capabilities['platformName'].lower() == 'iOS'.lower():
         context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
         if context.thisCameraPrivacyPolicyPage.on_this_page():
             context.thisCameraPrivacyPolicyPage.select_allow()
+
+    sleep(3)
+
 
 
 @when('the Holder is taken to the Connecting Screen/modal')

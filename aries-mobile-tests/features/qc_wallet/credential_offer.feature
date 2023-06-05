@@ -13,9 +13,6 @@ Feature: Offer a Credential
       And a connection has been successfully made
       And the user has a credential offer
       When they select Decline the credential
-      Then they are brought to the confirm decline page
-      And they select Yes, decline this credential
-      When they select Done
       Then they are brought Home
       # Then they are brought to the list of credentials
       # And a temporary notification will appear that informs the holder of the declined action

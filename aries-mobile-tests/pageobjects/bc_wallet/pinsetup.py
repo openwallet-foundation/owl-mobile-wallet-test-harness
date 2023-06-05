@@ -1,4 +1,6 @@
+from time import sleep
 from appium.webdriver.common.appiumby import AppiumBy
+from appium.webdriver.common.touch_action import TouchAction
 from pageobjects.basepage import BasePage
 from pageobjects.bc_wallet.onboarding_biometrics import OnboardingBiometricsPage
 
@@ -28,6 +30,12 @@ class PINSetupPage(BasePage):
     def enter_pin(self, pin):
         if self.on_this_page():
             self.find_by(self.first_pin_locator).send_keys(pin)
+            screen_size = self.driver.get_window_size()
+            x = int(int(screen_size['width']) * 0.5)
+            y = int(int(screen_size['height']) * 0.2)
+            touch_action = TouchAction(self.driver)
+            touch_action.tap(x=x, y=y).perform()
+            sleep(1)
             return True
         else:
             raise Exception(f"App not on the {type(self)} page")
@@ -43,7 +51,6 @@ class PINSetupPage(BasePage):
 
     def enter_second_pin(self, pin):
         if self.on_this_page():
-            self.find_by(self.second_pin_locator).click()
             self.find_by(self.second_pin_locator).send_keys(pin)
             return True
         else:
