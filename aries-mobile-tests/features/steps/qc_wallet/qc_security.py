@@ -78,6 +78,8 @@ def special_step_impl(context):
     #assert context.thisInitializationPage.on_this_page()
     context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     context.thisNavBar = NavBar(context.driver)
+    if context.thisHomePage.on_this_page() == False:
+        sleep(5)    
     assert context.thisHomePage.on_this_page()
 
 
