@@ -69,7 +69,7 @@ Feature: Connections
       When the holder Removes this Contact
       And the holder reviews more details on removing Contacts
          | details                                                            |
-         | By removing this contact you'll no longer be able to: |
+         | By removing this Contact you'll no longer be able to: |
       And the holder confirms to Remove this Contact
       Then the holder is taken to the Contact list
       And the holder is informed that the Contact has been removed

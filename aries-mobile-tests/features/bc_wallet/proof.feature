@@ -239,6 +239,37 @@ Feature: Proof
          | credential                  |
          | cred_data_unverified_person |
 
+
+   @T009.1-Proof @critical @AcceptanceTest @Connectionless
+   Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
+      Given the PCTF Member has setup thier Wallet
+      And the PCTF member has an Unverified Person <credential>
+         | issuer_agent_type | credential_name   |
+         | CANdyUVPIssuer    | Unverified Person |
+      And the user has a connectionless <proof> request for access to PCTF
+         | issuer_agent_type |
+         | AATHIssuer        |
+      When they select Share
+      And the holder is informed that they are sending information securely
+      And they are informed that the information sent successfully
+      And they select Go back to home on information sent successfully
+      Then the PCTF member has access to chat
+
+      Examples:
+         | credential                  | proof                     |
+         | cred_data_unverified_person | pcft_connectionless_proof |
+
+
+   @T009.1.debug-Proof @critical @AcceptanceTest @Connectionless @wip
+   Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
+      Given the user has a connectionless <proof> request for access to PCTF
+         | issuer_agent_type |
+         | AATHIssuer        |
+
+      Examples:
+         | proof                     |
+         | pcft_connectionless_proof |
+
    @T010.1-Proof @normal @MultiCredProof @AcceptanceTest @Story_614
    Scenario: Holder accepts a proof request with multiple credentials
       Given the Holder has setup thier wallet
@@ -356,7 +387,7 @@ Feature: Proof
       And they are brought Home
 
       Examples:
-         | credential         | credential_2                 | proof                                          | interval |
+         | credential         | credential_2                 | proof                                  | interval |
          | cred_data_photo_id | cred_data_photo_id_revokable | proof_photo_id_revokable_self_attested | now:now  |
 
    @T012.2-Proof @normal @AcceptanceTest @SelfAttestation @Story_239 @wip

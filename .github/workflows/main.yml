@@ -63,9 +63,27 @@ jobs:
           USE_NGROK: ""
 
       - name: run-aath-agents-ngrok
+        if: ${{ matrix.mobile-platform=='-p Android' && contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+        uses: ./.github/workflows/run-aath-agents
+        with:
+          USE_NGROK: "-n"
+
+      - name: run-aath-verifier-agent
+        if: ${{ matrix.mobile-platform=='-p iOS' && contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+        uses: ./.github/workflows/run-aath-agents
+        with:
+          TEST_AGENTS: "-b acapy-main"
+          GENESIS_URL: "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis"
+          AGENT_CONFIG_FILE: "/aries-backchannels/acapy/read_only_ledger_verifier_config.yaml"
+          USE_NGROK: ""
+
+      - name: run-aath-verifier-agent-ngrok
         if: ${{ matrix.mobile-platform=='-p Android' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-aath-agents
         with:
+          TEST_AGENTS: "-b acapy-main"
+          GENESIS_URL: "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis"
+          AGENT_CONFIG_FILE: "/aries-backchannels/acapy/read_only_ledger_verifier_config.yaml"
           USE_NGROK: "-n"
 
       - name: run-sauce-connect-tunnel
@@ -130,13 +148,12 @@ jobs:
         if: ${{ contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-test-harness
         env:
-          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
           REGION: "us-west-1"
           #TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
         with:
           MOBILE_WALLET: "-w bc_wallet"
           ISSUER_AGENT: '-i "CANdy_UVP;https://openvp-candy-issuer-test.apps.silver.devops.gov.bc.ca/"'
-          VERIFIER_AGENT: '-v "PCFT_Chat;https://pctftest-test.vonx.io/"'
+          VERIFIER_AGENT: '-v "AATH;http://0.0.0.0:9030"'
           DEVICE_CLOUD: "-d SauceLabs"
           DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
