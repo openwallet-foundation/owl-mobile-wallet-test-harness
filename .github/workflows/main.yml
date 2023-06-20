@@ -60,12 +60,14 @@ jobs:
         if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-aath-agents
         with:
+          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
           USE_NGROK: ""
 
       - name: run-aath-agents-ngrok
-        if: ${{ matrix.mobile-platform=='-p Android' && contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+        if: ${{ matrix.mobile-platform=='-p Android' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-aath-agents
         with:
+          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
           USE_NGROK: "-n"
 
       - name: run-aath-verifier-agent
@@ -78,7 +80,7 @@ jobs:
           USE_NGROK: ""
 
       - name: run-aath-verifier-agent-ngrok
-        if: ${{ matrix.mobile-platform=='-p Android' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+        if: ${{ matrix.mobile-platform=='-p Android' && contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-aath-agents
         with:
           TEST_AGENTS: "-b acapy-main"
