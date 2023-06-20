@@ -10,7 +10,7 @@ class ContactRemoveFromWalletPage(BasePage):
     """Remove Contact from wallet page object"""
 
     # Locator
-    on_this_page_text_locator = "Remove this contact"
+    on_this_page_text_locator = "Remove this Contact"
     remove_contact_locator = (AppiumBy.ID, "com.ariesbifold:id/ConfirmRemoveButton")
 
     def on_this_page(self):     
