@@ -39,7 +39,14 @@ runs:
       shell: bash
       working-directory: aries-agent-test-harness
     - name: run-aath-agents
-      run: LEDGER_URL_CONFIG=${{inputs.LEDGER_URL_CONFIG}} TAILS_SERVER_URL_CONFIG=${{inputs.TAILS_SERVER_URL_CONFIG}} AGENT_CONFIG_FILE=${{inputs.AGENT_CONFIG_FILE}} ./manage start ${{inputs.TEST_AGENTS}} ${{inputs.USE_NGROK}}
+      run: |
+        if [[ -n "${{ inputs.LEDGER_URL_CONFIG }}" ]]; then
+          LEDGER_URL_CONFIG=${{inputs.LEDGER_URL_CONFIG}} TAILS_SERVER_URL_CONFIG=${{inputs.TAILS_SERVER_URL_CONFIG}} AGENT_CONFIG_FILE=${{inputs.AGENT_CONFIG_FILE}} ./manage start ${{inputs.TEST_AGENTS}} ${{inputs.USE_NGROK}}
+        elif [[ -n "${{ inputs.GENESIS_URL }}" ]]; then
+          GENESIS_URL=${{ inputs.GENESIS_URL }} TAILS_SERVER_URL_CONFIG=${{ inputs.TAILS_SERVER_URL_CONFIG }} AGENT_CONFIG_FILE=${{ inputs.AGENT_CONFIG_FILE }} ./manage start ${{ inputs.TEST_AGENTS }} ${{ inputs.USE_NGROK }}
+        else
+          echo "Neither LEDGER_URL_CONFIG nor GENESIS_URL provided."
+        fi
       shell: bash
       working-directory: aries-agent-test-harness
     - name: shut-down-uniresolver
