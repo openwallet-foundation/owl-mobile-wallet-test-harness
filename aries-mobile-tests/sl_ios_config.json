@@ -4,7 +4,6 @@
         "build": "build-1",
         "platformName": "iOS",
         "app": "storage:filename=AriesBifold-76.ipa",
-        "deviceName": "iPhone.*",
         "sessionCreationRetry": "3",
         "sauceLabsImageInjectionEnabled": true,
         "autoAcceptAlerts": true,

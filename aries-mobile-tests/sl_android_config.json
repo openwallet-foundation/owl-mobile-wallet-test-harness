@@ -4,8 +4,6 @@
         "build": "build-1",
         "platformName": "Android",
         "app":"storage:filename=app-release.apk",
-        "deviceName":"Samsung.*",
-        "platformVersion":"11",
         "sessionCreationRetry" : "3",
         "sauceLabsImageInjectionEnabled": true,
         "autoGrantPermissions": true,
