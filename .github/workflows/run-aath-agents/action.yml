@@ -12,11 +12,13 @@ inputs:
     default: "-a acapy-main -b acapy-main"
   LEDGER_URL_CONFIG:
     description: "Ledger to use"
-    required: true
-    default: "http://test.bcovrin.vonx.io"
+    required: false
+  GENESIS_URL:
+    description: "Ledger to use"
+    required: false
   TAILS_SERVER_URL_CONFIG:
     description: "Tails Server to use"
-    required: true
+    required: false
     default: "https://tails.vonx.io"
   AGENT_CONFIG_FILE:
     description: "Customized agent args to use"
@@ -37,7 +39,14 @@ runs:
       shell: bash
       working-directory: aries-agent-test-harness
     - name: run-aath-agents
-      run: LEDGER_URL_CONFIG=${{inputs.LEDGER_URL_CONFIG}} TAILS_SERVER_URL_CONFIG=${{inputs.TAILS_SERVER_URL_CONFIG}} AGENT_CONFIG_FILE=${{inputs.AGENT_CONFIG_FILE}} ./manage start ${{inputs.TEST_AGENTS}} ${{inputs.USE_NGROK}}
+      run: |
+        if [[ -n "${{ inputs.GENESIS_URL }}" ]]; then
+          GENESIS_URL=${{ inputs.GENESIS_URL }} TAILS_SERVER_URL_CONFIG=${{ inputs.TAILS_SERVER_URL_CONFIG }} AGENT_CONFIG_FILE=${{ inputs.AGENT_CONFIG_FILE }} ./manage start ${{ inputs.TEST_AGENTS }} ${{ inputs.USE_NGROK }}
+        elif [[ -n "${{ inputs.LEDGER_URL_CONFIG }}" ]]; then
+          LEDGER_URL_CONFIG=${{inputs.LEDGER_URL_CONFIG}} TAILS_SERVER_URL_CONFIG=${{inputs.TAILS_SERVER_URL_CONFIG}} AGENT_CONFIG_FILE=${{inputs.AGENT_CONFIG_FILE}} ./manage start ${{inputs.TEST_AGENTS}} ${{inputs.USE_NGROK}}
+        else
+          echo "Neither LEDGER_URL_CONFIG nor GENESIS_URL provided."
+        fi
       shell: bash
       working-directory: aries-agent-test-harness
     - name: shut-down-uniresolver
