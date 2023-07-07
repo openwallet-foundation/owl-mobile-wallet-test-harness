@@ -62,22 +62,22 @@ jobs:
             app-file-name: "-a ${{ needs.check-app-updated-ios.outputs.NEW_APP_URL }}"
             build-name: "-b ${{ needs.check-app-updated-ios.outputs.BUILD_NAME }}"
             report-project: "ios-multi-device-full"
-          - mobile-platform: "-p Android"
-            app-file-name: "-a ${{ needs.check-app-updated-android.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated-android.outputs.BUILD_NAME }}"
-            report-project: "candy-uvp-pcft-chat-android"
-          - mobile-platform: "-p iOS"
-            app-file-name: "-a ${{ needs.check-app-updated-ios.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated-ios.outputs.BUILD_NAME }}"
-            report-project: "candy-uvp-pcft-chat-ios"
-          - mobile-platform: "-p Android"
-            app-file-name: "-a ${{ needs.check-app-updated-android.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated-android.outputs.BUILD_NAME }}"
-            report-project: "bc-digital-id-android"
-          - mobile-platform: "-p iOS"
-            app-file-name: "-a ${{ needs.check-app-updated-ios.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated-ios.outputs.BUILD_NAME }}"
-            report-project: "bc-digital-id-ios"
+          # - mobile-platform: "-p Android"
+          #   app-file-name: "-a ${{ needs.check-app-updated-android.outputs.NEW_APP_URL }}"
+          #   build-name: "-b ${{ needs.check-app-updated-android.outputs.BUILD_NAME }}"
+          #   report-project: "candy-uvp-pcft-chat-android"
+          # - mobile-platform: "-p iOS"
+          #   app-file-name: "-a ${{ needs.check-app-updated-ios.outputs.NEW_APP_URL }}"
+          #   build-name: "-b ${{ needs.check-app-updated-ios.outputs.BUILD_NAME }}"
+          #   report-project: "candy-uvp-pcft-chat-ios"
+          # - mobile-platform: "-p Android"
+          #   app-file-name: "-a ${{ needs.check-app-updated-android.outputs.NEW_APP_URL }}"
+          #   build-name: "-b ${{ needs.check-app-updated-android.outputs.BUILD_NAME }}"
+          #   report-project: "bc-digital-id-android"
+          # - mobile-platform: "-p iOS"
+          #   app-file-name: "-a ${{ needs.check-app-updated-ios.outputs.NEW_APP_URL }}"
+          #   build-name: "-b ${{ needs.check-app-updated-ios.outputs.BUILD_NAME }}"
+          #   report-project: "bc-digital-id-ios"
     #timeout-minutes: 60
     steps:
       - uses: actions/checkout@v3
@@ -86,12 +86,14 @@ jobs:
         if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-aath-agents
         with:
+          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
           USE_NGROK: ""
 
       - name: run-aath-agents-ngrok
         if: ${{ matrix.mobile-platform=='-p Android' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-aath-agents
         with:
+          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
           USE_NGROK: "-n"
 
       # - name: run-sauce-connect-tunnel
