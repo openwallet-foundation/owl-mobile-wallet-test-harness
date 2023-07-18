@@ -6,8 +6,11 @@ from agent_factory.issuer_agent_interface import IssuerAgentInterface
 from sys import platform
 from decouple import config
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+# from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+# from webdriver_manager.chrome import ChromeDriverManager
+# from webdriver_manager.core.utils import ChromeType
+from selenium.webdriver.chrome.service import Service as ChromiumService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.utils import ChromeType
 # import Page Objects needed
@@ -48,12 +51,15 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
         super().__init__(endpoint)
         if platform == "linux" or platform == "linux2":
             print("Starting Chromium on linux for Issuer Agent")
-            options = Options()
-            options.add_argument("--no-sandbox")
+            # options = Options()
+            # options.add_argument("--no-sandbox")
             # options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--headless")
-            self.driver = webdriver.Chrome(options=options, service=Service(
-                ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
+            # options.add_argument("--headless")
+            self.driver = webdriver.Chrome(options=options, service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
+            # self.driver = webdriver.Chrome(options=options, service=Service(
+            #     ChromeDriverManager(chrome_type=ChromeType.GOOGLE).install()))
+            # self.driver = webdriver.Chrome(options=options, service=Service(
+            #     ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
             #self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
         else:
             print("Starting Chrome on Mac or Windows for Issuer Agent")
