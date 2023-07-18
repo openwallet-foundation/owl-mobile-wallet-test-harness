@@ -16,6 +16,7 @@ Feature: Offer a Credential
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       When the Holder receives a Non-Revocable credential offer
+      And the holder opens the credential offer
       Then holder is brought to the credential offer screen
       And they can view the contents of the credential
          | issuer_agent_type | who         | cred_type    | attributes           | values                  |
@@ -31,7 +32,8 @@ Feature: Offer a Credential
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the user has a credential offer
-      When they select Accept
+      When the holder opens the credential offer
+      And they select Accept
       And the holder is informed that their credential is on the way with an indication of loading
       And once the credential arrives they are informed that the Credential is added to your wallet
       And they select Done
@@ -48,7 +50,8 @@ Feature: Offer a Credential
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the user has a credential offer of <credential>
-      When they select Accept
+      When the holder opens the credential offer
+      And they select Accept
       And the holder is informed that their credential is on the way with an indication of loading
       And once the credential arrives they are informed that the Credential is added to your wallet
       And they select Done
@@ -70,7 +73,8 @@ Feature: Offer a Credential
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the user has a credential offer
-      When they select Decline
+      When the holder opens the credential offer
+      And they select Decline
       Then they are brought to the list of credentials
       And a temporary notification will appear that informs the holder of the declined action
       And the credential declined is not in the list

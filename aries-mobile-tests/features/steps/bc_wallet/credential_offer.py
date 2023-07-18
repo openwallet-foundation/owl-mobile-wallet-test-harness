@@ -31,10 +31,19 @@ def step_impl(context):
 def step_impl(context):
     context.issuer.send_credential()
 
+    # May not need this assert anymore with the new connection/scan flow.
     assert context.thisConnectingPage.wait_for_connection()
     # context.thisCredentialOfferNotificationPage = CredentialOfferNotificationPage(context.driver)
     # assert context.thisCredentialOfferNotificationPage.on_this_page()
 
+    # Check the Contact page for the credential offer
+    assert context.thisContactPage.wait_for_credential_offer()
+
+
+@when('the holder opens the credential offer')
+def step_impl(context):
+    # Select the credential offer
+    context.thisCredentialOfferPage = context.thisContactPage.select_open_credential_offer()
 
 
 @given('the Holder receives a credential offer of {credential}')
@@ -144,6 +153,7 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(f'''
         When the Holder receives a Non-Revocable credential offer
+        And the holder opens the credential offer
         Then holder is brought to the credential offer screen
     ''')
 
@@ -162,6 +172,7 @@ def step_impl(context, credential, revocation=None):
         ''')
 
     context.execute_steps(f'''
+            When the holder opens the credential offer
             Then holder is brought to the credential offer screen
         ''')
 

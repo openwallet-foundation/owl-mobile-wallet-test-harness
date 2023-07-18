@@ -123,10 +123,16 @@ def step_impl(context, proof=None, interval=None):
             print("FileNotFoundError: features/data/" + proof.lower() + ".json")
 
 
+@when('the holder opens the proof request')
+def step_impl(context):
+    # Select the credential offer
+    context.thisProofRequestPage = context.thisContactPage.select_open_proof_request()
+
+
 @then('holder is brought to the proof request')
 def step_impl(context):
 
-    context.thisProofRequestPage = ProofRequestPage(context.driver)
+    #context.thisProofRequestPage = ProofRequestPage(context.driver)
     assert context.thisProofRequestPage.on_this_page()
 
 
@@ -147,8 +153,7 @@ def step_impl(context):
 
 @then('they Confirm the decline')
 def step_impl(context):
-    context.thisProofRequestDeclinedPage = context.thisAreYouSureDeclineProofRequest.select_confirm()
-    context.thisHomePage = context.thisProofRequestDeclinedPage.select_done()
+    context.thisHomePage = context.thisAreYouSureDeclineProofRequest.select_confirm()
 
 
 @then('they can view the contents of the proof request')
@@ -237,6 +242,7 @@ def step_impl(context):
             And the Holder is taken to the Connecting Screen/modal
             And the Connecting completes successfully
             And the Holder receives a proof request
+            And the holder opens the proof request
             Then holder is brought to the proof request
         ''')
 
@@ -269,6 +275,7 @@ def step_impl(context, proof, interval=None):
         ''')
 
     context.execute_steps('''
+        When the holder opens the proof request
         Then holder is brought to the proof request
     ''')
 
