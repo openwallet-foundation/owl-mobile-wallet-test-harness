@@ -22,6 +22,7 @@ Feature: Proof
       And the Holder is taken to the Connecting Screen/modal
       And the Connecting completes successfully
       And the Holder receives a proof request
+      And the holder opens the proof request
       Then holder is brought to the proof request
       And they can view the contents of the proof request
          | verifier_agent_type | who        | attributes | values  |
