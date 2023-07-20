@@ -77,7 +77,7 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
         """return the type of issuer as a string BCVPIssuer"""
         return "BCVPIssuer"
 
-    def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False):
+    def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
         # This is not supported on BC VP Issuer. Connection is made when creating the credential
         # If called, send an exception back on this one and let the test handle it. Maybe a IssuerInterfaceFunctionNotSupported error.
         return Exception('Function not supported for BC VP Issuer')

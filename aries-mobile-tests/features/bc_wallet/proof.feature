@@ -348,8 +348,8 @@ Feature: Proof
       And the credential has a revoked status
       And the revocation notification is removed
 
-   @T011.2-Proof @normal @RevocationNotification @AcceptanceTest @Story_63 @wip
-   Scenario: Holder of a dismissed revoked notification reviews revocation message again
+   @T011.2-Proof @normal @RevocationNotification @AcceptanceTest @Story_63
+   Scenario: Holder of a dismissed revoked notification reviews revocation status again
       Given the Holder has setup thier wallet
       And the Holder has selected to use biometrics to unlock BC Wallet
       And that the holder has a revocable credential stored in the wallet
@@ -361,9 +361,6 @@ Feature: Proof
       And The holder has received and acknowledged the revocation message notification
       When the holder selects the credential
       Then they will be informed of its revoked status
-      And the holder will be able to review the revoked message again
-         | revoked_message            |
-         | This credential is revoked |
 
 
    @T012.1-Proof @normal @AcceptanceTest @SelfAttestation @Story_239 @wip

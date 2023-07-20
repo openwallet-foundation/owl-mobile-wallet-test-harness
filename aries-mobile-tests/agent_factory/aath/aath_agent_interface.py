@@ -13,7 +13,7 @@ class AATHAgentInterface():
     _oob = False
     name = str
 
-    def create_invitation_util(self, oob=False, print_qrcode=False, save_qrcode=False):
+    def create_invitation_util(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
         """create an invitation and return the json back to the caller """
         self._oob = oob
         if self._oob is True:
@@ -37,7 +37,7 @@ class AATHAgentInterface():
             self.invitation_json = json.loads(resp_text)
             if "label" in self.invitation_json["invitation"]:
                 self.name = self.invitation_json["invitation"]["label"]
-            qrimage = get_qr_code_from_invitation(self.invitation_json, print_qrcode, save_qrcode)
+            qrimage = get_qr_code_from_invitation(self.invitation_json, print_qrcode, save_qrcode, qr_code_border)
             return qrimage
 
     def get_name(self):

@@ -65,7 +65,7 @@ class CANdy_UVP_IssuerAgentInterface(IssuerAgentInterface):
         """return the type of issuer as a string CANdyUVPIssuer"""
         return "CANdyUVPIssuer"
 
-    def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False):
+    def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
         # This is not supported on CANdy UVP Issuer. Connection is made when creating the credential
         # If called, send an exception back on this one and let the test handle it. Maybe a IssuerInterfaceFunctionNotSupported error.
         return Exception('Function not supported for CANdy UVP Issuer')
