@@ -24,7 +24,7 @@ class CameraPrivacyPolicyPage(BasePage):
         # 14 sec
         #return super().on_this_page(self.allow_button_locator, timeout=5)
         # 19 sec
-        return super().on_this_page(self.on_this_page_text_locator)
+        #return super().on_this_page(self.on_this_page_text_locator)
 
     def select_not_now(self):
         self.find_by(self.not_now_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()

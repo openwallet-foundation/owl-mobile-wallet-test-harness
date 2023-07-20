@@ -90,3 +90,19 @@ class SauceLabsHandler(DeviceServiceHandlerInterface):
             self._driver.execute_script('sauce:job-result=failed')
         elif passed == True:
             self._driver.execute_script('sauce:job-result=passed')
+
+    def is_current_device_a_tablet(self):
+        """Determine if the current device is a tablet """
+
+        if "iPad" in self._driver.capabilities['testobject_device']:
+            return True
+        elif "iPhone" in self._driver.capabilities['testobject_device']:
+            return False
+        else: # Android
+
+            pixel_ratio = float(self._driver.capabilities['pixelRatio'])
+
+            # Adjust this threshold according to your specific requirements
+            tablet_threshold = 1.7  # Devices with a pixel ratio less than 1.7 are considered tablets
+
+            return pixel_ratio < tablet_threshold

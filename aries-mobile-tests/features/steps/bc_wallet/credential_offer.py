@@ -114,9 +114,9 @@ def step_impl(context):
         When the connection takes too long reopen app and select notification
     ''')
 
-    #assert context.thisConnectingPage.wait_for_connection()
-
-    context.thisCredentialOfferPage = CredentialOfferPage(context.driver)
+    # if thisCredentialOfferPage is not in context then create it
+    if hasattr(context, 'thisCredentialOfferPage') == False:
+        context.thisCredentialOfferPage = CredentialOfferPage(context.driver)
     assert context.thisCredentialOfferPage.on_this_page()
 
 

@@ -27,8 +27,8 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
         """return the type of issuer as a string AATHIssuer"""
         return "AATHIssuer"
 
-    def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False):
-        return self.create_invitation_util(oob, print_qrcode, save_qrcode)
+    def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
+        return self.create_invitation_util(oob, print_qrcode, save_qrcode, qr_code_border)
         
 
     def connected(self):

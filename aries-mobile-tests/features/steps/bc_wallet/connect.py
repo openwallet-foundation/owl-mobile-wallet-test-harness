@@ -38,6 +38,12 @@ def step_impl(context, pin):
 
 @when('the Holder scans the QR code sent by the "{agent}"')
 def step_impl(context, agent):
+    # check the device serivce handler to see if we are on a tablet or phone
+    if context.device_service_handler.is_current_device_a_tablet():
+        qr_code_border = 80
+    else:
+        qr_code_border = 40
+
     if agent == "issuer":
         qrimage = context.issuer.create_invitation(print_qrcode=context.print_qr_code_on_creation, save_qrcode=context.save_qr_code_on_creation)
     elif agent == "verifier":
@@ -58,6 +64,9 @@ def step_impl(context, agent):
         context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
         if context.thisCameraPrivacyPolicyPage.on_this_page():
             context.thisCameraPrivacyPolicyPage.select_allow()
+        else:
+            # soft assert that the camera privacy policy page was not displayed
+            logging.info('Soft Assertion failed. Not on the Camera Privacy Policy Page. MAy cause preceeding connection steps to fail')
 
 
 @when('the Holder is taken to the Connecting Screen/modal')
