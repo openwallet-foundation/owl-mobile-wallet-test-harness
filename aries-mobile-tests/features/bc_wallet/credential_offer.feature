@@ -32,8 +32,7 @@ Feature: Offer a Credential
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the user has a credential offer
-      When the holder opens the credential offer
-      And they select Accept
+      When they select Accept
       And the holder is informed that their credential is on the way with an indication of loading
       And once the credential arrives they are informed that the Credential is added to your wallet
       And they select Done
