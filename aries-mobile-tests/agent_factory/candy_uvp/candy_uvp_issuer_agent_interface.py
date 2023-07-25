@@ -8,7 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.utils import ChromeType
+from webdriver_manager.core.os_manager import ChromeType
 # import Page Objects needed
 from agent_factory.candy_uvp.pageobjects.terms_of_service_page import TermsOfServicePage
 from agent_factory.candy_uvp.pageobjects.request_credential_page import RequestCredentialPage
@@ -16,9 +16,6 @@ from agent_factory.candy_uvp.pageobjects.review_and_confirm_page import ReviewAn
 from agent_factory.candy_uvp.pageobjects.connect_with_issuer_page import ConnectWithIssuerPage
 from agent_factory.candy_uvp.pageobjects.issuing_credential_page import IssuingCredentialPage
 
-#import json
-#from agent_test_utils import get_qr_code_from_invitation
-#from random import randint
 
 class CANdy_UVP_IssuerAgentInterface(IssuerAgentInterface):
 
@@ -46,10 +43,9 @@ class CANdy_UVP_IssuerAgentInterface(IssuerAgentInterface):
             print("Starting Chromium on linux for Issuer Agent")
             options = Options()
             options.add_argument("--no-sandbox")
-            #options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--headless")
             self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
-            #self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
         else:
             print("Starting Chrome on Mac or Windows for Issuer Agent")
             self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))

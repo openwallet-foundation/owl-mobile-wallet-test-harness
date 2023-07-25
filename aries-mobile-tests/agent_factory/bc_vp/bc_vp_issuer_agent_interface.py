@@ -6,13 +6,10 @@ from agent_factory.issuer_agent_interface import IssuerAgentInterface
 from sys import platform
 from decouple import config
 from selenium import webdriver
-# from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-# from webdriver_manager.chrome import ChromeDriverManager
-# from webdriver_manager.core.utils import ChromeType
-from selenium.webdriver.chrome.service import Service as ChromiumService
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.utils import ChromeType
+from webdriver_manager.core.os_manager import ChromeType
 # import Page Objects needed
 from pageobjects.bc_wallet.issuer_get_authcode_interface.bc_vp_issuer_get_authcode_interface_gapi import BCVPIssuerGetAuthCodeInterface
 from agent_factory.bc_vp.pageobjects.authenticate_with_page import AuthenticateWithPage
@@ -51,16 +48,11 @@ class BC_VP_IssuerAgentInterface(IssuerAgentInterface):
         super().__init__(endpoint)
         if platform == "linux" or platform == "linux2":
             print("Starting Chromium on linux for Issuer Agent")
-            # options = Options()
-            # options.add_argument("--no-sandbox")
-            # options.add_argument("--disable-dev-shm-usage")
-            # options.add_argument("--headless")
-            self.driver = webdriver.Chrome(options=options, service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
-            # self.driver = webdriver.Chrome(options=options, service=Service(
-            #     ChromeDriverManager(chrome_type=ChromeType.GOOGLE).install()))
-            # self.driver = webdriver.Chrome(options=options, service=Service(
-            #     ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
-            #self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
+            options = Options()
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--headless")
+            self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
         else:
             print("Starting Chrome on Mac or Windows for Issuer Agent")
             self.driver = webdriver.Chrome(
