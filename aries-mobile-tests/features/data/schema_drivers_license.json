@@ -1,0 +1,16 @@
+{
+   "schema_name":"drivers_license",
+   "schema_version":"1.0.0",
+   "attributes":[
+      "name",
+      "civic_address",
+      "city",
+      "province",
+      "country",
+      "postal_code",
+      "birth_dateint",
+      "id",
+      "issue_date",
+      "expiry_date"
+   ]
+}

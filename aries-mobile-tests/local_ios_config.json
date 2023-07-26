@@ -1,0 +1,41 @@
+{
+    "capabilities": {
+        "project": "BC Wallet",
+        "build": "build-1",
+        "platformName": "iOS",
+        "app":"storage:filename=AriesBifold-76.ipa",
+        "deviceName":"iPhone.*",
+        "platformVersion":"15.3",
+        "sessionCreationRetry" : "3",
+        "sauceLabsImageInjectionEnabled": true,
+        "autoAcceptAlerts": true,
+        "fullReset": true
+    }
+}
+
+{
+    "platformName": "iOS",
+    "appium:app": "storage:filename=AriesBifold.ipa",
+    "appium:deviceName": "iPhone_11_15_real_us",
+    "appium:platformVersion": "15.0",
+    "browserName": "",
+    "appium:automationName": "XCUITest",
+    "appium:appiumVersion": "1.22.0",
+    "sauce:options": {
+        "appium:privateDevicesOnly": true,
+        "appium:phoneOnly": true
+    }
+}
+
+{
+    "platformName": "iOS",
+    "appium:platformVersion": "15.0.2",
+    "appium:deviceName": "iPhone 6s",
+    "appium:udid": "auto",
+    "appium:bundleId": "ca.bc.gov.BCWallet",
+    "appium:xcodeOrgId": "L796QSLV3E",
+    "appium:xcodeSigningId": "Apple Distribution: Her Majesty the Queen in right of the Province of British Columbia (L796QSLV3E)",
+    "appium:updatedWDABundleId": "ca.bc.gov.*",
+    "appium:automationName": "XCUITest",
+    "fullReset": false
+  }

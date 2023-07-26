@@ -1,0 +1,22 @@
+{
+   "requested_attributes": {
+      "photo_attrs": {
+         "names": [
+            "name"
+         ],
+      "restrictions": [
+            {
+               "schema_name": "photo_id_revokable",
+               "schema_version": "1.0.0"
+            },
+            {
+               "schema_name": "photo_id",
+               "schema_version": "1.0.0"
+            }
+         ]
+      }
+   },
+   "requested_predicates": {
+   },
+   "version": "0.1.0"
+}

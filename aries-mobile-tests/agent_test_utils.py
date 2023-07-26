@@ -1,5 +1,37 @@
 import time
 import datetime
+import base64
+import json
+import io
+from qrcode import QRCode
+from PIL import Image
+
+def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_code=False, qr_code_border=40):
+    if "invitation_url" in invitation_json:
+        invite_url_key = "invitation_url"
+    elif "invitationUrl" in invitation_json:
+        invite_url_key = "invitationUrl"
+    else:
+        raise Exception(
+            f"Could not find an invitation url in invitation json {invitation_json}")
+    invitation_url = invitation_json[invite_url_key]
+
+    qr = QRCode(border=qr_code_border)
+    qr.add_data(invitation_url)
+    qr.make()
+    #img = qr.make_image(fill_color="red", back_color="#23dda0")
+    img = qr.make_image()
+    if save_qr_code:
+        img.save('./qrcode.png')
+    if print_qr_code:
+        qr.print_ascii(invert=True)
+
+    with io.BytesIO() as output:
+        img.save(output, format="PNG")
+        contents = base64.b64encode(output.getvalue())
+
+    return contents.decode('utf-8')
+    
 
 def create_non_revoke_interval(timeframe):
     # timeframe containes two variables, the To and from of the non-revoked to and from parameters in the send presentation request message
@@ -128,3 +160,17 @@ def amend_presentation_definition_with_runtime_data(context, presentation_defini
 
     return presentation_definition
 
+def table_to_str(table):
+    result = ''
+    if table.headings:
+        result = '|'
+    for heading in table.headings:
+        result += heading + '|'
+    result += '\n'
+    for row in table.rows:
+        if row.cells:
+            result += '|'
+        for cell in row.cells:
+            result += cell + '|'
+        result += '\n'
+    return result

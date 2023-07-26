@@ -64,18 +64,22 @@ def agent_controller_GET(url, topic, operation=None, id=None) -> (int, str):
     return (resp_status, resp_text)
 
 
-def agent_controller_POST(url, topic, operation=None, id=None, data=None) -> (int, str):
+def agent_controller_POST(url, topic, operation=None, id=None, data=None, wrap_data_with_data=True) -> (int, str):
     agent_url = url + topic + "/"
     payload = {}
     if data:
-        payload["data"] = data
+        if wrap_data_with_data:
+            payload["data"] = data
+        else:
+            payload = data
     if operation:
-        agent_url = agent_url + operation + "/"
+        agent_url = agent_url + operation
     if id:
         if topic == 'credential':
             payload["cred_ex_id"] = id
         else:
             payload["id"] = id
+
     (resp_status, resp_text) = run_coroutine_with_kwargs(make_agent_controller_request, "POST", agent_url, data=payload)
     return (resp_status, resp_text)
 
@@ -93,7 +97,8 @@ def expected_agent_state(agent_url, protocol_txt, thread_id, status_txt, wait_ti
         status_txt = [status_txt]
     # "N/A" means that the controller can't determine the state - we'll treat this as a successful response
     status_txt.append("N/A")
-    for i in range(int(wait_time/sleep_time)):
+    #for i in range(int(wait_time/sleep_time)):
+    for i in range(int(wait_time)):
         (resp_status, resp_text) = agent_controller_GET(agent_url + "/agent/command/", protocol_txt, id=thread_id)
         if resp_status == 200:
             resp_json = json.loads(resp_text)

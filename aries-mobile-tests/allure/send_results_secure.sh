@@ -49,6 +49,7 @@ begins_with_short_option()
 _positionals=()
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_test_project=
+_arg_silent_report=
 
 
 # Function that prints general usage of the script.
@@ -63,6 +64,7 @@ print_help()
 	printf '\t%s\n' "<admin_user>: Username of the Allure Administrator"
 	printf '\t%s\n' "<admin_pw>: Password of the Allure Administrator"
 	printf '\t%s\n' "-p, --test_project: Name of the project in the Allure Service to send results to (no default)"
+	printf '\t%s\n' "-s, --silent-report: Generate Report without response, this is to avoid Gateway timeout when generating large reports"
 	printf '\t%s\n' "-h, --help: Prints help"
 }
 
@@ -97,6 +99,18 @@ parse_commandline()
 			# and we strip the leading -p from the argument string using the ${var##-p} notation.
 			-p*)
 				_arg_test_project="${_key##-p}"
+				;;
+			# The silent argurment doesn't accept a value,
+			# we expect the --silent-report or -s, so we watch for them.
+			-s|--silent-report)
+				_arg_silent_report=1
+				;;
+			# We support getopts-style short arguments clustering,
+			# so as -s doesn't accept value, other short options may be appended to it, so we watch for -s*.
+			# After stripping the leading -s from the argument, we have to make sure
+			# that the first character that follows coresponds to a short option.
+			-s*)
+				_arg_silent_report=1
 				;;
 			# The help argurment doesn't accept a value,
 			# we expect the --help or -h, so we watch for them.
@@ -209,8 +223,11 @@ curl -X POST "$ALLURE_SERVER/allure-docker-service/send-results?project_id=$PROJ
 echo "------------------GENERATE-REPORT------------------"
 #RESPONSE=$(curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID&execution_name=$EXECUTION_NAME&execution_from=$EXECUTION_FROM&execution_type=$EXECUTION_TYPE" $FILES)
 #RESPONSE=$(curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" $FILES)
-RESPONSE=$(curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" -H "X-CSRF-TOKEN: $CRSF_ACCESS_TOKEN_VALUE" -b cookiesFile $FILES)
-ALLURE_REPORT=$(grep -o '"report_url":"[^"]*' <<< "$RESPONSE" | grep -o '[^"]*$')
-
+if [ _arg_silent_report==1 ]; then
+	curl --silent --output /dev/null -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" -H "X-CSRF-TOKEN: $CRSF_ACCESS_TOKEN_VALUE" -b cookiesFile $FILES
+else
+	RESPONSE=$(curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" -H "X-CSRF-TOKEN: $CRSF_ACCESS_TOKEN_VALUE" -b cookiesFile $FILES)
+	ALLURE_REPORT=$(grep -o '"report_url":"[^"]*' <<< "$RESPONSE" | grep -o '[^"]*$')
+fi
 #OR You can use JQ to extract json values -> https://stedolan.github.io/jq/download/
 #ALLURE_REPORT=$(echo $RESPONSE | jq '.data.report_url')
