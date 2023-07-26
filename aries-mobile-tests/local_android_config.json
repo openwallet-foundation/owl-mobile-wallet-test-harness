@@ -1,0 +1,13 @@
+{
+  "capabilities": {
+    "appPackage": "ca.bc.gov.BCWallet",
+    "appium:appActivity": "ca.bc.gov.BCWallet.MainActivity",
+    "platformName": "Android",
+    "app": "/Users/Shel/Projects/BC.gov/apps/bifold-bc/AriesBifold-209.apk",
+    "deviceName": "Android Accelerated Oreo",
+    "udid": "emulator-5554",
+    "automationName": "UiAutomator2",
+    "autoGrantPermissions": true,
+    "fullReset": true
+  }
+}

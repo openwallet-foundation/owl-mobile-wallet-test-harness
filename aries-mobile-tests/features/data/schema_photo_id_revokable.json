@@ -1,0 +1,17 @@
+{
+   "schema_name":"photo_id_revokable",
+   "schema_version":"1.0.0",
+   "attributes":[
+      "name",
+      "civic_address",
+      "city",
+      "province",
+      "country",
+      "postal_code",
+      "birth_dateint",
+      "photo",
+      "issue_date",
+      "expiry_date"
+   ],
+   "support_revocation":true
+}

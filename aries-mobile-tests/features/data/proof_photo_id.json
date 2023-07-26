@@ -1,0 +1,29 @@
+{
+   "requested_attributes": {
+      "photo_attrs": {
+         "names": [
+               "photo"
+            ],
+         "restrictions": [
+               {
+                  "schema_name": "photo_id",
+                  "schema_version": "1.0.0"
+               }
+         ]
+      }
+   },
+   "requested_predicates": {
+      "age": {
+         "name": "birth_dateint",
+         "p_type": ">",
+         "p_value": 19420116,
+         "restrictions": [
+               {
+                  "schema_name": "photo_id",
+                  "schema_version": "1.0.0"
+               }
+         ]
+      }
+   },
+   "version": "0.1.0"
+}

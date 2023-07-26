@@ -1,0 +1,14 @@
+{
+    "capabilities": {
+        "project": "BC Wallet",
+        "build": "build-1",
+        "platformName": "iOS",
+        "app": "storage:filename=AriesBifold-76.ipa",
+        "sessionCreationRetry": "3",
+        "sauceLabsImageInjectionEnabled": true,
+        "autoAcceptAlerts": true,
+        "fullReset": true,
+        "shouldTerminateApp": true,
+        "cacheId": "123456789"
+    }
+}
