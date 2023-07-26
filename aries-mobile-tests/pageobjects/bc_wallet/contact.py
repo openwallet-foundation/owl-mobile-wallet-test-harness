@@ -15,18 +15,14 @@ class ContactPage(BasePage):
     """Contact page object"""
 
     # Locator
-    #on_this_page_text_locator = "Contacts"
+    on_this_page_text_locator = "Contacts"
     contact_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
     chat_box_locator = (AppiumBy.ID, "com.ariesbifold:id/ChatBox")
     send_message_locator = (AppiumBy.ID, "com.ariesbifold:id/SendMessage")
-    #credential_offer_message_locator = (AppiumBy.ID, "com.ariesbifold:id/MessageText")
-    #credential_offer_message_locator = (AppiumBy.ANDROID_UIAUTOMATOR, "sent a credential offer"
-    #proof_request_message_locator = (AppiumBy.ID, "com.ariesbifold:id/MessageText")
-    #proof_request_message_locator = (AppiumBy.ACCESSIBILITY_ID, "sent a proof request")
     credential_offer_message_locator = (AppiumBy.XPATH, '//*[contains(@accessibilityId, "sent a credential offer")]')
     proof_request_message_locator = (AppiumBy.XPATH, '//*[contains(@accessibilityId, "sent a proof request")]')
-    open_credential_offer_locator = (AppiumBy.ID, "com.ariesbifold:id/OpenItem")
-    open_proof_request_locator = (AppiumBy.ID, "com.ariesbifold:id/OpenItem")
+    open_credential_offer_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewOffer")
+    open_proof_request_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewRequest")
 
     def on_this_page(self):     
         return super().on_this_page(self.contact_locator) 
