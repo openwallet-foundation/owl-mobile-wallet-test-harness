@@ -166,7 +166,7 @@ class BasePage(object):
     #     else:
     #         return False
 
-    def scroll_to_element(self, locator, direction='down'):
+    def scroll_to_element(self, locator:str, direction='down'):
         """ Scroll to the element based on the accessibility id given. """
         """ The locator MUST be an accessibility id. """
         """ Can give a direction and the direction only applies to iOS. Default is down. """
@@ -185,10 +185,12 @@ class BasePage(object):
         screen_size = self.driver.get_window_size()
         screen_height = screen_size['height']
 
+        before_source_ios = self.driver.page_source
+
         # Scroll down the page until the bottom is reached
         while True:
             if self.current_platform == 'iOS':
-                before_source_ios = self.driver.page_source
+                before_root = ET.fromstring(before_source_ios.encode('utf-8'))
                 self.driver.execute_script('mobile: scroll', {'direction': 'down'})
             else:
                 # Scroll for android takes an accessibility id, however it will scroll to the bottom looking for that id and if it doesn't exist,
@@ -202,10 +204,19 @@ class BasePage(object):
             if self.current_platform == 'iOS':
                 after_source_ios = self.driver.page_source
                 # Parse the hierarchies using an XML parser
-                root = ET.fromstring(before_source_ios.encode('utf-8'))
-                new_root = ET.fromstring(after_source_ios.encode('utf-8'))
-                if ET.tostring(root) == ET.tostring(new_root):
-                    break
+                after_root = ET.fromstring(after_source_ios.encode('utf-8'))
+
+                before_last_element = self.get_last_ios_element_on_page(before_root)
+                after_last_element = self.get_last_ios_element_on_page(after_root)
+
+                # Compare the tag_name of the last iOS elements to determine if we have reached the bottom
+                if before_last_element is not None and after_last_element is not None:
+                    if before_last_element.tag == after_last_element.tag:
+                        break
+
+                # Update the page source for the next iteration
+                before_source_ios = after_source_ios
+
             else:
                 window_rect = self.driver.get_window_rect()
                 current_scroll_position = window_rect['y'] + screen_height
@@ -213,3 +224,11 @@ class BasePage(object):
                 # Check if the bottom of the page has been reached
                 if current_scroll_position >= screen_size['height']:
                     break
+
+    def get_last_ios_element_on_page(self, root):
+        # Helper function to get the last iOS element that is not XCUIElementTypeOther from an XML hierarchy
+        last_ios_element = None
+        for element in root.iter():
+            if self.current_platform == 'iOS' and element.tag != 'XCUIElementTypeOther' and element.tag != 'XCUIElementTypeWindow':
+                last_ios_element = element
+        return last_ios_element
