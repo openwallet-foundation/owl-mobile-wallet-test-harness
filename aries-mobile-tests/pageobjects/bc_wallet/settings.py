@@ -34,8 +34,11 @@ class SettingsPage(BasePage):
         if not self.on_this_page():
             raise Exception(f"App not on the {type(self)} page")
 
+        # if self.current_platform == "iOS":
+        #     self.scroll_to_element(self.version_locator)
+        # else:
         self.scroll_to_bottom()
-        #version_element = self.find_by(self.version_locator)
+
         if self.current_platform == "iOS" and self.driver.capabilities['platformVersion'] <= '15':
             # Need to find the element py partial text or accessibility id for iOS 14 and lower
             version_elements = self.driver.find_elements(AppiumBy.XPATH, "//*[contains(@label, '{}')]".format(self.version_partial_aid_locator[1]))
