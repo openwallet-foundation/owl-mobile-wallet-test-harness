@@ -19,16 +19,18 @@ class SauceLabsHandler(DeviceServiceHandlerInterface):
 
         # Handle posiible special options
         if 'name' in config:
-            self._CONFIG['capabilities']['sauce:options'] = {
-                'name': config['name']
-            }
+            # Check if 'sauce:options' already exists
+            if 'sauce:options' not in self._CONFIG['capabilities']['firstMatch'][0]:
+                self._CONFIG['capabilities']['firstMatch'][0]['sauce:options'] = {}
+
+            # Insert the 'name' key under 'sauce:options'
+            self._CONFIG['capabilities']['firstMatch'][0]['sauce:options']['name'] = config['name']
         config.pop('name')
 
         # Handle common options and capabilities
         for item in config:
-            self._CONFIG['capabilities'][item] = config[item]
-        #self._CONFIG['capabilities']['fullReset'] = True
-        self._desired_capabilities = self._CONFIG['capabilities']
+            self._CONFIG['capabilities']['firstMatch'][0][item] = config[item]
+        self._desired_capabilities = self._CONFIG['capabilities']['firstMatch'][0]
         print("\n\nDesired Capabilities passed to Appium:")
         print(json.dumps(self._desired_capabilities, indent=4))
 

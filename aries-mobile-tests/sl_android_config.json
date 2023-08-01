@@ -1,12 +1,20 @@
 {
     "capabilities": {
-        "project": "BC Wallet",
-        "build": "build-1",
-        "platformName": "Android",
-        "app":"storage:filename=app-release.apk",
-        "sessionCreationRetry" : "3",
-        "sauceLabsImageInjectionEnabled": true,
-        "autoGrantPermissions": true,
-        "fullReset": true
+        "firstMatch": [
+            {
+                "platformName": "Android",
+                "appium:options": {
+                    "app": "storage:filename=BCWallet-1083.aab",
+                    "autoGrantPermissions": true,
+                    "automationName": "UiAutomator2"
+                },
+                "sauce:options": {
+                    "appiumVersion": "2.0.0",
+                    "fullReset": true,
+                    "sauceLabsImageInjectionEnabled": true,
+                    "sessionCreationRetry": "3"
+                }
+            }
+        ]
     }
 }

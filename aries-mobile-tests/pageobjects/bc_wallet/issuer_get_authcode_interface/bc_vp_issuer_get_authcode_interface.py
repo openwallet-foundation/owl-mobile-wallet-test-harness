@@ -7,7 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.utils import ChromeType
+from webdriver_manager.core.os_manager import ChromeType
 # import Page Objects needed
 from pageobjects.bc_wallet.holder_get_invite_interface.pageobjects.gmail_login_page import GmailLoginPage
 from pageobjects.bc_wallet.holder_get_invite_interface.pageobjects.gmail_email_page import GmailEmailPage
@@ -34,11 +34,10 @@ class BCVPIssuerGetAuthCodeInterface():
             print("Starting Chromium on linux for Issuer Agent")
             options = Options()
             options.add_argument("--no-sandbox")
-            # options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--headless")
             self.driver = webdriver.Chrome(options=options, service=Service(
                 ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
-            #self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
         else:
             print("Starting Chrome on Mac or Windows for Issuer Agent")
             self.driver = webdriver.Chrome(

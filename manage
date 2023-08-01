@@ -50,6 +50,14 @@ if [ "${PWD_HOST_FQDN}" != "" ]; then
   fi
 fi
 
+# Set default platform to linux/amd64 when running on Arm based MAC since there are no arm based images available currently.
+if [[ $OSTYPE == 'darwin'* ]]; then
+  architecture=$(uname -m)
+  if [[ "${architecture}" == 'arm'* ]] || [[ "${architecture}" == 'aarch'* ]]; then
+    export DOCKER_DEFAULT_PLATFORM=linux/amd64
+  fi
+fi
+
 # =================================================================================================================
 # Usage:
 # -----------------------------------------------------------------------------------------------------------------
@@ -218,20 +226,28 @@ modifyConfigJson() {
     fi
   fi 
 
-  contents="$(jq --arg DEVICE_PLATFORM "${DEVICE_PLATFORM}" '.capabilities |= . + { "platformName": $DEVICE_PLATFORM }' ./aries-mobile-tests/config.json)" && \
-  echo "${contents}" > ./aries-mobile-tests/config.json
+  # contents="$(jq --arg DEVICE_PLATFORM "${DEVICE_PLATFORM}" '.capabilities |= . + { "platformName": $DEVICE_PLATFORM }' ./aries-mobile-tests/config.json)" && \
+  # echo "${contents}" > ./aries-mobile-tests/config.json
 
   build_name="Wallet-Build $(date +'%m/%d/%y %H:%M:%S')"
 
   if [[ "${DEVICE_CLOUD}" == "SauceLabs" ]]; then
-    contents="$(jq --arg APP_NAME "storage:filename=${APP_NAME}" '.capabilities |= . + { "appium:app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
+    # contents="$(jq --arg APP_NAME "storage:filename=${APP_NAME}" '.capabilities |= . + { "appium:app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
+    # echo "${contents}" > ./aries-mobile-tests/config.json
+    contents="$(jq --arg DEVICE_PLATFORM "${DEVICE_PLATFORM}" '.capabilities.firstMatch[0] |= . + { "platformName": $DEVICE_PLATFORM }' ./aries-mobile-tests/config.json)" && \
     echo "${contents}" > ./aries-mobile-tests/config.json
+    jq --arg APP_NAME "storage:filename=${APP_NAME}" '.capabilities.firstMatch[0]."appium:options".app = $APP_NAME' ./aries-mobile-tests/config.json > tmp_config.json
+    mv tmp_config.json ./aries-mobile-tests/config.json
   elif [[ "${DEVICE_CLOUD}" == "LambdaTest" ]]; then
+    contents="$(jq --arg DEVICE_PLATFORM "${DEVICE_PLATFORM}" '.capabilities |= . + { "platformName": $DEVICE_PLATFORM }' ./aries-mobile-tests/config.json)" && \
+    echo "${contents}" > ./aries-mobile-tests/config.json
     contents="$(jq --arg APP_NAME "${APP_NAME}" --arg BUILD "${BUILD:=$build_name}" '.capabilities."lt:options" |= . + {"app": $APP_NAME, "build": $BUILD }' ./aries-mobile-tests/config.json)" && \
     echo "${contents}" > ./aries-mobile-tests/config.json
     contents="$(jq 'del(.capabilities.platformName)' ./aries-mobile-tests/config.json)"
     echo "${contents}" > ./aries-mobile-tests/config.json
   else
+    contents="$(jq --arg DEVICE_PLATFORM "${DEVICE_PLATFORM}" '.capabilities |= . + { "platformName": $DEVICE_PLATFORM }' ./aries-mobile-tests/config.json)" && \
+    echo "${contents}" > ./aries-mobile-tests/config.json
     contents="$(jq --arg APP_NAME "${APP_NAME}" '.capabilities |= . + { "app": $APP_NAME }' ./aries-mobile-tests/config.json)" && \
     echo "${contents}" > ./aries-mobile-tests/config.json  
   fi

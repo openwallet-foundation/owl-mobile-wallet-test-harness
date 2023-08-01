@@ -1,4 +1,4 @@
-FROM python:3.7-buster
+FROM python:3.9-bullseye
 COPY ./aries-mobile-tests/requirements.txt /aries-mobile-test-harness/
 WORKDIR /aries-mobile-test-harness
 RUN pip install -r requirements.txt
@@ -11,6 +11,9 @@ RUN \
          python-decouple
 
 RUN apt update && apt install -y chromium
+
+# workaround for chromium crash reports warning
+RUN mkdir -p "/root/.config/chromium/Crash Reports/pending"
 
 COPY . /aries-mobile-test-harness
 WORKDIR /aries-mobile-test-harness/aries-mobile-tests
