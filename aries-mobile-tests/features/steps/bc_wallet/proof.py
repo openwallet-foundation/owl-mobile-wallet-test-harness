@@ -436,8 +436,9 @@ def step_impl(context):
         else:
             # we are on the page but no error yet check one more time then close and scan again
             logging.info("There seems to be a problem scanning the QR Code, closing and scanning again")
-        context.thisQRCodeScanPage.select_close()
-        context.thisConnectingPage = context.thisNavBar.select_scan()
+        if context.thisQRCodeScanPage.on_this_page():
+            context.thisQRCodeScanPage.select_close()
+            context.thisConnectingPage = context.thisNavBar.select_scan()
 
 
 @given('the user has a connectionless {proof} request for access to PCTF')
