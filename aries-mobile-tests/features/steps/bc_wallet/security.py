@@ -6,6 +6,7 @@
 from behave import given, when, then
 import json
 import os
+from decouple import config
 
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
@@ -82,10 +83,18 @@ def step_impl(context):
     assert context.thisHomePage.on_this_page()
 
     # set the environment to TEST instead of PROD which is default as of build 575
-    env = "Test"
-    context.execute_steps(f'''
-        Given the App environment is set to {env}
-    ''')
+    # check to see what the current environment is set to. Order of presendence is, Environment Variable, Tag, default. 
+    env = os.environ.get('BCWALLET_ENVIRONMENT')
+    
+    if not env:
+        for tag in context.tags:
+            if tag.startswith('@BCWALLET_ENVIRONMENT:'):
+                env = tag.split(':')[1]
+
+    if env:
+        context.execute_steps(f'''
+            Given the App environment is set to {env}
+        ''')
 
 
 @given('the App environment is set to {env}')

@@ -205,7 +205,9 @@ def step_impl(context):
     try:
         context.thisCredentialAddedPage = context.thisCredentialOnTheWayPage.wait_for_credential()
         assert context.thisCredentialAddedPage.on_this_page()
-    except:
+    except Exception as e:
+        if "Unable to accept credential offer" in str(e) or "TimeoutException" in str(e):
+            raise e
         context.thisHomePage = context.thisCredentialOnTheWayPage.select_home()
 
 
