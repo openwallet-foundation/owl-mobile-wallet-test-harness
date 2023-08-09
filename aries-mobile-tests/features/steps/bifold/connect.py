@@ -3,7 +3,9 @@
 # 
 # -----------------------------------------------------------
 
+import logging
 from time import sleep
+from pageobjects.bc_wallet.scan import ScanPage
 from behave import given, when, then
 import json
 
@@ -39,6 +41,22 @@ def step_impl(context):
     context.device_service_handler.inject_qrcode(qrimage)
 
     context.thisHomePage.select_scan()
+
+    # It is possible that the QR code scan page could have an error displayed like invalid QR code, or at times displays
+    # no message and just sits there waiting, like there is no qr code to scan. Check to see if there is an error message and if so,
+    # close the scan window and scan again.
+    if hasattr(context, 'thisQRCodeScanPage') == False:
+        context.thisQRCodeScanPage = ScanPage(context.driver)
+    if context.thisQRCodeScanPage.on_this_page():
+        sleep(5)
+        if "Invalid QR code" in context.thisQRCodeScanPage.get_page_source():
+            # log the issue and close the scan window and scan again
+            logging.info("Invalid QR code error on scan page, closing and scanning again")
+        else:
+            # we are on the page but no error yet check one more time then close and scan again
+            logging.info("There seems to be a problem scanning the QR Code, closing and scanning again")
+        context.thisQRCodeScanPage.select_close()
+        context.thisConnectingPage = context.thisHomePage.select_scan()
 
 
 @when('accepts the connection')

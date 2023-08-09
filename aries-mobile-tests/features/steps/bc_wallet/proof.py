@@ -3,6 +3,7 @@
 #
 # -----------------------------------------------------------
 
+import logging
 from behave import given, when, then
 import json
 from time import sleep
@@ -19,6 +20,7 @@ from pageobjects.bc_wallet.home import HomePage
 from pageobjects.bc_wallet.navbar import NavBar
 from pageobjects.bc_wallet.camera_privacy_policy import CameraPrivacyPolicyPage
 from pageobjects.bc_wallet.credentials import CredentialsPage
+from pageobjects.bc_wallet.scan import ScanPage
 
 
 @given('the holder has a Non-Revocable credential')
@@ -420,6 +422,23 @@ def step_impl(context):
             context.driver)
         if context.thisCameraPrivacyPolicyPage.on_this_page():
             context.thisCameraPrivacyPolicyPage.select_allow()
+    
+    # It is possible that the QR code scan page could have an error displayed like invalid QR code, or at times displays
+    # no message and just sits there waiting, like there is no qr code to scan. Check to see if there is an error message and if so,
+    # close the scan window and scan again.
+    if hasattr(context, 'thisQRCodeScanPage') == False:
+        context.thisQRCodeScanPage = ScanPage(context.driver)
+    if context.thisQRCodeScanPage.on_this_page():
+        sleep(5)
+        if "Invalid QR code" in context.thisQRCodeScanPage.get_page_source():
+            # log the issue and close the scan window and scan again
+            logging.info("Invalid QR code error on scan page, closing and scanning again")
+        else:
+            # we are on the page but no error yet check one more time then close and scan again
+            logging.info("There seems to be a problem scanning the QR Code, closing and scanning again")
+        if context.thisQRCodeScanPage.on_this_page():
+            context.thisQRCodeScanPage.select_close()
+            context.thisConnectingPage = context.thisNavBar.select_scan()
 
 
 @given('the user has a connectionless {proof} request for access to PCTF')
