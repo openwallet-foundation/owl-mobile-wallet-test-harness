@@ -528,7 +528,7 @@ def step_impl(context):
         Then the holder selects the revocation notification
         Then acknowledges the revocation notification
     ''')
-    context.thisHomePage = context.thisNavBar.select_home()
+    context.thisHomePage = context.thisCredentialDetailsPage.select_back()
 
 
 @when(u'the holder selects the credential')

@@ -12,10 +12,10 @@ from time import sleep
 
 
 class HomePage(BasePage):
-    """Home page object"""
+    """Notifications (Home) page object"""
 
     # Locators
-    on_this_page_text_locator = "Home"
+    on_this_page_text_locator = "Notifications"
     on_this_page_notification_locator = "New Credential Offer"
     on_this_page_proof_notification_locator = "New Proof Request"
     on_this_page_revocation_notification_locator = "Credential revoked"
