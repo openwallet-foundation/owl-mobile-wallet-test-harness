@@ -11,12 +11,12 @@ class CredentialDetailsPage(BasePage):
     
     # Locators
     on_this_page_text_locator = "Credential Details"
-    #back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
-    back_locator = (AppiumBy.ACCESSIBILITY_ID, "Back")
+    back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
+    #back_locator = (AppiumBy.ACCESSIBILITY_ID, "Back")
     revocation_dismiss_locator = (AppiumBy.ID, "com.ariesbifold:id/Dismiss")
     revocation_message_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
     revocation_status_locator = (AppiumBy.ID, "com.ariesbifold:id/RevokedDate")
-    revocation_info_locator = (AppiumBy.ID, "com.ariesbifold:id/RevocationInfo")
+    revocation_info_locator = (AppiumBy.ID, "com.ariesbifold:id/RevocationMessage")
 
 
     def on_this_page(self):
