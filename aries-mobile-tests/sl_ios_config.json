@@ -11,7 +11,6 @@
                 },
                 "sauce:options": {
                     "appiumVersion": "2.0.0",
-                    "fullReset": true,
                     "sauceLabsImageInjectionEnabled": true,
                     "sessionCreationRetry": "3"
                 }
