@@ -3,7 +3,7 @@
 #
 # -----------------------------------------------------------
 
-from behave import given, when, then
+from behave import given, when, then, step
 import json
 from time import sleep
 
@@ -40,7 +40,7 @@ def step_impl(context):
     assert context.thisContactPage.wait_for_credential_offer()
 
 
-@when('the holder opens the credential offer')
+@step('the holder opens the credential offer')
 def step_impl(context):
     # Select the credential offer
     context.thisCredentialOfferPage = context.thisContactPage.select_open_credential_offer()
@@ -87,8 +87,8 @@ def step_impl(context, credential, revocation=None):
                 print(
                     f"FileNotFoundError: features/data/schema_{cred_type.lower()}.json")
         else:
-            if "Connectionless" in context.tags:
-                # We are expecting a QR code on the send credential if connectionless
+            if "Connectionless" in context.tags or context.issuer.get_issuer_type() == "CANdyUVPIssuer":
+                # We are expecting a QR code on the send credential if connectionless or the issuer is a CANdyUVPIssuer
                 qrimage = context.issuer.send_credential(
                     credential_offer=credential_json)
                 context.device_service_handler.inject_qrcode(qrimage)
@@ -110,6 +110,7 @@ def step_impl(context):
 @then('holder is brought to the credential offer screen')
 def step_impl(context):
     # Workaround for bug 645
+    # TODO remove this when bug 645 is fixed. It looks like there is no reason to run this anymore July 7, 2023
     context.execute_steps(f'''
         When the connection takes too long reopen app and select notification
     ''')

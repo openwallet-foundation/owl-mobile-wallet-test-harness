@@ -47,6 +47,8 @@ def step_impl(context, credential):
         Given the BCVC Issuer sends a BC VC Pilot Certificate
         And the BCSC holder gets the invite QR Code from their email
         And they Scan the credential offer QR Code
+        And the Connecting completes successfully
+        And the holder opens the credential offer
         Then holder is brought to the credential offer screen
         When they select Accept
         And the holder is informed that their credential is on the way with an indication of loading
