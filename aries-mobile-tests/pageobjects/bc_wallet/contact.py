@@ -22,7 +22,7 @@ class ContactPage(BasePage):
     credential_offer_message_locator = (AppiumBy.XPATH, '//*[contains(@accessibilityId, "sent a credential offer")]')
     proof_request_message_locator = (AppiumBy.XPATH, '//*[contains(@accessibilityId, "sent a proof request")]')
     open_credential_offer_locator = (AppiumBy.ID, "com.ariesbifold:id/Viewoffer")
-    open_proof_request_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewRequest")
+    open_proof_request_locator = (AppiumBy.ID, "com.ariesbifold:id/Viewrequest")
 
     def on_this_page(self):     
         return super().on_this_page(self.contact_locator) 
