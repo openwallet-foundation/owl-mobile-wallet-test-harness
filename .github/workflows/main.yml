@@ -94,7 +94,7 @@ jobs:
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          directDomains: aries-mediator-agent.vonx.io
+          directDomains: aries-mediator-agent.vonx.io,apple.com
 
       #    tunnelIdentifier: github-action-tunnel
       #    region: us-west-1
