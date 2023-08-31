@@ -17,7 +17,9 @@ class OnboardingShareNecessaryPage(BasePage):
     back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
     next_locator = (AppiumBy.ID, "com.ariesbifold:id/Next")
 
-    def on_this_page(self):    
+    def on_this_page(self):  
+        if self.current_platform == "Android":
+            return super().on_this_page(self.on_this_page_text_locator)  
         return super().on_this_page(self.on_this_page_locator)
 
     def get_onboarding_text(self):

@@ -12,7 +12,7 @@ class TermsAndConditionsPage(BasePage):
     # Locators
     # TODO: We could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
-    on_this_page_text_locator = "EULA"
+    on_this_page_text_locator = "End User License Agreement"
     on_this_page_locator = (AppiumBy.NAME, "End User License Agreement")
     terms_and_conditions_accept_aid_locator = "I Agree"
     terms_and_conditions_accept_locator = (AppiumBy.ID, "com.ariesbifold:id/IAgree")
@@ -23,6 +23,8 @@ class TermsAndConditionsPage(BasePage):
 
 
     def on_this_page(self):       
+        if self.current_platform == "Android":
+            return super().on_this_page(self.on_this_page_text_locator)
         return super().on_this_page(self.on_this_page_locator) 
 
     def select_accept(self):

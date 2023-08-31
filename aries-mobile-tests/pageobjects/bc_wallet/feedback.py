@@ -8,11 +8,7 @@ class FeedbackPage(BasePage):
     # Locators
     on_this_page_text_locator = "Give Feedback"
     next_locator = (AppiumBy.ACCESSIBILITY_ID, "Next")
-    #exit_locator = (AppiumBy.ACCESSIBILITY_ID, "EXIT")
-    #exit_locator = (AppiumBy.XPATH, "//a[normalize-space()='EXIT']")
-    #exit_locator = (AppiumBy.XPATH, "//[contains('EXIT')]")
-    #(AppiumBy.XPATH, "//[contains('XCUIElementTypeTextField')]")
-    exit_locator = (AppiumBy.XPATH, "(//a[normalize-space()='EXIT'])[1]")
+    exit_locator = (AppiumBy.ACCESSIBILITY_ID, "EXIT") # Works on iOS
 
 
     def on_this_page(self):   
