@@ -8,6 +8,7 @@ from pageobjects.bc_wallet.proof_request import ProofRequestPage
 from pageobjects.bc_wallet.get_person_credential import GetPersonCredentialPage
 from pageobjects.bc_wallet.credential_details import CredentialDetailsPage
 from pageobjects.bc_wallet.welcome_to_bc_wallet import WelcomeToBCWalletModal
+from pageobjects.bc_wallet.feedback import FeedbackPage
 from time import sleep
 
 
@@ -30,6 +31,7 @@ class HomePage(BasePage):
     settings_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
     #get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/GetBCID")
     get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewCustom")
+    give_feedback_locator = (AppiumBy.ID, "com.ariesbifold:id/GiveFeedback")
 
     # Modals and Alerts for Home page
     welcome_to_bc_wallet_modal = WelcomeToBCWalletModal
@@ -119,5 +121,12 @@ class HomePage(BasePage):
 
             # return a new page object for the settings page
             return SettingsPage(self.driver)
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+
+    def select_give_feedback(self):
+        if self.on_this_page():
+            self.find_by(self.give_feedback_locator).click()
+            return FeedbackPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

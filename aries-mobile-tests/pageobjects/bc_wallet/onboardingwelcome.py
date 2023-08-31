@@ -14,7 +14,7 @@ class OnboardingWelcomePage(BasePage):
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
     on_this_page_text_locator = "Welcome"
     #on_this_page_locator = (AppiumBy.ACCESSIBILITY_ID, "Welcome")
-    on_this_page_locator = (AppiumBy.NAME, "Welcome")
+    on_this_page_locator = (AppiumBy.NAME, "Welcome") # works on iOS
     skip_locator = (AppiumBy.ID, "com.ariesbifold:id/Skip")
     # locator changes in 127
     next_locator = (AppiumBy.ID, "com.ariesbifold:id/Next")
@@ -25,6 +25,8 @@ class OnboardingWelcomePage(BasePage):
         timeout = 10
         if "Local" in os.environ['DEVICE_CLOUD']:
             timeout = 100
+        if self.current_platform == "Android":
+            return super().on_this_page(self.on_this_page_text_locator, timeout)  
         return super().on_this_page(self.on_this_page_locator, timeout)   
 
     def get_onboarding_text(self):

@@ -57,6 +57,15 @@ class BasePage(object):
             return self.find_by_accessibility_id(locator_tpl[1], timeout, wait_condition)
         elif locator_tpl[0] == MobileBy.ID or locator_tpl[0] == AppiumBy.ID:
             return self.find_by_element_id(locator_tpl[1], timeout, wait_condition)
+        else:
+            try:
+                return WebDriverWait(self.driver, timeout).until(
+                    wait_condition(
+                        (locator_tpl[0], locator_tpl[1]))
+                )
+            except:
+                raise Exception(
+                    f"Could not find element {locator_tpl[0]} with Locator {locator_tpl[1]}")
 
 
     def find_multiple_by(self, locator_tpl: tuple, timeout=20):
