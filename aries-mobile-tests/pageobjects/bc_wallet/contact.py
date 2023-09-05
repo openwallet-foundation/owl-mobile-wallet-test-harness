@@ -19,8 +19,8 @@ class ContactPage(BasePage):
     contact_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
     chat_box_locator = (AppiumBy.ID, "com.ariesbifold:id/ChatBox")
     send_message_locator = (AppiumBy.ID, "com.ariesbifold:id/SendMessage")
-    credential_offer_message_locator = (AppiumBy.XPATH, '//*[contains(@accessibilityId, "sent a credential offer")]')
-    proof_request_message_locator = (AppiumBy.XPATH, '//*[contains(@accessibilityId, "sent a proof request")]')
+    credential_offer_message_locator = (AppiumBy.XPATH, '//*[contains(@name, "sent a credential offer") or contains(@text, "sent a credential offer")]')
+    proof_request_message_locator = (AppiumBy.XPATH, '//*[contains(@name, "sent a proof request") or contains(@text, "sent a proof request")]')
     open_credential_offer_locator = (AppiumBy.ID, "com.ariesbifold:id/Viewoffer")
     open_proof_request_locator = (AppiumBy.ID, "com.ariesbifold:id/Viewrequest")
 
