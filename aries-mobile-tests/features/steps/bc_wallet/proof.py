@@ -378,6 +378,7 @@ def step_impl(context):
         ''')
 
 
+@given('the user has setup thier Wallet')
 @given('the Holder has setup thier Wallet')
 def step_impl(context):
     context.execute_steps(f'''

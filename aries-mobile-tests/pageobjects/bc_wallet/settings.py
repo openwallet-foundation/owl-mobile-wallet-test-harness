@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.developer_settings import DeveloperSettingsPage
+from pageobjects.bc_wallet.update_pin import UpdatePINPage
 from pageobjects.bc_wallet.contacts import ContactsPage
 
 
@@ -21,6 +22,7 @@ class SettingsPage(BasePage):
     intro_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Introduction to the app")
     intro_locator = (AppiumBy.ID, "com.ariesbifold:id/IntroductionToTheApp")
     developer_locator = (AppiumBy.ID, "com.ariesbifold:id/DeveloperOptions")
+    update_pin_locator = (AppiumBy.ID, "com.ariesbifold:id/UpdatePIN")
 
 
     def on_this_page(self):     
@@ -62,6 +64,14 @@ class SettingsPage(BasePage):
         return DeveloperSettingsPage(self.driver)
         # else:
         #     raise Exception(f"App not on the {type(self)} page")
+
+
+    def select_udpate_pin(self):
+        self.find_by(self.update_pin_locator).click()
+
+        return UpdatePINPage(self.driver)
+
+
 
     def select_back(self):
         # Don't check if on this page becasue android (unless you scroll back to the top) can't see the App Settings accessibility ID

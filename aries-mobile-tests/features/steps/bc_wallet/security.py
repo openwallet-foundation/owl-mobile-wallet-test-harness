@@ -187,3 +187,59 @@ def step_impl(context):
 @then('they are informed of {pin_error}')
 def step_impl(context, pin_error):
     assert context.thisPINSetupPage.get_pin_error() == pin_error
+
+
+
+@given('the user has choosen to have biometrics {bio_usage}')
+def step_biometrics_choosen(context, bio_usage:str):
+    if bio_usage == 'on':
+        context.execute_steps('''
+            Given the Holder has selected to use biometrics to unlock BC Wallet
+        ''')
+    else:
+        context.execute_steps('''
+            Given the User has choosen not to use biometrics to unlock BC Wallet
+        ''')
+
+@then('the user updates thier PIN to "{pin}"')
+def step_update_pin(context, pin):
+    context.execute_steps(f'''
+        When the user enters thier first PIN to {pin}
+        And the User re-enters the PIN as {pin}
+        And the User selects Update PIN
+        And the User has successfully updated PIN
+    ''')
+
+
+@then(' they have access to the app with the new PIN')
+def step_access_app_with_pin(context):
+    assert context.thisHomePage.on_this_page()
+    #TODO probably should close and reopen the app. However that doesn't work well currently on one of the platforms. Investigate.
+
+
+@given('the User has choosen not to use biometrics to unlock BC Wallet')
+def step_impl(context):
+    context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
+
+@given('the user wants to update thier PIN')
+def go_to_pin_update(context):
+    context.thisSettingsPage = context.thisHomePage.select_settings()
+    context.thisUpdatePINPage = context.thisSettingsPage.select_update_pin()
+
+@when('the user enters thier first PIN as "{pin}')
+def step_enter_first_pin(context, pin):
+    context.thisUpdatePINPage.enter_pin(pin)
+
+@when('the user re-enters thier first PIN as "{pin}')
+def step_reenter_first_pin(context, pin):
+    context.thisUpdatePINPage.reenter_pin(pin)
+
+@when('the User selects Update PIN')
+def step_select_update_pin(context, pin):
+    context.thisUpdatePINPage.select_update_pin()
+
+@when('the User has successfully updated PIN')
+def step_select_update_pin(context):
+    assert context.thisUpdatePINPage.PINUpdatedModal.is_pin_update_successful()
+    context.thisUpdatePINPage.PINUpdatedModal.select_ok
+
