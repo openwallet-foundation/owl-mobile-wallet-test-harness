@@ -1,6 +1,4 @@
-from appium.webdriver.common.mobileby import AppiumBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
 

@@ -4,6 +4,7 @@ Absctact Base Class for actual device service handler interfaces to implement
 
 from abc import ABC, abstractmethod
 from appium import webdriver
+from appium.options.common import AppiumOptions
 import os
 import json
 
@@ -12,6 +13,7 @@ class DeviceServiceHandlerInterface(ABC):
 
     _CONFIG: dict
     _driver: webdriver
+    _options: AppiumOptions
 
     def __init__(self, config_file_path: str):
         print("Path to the config file = %s" % (config_file_path))
@@ -21,6 +23,7 @@ class DeviceServiceHandlerInterface(ABC):
         # Set the device service specific options to default. 
         # This can be overridden if the user calls this method again with parameters.
         self.set_device_service_specific_options()
+        self._options = AppiumOptions()
 
     @abstractmethod
     def set_device_service_specific_options(self, options:dict=None, command_executor_url:str=None):
@@ -36,8 +39,9 @@ class DeviceServiceHandlerInterface(ABC):
             url = self._url
         else:
             url = command_executor_url
+            
         self._driver = webdriver.Remote(
-            desired_capabilities=self._desired_capabilities,
+            options=self._options,
             command_executor=url,
             keep_alive=False
         )

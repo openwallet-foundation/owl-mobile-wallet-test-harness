@@ -34,6 +34,8 @@ class SauceLabsHandler(DeviceServiceHandlerInterface):
         print("\n\nDesired Capabilities passed to Appium:")
         print(json.dumps(self._desired_capabilities, indent=4))
 
+        self._set_appium_options_from_desired_capabilities()
+
     def set_device_service_specific_options(self, options: dict = None, command_executor_url: str = None):
         """set any specific device options before initialize_driver is called """
         """Order of presededence is options parameter, then the config.json file, then environment variables"""
@@ -70,6 +72,12 @@ class SauceLabsHandler(DeviceServiceHandlerInterface):
 
         # print(url)
 
+
+    def _set_appium_options_from_desired_capabilities(self):
+        """set the appium options from the desired capabilities"""
+        #self._options = webdriver.AppiumOptions()
+        for key in self._desired_capabilities:
+            self._options.set_capability(key, self._desired_capabilities[key])
 
     def inject_qrcode(self, image):
         """pass the qrcode image to the device in a way that allows for the device to scan it when the camera opens"""

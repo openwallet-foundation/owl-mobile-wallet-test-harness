@@ -11,7 +11,7 @@ from time import sleep
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
 from agent_test_utils import get_qr_code_from_invitation
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from appium.webdriver.common.touch_action import TouchAction
@@ -23,10 +23,10 @@ from pageobjects.bc_wallet.no_internet_toast_notification import NoInternetConne
 def step_impl(context):
     if context.driver.capabilities['platformName'] == 'iOS':
         height = WebDriverWait(context.driver, 30).until(
-                EC.presence_of_element_located((MobileBy.CLASS_NAME, "UIAWindow"))
+                EC.presence_of_element_located((AppiumBy.CLASS_NAME, "UIAWindow"))
             ).size["height"]
         width = WebDriverWait(context.driver, 30).until(
-                EC.presence_of_element_located((MobileBy.CLASS_NAME, "UIAWindow"))
+                EC.presence_of_element_located((AppiumBy.CLASS_NAME, "UIAWindow"))
             ).size["width"]
         if '6' in context.driver.capabilities['testobject_device_name']:
             # Access Control panel with a swipe up from the bottom
@@ -82,11 +82,11 @@ def step_impl(context):
     if context.driver.capabilities['platformName'] == 'iOS':
         # Get screen height
         height = WebDriverWait(context.driver, 30).until(
-            EC.presence_of_element_located((MobileBy.CLASS_NAME, "UIAWindow"))
+            EC.presence_of_element_located((AppiumBy.CLASS_NAME, "UIAWindow"))
         ).size["height"]
         # Get screen width
         width = WebDriverWait(context.driver, 30).until(
-            EC.presence_of_element_located((MobileBy.CLASS_NAME, "UIAWindow"))
+            EC.presence_of_element_located((AppiumBy.CLASS_NAME, "UIAWindow"))
         ).size["width"]
 
         # swipe down on the right to open control center
