@@ -201,17 +201,19 @@ def step_biometrics_choosen(context, bio_usage:str):
             Given the User has choosen not to use biometrics to unlock BC Wallet
         ''')
 
-@then('the user updates thier PIN to "{pin}"')
+@when('the user updates thier PIN to "{pin}"')
 def step_update_pin(context, pin):
     context.execute_steps(f'''
-        When the user enters thier first PIN to {pin}
+        Given the user wants to update thier PIN
+        When the user enters thier old PIN as "369369"
+        And the user enters thier first PIN as {pin}
         And the User re-enters the PIN as {pin}
         And the User selects Update PIN
         And the User has successfully updated PIN
     ''')
 
 
-@then(' they have access to the app with the new PIN')
+@then('they have access to the app with the new PIN')
 def step_access_app_with_pin(context):
     assert context.thisHomePage.on_this_page()
     #TODO probably should close and reopen the app. However that doesn't work well currently on one of the platforms. Investigate.
@@ -220,26 +222,33 @@ def step_access_app_with_pin(context):
 @given('the User has choosen not to use biometrics to unlock BC Wallet')
 def step_impl(context):
     context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
+    context.execute_steps('''
+        Then they land on the Home screen
+    ''')
 
 @given('the user wants to update thier PIN')
 def go_to_pin_update(context):
     context.thisSettingsPage = context.thisHomePage.select_settings()
-    context.thisUpdatePINPage = context.thisSettingsPage.select_update_pin()
+    context.thisChangePINPage = context.thisSettingsPage.select_change_pin()
 
-@when('the user enters thier first PIN as "{pin}')
+@when('the user enters thier old PIN as "{pin}"')
+def step_enter_old_pin(context, pin):
+    context.thisChangePINPage.enter_old_pin(pin)
+
+@when('the user enters thier first PIN as "{pin}"')
 def step_enter_first_pin(context, pin):
-    context.thisUpdatePINPage.enter_pin(pin)
+    context.thisChangePINPage.enter_pin(pin)
 
-@when('the user re-enters thier first PIN as "{pin}')
+@when('the user re-enters thier first PIN as "{pin}"')
 def step_reenter_first_pin(context, pin):
-    context.thisUpdatePINPage.reenter_pin(pin)
+    context.thisChangePINPage.reenter_pin(pin)
 
 @when('the User selects Update PIN')
 def step_select_update_pin(context, pin):
-    context.thisUpdatePINPage.select_update_pin()
+    context.thisChangePINPage.select_update_pin()
 
 @when('the User has successfully updated PIN')
 def step_select_update_pin(context):
-    assert context.thisUpdatePINPage.PINUpdatedModal.is_pin_update_successful()
-    context.thisUpdatePINPage.PINUpdatedModal.select_ok
+    assert context.thisChangePINPage.PINChangedModal.is_pin_change_successful()
+    context.thisChangePINPage.PINChangedModal.select_ok()
 

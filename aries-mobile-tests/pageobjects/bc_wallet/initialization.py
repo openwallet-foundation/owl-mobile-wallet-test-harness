@@ -4,7 +4,6 @@ import logging
 from selenium.common.exceptions import TimeoutException
 from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
-from pageobjects.bc_wallet.home import HomePage
 import time
 
 
@@ -58,6 +57,7 @@ class InitializationPage(BasePage):
                     self.find_by(self.loading_locator, timeout, WaitCondition.INVISIBILITY_OF_ELEMENT_LOCATED)
                     logger.debug("Loading indicator disappeared")
                 else:
+                    from pageobjects.bc_wallet.home import HomePage
                     return HomePage(self.driver)
             except TimeoutException:
                 try:

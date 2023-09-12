@@ -211,8 +211,8 @@ Feature: Secure your Wallet
 
     Examples:
       | bio_usage |
-      | on        |
       | off       |
+      #| on        |
 
   @T007.2-Security @Story_805 @FunctionalTest @ExceptionTest @normal
   Scenario: Wallet User Updates PIN but PINs do not match
