@@ -39,6 +39,7 @@ def step_impl(context, pin):
 
 
 @when('the User re-enters the PIN as {pin}')
+@then('the User re-enters the PIN as {pin}')
 @then('the User re-enters the PIN as "{pin}"')
 @when('the User re-enters the PIN as "{pin}"')
 def step_impl(context, pin):
@@ -125,22 +126,19 @@ def step_impl(context):
 @when('they have closed the app')
 @given('they have closed the app')
 def step_impl(context):
-    if context.driver.capabilities['platformName'] == 'iOS':
-        # don't do anything here since driver.launch_app will close and relaunch for iOS
-        pass
-    else:
-        context.driver.close_app()
-
+    context.driver.terminate_app(context.driver.capabilities[get_package_or_bundle_id(context)])
 
 @when('the holder opens BC Wallet')
 @when('they relaunch the app')
 def step_impl(context):
-    if context.driver.capabilities['platformName'] == 'iOS':
-        #context.driver.activate_app(context.driver.capabilities['bundleId'])
-        context.driver.launch_app()
-    else:
-        context.driver.activate_app(context.driver.capabilities['appPackage'])
+    context.driver.activate_app(context.driver.capabilities[get_package_or_bundle_id(context)])
 
+def get_package_or_bundle_id(context):
+    if context.driver.capabilities['platformName'] == 'iOS':
+        package_or_bundle_id = 'bundleId'
+    else:
+        package_or_bundle_id = 'appPackage'
+    return package_or_bundle_id
 
 @when('authenticates with thier biometrics')
 def step_impl(context):
@@ -206,18 +204,34 @@ def step_update_pin(context, pin):
     context.execute_steps(f'''
         Given the user wants to update thier PIN
         When the user enters thier old PIN as "369369"
-        And the user enters thier first PIN as {pin}
-        And the User re-enters the PIN as {pin}
-        And the User selects Update PIN
+        And the user enters thier first PIN as "{pin}"
+        And the User re-enters the PIN as "{pin}"
+        And the User selects Change PIN
         And the User has successfully updated PIN
     ''')
 
 
 @then('they have access to the app with the new PIN')
 def step_access_app_with_pin(context):
+    assert context.thisSettingsPage.on_this_page()
+    context.thisHomePage = context.thisSettingsPage.select_back()
     assert context.thisHomePage.on_this_page()
-    #TODO probably should close and reopen the app. However that doesn't work well currently on one of the platforms. Investigate.
 
+    context.execute_steps('''
+        Given they have closed the app
+        When they relaunch the app
+    ''')
+    
+    context.thisBiometricsPage = BiometricsPage(context.driver)
+    if context.thisBiometricsPage.on_this_page():
+        context.execute_steps('''
+            When fails to authenticate with thier biometrics once
+        ''')                
+
+    context.execute_steps('''
+        When they enter thier PIN as "963963"
+        Then they have access to the app
+    ''')
 
 @given('the User has choosen not to use biometrics to unlock BC Wallet')
 def step_impl(context):
@@ -239,16 +253,19 @@ def step_enter_old_pin(context, pin):
 def step_enter_first_pin(context, pin):
     context.thisChangePINPage.enter_pin(pin)
 
-@when('the user re-enters thier first PIN as "{pin}"')
+@when('the user re-enters thier PIN as "{pin}"')
+@then('the user re-enters thier PIN as "{pin}"')
 def step_reenter_first_pin(context, pin):
     context.thisChangePINPage.reenter_pin(pin)
 
-@when('the User selects Update PIN')
-def step_select_update_pin(context, pin):
-    context.thisChangePINPage.select_update_pin()
+@when('the User selects Change PIN')
+@then('the User selects Change PIN')
+def step_select_change_pin(context):
+    context.thisChangePINPage.select_change_pin()
 
 @when('the User has successfully updated PIN')
+@then('the User has successfully updated PIN')
 def step_select_update_pin(context):
-    assert context.thisChangePINPage.PINChangedModal.is_pin_change_successful()
-    context.thisChangePINPage.PINChangedModal.select_ok()
+    assert context.thisChangePINPage.successfully_changed_pin_modal.is_displayed()
+    context.thisSettingsPage = context.thisChangePINPage.successfully_changed_pin_modal.select_okay()
 

@@ -203,7 +203,7 @@ Feature: Secure your Wallet
   # I want to change my wallet PIN
 
   @T007.1-Security @Story_805 @AcceptanceTest @critical
-  Scenario Outline: Wallet User Updates PIN
+  Scenario Outline: Wallet User Changes PIN
     Given the user has setup thier wallet
     And the user has choosen to have biometrics <bio_usage>
     When the user updates thier PIN to "963963"
@@ -212,33 +212,36 @@ Feature: Secure your Wallet
     Examples:
       | bio_usage |
       | off       |
-      #| on        |
+      | on        |
 
   @T007.2-Security @Story_805 @FunctionalTest @ExceptionTest @normal
-  Scenario: Wallet User Updates PIN but PINs do not match
+  Scenario: Wallet User Changes PIN but PINs do not match
     Given the user has setup thier wallet
+    And the user has choosen to have biometrics "off"
     And the user wants to update thier PIN
-    When the user enters thier first PIN as "963963"
+    When the user enters thier old PIN as "369369"
+    And the user enters thier first PIN as "963963"
     And the User re-enters the PIN as "369363"
-    And the User selects Update PIN
+    And the User selects Change PIN
     Then they are informed that the PINs do not match
     And they select ok on PINs do not match
     And the User re-enters the PIN as "963963"
-    And the User selects Update PIN
+    And the User selects Change PIN
     And the User has successfully updated PIN
     And they have access to the app with the new PIN
 
   @T007.3-Security @Story_805 @FunctionalTest @ExceptionTest @normal
-  Scenario Outline: User Updates PIN but does not follow conventions
+  Scenario Outline: User Changes PIN but does not follow conventions
     Given the user has setup thier wallet
+    And the user has choosen to have biometrics "off"
     And the user wants to update thier PIN
+    When the user enters thier old PIN as "369369"
     When the User enters the first PIN as <pin>
     And the User re-enters the PIN as <pin>
-    And the User selects Update PIN
+    And the User selects Change PIN
     Then they are informed of <pin_error>
 
     Examples:
       | pin    | pin_error                                                |
       | 2357   | Your PIN is too short. Please try again.                 |
       | 27463A | Your PIN needs to only contain digits. Please try again. |
-      | 000000 | Please use only number in your PIN                       |
