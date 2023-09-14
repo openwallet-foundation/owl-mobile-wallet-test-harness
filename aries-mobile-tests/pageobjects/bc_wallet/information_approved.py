@@ -1,9 +1,5 @@
-import time
-from appium.webdriver.common.mobileby import MobileBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
-#from pageobjects.bc_wallet.home import HomePage
 
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -12,8 +8,8 @@ class InformationApprovedPage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Information received"
-    approval_locator = (MobileBy.ID, "com.ariesbifold:id/SentProofRequest")
-    done_locator = (MobileBy.ID, "com.ariesbifold:id/Done")
+    approval_locator = (AppiumBy.ID, "com.ariesbifold:id/SentProofRequest")
+    done_locator = (AppiumBy.ID, "com.ariesbifold:id/Done")
 
     def on_this_page(self):
         #print(self.driver.page_source)

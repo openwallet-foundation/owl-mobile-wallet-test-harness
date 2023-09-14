@@ -1,5 +1,5 @@
 import time
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
@@ -11,8 +11,8 @@ class ProofRequestDetailsPage(BasePage):
     
     # Locators
     on_this_page_text_locator = "which you can provide from:"
-    back_locator = (MobileBy.ID, "com.ariesbifold:id/back")
-    credential_locator = (MobileBy.ID, "com.ariesbifold:id/AttributeName")
+    back_locator = (AppiumBy.ID, "com.ariesbifold:id/back")
+    credential_locator = (AppiumBy.ID, "com.ariesbifold:id/AttributeName")
 
 
     def on_this_page(self):

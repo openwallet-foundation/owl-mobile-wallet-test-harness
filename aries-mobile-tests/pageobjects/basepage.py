@@ -1,6 +1,5 @@
 import time
 from enum import Enum
-from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.webdriver.support.ui import WebDriverWait
@@ -53,9 +52,9 @@ class BasePage(object):
         self.current_platform = driver.capabilities['platformName']
 
     def find_by(self, locator_tpl: tuple, timeout=20, wait_condition:WaitCondition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED):
-        if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID or locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
+        if locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
             return self.find_by_accessibility_id(locator_tpl[1], timeout, wait_condition)
-        elif locator_tpl[0] == MobileBy.ID or locator_tpl[0] == AppiumBy.ID:
+        elif locator_tpl[0] == AppiumBy.ID:
             return self.find_by_element_id(locator_tpl[1], timeout, wait_condition)
         else:
             try:
@@ -69,9 +68,9 @@ class BasePage(object):
 
 
     def find_multiple_by(self, locator_tpl: tuple, timeout=20):
-        if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID or locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
+        if locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
             return self.find_multiple_by_accessibility_id(locator_tpl[1], timeout)
-        elif locator_tpl[0] == MobileBy.ID or locator_tpl[0] == AppiumBy.ID:
+        elif locator_tpl[0] == AppiumBy.ID:
             # It may be that Android will return none when looking for multiple
             # so if we get an empty element array here try find_by instead.
             elems = self.find_multiple_by_id(locator_tpl[1], timeout)
@@ -186,7 +185,7 @@ class BasePage(object):
         else:
             # Message: Mobile scroll supports the following strategies: name, direction, predicateString, and toVisible. Specify one of these
             # iOS
-            el = self.driver.find_element(MobileBy.ACCESSIBILITY_ID, locator)
+            el = self.driver.find_element(AppiumBy.ACCESSIBILITY_ID, locator)
             self.driver.execute_script("mobile: scroll", {"direction": direction, 'element': el})
 
     def scroll_to_bottom(self):
