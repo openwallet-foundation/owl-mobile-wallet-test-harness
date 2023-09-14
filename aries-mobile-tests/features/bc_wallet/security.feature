@@ -4,13 +4,14 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/426
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/425
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/422
+# https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/hyperledger/aries-mobile-agent-react-native/805
 @Security @bc_wallet
 Feature: Secure your Wallet
   In order to be reassured that my digital wallet will not be used maliciously
   As a person who is curious but cautious of digital wallets
   I want to set my security settings to maximum security
 
-  @T001-Security @critical @AcceptanceTest @Story_421
+  @T001-Security @critical @AcceptanceTest @Story_421 @critical
   Scenario: Holder chooses biometrics and reopens to biometrics authentication
     Given the Holder has setup biometrics on thier device
     And the Holder has setup thier Wallet
@@ -48,7 +49,7 @@ Feature: Secure your Wallet
     And they have access to the app
 
 
-  @T004-Security @AcceptanceTest @normal @Story_146 @Story_93
+  @T004-Security @AcceptanceTest @normal @Story_146 @Story_93 @critical
   Scenario: New User Sets Up PIN
     Given the User has completed on-boarding
     And the User has accepted the Terms and Conditions
@@ -194,3 +195,53 @@ Feature: Secure your Wallet
 
   @AcceptanceTest @wip
   Scenario: Holder leaves Biometrics off when onboarding, then enables, then disables in app settings
+
+
+  # PIN Update Tests
+  # In order to keep my wallet secure with a stronger PIN
+  # As a wallet user
+  # I want to change my wallet PIN
+
+  @T007.1-Security @Story_805 @AcceptanceTest @critical
+  Scenario Outline: Wallet User Changes PIN
+    Given the user has setup thier wallet
+    And the user has choosen to have biometrics <bio_usage>
+    When the user updates thier PIN to "963963"
+    Then they have access to the app with the new PIN
+
+    Examples:
+      | bio_usage |
+      | off       |
+      | on        |
+
+  @T007.2-Security @Story_805 @FunctionalTest @ExceptionTest @normal
+  Scenario: Wallet User Changes PIN but PINs do not match
+    Given the user has setup thier wallet
+    And the user has choosen to have biometrics "off"
+    And the user wants to update thier PIN
+    When the user enters thier old PIN as "369369"
+    And the user enters thier first PIN as "963963"
+    And the User re-enters the PIN as "369363"
+    And the User selects Change PIN
+    Then they are informed that the PINs do not match
+    And they select ok on PINs do not match
+    And the User re-enters the PIN as "963963"
+    And the User selects Change PIN
+    And the User has successfully updated PIN
+    And they have access to the app with the new PIN
+
+  @T007.3-Security @Story_805 @FunctionalTest @ExceptionTest @normal
+  Scenario Outline: User Changes PIN but does not follow conventions
+    Given the user has setup thier wallet
+    And the user has choosen to have biometrics "off"
+    And the user wants to update thier PIN
+    When the user enters thier old PIN as "369369"
+    When the User enters the first PIN as <pin>
+    And the User re-enters the PIN as <pin>
+    And the User selects Change PIN
+    Then they are informed of <pin_error>
+
+    Examples:
+      | pin    | pin_error                                                |
+      | 2357   | Your PIN is too short. Please try again.                 |
+      | 27463A | Your PIN needs to only contain digits. Please try again. |
