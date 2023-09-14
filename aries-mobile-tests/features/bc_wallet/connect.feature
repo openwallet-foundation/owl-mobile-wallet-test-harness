@@ -5,7 +5,7 @@
 Feature: Connections
 
 
-   @T001-Connect @wip @critical @AcceptanceTest
+   @T001-Connect @critical @AcceptanceTest
    Scenario: Scan QR code to recieve a credential offer
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
