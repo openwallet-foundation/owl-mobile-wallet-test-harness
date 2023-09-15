@@ -5,11 +5,12 @@
 Feature: Connections
 
 
-   @T001-Connect @wip @critical @AcceptanceTest
+   @T001-Connect @critical @AcceptanceTest
    Scenario: Scan QR code to recieve a credential offer
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
       When the Holder scans the QR code sent by the "issuer"
       And the Holder is taken to the Connecting Screen/modal
       And the Connecting completes successfully
