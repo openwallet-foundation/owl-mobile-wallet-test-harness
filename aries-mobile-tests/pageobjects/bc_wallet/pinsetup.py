@@ -43,6 +43,7 @@ class PINSetupPage(BasePage):
 
     def enter_second_pin(self, pin):
         if self.on_this_page():
+            self.find_by(self.second_pin_locator).clear()
             self.find_by(self.second_pin_locator).click()
             self.find_by(self.second_pin_locator).send_keys(pin)
             return True

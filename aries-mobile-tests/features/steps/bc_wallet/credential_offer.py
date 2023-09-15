@@ -14,7 +14,6 @@ from agent_test_utils import get_qr_code_from_invitation
 #from pageobjects.bc_wallet.credential_offer_notification import CredentialOfferNotificationPage
 from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
 from pageobjects.bc_wallet.credential_added import CredentialAddedPage
-from pageobjects.bc_wallet.home import HomePage
 
 
 @given('a connection has been successfully made')
