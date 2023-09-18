@@ -9,6 +9,7 @@ class FeedbackPage(BasePage):
     on_this_page_text_locator = "Give Feedback"
     next_locator = (AppiumBy.ACCESSIBILITY_ID, "Next")
     exit_locator = (AppiumBy.ACCESSIBILITY_ID, "EXIT") # Works on iOS
+    exit_locator_android = (AppiumBy.XPATH, "//android.widget.Button[@text='EXIT']")
 
 
     def on_this_page(self):   
@@ -25,7 +26,10 @@ class FeedbackPage(BasePage):
 
     def select_exit(self):
         if self.on_this_page():
-            self.find_by(self.exit_locator).click()
+            if self.driver.desired_capabilities['platformName'] == 'Android':
+                self.find_by(self.exit_locator_android).click()
+            else:
+                self.find_by(self.exit_locator).click()
             from pageobjects.bc_wallet.home import HomePage
             return HomePage(self.driver)
         else:
