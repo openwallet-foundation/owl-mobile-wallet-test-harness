@@ -220,7 +220,10 @@ def step_impl(context):
         for credential_card_text in credential_card_text_list:
             if credential_name in credential_card_text:
                 # if the credential name is in the card check to see if the attributes are in the card
-                assert attribute.replace("_", " ").title() in credential_card_text
+                # As attributes comes in small cases and with underscore in credential_card_text 
+                # eg value of credential_card_text : Issued by aca-py.Acme,  Photo Id credential. issue_date, 2022-04-04T13:32:55.455Z, birth_dateint, > 19420116,,
+                # assert attribute.replace("_", " ").title() in credential_card_text
+                assert attribute.lower() in credential_card_text.lower()
                 break
 
 @when('the user has a proof request')
