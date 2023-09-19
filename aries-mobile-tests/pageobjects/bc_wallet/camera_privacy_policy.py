@@ -10,7 +10,7 @@ class CameraPrivacyPolicyPage(BasePage):
     # Locators
     on_this_page_text_locator = "Allow camera use"
     on_this_page_locator = (AppiumBy.ID, "com.ariesbifold:id/AllowCameraUse")
-    allow_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Allow")
+    continue_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Continue")
     #allow_button_locator = (AppiumBy.ACCESSIBILITY_ID, "Allow")
     not_now_button_locator = (AppiumBy.ID, "com.ariesbifold:id/NotNow")
     system_allow_while_using_app =  (AppiumBy.ID, "com.android.permissioncontroller:id/permission_allow_foreground_only_button")
@@ -33,7 +33,7 @@ class CameraPrivacyPolicyPage(BasePage):
 
     def select_allow(self):
         # 26 sec
-        self.find_by(self.allow_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+        self.find_by(self.continue_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
         # 19 sec
         #self.find_by(self.allow_button_locator, wait_condition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED).click()
         # 28 sec
