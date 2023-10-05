@@ -8,6 +8,8 @@ from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.developer_settings import DeveloperSettingsPage
 from pageobjects.bc_wallet.change_pin import ChangePINPage
 from pageobjects.bc_wallet.contacts import ContactsPage
+from pageobjects.bc_wallet.scan_my_qr_code import ScanMyQRCodePage
+from pageobjects.bc_wallet.edit_wallet_name import EditWalletNamePage
 
 
 class SettingsPage(BasePage):
@@ -24,7 +26,11 @@ class SettingsPage(BasePage):
     developer_locator = (AppiumBy.ID, "com.ariesbifold:id/DeveloperOptions")
     #change_pin_locator = (AppiumBy.ID, "com.ariesbifold:id/ChangePIN")
     change_pin_locator = (AppiumBy.ACCESSIBILITY_ID, "Change PIN")
-
+    #edit_wallet_name_locator = (AppiumBy.ID, "com.ariesbifold:id/EditWalletName")
+    edit_wallet_name_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Edit wallet name")
+    #edit_wallet_name_locator = (AppiumBy.ID, "Edit wallet name")
+    #scan_my_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/ScanMyQrCode")
+    scan_my_qr_code_locator = (AppiumBy.ID, "Scan my QR code")
 
     def on_this_page(self):     
         return super().on_this_page(self.on_this_page_text_locator) 
@@ -73,6 +79,23 @@ class SettingsPage(BasePage):
         return ChangePINPage(self.driver)
 
 
+    def select_edit_wallet_name(self):
+        # we need to scroll up to the top of the page to see the Edit Wallet Name button
+        
+        #self.scroll_to_element(self.edit_wallet_name_aid_locator[1], direction='up')
+        #self.scroll_to_top()
+        self.find_by(self.edit_wallet_name_locator).click()
+
+        # return a new page object for the Edit Wallet Name page
+        return EditWalletNamePage(self.driver, calling_page=self)
+    
+
+    def select_scan_my_qr_code(self):
+        self.find_by(self.scan_my_qr_code_locator).click()
+
+        # return a new page object for the Scan My QR Code page
+        return ScanMyQRCodePage(self.driver)
+    
 
     def select_back(self):
         # Don't check if on this page becasue android (unless you scroll back to the top) can't see the App Settings accessibility ID

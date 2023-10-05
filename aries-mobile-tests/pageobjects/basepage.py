@@ -233,6 +233,50 @@ class BasePage(object):
                 if current_scroll_position >= screen_size['height']:
                     break
 
+    def scroll_to_top(self):
+        # Get the initial page source
+        if self.current_platform == 'iOS':
+            before_source_ios = self.driver.page_source
+
+        # Scroll up the page until the top is reached
+        while True:
+            if self.current_platform == 'iOS':
+                self.driver.execute_script('mobile: scroll', {'direction': 'up'})
+                after_source_ios = self.driver.page_source
+                # Parse the hierarchies using an XML parser
+                before_root = ET.fromstring(before_source_ios.encode('utf-8'))
+                after_root = ET.fromstring(after_source_ios.encode('utf-8'))
+
+                before_first_element = self.get_first_ios_element_on_page(before_root)
+                after_first_element = self.get_first_ios_element_on_page(after_root)
+
+                # Compare the tag_name of the first iOS elements to determine if we have reached the top
+                if before_first_element is not None and after_first_element is not None:
+                    if before_first_element.tag == after_first_element.tag:
+                        break
+
+                # Update the page source for the next iteration
+                before_source_ios = after_source_ios
+
+            else:
+                # Scroll for Android takes an accessibility id, however, it will scroll to the top
+                # looking for that id and if it doesn't exist, it will throw an error.
+                # If we give it a non-existent accessibility id, and catch the error and continue,
+                # we should be at the top.
+                try:
+                    self.scroll_to_element("this element doesn't exist, it is here to make Android scroll to the top")
+                except:
+                    pass
+
+                # Check if the top of the page has been reached
+                window_rect = self.driver.get_window_rect()
+                current_scroll_position = window_rect['y']
+
+                if current_scroll_position <= 0:
+                    break
+
+
+
     def get_last_ios_element_on_page(self, root):
         # Helper function to get the last iOS element that is not XCUIElementTypeOther from an XML hierarchy
         last_ios_element = None
@@ -240,3 +284,12 @@ class BasePage(object):
             if self.current_platform == 'iOS' and element.tag != 'XCUIElementTypeOther' and element.tag != 'XCUIElementTypeWindow':
                 last_ios_element = element
         return last_ios_element
+    
+    def get_first_ios_element_on_page(self, root):
+        # Helper function to get the first iOS element that is not XCUIElementTypeOther from an XML hierarchy
+        first_ios_element = None
+        for element in root.iter():
+            if self.current_platform == 'iOS' and element.tag != 'XCUIElementTypeOther' and element.tag != 'XCUIElementTypeWindow':
+                first_ios_element = element
+                break  # Exit the loop after finding the first iOS element
+        return first_ios_element
