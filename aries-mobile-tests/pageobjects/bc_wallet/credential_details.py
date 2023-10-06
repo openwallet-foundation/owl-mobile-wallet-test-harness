@@ -11,8 +11,8 @@ class CredentialDetailsPage(BasePage):
     
     # Locators
     on_this_page_text_locator = "Credential Details"
-    back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
-    #back_locator = (AppiumBy.ACCESSIBILITY_ID, "Back")
+    back_locator_ios = (AppiumBy.ID, "Back") # For IOS
+    back_locator_android = (AppiumBy.XPATH, "//android.widget.Button[@content-desc='Back']") # For Android
     revocation_dismiss_locator = (AppiumBy.ID, "com.ariesbifold:id/Dismiss")
     revocation_message_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
     revocation_status_locator = (AppiumBy.ID, "com.ariesbifold:id/RevokedDate")
@@ -24,7 +24,12 @@ class CredentialDetailsPage(BasePage):
 
     def select_back(self):
         if self.on_this_page():
-            self.find_by(self.back_locator).click()
+
+            if self.driver.desired_capabilities['platformName'] == 'Android':
+                self.find_by(self.back_locator_android).click()
+            else:
+                self.find_by(self.back_locator_ios).click()
+                
             from pageobjects.bc_wallet.home import HomePage
             return HomePage(self.driver)
         else:
