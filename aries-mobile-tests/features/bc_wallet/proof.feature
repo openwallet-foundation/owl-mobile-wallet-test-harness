@@ -74,6 +74,27 @@ Feature: Proof
          | cred_data_photo_id | proof_photo_id |
 
 
+   @T002.2-Proof @normal @FunctionalTest @Story_29
+   Scenario Outline: Holder accepts the proof request credential has special characters
+      Given the User has skipped on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the holder has credentials
+         | credential                        | revocable | issuer_agent_type | credential_name    |
+         | cred_data_drivers_license_sp_char | True      | AATHIssuer        | Drivers License 😀 |
+      And the user has a proof request for <proof>
+      When they select Share
+      And the holder is informed that they are sending information securely
+      And they are informed that the information sent successfully
+      And they select Go back to home on information sent successfully
+      Then they are brought Home
+
+      Examples:
+         | proof                         |
+         | proof_drivers_license_sp_char |
+
+
    @T003-Proof @critical @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a revoked credential where the verifier cares if the credential was revoked
       Given the User has skipped on-boarding
