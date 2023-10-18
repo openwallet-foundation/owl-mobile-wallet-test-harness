@@ -543,6 +543,7 @@ def step_impl(context):
 
 @then(u'they will be informed of its revoked status')
 def step_impl(context):
+    context.thisCredentialDetailsPage.scroll_to_bottom()
     assert context.thisCredentialDetailsPage.is_credential_revoked()
 
 
