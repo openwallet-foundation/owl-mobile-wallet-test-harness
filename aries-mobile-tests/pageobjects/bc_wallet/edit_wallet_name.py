@@ -5,8 +5,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
-from pageobjects.bc_wallet.settings import SettingsPage
-from pageobjects.bc_wallet.scan_my_qr_code import ScanMyQRCodePage
 
 
 class EditWalletNamePage(BasePage):

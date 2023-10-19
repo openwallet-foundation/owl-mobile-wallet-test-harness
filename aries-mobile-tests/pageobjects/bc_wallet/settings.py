@@ -9,7 +9,6 @@ from pageobjects.bc_wallet.developer_settings import DeveloperSettingsPage
 from pageobjects.bc_wallet.change_pin import ChangePINPage
 from pageobjects.bc_wallet.contacts import ContactsPage
 from pageobjects.bc_wallet.scan_my_qr_code import ScanMyQRCodePage
-from pageobjects.bc_wallet.edit_wallet_name import EditWalletNamePage
 
 
 class SettingsPage(BasePage):
@@ -87,6 +86,7 @@ class SettingsPage(BasePage):
         self.find_by(self.edit_wallet_name_locator).click()
 
         # return a new page object for the Edit Wallet Name page
+        from pageobjects.bc_wallet.edit_wallet_name import EditWalletNamePage
         return EditWalletNamePage(self.driver, calling_page=self)
     
 
