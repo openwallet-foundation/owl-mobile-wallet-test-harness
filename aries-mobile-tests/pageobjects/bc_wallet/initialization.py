@@ -32,15 +32,16 @@ class InitializationPage(BasePage):
         # Check for something went wrong modal
         if self.oops_something_went_wrong_modal.is_displayed():
             # Get the main error
+            error_title = self.oops_something_went_wrong_modal.get_error_title()
             main_error = self.oops_something_went_wrong_modal.get_main_error()
             # if Timeout error, then raise exception
             if self.oops_something_went_wrong_modal.is_timeout_error():
-                raise Exception(main_error)
+                raise Exception(f"{error_title}\n{main_error}")
             else:
                 # Otherwise, Show details, and get the details message and raise exception
                 self.oops_something_went_wrong_modal.select_show_details()
                 detailed_error = self.oops_something_went_wrong_modal.get_detailed_error()
-                raise Exception(f"{main_error}\n{detailed_error}")
+                raise Exception(f"{error_title}\n{main_error}\n{detailed_error}")
         try:
             self.find_by(self.loading_locator)
             return True
@@ -64,16 +65,17 @@ class InitializationPage(BasePage):
                     self.still_initializing()
                 except Exception as e:
                     if "Oops! Something went wrong" in str(e):
-                        logger.error(f"Oops! Something went wrong. {e}")
+                        logger.error(e)
                         self.oops_something_went_wrong_modal.select_retry()
                     else:
                         raise
             except Exception as e:
                 if "Oops! Something went wrong" in str(e):
-                    logger.error(f"Oops! Something went wrong. {e}")
+                    logger.error(e)
                     self.oops_something_went_wrong_modal.select_retry()
                 else:
                     raise
+        from pageobjects.bc_wallet.home import HomePage
         return HomePage(self.driver)
 
 class OopsSomethingWentWrongModal(BasePage):
@@ -81,19 +83,24 @@ class OopsSomethingWentWrongModal(BasePage):
 
     # Locators
     on_this_page_text_locator = "Oops! Something went wrong"
+    error_title_locator = (AppiumBy.ID, "com.ariesbifold:id/HeaderText")
     main_error_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
     show_details_locator = (AppiumBy.ID, "com.ariesbifold:id/ShowDetails")
-    detailed_error_locator = (AppiumBy.ID, "com.ariesbifold:id/DetailsText")
+    detailed_error_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
     retry_locator = (AppiumBy.ID, "com.ariesbifold:id/Retry")
 
     def on_this_page(self):
-        return super().on_this_page(self.on_this_page_text_locator)
-    
+        #return super().on_this_page(self.on_this_page_text_locator)
+        return super().on_this_page(self.error_title_locator)
+        
     def is_displayed(self):
         return self.on_this_page()
     
     def is_timeout_error(self):
         return "Timeout" in self.get_main_error()
+
+    def get_error_title(self) -> str:
+        return self.find_by(self.error_title_locator).text
 
     def get_main_error(self) -> str:
         return self.find_by(self.main_error_locator).text
@@ -105,5 +112,5 @@ class OopsSomethingWentWrongModal(BasePage):
         return self.find_by(self.detailed_error_locator).text
 
     def select_retry(self):
-        self.find_by(self.okay_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+        self.find_by(self.retry_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
