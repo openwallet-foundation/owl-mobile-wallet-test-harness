@@ -15,8 +15,6 @@ git clone https://github.com/hyperledger/aries-mobile-test-harness
 cd aries-mobile-test-harness
 ```
 
-#test
-
 Upload an app to SauceLabs 
 
 ```bash
