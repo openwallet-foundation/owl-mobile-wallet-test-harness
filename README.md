@@ -15,7 +15,7 @@ git clone https://github.com/hyperledger/aries-mobile-test-harness
 cd aries-mobile-test-harness
 ```
 
-Upload an app to SauceLabs
+Upload an app to SauceLabs 
 
 ```bash
 ./upload_app_to_SL.sh <device_cloud_username> <device_cloud_access_key> /<full path to app>/apps/bifold-bc/app-release.apk "Android Bifold BC App" api.us-west-1
