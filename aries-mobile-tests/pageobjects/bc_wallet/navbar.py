@@ -10,14 +10,14 @@ class NavBar(BasePage):
 
     # Locators
     scan_locator = (AppiumBy.ID, "com.ariesbifold:id/Scan")
-    home_locator = (AppiumBy.ID, "com.ariesbifold:id/Home")
+    notifications_locator = (AppiumBy.ID, "com.ariesbifold:id/Notifications")
     credentials_locator = (AppiumBy.ID, "com.ariesbifold:id/Credentials")
     settings_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
     notification_locator = (AppiumBy.ID, "com.ariesbifold:id/Notification")
     
 
     def select_home(self):
-        self.find_by(self.home_locator).click()
+        self.find_by(self.notifications_locator).click()
         return HomePage(self.driver)
 
     def select_scan(self):
@@ -39,8 +39,8 @@ class NavBar(BasePage):
     def has_notification(self):
         try:
             # get the home element and check for the word notifications on the element text.
-            home_element = self.find_by(self.home_locator)
-            if "0 Notifications" in home_element.text:
+            notifications_element = self.find_by(self.notifications_locator)
+            if "0 Notifications" in notifications_element.text:
                 return False
             else:
                 return True

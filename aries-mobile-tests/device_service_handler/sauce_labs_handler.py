@@ -19,18 +19,22 @@ class SauceLabsHandler(DeviceServiceHandlerInterface):
 
         # Handle posiible special options
         if 'name' in config:
-            self._CONFIG['capabilities']['sauce:options'] = {
-                'name': config['name']
-            }
+            # Check if 'sauce:options' already exists
+            if 'sauce:options' not in self._CONFIG['capabilities']['firstMatch'][0]:
+                self._CONFIG['capabilities']['firstMatch'][0]['sauce:options'] = {}
+
+            # Insert the 'name' key under 'sauce:options'
+            self._CONFIG['capabilities']['firstMatch'][0]['sauce:options']['name'] = config['name']
         config.pop('name')
 
         # Handle common options and capabilities
         for item in config:
-            self._CONFIG['capabilities'][item] = config[item]
-        #self._CONFIG['capabilities']['fullReset'] = True
-        self._desired_capabilities = self._CONFIG['capabilities']
+            self._CONFIG['capabilities']['firstMatch'][0][item] = config[item]
+        self._desired_capabilities = self._CONFIG['capabilities']['firstMatch'][0]
         print("\n\nDesired Capabilities passed to Appium:")
         print(json.dumps(self._desired_capabilities, indent=4))
+
+        self._set_appium_options_from_desired_capabilities()
 
     def set_device_service_specific_options(self, options: dict = None, command_executor_url: str = None):
         """set any specific device options before initialize_driver is called """
@@ -69,6 +73,12 @@ class SauceLabsHandler(DeviceServiceHandlerInterface):
         # print(url)
 
 
+    def _set_appium_options_from_desired_capabilities(self):
+        """set the appium options from the desired capabilities"""
+        #self._options = webdriver.AppiumOptions()
+        for key in self._desired_capabilities:
+            self._options.set_capability(key, self._desired_capabilities[key])
+
     def inject_qrcode(self, image):
         """pass the qrcode image to the device in a way that allows for the device to scan it when the camera opens"""
         self._driver.execute_script(f"sauce:inject-image={image}")
@@ -93,3 +103,19 @@ class SauceLabsHandler(DeviceServiceHandlerInterface):
             self._driver.execute_script('sauce:job-result=failed')
         elif passed == True:
             self._driver.execute_script('sauce:job-result=passed')
+
+    def is_current_device_a_tablet(self):
+        """Determine if the current device is a tablet """
+
+        if "iPad" in self._driver.capabilities['testobject_device']:
+            return True
+        elif "iPhone" in self._driver.capabilities['testobject_device']:
+            return False
+        else: # Android
+
+            pixel_ratio = float(self._driver.capabilities['pixelRatio'])
+
+            # Adjust this threshold according to your specific requirements
+            tablet_threshold = 1.7  # Devices with a pixel ratio less than 1.7 are considered tablets
+
+            return pixel_ratio < tablet_threshold

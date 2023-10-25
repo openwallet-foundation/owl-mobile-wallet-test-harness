@@ -3,7 +3,7 @@
 #
 # -----------------------------------------------------------
 
-from behave import given, when, then
+from behave import given, when, then, step
 import json
 from time import sleep
 
@@ -14,7 +14,6 @@ from agent_test_utils import get_qr_code_from_invitation
 #from pageobjects.bc_wallet.credential_offer_notification import CredentialOfferNotificationPage
 from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
 from pageobjects.bc_wallet.credential_added import CredentialAddedPage
-from pageobjects.bc_wallet.home import HomePage
 
 
 @given('a connection has been successfully made')
@@ -31,10 +30,19 @@ def step_impl(context):
 def step_impl(context):
     context.issuer.send_credential()
 
+    # May not need this assert anymore with the new connection/scan flow.
     assert context.thisConnectingPage.wait_for_connection()
     # context.thisCredentialOfferNotificationPage = CredentialOfferNotificationPage(context.driver)
     # assert context.thisCredentialOfferNotificationPage.on_this_page()
 
+    # Check the Contact page for the credential offer
+    assert context.thisContactPage.wait_for_credential_offer()
+
+
+@step('the holder opens the credential offer')
+def step_impl(context):
+    # Select the credential offer
+    context.thisCredentialOfferPage = context.thisContactPage.select_open_credential_offer()
 
 
 @given('the Holder receives a credential offer of {credential}')
@@ -78,8 +86,8 @@ def step_impl(context, credential, revocation=None):
                 print(
                     f"FileNotFoundError: features/data/schema_{cred_type.lower()}.json")
         else:
-            if "Connectionless" in context.tags:
-                # We are expecting a QR code on the send credential if connectionless
+            if "Connectionless" in context.tags or context.issuer.get_issuer_type() == "CANdyUVPIssuer":
+                # We are expecting a QR code on the send credential if connectionless or the issuer is a CANdyUVPIssuer
                 qrimage = context.issuer.send_credential(
                     credential_offer=credential_json)
                 context.device_service_handler.inject_qrcode(qrimage)
@@ -101,13 +109,14 @@ def step_impl(context):
 @then('holder is brought to the credential offer screen')
 def step_impl(context):
     # Workaround for bug 645
+    # TODO remove this when bug 645 is fixed. It looks like there is no reason to run this anymore July 7, 2023
     context.execute_steps(f'''
         When the connection takes too long reopen app and select notification
     ''')
 
-    #assert context.thisConnectingPage.wait_for_connection()
-
-    context.thisCredentialOfferPage = CredentialOfferPage(context.driver)
+    # if thisCredentialOfferPage is not in context then create it
+    if hasattr(context, 'thisCredentialOfferPage') == False:
+        context.thisCredentialOfferPage = CredentialOfferPage(context.driver)
     assert context.thisCredentialOfferPage.on_this_page()
 
 
@@ -144,6 +153,7 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(f'''
         When the Holder receives a Non-Revocable credential offer
+        And the holder opens the credential offer
         Then holder is brought to the credential offer screen
     ''')
 
@@ -162,6 +172,7 @@ def step_impl(context, credential, revocation=None):
         ''')
 
     context.execute_steps(f'''
+            When the holder opens the credential offer
             Then holder is brought to the credential offer screen
         ''')
 
@@ -194,7 +205,9 @@ def step_impl(context):
     try:
         context.thisCredentialAddedPage = context.thisCredentialOnTheWayPage.wait_for_credential()
         assert context.thisCredentialAddedPage.on_this_page()
-    except:
+    except Exception as e:
+        if "Unable to accept credential offer" in str(e) or "TimeoutException" in str(e):
+            raise e
         context.thisHomePage = context.thisCredentialOnTheWayPage.select_home()
 
 

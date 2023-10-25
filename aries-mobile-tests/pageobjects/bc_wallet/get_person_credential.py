@@ -10,8 +10,10 @@ class GetPersonCredentialPage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Person Credential"
-    get_your_person_credential_locator = (AppiumBy.ACCESSIBILITY_ID, "Get your Person credential")
-    get_this_later_locator = (AppiumBy.ACCESSIBILITY_ID, "Get this later")
+    #get_your_person_credential_locator = (AppiumBy.ACCESSIBILITY_ID, "Get your Person credential")
+    get_your_person_credential_locator = (AppiumBy.ID, "com.ariesbifold:id/GetYourPersonCredential")
+    #get_this_later_locator = (AppiumBy.ACCESSIBILITY_ID, "Get this later")
+    get_this_later_locator = (AppiumBy.ID, "com.ariesbifold:id/GetThisLater")
 
     def on_this_page(self):
         return super().on_this_page(self.on_this_page_text_locator)

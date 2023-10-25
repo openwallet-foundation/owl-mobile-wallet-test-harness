@@ -45,7 +45,7 @@ class BCPersonShowcaseVerifierAgentInterface(VerifierAgentInterface):
         """return the type of issuer as a string BCPersonShowcaseVerifier"""
         return "BCPersonShowcaseVerifier"
 
-    def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False):
+    def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
         """create an invitation and return the json back to the caller """
         # https://bc-wallet-demo-agent-admin-test.apps.silver.devops.gov.bc.ca/connections/create-invitation
 
@@ -69,7 +69,7 @@ class BCPersonShowcaseVerifierAgentInterface(VerifierAgentInterface):
             )
         else:
             self.invitation_json = json.loads(resp_text)
-            qrimage = get_qr_code_from_invitation(self.invitation_json, print_qrcode, save_qrcode)
+            qrimage = get_qr_code_from_invitation(self.invitation_json, print_qrcode, save_qrcode, qr_code_border)
             return qrimage
 
     def connected(self):

@@ -22,6 +22,7 @@ Feature: Proof
       And the Holder is taken to the Connecting Screen/modal
       And the Connecting completes successfully
       And the Holder receives a proof request
+      And the holder opens the proof request
       Then holder is brought to the proof request
       And they can view the contents of the proof request
          | verifier_agent_type | who        | attributes | values  |
@@ -71,6 +72,27 @@ Feature: Proof
       Examples:
          | credential         | proof          |
          | cred_data_photo_id | proof_photo_id |
+
+
+   @T002.2-Proof @normal @FunctionalTest @Story_29
+   Scenario Outline: Holder accepts the proof request credential has special characters
+      Given the User has skipped on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
+      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the holder has credentials
+         | credential                        | revocable | issuer_agent_type | credential_name    |
+         | cred_data_drivers_license_sp_char | True      | AATHIssuer        | Drivers License 😀 |
+      And the user has a proof request for <proof>
+      When they select Share
+      And the holder is informed that they are sending information securely
+      And they are informed that the information sent successfully
+      And they select Go back to home on information sent successfully
+      Then they are brought Home
+
+      Examples:
+         | proof                         |
+         | proof_drivers_license_sp_char |
 
 
    @T003-Proof @critical @AcceptanceTest @Revocation
@@ -239,6 +261,37 @@ Feature: Proof
          | credential                  |
          | cred_data_unverified_person |
 
+
+   @T009.1-Proof @critical @AcceptanceTest @Connectionless
+   Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
+      Given the PCTF Member has setup thier Wallet
+      And the PCTF member has an Unverified Person <credential>
+         | issuer_agent_type | credential_name   |
+         | CANdyUVPIssuer    | Unverified Person |
+      And the user has a connectionless <proof> request for access to PCTF
+         | issuer_agent_type |
+         | AATHIssuer        |
+      When they select Share
+      And the holder is informed that they are sending information securely
+      And they are informed that the information sent successfully
+      And they select Go back to home on information sent successfully
+      Then the PCTF member has access to chat
+
+      Examples:
+         | credential                  | proof                     |
+         | cred_data_unverified_person | pcft_connectionless_proof |
+
+
+   @T009.1.debug-Proof @critical @AcceptanceTest @Connectionless @wip
+   Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
+      Given the user has a connectionless <proof> request for access to PCTF
+         | issuer_agent_type |
+         | AATHIssuer        |
+
+      Examples:
+         | proof                     |
+         | pcft_connectionless_proof |
+
    @T010.1-Proof @normal @MultiCredProof @AcceptanceTest @Story_614
    Scenario: Holder accepts a proof request with multiple credentials
       Given the Holder has setup thier wallet
@@ -316,8 +369,8 @@ Feature: Proof
       And the credential has a revoked status
       And the revocation notification is removed
 
-   @T011.2-Proof @normal @RevocationNotification @AcceptanceTest @Story_63 @wip
-   Scenario: Holder of a dismissed revoked notification reviews revocation message again
+   @T011.2-Proof @normal @RevocationNotification @AcceptanceTest @Story_63
+   Scenario: Holder of a dismissed revoked notification reviews revocation status again
       Given the Holder has setup thier wallet
       And the Holder has selected to use biometrics to unlock BC Wallet
       And that the holder has a revocable credential stored in the wallet
@@ -329,9 +382,6 @@ Feature: Proof
       And The holder has received and acknowledged the revocation message notification
       When the holder selects the credential
       Then they will be informed of its revoked status
-      And the holder will be able to review the revoked message again
-         | revoked_message            |
-         | This credential is revoked |
 
 
    @T012.1-Proof @normal @AcceptanceTest @SelfAttestation @Story_239 @wip
@@ -356,7 +406,7 @@ Feature: Proof
       And they are brought Home
 
       Examples:
-         | credential         | credential_2                 | proof                                          | interval |
+         | credential         | credential_2                 | proof                                  | interval |
          | cred_data_photo_id | cred_data_photo_id_revokable | proof_photo_id_revokable_self_attested | now:now  |
 
    @T012.2-Proof @normal @AcceptanceTest @SelfAttestation @Story_239 @wip

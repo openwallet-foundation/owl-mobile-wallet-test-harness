@@ -8,16 +8,37 @@ from pageobjects.bc_wallet.pinsetup import PINSetupPage
 class PINSetupPageQC(PINSetupPage):
     """PIN Setup page QC object"""
 
-    # Locators
+    on_this_page_text_locator = "Create a PIN to secure your wallet"
     first_pin_visibility_locator = (
-        AppiumBy.ID, "com.ariesbifold:id/Show")
+        AppiumBy.ID,
+        "com.ariesbifold:id/Show",
+    )
     second_pin_visibility_locator = (
-        AppiumBy.ID, "com.ariesbifold:id/Show")
-
+        AppiumBy.ID,
+        "com.ariesbifold:id/Show",
+    )
 
     def __init__(self, driver):
         super().__init__(driver)
-    
+
+    def enter_pin(self, pin):
+        first_pin = self.find_by(self.first_pin_locator)
+        if self.on_this_page():
+            first_pin.click()
+            first_pin.send_keys(pin)
+            return True
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+
+    def enter_second_pin(self, pin):
+        second_pin = self.find_by(self.second_pin_locator)
+        if self.on_this_page():
+            second_pin.click()
+            second_pin.send_keys(pin)
+            return True
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+
     def get_pin(self):
         if self.on_this_page():
             # PIN must be visable.
@@ -33,19 +54,21 @@ class PINSetupPageQC(PINSetupPage):
             return self.find_by(self.second_pin_locator).text
         else:
             raise Exception(f"App not on the {type(self)} page")
-    
+
     def create_pin_throw_error(self):
         if self.on_this_page():
             try:
                 screen_size = self.driver.get_window_size()
-                x = int(int(screen_size['width']) * 0.5)
-                y=int(int(screen_size['height']) * 0.2)
+                x = int(int(screen_size["width"]) * 0.5)
+                y = int(int(screen_size["height"]) * 0.2)
                 touch_action = TouchAction(self.driver)
                 touch_action.tap(x=x, y=y).perform()
                 self.find_by(self.create_pin_button_tid_locator).click()
                 self.find_by(self.modal_message_ok_locator)
             except:
-                raise Exception("Unable to locate create pin button and modal error box")
+                raise Exception(
+                    "Unable to locate create pin button and modal error box"
+                )
         else:
             raise Exception(f"App not on the {type(self)} page")
 
@@ -55,7 +78,11 @@ class PINSetupPageQC(PINSetupPage):
     def select_ok_on_modal(self):
         # On Android the modal hides all the other PIN setup page elements, so we can't check on this page
         # if self.on_this_page():
-        self.find_by(self.modal_message_ok_locator, timeout=30, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+        self.find_by(
+            self.modal_message_ok_locator,
+            timeout=30,
+            wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE,
+        ).click()
 
         return True
         # else:

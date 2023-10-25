@@ -1,11 +1,5 @@
 import os
-import time
-from appium.webdriver.common.mobileby import MobileBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.pinsetup import PINSetupPage
-from pageobjects.bc_wallet.initialization import InitializationPage
 
 class BiometricsPage(BasePage):
     """Biometrics enter page object"""

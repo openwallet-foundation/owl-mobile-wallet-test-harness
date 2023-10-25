@@ -11,24 +11,35 @@ from time import sleep
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
 from agent_test_utils import get_qr_code_from_invitation
-from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from appium.webdriver.common.touch_action import TouchAction
 # import Page Objects needed
 from pageobjects.bc_wallet.no_internet_toast_notification import NoInternetConnectionToastNotification
 
+# For tests that need to access the control panel, like putting the phone in airplane mode, 
+# Apple changed the way to access the control panel in iPhone 7+.
+# This means that we need to know which devices we need to swipe up for access to control panel and which to swipe down.
+# Currently we are cateforizing iPhones 5 and 6 for swipe up. The rest of the iPhone are swipe down.
+iphone_versions_for_swipe_up = ['6', '5']
+
 @when('the mobile phone does not have an internet connection')
 @given('the mobile phone does not have an internet connection')
 def step_impl(context):
     if context.driver.capabilities['platformName'] == 'iOS':
         height = WebDriverWait(context.driver, 30).until(
-                EC.presence_of_element_located((MobileBy.CLASS_NAME, "UIAWindow"))
+                EC.presence_of_element_located((AppiumBy.CLASS_NAME, "UIAWindow"))
             ).size["height"]
         width = WebDriverWait(context.driver, 30).until(
-                EC.presence_of_element_located((MobileBy.CLASS_NAME, "UIAWindow"))
+                EC.presence_of_element_located((AppiumBy.CLASS_NAME, "UIAWindow"))
             ).size["width"]
-        if '6' in context.driver.capabilities['testobject_device_name']:
+        
+        device_name = context.driver.capabilities['testobject_device_name']
+        # Check if we are dealing with a swipe up or down control panel access iPhone
+        # TODO this may need to change for iPads.
+        matching_versions = [version for version in iphone_versions_for_swipe_up if version in device_name]
+        if matching_versions:
             # Access Control panel with a swipe up from the bottom
             #context.driver.swipe(width-(width * .13), 0, height-(height * .60), height*.75, 500)
             #context.driver.swipe(width-(width * .5), 0, height-(height * .50), height*.5, 500)
@@ -82,11 +93,11 @@ def step_impl(context):
     if context.driver.capabilities['platformName'] == 'iOS':
         # Get screen height
         height = WebDriverWait(context.driver, 30).until(
-            EC.presence_of_element_located((MobileBy.CLASS_NAME, "UIAWindow"))
+            EC.presence_of_element_located((AppiumBy.CLASS_NAME, "UIAWindow"))
         ).size["height"]
         # Get screen width
         width = WebDriverWait(context.driver, 30).until(
-            EC.presence_of_element_located((MobileBy.CLASS_NAME, "UIAWindow"))
+            EC.presence_of_element_located((AppiumBy.CLASS_NAME, "UIAWindow"))
         ).size["width"]
 
         # swipe down on the right to open control center

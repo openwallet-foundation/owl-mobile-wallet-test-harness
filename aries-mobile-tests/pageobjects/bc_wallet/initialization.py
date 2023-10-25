@@ -4,7 +4,6 @@ import logging
 from selenium.common.exceptions import TimeoutException
 from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
-from pageobjects.bc_wallet.home import HomePage
 import time
 
 
@@ -21,12 +20,28 @@ class InitializationPage(BasePage):
     error_details_locator = (AppiumBy.ID, "com.ariesbifold:id/DetailsText")
     error_okay_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Okay")
 
+    def __init__(self, driver):
+        super().__init__(driver)
+        # Instantiate possible Modals and Alerts for this page
+        self.oops_something_went_wrong_modal = OopsSomethingWentWrongModal(driver)
+
     def on_this_page(self):
-        #return super().on_this_page(self.on_this_page_text_locator)
-        #print(self.driver.page_source)
         return self.still_initializing()
 
     def still_initializing(self):
+        # Check for something went wrong modal
+        if self.oops_something_went_wrong_modal.is_displayed():
+            # Get the main error
+            error_title = self.oops_something_went_wrong_modal.get_error_title()
+            main_error = self.oops_something_went_wrong_modal.get_main_error()
+            # if Timeout error, then raise exception
+            if self.oops_something_went_wrong_modal.is_timeout_error():
+                raise Exception(f"{error_title}\n{main_error}")
+            else:
+                # Otherwise, Show details, and get the details message and raise exception
+                self.oops_something_went_wrong_modal.select_show_details()
+                detailed_error = self.oops_something_went_wrong_modal.get_detailed_error()
+                raise Exception(f"{error_title}\n{main_error}\n{detailed_error}")
         try:
             self.find_by(self.loading_locator)
             return True
@@ -34,28 +49,68 @@ class InitializationPage(BasePage):
             return False
 
 
-    def wait_until_initialized(self, timeout=100):
-        # Set up logging
+    def wait_until_initialized(self, timeout=100, retry_attempts=3):
         logger = logging.getLogger(__name__)
 
-        # Wait for the loading indicator to disappear
-        try:
-            self.find_by(self.loading_locator, timeout, WaitCondition.INVISIBILITY_OF_ELEMENT_LOCATED)
-            logger.debug("Loading indicator disappeared")
-        except TimeoutException:
-            # TODO add in a check for the timeout error message from the app. 
-            logger.error(f"App Initialization taking longer than expected. Timing out at {timeout} seconds.")
-            logger.error(f"Checking Initialization for error...")
-            if self.find_by(self.error_intializing_locator):
-                error_title = self.find_by(self.error_intializing_locator).text
-                error_message = self.find_by(self.error_message_locator).text
-                self.find_by(self.error_details_link_locator).click()
-                error_details = self.find_by(self.error_message_locator).text
-                logger.error(f"BC Wallet Error: {error_title}\n{error_message}\n{error_details}")
-                self.find_by(self.error_okay_button_locator).click()
-                # not sure what to do after this? Should I try and restart the app?
-                #raise Exception(f"Error occurred during app initialization: {error_message}")
-            raise
-
-        # Return the HomePage object
+        for i in range(retry_attempts):
+            try:
+                if self.still_initializing():
+                    self.find_by(self.loading_locator, timeout, WaitCondition.INVISIBILITY_OF_ELEMENT_LOCATED)
+                    logger.debug("Loading indicator disappeared")
+                else:
+                    from pageobjects.bc_wallet.home import HomePage
+                    return HomePage(self.driver)
+            except TimeoutException:
+                try:
+                    self.still_initializing()
+                except Exception as e:
+                    if "Oops! Something went wrong" in str(e):
+                        logger.error(e)
+                        self.oops_something_went_wrong_modal.select_retry()
+                    else:
+                        raise
+            except Exception as e:
+                if "Oops! Something went wrong" in str(e):
+                    logger.error(e)
+                    self.oops_something_went_wrong_modal.select_retry()
+                else:
+                    raise
+        from pageobjects.bc_wallet.home import HomePage
         return HomePage(self.driver)
+
+class OopsSomethingWentWrongModal(BasePage):
+    """Oops! Something went wrong Modal page object"""
+
+    # Locators
+    on_this_page_text_locator = "Oops! Something went wrong"
+    error_title_locator = (AppiumBy.ID, "com.ariesbifold:id/HeaderText")
+    main_error_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
+    show_details_locator = (AppiumBy.ID, "com.ariesbifold:id/ShowDetails")
+    detailed_error_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
+    retry_locator = (AppiumBy.ID, "com.ariesbifold:id/Retry")
+
+    def on_this_page(self):
+        #return super().on_this_page(self.on_this_page_text_locator)
+        return super().on_this_page(self.error_title_locator)
+        
+    def is_displayed(self):
+        return self.on_this_page()
+    
+    def is_timeout_error(self):
+        return "Timeout" in self.get_main_error()
+
+    def get_error_title(self) -> str:
+        return self.find_by(self.error_title_locator).text
+
+    def get_main_error(self) -> str:
+        return self.find_by(self.main_error_locator).text
+        
+    def select_show_details(self):
+        self.find_by(self.show_details_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+
+    def get_detailed_error(self) -> str:
+        return self.find_by(self.detailed_error_locator).text
+
+    def select_retry(self):
+        self.find_by(self.retry_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+
