@@ -12,7 +12,8 @@ class DeveloperSettingsPage(BasePage):
     # Locators
     on_this_page_text_locator = "Developer"
     back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
-    environment_locator = (AppiumBy.ID, "com.ariesbifold:id/environment")
+    environment_locator_ios = (AppiumBy.ID, "com.ariesbifold:id/environment")
+    environment_locator = (AppiumBy.ACCESSIBILITY_ID, "Environment")
     production_locator = (AppiumBy.ID, "com.ariesbifold:id/production")
     development_locator = (AppiumBy.ID, "com.ariesbifold:id/development")
     test_locator = (AppiumBy.ID, "com.ariesbifold:id/test")
@@ -22,7 +23,10 @@ class DeveloperSettingsPage(BasePage):
 
     def select_env(self, env):
         if self.on_this_page():
-            self.find_by(self.environment_locator).click()
+            if self.current_platform == "iOS":
+                self.find_by(self.environment_locator_ios).click()
+            else:
+                self.find_by(self.environment_locator).click()
             if env == 'Production':
                 self.find_by(self.production_locator).click()
             elif env == 'Development':

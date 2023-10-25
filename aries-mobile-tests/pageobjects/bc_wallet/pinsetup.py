@@ -13,14 +13,16 @@ class PINSetupPage(BasePage):
     on_this_page_locator = (AppiumBy.ID, "com.ariesbifold:id/ReenterPIN")
     first_pin_locator = (AppiumBy.ID, "com.ariesbifold:id/EnterPIN")
     first_pin_visibility_locator = (
-        AppiumBy.ID, "com.ariesbifold:id/EnterPINVisability")
+        AppiumBy.ID,
+        "com.ariesbifold:id/EnterPINVisability",
+    )
     second_pin_locator = (AppiumBy.ID, "com.ariesbifold:id/ReenterPIN")
     second_pin_visibility_locator = (
-        AppiumBy.ID, "com.ariesbifold:id/ReenterPINVisability")
-    create_pin_button_tid_locator = (
-        AppiumBy.ID, "com.ariesbifold:id/CreatePIN")
-    modal_message_title_locator = (
-        AppiumBy.ID, "com.ariesbifold:id/HeaderText")
+        AppiumBy.ID,
+        "com.ariesbifold:id/ReenterPINVisability",
+    )
+    create_pin_button_tid_locator = (AppiumBy.ID, "com.ariesbifold:id/CreatePIN")
+    modal_message_title_locator = (AppiumBy.ID, "com.ariesbifold:id/HeaderText")
     modal_message_body_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
     modal_message_ok_locator = (AppiumBy.ID, "com.ariesbifold:id/Okay")
 
@@ -30,12 +32,6 @@ class PINSetupPage(BasePage):
     def enter_pin(self, pin):
         if self.on_this_page():
             self.find_by(self.first_pin_locator).send_keys(pin)
-            screen_size = self.driver.get_window_size()
-            x = int(int(screen_size['width']) * 0.5)
-            y = int(int(screen_size['height']) * 0.2)
-            touch_action = TouchAction(self.driver)
-            touch_action.tap(x=x, y=y).perform()
-            sleep(1)
             return True
         else:
             raise Exception(f"App not on the {type(self)} page")
@@ -45,12 +41,16 @@ class PINSetupPage(BasePage):
             # PIN must be visable.
             self.find_by(self.first_pin_visibility_locator).click()
             size = len(self.first_pin_locator[1])
-            return self._construct_pin_from_boxes(self.first_pin_aid_locator[1][:size - 2])
+            return self._construct_pin_from_boxes(
+                self.first_pin_aid_locator[1][: size - 2]
+            )
         else:
             raise Exception(f"App not on the {type(self)} page")
 
     def enter_second_pin(self, pin):
         if self.on_this_page():
+            self.find_by(self.second_pin_locator).clear()
+            self.find_by(self.second_pin_locator).click()
             self.find_by(self.second_pin_locator).send_keys(pin)
             return True
         else:
@@ -61,7 +61,9 @@ class PINSetupPage(BasePage):
             # PIN must be visable.
             self.find_by(self.second_pin_visibility_locator).click()
             size = len(self.second_pin_locator[1])
-            return self._construct_pin_from_boxes(self.second_pin_aid_locator[1][:size - 2])
+            return self._construct_pin_from_boxes(
+                self.second_pin_aid_locator[1][: size - 2]
+            )
             # return self.find_by(self.second_pin_tid_locator).text
         else:
             raise Exception(f"App not on the {type(self)} page")

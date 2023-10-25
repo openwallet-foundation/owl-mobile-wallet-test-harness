@@ -7,6 +7,7 @@ from pageobjects.basepage import BasePage
 # These classes can inherit from a BasePage to do common setup and functions
 class ProofRequestDeclinedPage(BasePage):
     """Proof Request Declined page object"""
+    """ DEPREICATED  - Saving it incase this page comes back """ 
     
     # Locators
     on_this_page_text_locator = "Proof request declined"

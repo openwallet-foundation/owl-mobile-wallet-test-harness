@@ -17,7 +17,7 @@ class InvitesPage(WebBasePage):
     search_locator = (By.XPATH, "(//input[@type='text'])[1]")
     row_locator = (By.CLASS_NAME, "v-input--selection-controls__ripple")
     edit_invite_locator = (By.XPATH, "(//button[@type='button'])[2]")
-    credential_has_been_issued_locator = (By.XPATH, "//div[@class='v-input--selection-controls__ripple primary--text']")
+    credential_has_been_issued_locator = (By.XPATH, "(//div[@class='v-input--selection-controls__ripple'])[1]")
     save_locator = (By.XPATH, "//button[@class='v-btn v-btn--outlined theme--light v-size--default success--text']")
     #invitation_url_locator = (By.XPATH, '(//a[contains(text(),'https://bcvcpilot-issuer-test.apps.silver.devops.gov.bc.ca')])[1]')
     invitation_url_locator = (By.PARTIAL_LINK_TEXT, 'https://bcvcpilot-issuer-test.apps.silver.devops.gov.bc.ca')
@@ -40,8 +40,13 @@ class InvitesPage(WebBasePage):
             raise Exception(f"App not on the {type(self)} page")
 
     def uncheck_issued(self):
-        # TODO check if already unchecked
-        self.find_by(self.credential_has_been_issued_locator).click()
+        checkbox = self.find_by(self.credential_has_been_issued_locator)
+    
+        if checkbox.is_selected():
+            checkbox.click()
+            if checkbox.is_selected():
+                raise Exception("Could not uncheck the 'Credential has been issued' checkbox")
+        
         return True
 
     def save_invite(self):

@@ -6,7 +6,7 @@ import io
 from qrcode import QRCode
 from PIL import Image
 
-def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_code=False):
+def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_code=False, qr_code_border=40):
     if "invitation_url" in invitation_json:
         invite_url_key = "invitation_url"
     elif "invitationUrl" in invitation_json:
@@ -16,7 +16,7 @@ def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_co
             f"Could not find an invitation url in invitation json {invitation_json}")
     invitation_url = invitation_json[invite_url_key]
 
-    qr = QRCode(border=40)
+    qr = QRCode(border=qr_code_border)
     qr.add_data(invitation_url)
     qr.make()
     #img = qr.make_image(fill_color="red", back_color="#23dda0")

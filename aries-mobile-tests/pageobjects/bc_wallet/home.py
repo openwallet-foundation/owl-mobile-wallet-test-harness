@@ -8,14 +8,15 @@ from pageobjects.bc_wallet.proof_request import ProofRequestPage
 from pageobjects.bc_wallet.get_person_credential import GetPersonCredentialPage
 from pageobjects.bc_wallet.credential_details import CredentialDetailsPage
 from pageobjects.bc_wallet.welcome_to_bc_wallet import WelcomeToBCWalletModal
+from pageobjects.bc_wallet.feedback import FeedbackPage
 from time import sleep
 
 
 class HomePage(BasePage):
-    """Home page object"""
+    """Notifications (Home) page object"""
 
     # Locators
-    on_this_page_text_locator = "Home"
+    on_this_page_text_locator = "Notifications"
     on_this_page_notification_locator = "New Credential Offer"
     on_this_page_proof_notification_locator = "New Proof Request"
     on_this_page_revocation_notification_locator = "Credential revoked"
@@ -30,6 +31,7 @@ class HomePage(BasePage):
     settings_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
     #get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/GetBCID")
     get_bc_digital_id_locator = (AppiumBy.ID, "com.ariesbifold:id/ViewCustom")
+    give_feedback_locator = (AppiumBy.ID, "com.ariesbifold:id/GiveFeedback")
 
     # Modals and Alerts for Home page
     welcome_to_bc_wallet_modal = WelcomeToBCWalletModal
@@ -63,15 +65,15 @@ class HomePage(BasePage):
 
     def select_revocation_notification(self):
         if super().on_this_page(self.on_this_page_revocation_notification_locator, timeout=20):
-            if self.current_platform == "iOS" and self.driver.capabilities['platformVersion'] <= '15':
-                #self.find_by(self.view_revocation_notification_button_aid_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
-                # Need to find the element py partial text or accessibility id for iOS 14 and lower
-                view_notification_elements = self.driver.find_elements(AppiumBy.XPATH, "//*[contains(@label, '{}')]".format(self.view_revocation_notification_button_aid_locator[1]))
-                # take the last one on the page
-                view_notification_element = view_notification_elements[len(view_notification_elements)-5]
-                view_notification_element.click()
-            else:
-                self.find_by(self.view_revocation_notification_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+            # if self.current_platform == "iOS" and self.driver.capabilities['platformVersion'] <= '15':
+            #     #self.find_by(self.view_revocation_notification_button_aid_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+            #     # Need to find the element py partial text or accessibility id for iOS 14 and lower
+            #     view_notification_elements = self.driver.find_elements(AppiumBy.XPATH, "//*[contains(@label, '{}')]".format(self.view_revocation_notification_button_aid_locator[1]))
+            #     # take the last one on the page
+            #     view_notification_element = view_notification_elements[len(view_notification_elements)-5]
+            #     view_notification_element.click()
+            # else:
+            self.find_by(self.view_revocation_notification_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
             # return a new page object for the Revocation page
             return CredentialDetailsPage(self.driver)
@@ -124,5 +126,12 @@ class HomePage(BasePage):
 
             # return a new page object for the settings page
             return SettingsPage(self.driver)
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+
+    def select_give_feedback(self):
+        if self.on_this_page():
+            self.find_by(self.give_feedback_locator).click()
+            return FeedbackPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

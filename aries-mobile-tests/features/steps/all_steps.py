@@ -1,3 +1,4 @@
+from steps.qc_wallet.change_language import *
 from steps.qc_wallet.connect import *
 from steps.qc_wallet.credential_offer import *
 from steps.qc_wallet.proof import *

@@ -1,6 +1,5 @@
 import time
 from enum import Enum
-from appium.webdriver.common.mobileby import MobileBy
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,11 +7,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import xml.etree.ElementTree as ET
 
+
 class WaitCondition(Enum):
     ELEMENT_TO_BE_CLICKABLE = EC.element_to_be_clickable
     PRESENCE_OF_ELEMENT_LOCATED = EC.presence_of_element_located
     VISIBILITY_OF_ELEMENT_LOCATED = EC.visibility_of_element_located
     INVISIBILITY_OF_ELEMENT_LOCATED = EC.invisibility_of_element_located
+
 
 # BasePage to do common setup and functions
 class BasePage(object):
@@ -50,19 +51,34 @@ class BasePage(object):
 
     def __init__(self, driver):
         self.driver = driver
-        self.current_platform = str(driver.capabilities['platformName'])
+        self.current_platform = str(driver.capabilities["platformName"])
 
-    def find_by(self, locator_tpl: tuple, timeout=20, wait_condition:WaitCondition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED):
-        if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID or locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
-            return self.find_by_accessibility_id(locator_tpl[1], timeout, wait_condition)
-        elif locator_tpl[0] == MobileBy.ID or locator_tpl[0] == AppiumBy.ID:
+    def find_by(
+        self,
+        locator_tpl: tuple,
+        timeout=20,
+        wait_condition: WaitCondition = WaitCondition.PRESENCE_OF_ELEMENT_LOCATED,
+    ):
+        if locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
+            return self.find_by_accessibility_id(
+                locator_tpl[1], timeout, wait_condition
+            )
+        elif locator_tpl[0] == AppiumBy.ID:
             return self.find_by_element_id(locator_tpl[1], timeout, wait_condition)
-
+        else:
+            try:
+                return WebDriverWait(self.driver, timeout).until(
+                    wait_condition((locator_tpl[0], locator_tpl[1]))
+                )
+            except:
+                raise Exception(
+                    f"Could not find element {locator_tpl[0]} with Locator {locator_tpl[1]}"
+                )
 
     def find_multiple_by(self, locator_tpl: tuple, timeout=20):
-        if locator_tpl[0] == MobileBy.ACCESSIBILITY_ID or locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
+        if locator_tpl[0] == AppiumBy.ACCESSIBILITY_ID:
             return self.find_multiple_by_accessibility_id(locator_tpl[1], timeout)
-        elif locator_tpl[0] == MobileBy.ID or locator_tpl[0] == AppiumBy.ID:
+        elif locator_tpl[0] == AppiumBy.ID:
             # It may be that Android will return none when looking for multiple
             # so if we get an empty element array here try find_by instead.
             elems = self.find_multiple_by_id(locator_tpl[1], timeout)
@@ -70,15 +86,19 @@ class BasePage(object):
                 elem = self.find_by_element_id(locator_tpl[1], timeout)
                 elems.append(elem)
             return elems
-            #return self.find_multiple_by_id(locator_tpl[1], timeout)
+            # return self.find_multiple_by_id(locator_tpl[1], timeout)
 
     # Locate by Accessibility id
-    def find_by_accessibility_id(self, locator, timeout=20, wait_condition:WaitCondition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED):
+    def find_by_accessibility_id(
+        self,
+        locator,
+        timeout=20,
+        wait_condition: WaitCondition = WaitCondition.PRESENCE_OF_ELEMENT_LOCATED,
+    ):
         try:
             # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
-                wait_condition(
-                    (AppiumBy.ACCESSIBILITY_ID, locator))
+                wait_condition((AppiumBy.ACCESSIBILITY_ID, locator))
             )
         except:
             # try:
@@ -89,7 +109,8 @@ class BasePage(object):
             #     return self.driver.find_element_by_name(locator)
             # except:
             raise Exception(
-                f"Could not find element by Accessibility id Locator {locator}")
+                f"Could not find element by Accessibility id Locator {locator}"
+            )
 
     # Locate multiple elements by Accessibility id.
     # this is a workaround for when iOS may have translated the labels down into text and input fields.
@@ -99,26 +120,29 @@ class BasePage(object):
             # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_all_elements_located(
-                    (AppiumBy.ACCESSIBILITY_ID, locator))
+                    (AppiumBy.ACCESSIBILITY_ID, locator)
+                )
             )
         except:
-            raise Exception(
-                f"Could not find elements by Accessibility id {locator}")
+            raise Exception(f"Could not find elements by Accessibility id {locator}")
 
     # Locate multiple elements by id.
     def find_multiple_by_id(self, locator, timeout=20):
         try:
             # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
-                EC.presence_of_all_elements_located(
-                    (AppiumBy.ID, locator))
+                EC.presence_of_all_elements_located((AppiumBy.ID, locator))
             )
         except:
-            raise Exception(
-                f"Could not find elements by id {locator}")
+            raise Exception(f"Could not find elements by id {locator}")
 
     # Locate by id
-    def find_by_element_id(self, locator, timeout=20, wait_condition:WaitCondition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED):
+    def find_by_element_id(
+        self,
+        locator,
+        timeout=20,
+        wait_condition: WaitCondition = WaitCondition.PRESENCE_OF_ELEMENT_LOCATED,
+    ):
         try:
             # The location of a single element gets the location of a single element
             return WebDriverWait(self.driver, timeout).until(
@@ -127,8 +151,7 @@ class BasePage(object):
         except TimeoutException:
             raise
         except:
-            raise Exception(
-                f"Could not find element by element id Locator {locator}")
+            raise Exception(f"Could not find element by element id Locator {locator}")
 
     def get_page_source(self):
         return self.driver.page_source
@@ -152,7 +175,7 @@ class BasePage(object):
     #     element = None
     #     i = 0
     #     while element == None and i < timeout:
-    #         try: 
+    #         try:
     #             if find_by == MobileBy.ACCESSIBILITY_ID:
     #                 element = self.find_by_accessibility_id(locator)
     #             else:
@@ -166,52 +189,70 @@ class BasePage(object):
     #     else:
     #         return False
 
-    def scroll_to_element(self, locator, direction='down'):
-        """ Scroll to the element based on the accessibility id given. """
+    def scroll_to_element(self, locator: str, direction="down"):
+        """Scroll to the element based on the accessibility id given."""
         """ The locator MUST be an accessibility id. """
         """ Can give a direction and the direction only applies to iOS. Default is down. """
 
         # Works great for Android, but iOS has different parameters
         if self.current_platform.lower() == "Android".lower():
-            self.driver.execute_script('mobile: scroll', {"strategy": 'accessibility id', "selector": locator})
+            self.driver.execute_script(
+                "mobile: scroll", {"strategy": "accessibility id", "selector": locator}
+            )
         else:
             # Message: Mobile scroll supports the following strategies: name, direction, predicateString, and toVisible. Specify one of these
             # iOS
-            el = self.driver.find_element(MobileBy.ACCESSIBILITY_ID, locator)
-            self.driver.execute_script("mobile: scroll", {"direction": direction, 'element': el})
+            el = self.driver.find_element(AppiumBy.ACCESSIBILITY_ID, locator)
+            self.driver.execute_script(
+                "mobile: scroll", {"direction": direction, "element": el}
+            )
 
     def scroll_to_bottom(self):
         # Get the screen size
         screen_size = self.driver.get_window_size()
-        screen_height = screen_size['height']
+        screen_height = screen_size["height"]
+
+        before_source_ios = self.driver.page_source
 
         # Scroll down the page until the bottom is reached
         while True:
-            if self.current_platform.lower() == 'iOS'.lower():
-                self.driver.execute_script('mobile: scroll', {'direction': 'down'})
+            if self.current_platform.lower() == "iOS".lower():
+                before_root = ET.fromstring(before_source_ios.encode("utf-8"))
+                self.driver.execute_script("mobile: scroll", {"direction": "down"})
             else:
                 # Scroll for android takes an accessibility id, however it will scroll to the bottom looking for that id and if it doesn't exist,
                 # will throw and error. If we give it a non-existent accessibility id, and catch the error and continue we should be at the bottom.
                 try:
-                    self.scroll_to_element("this element doesn't exist, it is here to make android scroll to the bottom")
+                    self.scroll_to_element(
+                        "this element doesn't exist, it is here to make android scroll to the bottom"
+                    )
                 except:
                     pass
 
             # Get the current scroll position
-            if self.current_platform == 'iOS':
+            if self.current_platform == "iOS":
                 after_source_ios = self.driver.page_source
                 # Parse the hierarchies using an XML parser
-                root = ET.fromstring(before_source_ios.encode('utf-8'))
-                new_root = ET.fromstring(after_source_ios.encode('utf-8'))
-                if ET.tostring(root) == ET.tostring(new_root):
-                    break
+                after_root = ET.fromstring(after_source_ios.encode("utf-8"))
+
+                before_last_element = self.get_last_ios_element_on_page(before_root)
+                after_last_element = self.get_last_ios_element_on_page(after_root)
+
+                # Compare the tag_name of the last iOS elements to determine if we have reached the bottom
+                if before_last_element is not None and after_last_element is not None:
+                    if before_last_element.tag == after_last_element.tag:
+                        break
+
+                # Update the page source for the next iteration
+                before_source_ios = after_source_ios
+
             else:
                 window_rect = self.driver.get_window_rect()
-                current_scroll_position = window_rect['y'] + screen_height
+                current_scroll_position = window_rect["y"] + screen_height
 
-            # Check if the bottom of the page has been reached
-            if current_scroll_position >= screen_size['height']:
-                break
+                # Check if the bottom of the page has been reached
+                if current_scroll_position >= screen_size["height"]:
+                    break
 
     def is_element_visible(self, locator, timeout=2):
         try:
@@ -222,9 +263,22 @@ class BasePage(object):
 
     def swipe_down(self):
         screen_size = self.driver.get_window_size()
-        x = int(int(screen_size['width']) * 0.5)
-        y_start=int(int(screen_size['height']) * 0.8) 
-        y_end=int(int(screen_size['height']) * 0.2)
+        x = int(int(screen_size["width"]) * 0.5)
+        y_start = int(int(screen_size["height"]) * 0.8)
+        y_end = int(int(screen_size["height"]) * 0.2)
         touch_action = TouchAction(self.driver)
-        touch_action.press(x=x, y=y_start).wait(500).move_to(x=x, y=y_end).release().perform()
+        touch_action.press(x=x, y=y_start).wait(500).move_to(
+            x=x, y=y_end
+        ).release().perform()
 
+    def get_last_ios_element_on_page(self, root):
+        # Helper function to get the last iOS element that is not XCUIElementTypeOther from an XML hierarchy
+        last_ios_element = None
+        for element in root.iter():
+            if (
+                self.current_platform == "iOS"
+                and element.tag != "XCUIElementTypeOther"
+                and element.tag != "XCUIElementTypeWindow"
+            ):
+                last_ios_element = element
+        return last_ios_element

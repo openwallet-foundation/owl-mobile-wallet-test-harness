@@ -1,6 +1,4 @@
-from appium.webdriver.common.mobileby import AppiumBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
 
@@ -12,7 +10,7 @@ class CameraPrivacyPolicyPage(BasePage):
     # Locators
     on_this_page_text_locator = "Allow camera use"
     on_this_page_locator = (AppiumBy.ID, "com.ariesbifold:id/AllowCameraUse")
-    allow_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Allow")
+    continue_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Continue")
     #allow_button_locator = (AppiumBy.ACCESSIBILITY_ID, "Allow")
     not_now_button_locator = (AppiumBy.ID, "com.ariesbifold:id/NotNow")
     system_allow_while_using_app =  (AppiumBy.ID, "com.android.permissioncontroller:id/permission_allow_foreground_only_button")
@@ -24,7 +22,7 @@ class CameraPrivacyPolicyPage(BasePage):
         # 14 sec
         #return super().on_this_page(self.allow_button_locator, timeout=5)
         # 19 sec
-        return super().on_this_page(self.on_this_page_text_locator)
+        #return super().on_this_page(self.on_this_page_text_locator)
 
     def select_not_now(self):
         self.find_by(self.not_now_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
@@ -35,9 +33,9 @@ class CameraPrivacyPolicyPage(BasePage):
 
     def select_allow(self):
         # 26 sec
-        #self.find_by(self.allow_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+        # self.find_by(self.continue_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
         # 19 sec
-        self.find_by(self.allow_button_locator, wait_condition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED).click()
+        self.find_by(self.continue_button_locator, wait_condition=WaitCondition.PRESENCE_OF_ELEMENT_LOCATED).click()
         # 28 sec
         #self.find_by(self.allow_button_locator, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED).click()
         # 22 sec

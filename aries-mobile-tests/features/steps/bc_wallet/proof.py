@@ -3,6 +3,7 @@
 #
 # -----------------------------------------------------------
 
+import logging
 from behave import given, when, then
 import json
 from time import sleep
@@ -19,6 +20,7 @@ from pageobjects.bc_wallet.home import HomePage
 from pageobjects.bc_wallet.navbar import NavBar
 from pageobjects.bc_wallet.camera_privacy_policy import CameraPrivacyPolicyPage
 from pageobjects.bc_wallet.credentials import CredentialsPage
+from pageobjects.bc_wallet.scan import ScanPage
 
 
 @given('the holder has a Non-Revocable credential')
@@ -123,10 +125,16 @@ def step_impl(context, proof=None, interval=None):
             print("FileNotFoundError: features/data/" + proof.lower() + ".json")
 
 
+@when('the holder opens the proof request')
+def step_impl(context):
+    # Select the credential offer
+    context.thisProofRequestPage = context.thisContactPage.select_open_proof_request()
+
+
 @then('holder is brought to the proof request')
 def step_impl(context):
 
-    context.thisProofRequestPage = ProofRequestPage(context.driver)
+    #context.thisProofRequestPage = ProofRequestPage(context.driver)
     assert context.thisProofRequestPage.on_this_page()
 
 
@@ -147,8 +155,7 @@ def step_impl(context):
 
 @then('they Confirm the decline')
 def step_impl(context):
-    context.thisProofRequestDeclinedPage = context.thisAreYouSureDeclineProofRequest.select_confirm()
-    context.thisHomePage = context.thisProofRequestDeclinedPage.select_done()
+    context.thisHomePage = context.thisAreYouSureDeclineProofRequest.select_confirm()
 
 
 @then('they can view the contents of the proof request')
@@ -213,7 +220,10 @@ def step_impl(context):
         for credential_card_text in credential_card_text_list:
             if credential_name in credential_card_text:
                 # if the credential name is in the card check to see if the attributes are in the card
-                assert attribute.replace("_", " ").title() in credential_card_text
+                # As attributes comes in small cases and with underscore in credential_card_text 
+                # eg value of credential_card_text : Issued by aca-py.Acme,  Photo Id credential. issue_date, 2022-04-04T13:32:55.455Z, birth_dateint, > 19420116,,
+                # assert attribute.replace("_", " ").title() in credential_card_text
+                assert attribute.lower() in credential_card_text.lower()
                 break
 
 @when('the user has a proof request')
@@ -237,6 +247,7 @@ def step_impl(context):
             And the Holder is taken to the Connecting Screen/modal
             And the Connecting completes successfully
             And the Holder receives a proof request
+            And the holder opens the proof request
             Then holder is brought to the proof request
         ''')
 
@@ -269,6 +280,7 @@ def step_impl(context, proof, interval=None):
         ''')
 
     context.execute_steps('''
+        When the holder opens the proof request
         Then holder is brought to the proof request
     ''')
 
@@ -369,6 +381,7 @@ def step_impl(context):
         ''')
 
 
+@given('the user has setup thier Wallet')
 @given('the Holder has setup thier Wallet')
 def step_impl(context):
     context.execute_steps(f'''
@@ -413,7 +426,38 @@ def step_impl(context):
             context.driver)
         if context.thisCameraPrivacyPolicyPage.on_this_page():
             context.thisCameraPrivacyPolicyPage.select_allow()
+    
+    # It is possible that the QR code scan page could have an error displayed like invalid QR code, or at times displays
+    # no message and just sits there waiting, like there is no qr code to scan. Check to see if there is an error message and if so,
+    # close the scan window and scan again.
+    if hasattr(context, 'thisQRCodeScanPage') == False:
+        context.thisQRCodeScanPage = ScanPage(context.driver)
+    if context.thisQRCodeScanPage.on_this_page():
+        sleep(5)
+        if "Invalid QR code" in context.thisQRCodeScanPage.get_page_source():
+            # log the issue and close the scan window and scan again
+            logging.info("Invalid QR code error on scan page, closing and scanning again")
+        else:
+            # we are on the page but no error yet check one more time then close and scan again
+            logging.info("There seems to be a problem scanning the QR Code, closing and scanning again")
+        if context.thisQRCodeScanPage.on_this_page():
+            context.thisQRCodeScanPage.select_close()
+            context.thisConnectingPage = context.thisNavBar.select_scan()
 
+
+@given('the user has a connectionless {proof} request for access to PCTF')
+def step_impl(context, proof):
+    # load the proof request json from the file name in proof 
+    proof_json_file = open("features/data/" + proof.lower() + ".json")
+    proof_json = json.load(proof_json_file)
+    # send the proof request
+    qrcode = context.verifier.send_proof_request(request_for_proof=proof_json, connectionless=True)
+
+    context.device_service_handler.inject_qrcode(qrcode)
+
+    context.thisConnectingPage = context.thisNavBar.select_scan()
+    # This is connectionless and the connecting page doesn't last long. Assume we move quickly to the Proof Request
+    context.thisProofRequestPage = ProofRequestPage(context.driver)
 
 @given('the user has a connectionless proof request for access to PCTF Chat')
 def step_impl(context):
@@ -488,7 +532,7 @@ def step_impl(context):
         Then the holder selects the revocation notification
         Then acknowledges the revocation notification
     ''')
-    context.thisHomePage = context.thisNavBar.select_home()
+    context.thisHomePage = context.thisCredentialDetailsPage.select_back()
 
 
 @when(u'the holder selects the credential')
@@ -499,6 +543,7 @@ def step_impl(context):
 
 @then(u'they will be informed of its revoked status')
 def step_impl(context):
+    context.thisCredentialDetailsPage.scroll_to_bottom()
     assert context.thisCredentialDetailsPage.is_credential_revoked()
 
 

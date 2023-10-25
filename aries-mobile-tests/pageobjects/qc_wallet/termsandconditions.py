@@ -1,4 +1,5 @@
 from time import sleep
+from appium.webdriver.common.appiumby import AppiumBy
 
 from appium.webdriver.common.touch_action import TouchAction
 from pageobjects.basepage import WaitCondition
@@ -11,17 +12,21 @@ from pageobjects.qc_wallet.pinsetup import PINSetupPageQC
 class TermsAndConditionsPageQC(TermsAndConditionsPage):
     """Terms and Conditions QC page object"""
 
-    def __init__(self, driver):
-        super().__init__(driver)
+    on_this_page_text_locator = "Terms"
+    on_this_page_locator = (AppiumBy.NAME, "Terms & Conditions")
 
     def select_accept(self):
         if self.on_this_page():
-            el_visible = self.is_element_visible(self.terms_and_conditions_accept_locator)
-            timeout=30
+            el_visible = self.is_element_visible(
+                self.terms_and_conditions_accept_locator
+            )
+            timeout = 30
             while not el_visible and timeout > 0:
                 self.swipe_down()
-                el_visible = self.is_element_visible(self.terms_and_conditions_accept_locator)
-                timeout-=1
+                el_visible = self.is_element_visible(
+                    self.terms_and_conditions_accept_locator
+                )
+                timeout -= 1
             self.find_by(self.terms_and_conditions_accept_locator).click()
             return True
         else:
@@ -30,14 +35,14 @@ class TermsAndConditionsPageQC(TermsAndConditionsPage):
     def select_continue(self):
         if self.on_this_page():
             el_visible = self.is_element_visible(self.continue_button_locator)
-            timeout=30
+            timeout = 30
             while not el_visible and timeout > 0:
                 self.swipe_down()
                 el_visible = self.is_element_visible(self.continue_button_locator)
-                timeout-=1
+                timeout -= 1
             self.find_by(self.continue_button_locator).click()
 
-            # Maybe should check if it is checked or let the test call is_accept_checked()? 
+            # Maybe should check if it is checked or let the test call is_accept_checked()?
             # return a new page object? The Pin Setup page.
             return PINSetupPageQC(self.driver)
         else:

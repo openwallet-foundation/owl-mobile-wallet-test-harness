@@ -3,7 +3,6 @@ from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.proof_request_declined import ProofRequestDeclinedPage
 
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -23,7 +22,8 @@ class AreYouSureDeclineProofRequestPage(BasePage):
     def select_confirm(self):
         if self.on_this_page():
             self.find_by(self.confirm_locator).click()
-            return ProofRequestDeclinedPage(self.driver)
+            from pageobjects.bc_wallet.home import HomePage
+            return HomePage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
 
