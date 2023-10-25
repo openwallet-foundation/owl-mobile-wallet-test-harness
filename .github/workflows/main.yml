@@ -94,17 +94,6 @@ jobs:
         uses: ./.github/workflows/run-aath-agents
         with:
           LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
-<<<<<<< HEAD
-          USE_NGROK: "-n"
-
-      # - name: run-sauce-connect-tunnel
-      #   if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
-      #   uses: saucelabs/sauce-connect-action@v2
-      #   with:
-      #     username: ${{ secrets.SAUCE_USERNAME }}
-      #     accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-      #     directDomains: aries-mediator-agent.vonx.io
-=======
           USE_NGROK: "-n"
 
       - name: run-aath-verifier-agent
@@ -124,36 +113,6 @@ jobs:
           GENESIS_URL: "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis"
           AGENT_CONFIG_FILE: "/aries-backchannels/acapy/read_only_ledger_verifier_config.yaml"
           USE_NGROK: "-n"
-
-      - name: run-sauce-connect-tunnel
-        if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
-        uses: saucelabs/sauce-connect-action@v2
-        with:
-          username: ${{ secrets.SAUCE_USERNAME }}
-          accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          directDomains: aries-mediator-agent.vonx.io,apple.com
->>>>>>> efcb4c01bf2f2a39a3042e3ec6a556ac7097eda1
-
-      #    tunnelIdentifier: github-action-tunnel
-      #    region: us-west-1
-
-      # - name: Saucectl RUN Docker and Cloud
-      #   uses: saucelabs/saucectl-run-action@v1
-      #   env:
-      #     SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
-      #     SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
-      #   with:
-      #     testing-environment: ""
-      #     concurrency: 10
-
-      # - name: run-sauce-connect-tunnel
-      #   run: |
-      #     docker run \
-      #       -e SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} \
-      #       -e SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} \
-      #       --network="host" \
-      #       --detach \
-      #       saucelabs/sauce-connect
 
       - name: Run AMTH All Tests
         if: ${{ contains(matrix.report-project,'multi-device-full') }}
@@ -176,27 +135,16 @@ jobs:
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
-      # - name: Shutdown Sauce Connect Tunnel
-      #   if: ${{ matrix.mobile-platform=='-p iOS' }}
-      #   run: |
-      #     docker ps \
-      #     --format '{{.ID}} {{.Image}}' | \
-      #     grep saucelabs/sauce-connect | \
-      #     awk '{print $1}' | \
-      #     xargs docker stop
-
-<<<<<<< HEAD
       # - name: Run AMTH BC Wallet Connectionless Tests
       #   if: ${{ contains(matrix.report-project,'candy-uvp-pcft-chat') }}
       #   uses: ./.github/workflows/run-test-harness
       #   env:
-      #     LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
       #     REGION: "us-west-1"
       #     #TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
       #   with:
       #     MOBILE_WALLET: "-w bc_wallet"
       #     ISSUER_AGENT: '-i "CANdy_UVP;https://openvp-candy-issuer-test.apps.silver.devops.gov.bc.ca/"'
-      #     VERIFIER_AGENT: '-v "PCFT_Chat;https://pctftest-test.vonx.io/"'
+      #     VERIFIER_AGENT: '-v "AATH;http://0.0.0.0:9030"'
       #     DEVICE_CLOUD: "-d SauceLabs"
       #     DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
       #     DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
@@ -205,26 +153,6 @@ jobs:
       #     TEST_SCOPE: "-t @bc_wallet -t @Connectionless -t ~@wip -t ~@BCSC"
       #     REPORT_PROJECT: ${{ matrix.report-project }}
       #   continue-on-error: true
-=======
-      - name: Run AMTH BC Wallet Connectionless Tests
-        if: ${{ contains(matrix.report-project,'candy-uvp-pcft-chat') }}
-        uses: ./.github/workflows/run-test-harness
-        env:
-          REGION: "us-west-1"
-          #TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
-        with:
-          MOBILE_WALLET: "-w bc_wallet"
-          ISSUER_AGENT: '-i "CANdy_UVP;https://openvp-candy-issuer-test.apps.silver.devops.gov.bc.ca/"'
-          VERIFIER_AGENT: '-v "AATH;http://0.0.0.0:9030"'
-          DEVICE_CLOUD: "-d SauceLabs"
-          DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
-          DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
-          MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
-          APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet -t @Connectionless -t ~@wip -t ~@BCSC"
-          REPORT_PROJECT: ${{ matrix.report-project }}
-        continue-on-error: true
->>>>>>> efcb4c01bf2f2a39a3042e3ec6a556ac7097eda1
 
       # - name: Run AMTH BC Wallet BC Digital ID Tests
       #   #if: ${{ matrix.report-project=='bc-digital-id-ios' || matrix.report-project=='bc-digital-id-android' }}
