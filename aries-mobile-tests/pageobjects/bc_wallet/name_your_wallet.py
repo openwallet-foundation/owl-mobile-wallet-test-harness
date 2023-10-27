@@ -7,13 +7,13 @@ from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
 
 
-class EditWalletNamePage(BasePage):
-    """Edit Wallet Name page object"""
+class NameYourWalletPage(BasePage):
+    """Name Your Wallet page object"""
 
     # Locators
     on_this_page_text_locator = "Name your wallet"
     back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
-    edit_wallet_name_locator = (AppiumBy.ID, "com.ariesbifold:id/EditWalletName")
+    wallet_name_input_locator = (AppiumBy.ID, "com.ariesbifold:id/NameInput")
     save_locator = (AppiumBy.ID, "com.ariesbifold:id/Save")
     cancel_locator = (AppiumBy.ID, "com.ariesbifold:id/Cancel")
         
@@ -24,11 +24,16 @@ class EditWalletNamePage(BasePage):
         # calling page is set on the constructor and used to navigate back to the calling page in the methods below
         self.calling_page = calling_page
         # Instantiate possible Modals and Alerts for this page
+        self.wallet_name_error_modal = WalletNameErrorModal(driver)
         self.wallet_name_cant_be_empty_modal = WalletNameCantBeEmptyModal(driver)
         self.wallet_name_character_count_exceeded_modal = WalletNameCharacterCountExceededModal(driver)
 
     def on_this_page(self):     
         return super().on_this_page(self.on_this_page_text_locator) 
+
+
+    def get_wallet_name(self) -> str:
+        return self.find_by(self.wallet_name_input_locator).text
 
 
     def enter_wallet_name(self, wallet_name:str):
@@ -37,7 +42,9 @@ class EditWalletNamePage(BasePage):
             raise Exception(f"App not on the {type(self)} page")
 
         # Enter the new wallet name in the text field
-        self.find_by(self.edit_wallet_name_locator).send_keys(wallet_name)
+        wallet_name_input = self.find_by(self.wallet_name_input_locator)
+        wallet_name_input.clear()
+        wallet_name_input.send_keys(wallet_name)
 
 
 
@@ -72,11 +79,12 @@ class WalletNameErrorModal(BasePage):
     """Wallet Name Error Modal page object"""
 
     # Locators
-    error_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
+    error_title_locator = (AppiumBy.ID, "com.ariesbifold:id/HeaderText")
+    error_details_locator = (AppiumBy.ID, "com.ariesbifold:id/BodyText")
     okay_locator = (AppiumBy.ID, "com.ariesbifold:id/Okay") 
 
     def on_this_page(self):
-        return super().on_this_page(self.on_this_page_text_locator)
+        return super().on_this_page(self.okay_locator)
     
     def is_displayed(self):
         return self.on_this_page()
@@ -96,8 +104,21 @@ class WalletNameCantBeEmptyModal(WalletNameErrorModal):
     # Locators
     on_this_page_text_locator = "Wallet name can't be empty"
 
+    def on_this_page(self):
+        return super().on_this_page(self.on_this_page_text_locator)
+    
+    def is_displayed(self):
+        return self.on_this_page()
+
+
 class WalletNameCharacterCountExceededModal(WalletNameErrorModal):
     """Wallet Name Character Count Exeeded Modal page object"""
 
     # Locators
     on_this_page_text_locator = "Character count exceeded"
+
+    def on_this_page(self):
+        return super().on_this_page(self.on_this_page_text_locator)
+    
+    def is_displayed(self):
+        return self.on_this_page()

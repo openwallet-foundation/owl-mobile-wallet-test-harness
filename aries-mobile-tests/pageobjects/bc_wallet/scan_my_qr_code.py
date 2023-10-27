@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage
 from pageobjects.basepage import WaitCondition
-from pageobjects.bc_wallet.edit_wallet_name import EditWalletNamePage
+from pageobjects.bc_wallet.name_your_wallet import NameYourWalletPage
 
 
 
@@ -14,10 +14,12 @@ class ScanMyQRCodePage(BasePage):
 
     # Locators
     on_this_page_text_locator = "My QR code"
-    back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
-    edit_wallet_name_locator = (AppiumBy.ID, "com.ariesbifold:id/EditWalletName")
-    scan_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/ScanQRCode")
-    my_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/MyQRCode")
+    #back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
+    back_locator = (AppiumBy.ID, "Back")
+    #edit_wallet_name_locator = (AppiumBy.ID, "com.ariesbifold:id/EditWalletName")
+    edit_wallet_name_locator = (AppiumBy.ID, "Edit wallet name")
+    scan_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/Scan QR code")
+    my_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/My QR code")
     qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/QRCode")
 
     def on_this_page(self):     
@@ -28,7 +30,7 @@ class ScanMyQRCodePage(BasePage):
         self.find_by(self.edit_wallet_name_locator).click()
 
         # return a new page object for the Edit Wallet Name page
-        return EditWalletNamePage(self.driver, calling_page=self)
+        return NameYourWalletPage(self.driver, calling_page=self)
     
 
     def select_scan_qr_code(self):
