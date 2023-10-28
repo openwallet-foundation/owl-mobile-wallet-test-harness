@@ -8,6 +8,7 @@ from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.developer_settings import DeveloperSettingsPage
 from pageobjects.bc_wallet.change_pin import ChangePINPage
 from pageobjects.bc_wallet.contacts import ContactsPage
+from pageobjects.bc_wallet.scan_my_qr_code import ScanMyQRCodePage
 
 
 class SettingsPage(BasePage):
@@ -17,6 +18,7 @@ class SettingsPage(BasePage):
     on_this_page_text_locator = "App Settings"
     back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
     contacts_locator = (AppiumBy.ID, "com.ariesbifold:id/Contacts")
+    contacts_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Contacts")
     version_locator = (AppiumBy.ID, "com.ariesbifold:id/Version")
     version_partial_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Version")
     intro_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Introduction to the app")
@@ -24,6 +26,9 @@ class SettingsPage(BasePage):
     developer_locator = (AppiumBy.ID, "com.ariesbifold:id/DeveloperOptions")
     #change_pin_locator = (AppiumBy.ID, "com.ariesbifold:id/ChangePIN")
     change_pin_locator = (AppiumBy.ACCESSIBILITY_ID, "Change PIN")
+    edit_wallet_name_locator = (AppiumBy.ID, "com.ariesbifold:id/EditWalletName")
+    wallet_name_locator = (AppiumBy.ID, "com.ariesbifold:id/WalletName")
+    scan_my_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/ScanMyQR")
 
 
     def on_this_page(self):     
@@ -73,6 +78,26 @@ class SettingsPage(BasePage):
         return ChangePINPage(self.driver)
 
 
+    def select_edit_wallet_name(self):
+        # we need to scroll up to the top of the page to see the Edit Wallet Name button
+        
+        #self.scroll_to_element(self.edit_wallet_name_aid_locator[1], direction='up')
+        #self.scroll_to_top()
+        self.find_by(self.edit_wallet_name_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+
+        # return a new page object for the Edit Wallet Name page
+        from pageobjects.bc_wallet.name_your_wallet import NameYourWalletPage
+        return NameYourWalletPage(self.driver, calling_page=self)
+    
+    def get_wallet_name(self):
+        return self.find_by(self.wallet_name_locator).text
+
+    def select_scan_my_qr_code(self):
+        self.find_by(self.scan_my_qr_code_locator).click()
+
+        # return a new page object for the Scan My QR Code page
+        return ScanMyQRCodePage(self.driver)
+    
 
     def select_back(self):
         # Don't check if on this page becasue android (unless you scroll back to the top) can't see the App Settings accessibility ID
