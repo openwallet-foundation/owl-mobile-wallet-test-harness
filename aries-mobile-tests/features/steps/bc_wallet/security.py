@@ -118,6 +118,7 @@ def step_impl(context):
 
 @given('the Holder has selected to use biometrics to unlock BC Wallet')
 def step_impl(context):
+    context.biometrics_choosen = True
     context.execute_steps('''
         When the User selects to use Biometrics
         Then they land on the Home screen
@@ -235,6 +236,7 @@ def step_access_app_with_pin(context):
 
 @given('the User has choosen not to use biometrics to unlock BC Wallet')
 def step_impl(context):
+    context.biometrics_choosen = False
     context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     context.execute_steps('''
         Then they land on the Home screen

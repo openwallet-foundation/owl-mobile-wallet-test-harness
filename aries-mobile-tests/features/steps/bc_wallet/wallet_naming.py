@@ -42,9 +42,8 @@ def an_existing_wallet_user(context):
         When they relaunch the app
     ''')
 
-    # create the biometrics page in the context object
-    context.thisBiometricsPage = BiometricsPage(context.driver)
-    if context.thisBiometricsPage.on_this_page():
+    if context.biometrics_choosen == True:
+        context.thisBiometricsPage = BiometricsPage(context.driver)
         context.execute_steps('''
             When authenticates with thier biometrics
         ''')          
@@ -53,6 +52,7 @@ def an_existing_wallet_user(context):
             When they enter thier PIN as "{pin}"
         ''')
 
+    # TODO this step takes a long time, fix it.
     context.execute_steps('''
         Then they have access to the app
     ''')
