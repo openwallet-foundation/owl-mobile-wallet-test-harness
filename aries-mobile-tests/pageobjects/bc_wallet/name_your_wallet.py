@@ -12,6 +12,8 @@ class NameYourWalletPage(BasePage):
 
     # Locators
     on_this_page_text_locator = "Name your wallet"
+    message_locator = (AppiumBy.ACCESSIBILITY_ID, "This is the name people see when connecting with you.")
+    input_title_locator = (AppiumBy.ACCESSIBILITY_ID, "Name your wallet")
     back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
     wallet_name_input_locator = (AppiumBy.ID, "com.ariesbifold:id/NameInput")
     save_locator = (AppiumBy.ID, "com.ariesbifold:id/Save")
@@ -45,6 +47,9 @@ class NameYourWalletPage(BasePage):
         wallet_name_input = self.find_by(self.wallet_name_input_locator)
         wallet_name_input.clear()
         wallet_name_input.send_keys(wallet_name)
+        # If the wallet name is empty the keyboard is probably still open and could be hiding the save button, close the keyboard.
+        if wallet_name == "" and self.current_platform == "iOS":
+            self.find_by(self.message_locator).click() # works on iOS
 
 
 
