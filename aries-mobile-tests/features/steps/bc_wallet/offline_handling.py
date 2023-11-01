@@ -133,7 +133,10 @@ def step_impl(context, using_the_app):
     if using_the_app == "Onboarding":
         context.execute_steps(f'''
             Given the new user has opened the app for the first time
-            And the user is on the onboarding {'Share only what is neccessary screen'}
+            And the user is on the Is this app for you screen
+            And the user selects confirms that the app is for them
+            And they select Continue
+            And the user is on the onboarding {'A different smart wallet screen'}
         ''')
     elif using_the_app == "PIN Setup":
         context.execute_steps(f'''
