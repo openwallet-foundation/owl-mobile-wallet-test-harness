@@ -22,20 +22,20 @@ Feature: Onboarding
     And are brought to the Terms and Conditions screen
 
 
-  @T002-Onboarding @AcceptanceTest
-  Scenario Outline: New User skips onboarding screens
-    Given the new user has opened the app for the first time
-    And the user is on the Is this app for you screen
-    And the user selects confirms that the app is for them
-    And they select Continue
-    And the user is on the onboarding <screen>
-    When the user selects Skip
-    Then are brought to the Terms and Conditions screen
+  # @T002-Onboarding @AcceptanceTest @depricated_nov_7_2023
+  # Scenario Outline: New User skips onboarding screens
+  #   Given the new user has opened the app for the first time
+  #   And the user is on the Is this app for you screen
+  #   And the user selects confirms that the app is for them
+  #   And they select Continue
+  #   And the user is on the onboarding <screen>
+  #   When the user selects Skip
+  #   Then are brought to the Terms and Conditions screen
 
-    Examples:
-      | screen                          |
-      | A different smart wallet screen |
-      | Digital credentials screen      |
+  #   Examples:
+  #     | screen                          |
+  #     | A different smart wallet screen |
+  #     | Digital credentials screen      |
 
 
   @T003-Onboarding @AcceptanceTest

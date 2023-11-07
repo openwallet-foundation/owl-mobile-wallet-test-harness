@@ -24,7 +24,7 @@ def an_existing_wallet_user(context):
     biometrics = context.table[0]['biometrics']
     
     context.execute_steps(f'''
-        Given the User has skipped on-boarding
+        Given the User has completed on-boarding
         And the User has accepted the Terms and Conditions
         And a PIN has been set up with "{pin}"
     ''')

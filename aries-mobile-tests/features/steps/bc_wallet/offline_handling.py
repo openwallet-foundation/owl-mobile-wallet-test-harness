@@ -140,13 +140,13 @@ def step_impl(context, using_the_app):
         ''')
     elif using_the_app == "PIN Setup":
         context.execute_steps(f'''
-            Given the User has skipped on-boarding
+            Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
             And the User is on the PIN creation screen
         ''')
     elif using_the_app == "Receiving Credential":
         context.execute_steps(f'''
-            Given the User has skipped on-boarding
+            Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
             And a PIN has been set up with "369369"
             And the Holder has selected to use biometrics to unlock BC Wallet
@@ -157,7 +157,7 @@ def step_impl(context, using_the_app):
         ''')
     elif using_the_app == "Presenting Proof":
         context.execute_steps(f'''
-            Given the User has skipped on-boarding
+            Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
             And a PIN has been set up with "369369"
             And the Holder has selected to use biometrics to unlock BC Wallet

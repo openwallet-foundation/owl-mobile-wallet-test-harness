@@ -107,9 +107,9 @@ def step_impl(context, screen):
         raise Exception(f"Unexpected screen, {screen}")
 
 
-@when('the user selects Skip')
-def step_impl(context):
-    context.thisTermsAndConditionsPage = context.currentOnboardingPage.select_skip()
+# @when('the user selects Skip')
+# def step_impl(context):
+#     context.thisTermsAndConditionsPage = context.currentOnboardingPage.select_skip()
 
 
 @when('the user selects Back')
