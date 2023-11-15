@@ -15,10 +15,16 @@ from pageobjects.bc_wallet.biometrics import BiometricsPage
 from pageobjects.bc_wallet.camera_privacy_policy import CameraPrivacyPolicyPage
 
 
+@step('an existing {actor} wallet user')
 @step('an existing wallet user')
-def an_existing_wallet_user(context):
+def an_existing_wallet_user(context, actor=None):
     """ This is a user who has already setup a wallet (onboarded and setup security), and has closed and reopened the app and authenticated. """
     
+    # If the actor is provided then we will need that for later in whatever scenario is being executed.
+    # needed for Showcase tests
+    if actor is not None:
+        context.actor = actor
+
     # Get PIN and Biometrics setup from context table
     pin = context.table[0]['pin']
     biometrics = context.table[0]['biometrics']

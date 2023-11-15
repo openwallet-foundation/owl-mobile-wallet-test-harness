@@ -6,12 +6,11 @@ Feature: BC Showcase
 
 
    @T001-BCShowcase @critical @AcceptanceTest
-   Scenario Outline: BC Showcase Student gets access to a store discount
-      Given a <user> wallet user
+   Scenario: BC Showcase Student gets access to a store discount
+      Given an existing Student wallet user
          | pin    | biometrics |
          | 369369 | off        |
-
-      When the <user> has a <credentials> from <issuer_agent_type>
+      #When the <user> has a <credentials> from <issuer_agent_type>
       When the Student has credentials
          | credential | revocable | issuer_agent_type             | credential_name |
          | N/A        | False     | BCShowcaseBestBCCollegeIssuer | Student Card    |
@@ -28,10 +27,10 @@ Feature: BC Showcase
          | proof_result |
          | Room Booked  |
 
-      Examples:
-         | user    | issuer_agent_type             | credentials             | verifier_agent_type                   | proof_request        | proof_result   |
-         | Student | BCShowcaseBestBCCollegeIssuer | Student Card            | BCShowcaseBestBCCollegeVerifier       | Student Card         | Room Booked    |
-         | Student | BCShowcaseBestBCCollegeIssuer | Student Card            | BCShowcaseCoolClothesOnlineVerifier   | Student Card         | Discount       |
-         | Lawyer  | BCShowcaseLSBCIssuer          | LSBC Member Card:Person | BCShowcaseCourtServicesBranchVerifier | Member Card & Person | Court Services |
+#       Examples:
+#          | user    | issuer_agent_type             | credentials             | verifier_agent_type                   | proof_request        | proof_result   |
+#          | Student | BCShowcaseBestBCCollegeIssuer | Student Card            | BCShowcaseBestBCCollegeVerifier       | Student Card         | Room Booked    |
+#          | Student | BCShowcaseBestBCCollegeIssuer | Student Card            | BCShowcaseCoolClothesOnlineVerifier   | Student Card         | Discount       |
+#          | Lawyer  | BCShowcaseLSBCIssuer          | LSBC Member Card:Person | BCShowcaseCourtServicesBranchVerifier | Member Card & Person | Court Services |
 
-BCShowcaseServiceBCIssuer Person
+# BCShowcaseServiceBCIssuer Person

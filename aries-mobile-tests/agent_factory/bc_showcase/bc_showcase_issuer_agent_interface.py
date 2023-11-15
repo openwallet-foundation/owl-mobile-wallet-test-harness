@@ -10,31 +10,32 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 # import Page Objects needed
-from agent_factory.candy_uvp.pageobjects.terms_of_service_page import TermsOfServicePage
-from agent_factory.candy_uvp.pageobjects.request_credential_page import RequestCredentialPage
-from agent_factory.candy_uvp.pageobjects.review_and_confirm_page import ReviewAndConfirmPage
-from agent_factory.candy_uvp.pageobjects.connect_with_issuer_page import ConnectWithIssuerPage
-from agent_factory.candy_uvp.pageobjects.issuing_credential_page import IssuingCredentialPage
+from agent_factory.bc_showcase.pageobjects.bc_wallet_showcase_main_page import BCWalletShowcaseMainPage
+from agent_factory.bc_showcase.pageobjects.who_do_you_want_to_be_page import WhoDoYouWantToBePage
+from agent_factory.bc_showcase.pageobjects.lets_get_started_page import LetsGetStartedPage
+#from agent_factory.bc_showcase.pageobjects.going_digital_page import GoingDigitalPage
+
+# Lawyer Showcase Page Objects
+#from agent_factory.bc_showcase.pageobjects.accessing_court_materials_page import AccessingCourtMaterialsPage
+#from agent_factory.bc_showcase.pageobjects.get_your_lawyer_credential_page import GetYourLawyerCredentialPage
+
+# Student Showcase Page Objects
+from agent_factory.bc_showcase.pageobjects.install_bc_wallet_page import InstallBCWalletPage
+#from agent_factory.bc_showcase.pageobjects.connect_withbest_bc_college_page import ConnectWithBestBCCollegePage
 
 
 class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
 
-    _terms_of_service_page: TermsOfServicePage
-    _request_credential_page: RequestCredentialPage
-    _review_and_confirm_page: ReviewAndConfirmPage
-    _connect_with_issuer_page: ConnectWithIssuerPage
-    _issuing_credential_page: IssuingCredentialPage
-
-    # Default schema and cred
-    DEFAULT_CREDENTIAL_DATA = {
-        "first_name": "firstname",
-        "last_name": "lastname",
-        "date_of_birth": "1968-06-22",
-        "street_address": "1968 oh six twenty two street",
-        "postal_code": "K7P 2N3",
-        "city": "Victoria",
-        "province": "British Columbia",
-    }
+    _actor : str
+    _bc_wallet_showcase_main_page: BCWalletShowcaseMainPage
+    _who_do_you_want_to_be_page: WhoDoYouWantToBePage
+    _lets_get_started_page: LetsGetStartedPage
+    _install_bc_wallet_page: InstallBCWalletPage
+    #_going_digital_page: GoingDigitalPage
+    #_accessing_court_materials_page: AccessingCourtMaterialsPage
+    #_get_your_lawyer_credential_page: GetYourLawyerCredentialPage
+    _install_bc_wallet_page: InstallBCWalletPage
+    #_connect_with_best_bc_college_page: ConnectWithBestBCCollegePage
 
     def __init__(self, endpoint):
         # Standup Selenuim Driver with endpoint
@@ -52,57 +53,39 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
         # go to the issuer endpoint in the browser
         self.driver.get(self.endpoint)
         # instantiate intial page objects
-        self._terms_of_service_page = TermsOfServicePage(self.driver)
+        self._bc_wallet_showcase_main_page = BCWalletShowcaseMainPage(self.driver)
         # make sure we are on the first page, the terms of service page
-        if not self._terms_of_service_page.on_this_page():
-            raise Exception('Something is wrong, not on the Terms of Service Page for the CANdy UVP Issuer')
+        if not self._bc_wallet_showcase_main_page.on_this_page():
+            raise Exception('Something is wrong, not on the BC Wallet Showcase Main Page')
 
     def get_issuer_type(self) -> str:
-        """return the type of issuer as a string CANdyUVPIssuer"""
-        return "CANdyUVPIssuer"
+        """return the type of issuer as a string BCShowcaseIssuer"""
+        return "BCShowcaseIssuer"
 
     def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
-        # This is not supported on CANdy UVP Issuer. Connection is made when creating the credential
+        # This is not supported on the BC Showcase Issuer. Connection is made when sending the credential
         # If called, send an exception back on this one and let the test handle it. Maybe a IssuerInterfaceFunctionNotSupported error.
-        return Exception('Function not supported for CANdy UVP Issuer')
+        return Exception('Function not supported for BC Showcase Issuer')
         
     def connected(self):
         """return true if connected"""
         # Check Issuing Credential Page for  "Connected to the Issuer Agent"
-        return self._issuing_credential_page.connected()
+        return self._connect_with_best_bc_college_page.connected()
 
 
-    def send_credential(self, version=1, schema=None, credential_offer=None, revokable=False):
+    def send_credential(self, actor:str, credential_offer=None, version=1, schema=None, revokable=False):
         """send a credential to the holder, returns a qr code for holder to connect to"""
-        self._terms_of_service_page.select_i_agree()
-        self._request_credential_page = self._terms_of_service_page.agree()
-
-        if credential_offer:
-            # Make credential_offer format into name value pairs
-            credential_data = self._create_name_value_pairs_from_credential_offer(credential_offer)
-            self._request_credential_page.enter_first_name(credential_data["first_name"])
-            self._request_credential_page.enter_last_name(credential_data["last_name"])
-            self._request_credential_page.enter_dob(credential_data["date_of_birth"])
-            self._request_credential_page.enter_street_address(credential_data["street_address"])
-            self._request_credential_page.enter_postal_code(credential_data["postal_code"])
-            self._request_credential_page.enter_city(credential_data["city"])
-            self._request_credential_page.enter_province(credential_data["province"])
+        self._who_do_you_want_to_be_page = self._bc_wallet_showcase_main_page.select_get_started()
+        if actor == "Student":
+            self._who_do_you_want_to_be_page.select_student()
+        elif actor == "Lawyer":
+            self._who_do_you_want_to_be_page.select_lawyer()
         else:
-            self._request_credential_page.enter_first_name(self.DEFAULT_CREDENTIAL_DATA["first_name"])
-            self._request_credential_page.enter_last_name(self.DEFAULT_CREDENTIAL_DATA["last_name"])
-            self._request_credential_page.enter_dob(self.DEFAULT_CREDENTIAL_DATA["date_of_birth"])
-            self._request_credential_page.enter_street_address(self.DEFAULT_CREDENTIAL_DATA["street_address"])
-            self._request_credential_page.enter_postal_code(self.DEFAULT_CREDENTIAL_DATA["postal_code"])
-            self._request_credential_page.enter_city(self.DEFAULT_CREDENTIAL_DATA["city"])
-            self._request_credential_page.enter_province(self.DEFAULT_CREDENTIAL_DATA["province"])
-
-        self._review_and_confirm_page = self._request_credential_page.request_credential()
-
-        self._review_and_confirm_page.select_i_confirm()
-        self._connect_with_issuer_page = self._review_and_confirm_page.proceed()
-
-        qrcode = self._connect_with_issuer_page.get_qr_code()
-        self._issuing_credential_page = IssuingCredentialPage(self.driver)
+            raise Exception(f"Unknown actor type {actor}")
+        self._lets_get_started_page = self._who_do_you_want_to_be_page.select_next()
+        self._install_bc_wallet_page = self._lets_get_started_page.select_next()
+        self._connect_with_best_bc_college_page = self._install_bc_wallet_page.select_skip()
+        qrcode = self._connect_with_best_bc_college_page.get_qr_code()
         return qrcode
 
 
