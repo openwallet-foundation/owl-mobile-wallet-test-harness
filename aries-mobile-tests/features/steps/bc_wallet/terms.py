@@ -31,16 +31,16 @@ def step_impl(context):
         ''')
 
 
-@given('the User has skipped on-boarding')
-def step_impl(context):
-    context.execute_steps(f'''
-            Given the new user has opened the app for the first time
-            Given the user is on the Is this app for you screen
-            When the user selects confirms that the app is for them
-            And they select Continue
-            And they are brought to the A different smart wallet screen
-            And the user selects Skip
-        ''')
+# @given('the User has skipped on-boarding')
+# def step_impl(context):
+#     context.execute_steps(f'''
+#             Given the new user has opened the app for the first time
+#             Given the user is on the Is this app for you screen
+#             When the user selects confirms that the app is for them
+#             And they select Continue
+#             And they are brought to the A different smart wallet screen
+#             And the user selects Skip
+#         ''')
 
 @given('the User was on the Terms and Conditions screen')
 @given('the User is on the Terms and Conditions screen')

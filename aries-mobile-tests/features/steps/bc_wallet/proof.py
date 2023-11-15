@@ -374,7 +374,7 @@ def step_impl(context):
 @given('the PCTF Member has setup thier Wallet')
 def step_impl(context):
     context.execute_steps(f'''
-            Given the User has skipped on-boarding
+            Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
             And a PIN has been set up with "369369"
             And the Holder has selected to use biometrics to unlock BC Wallet
@@ -385,7 +385,7 @@ def step_impl(context):
 @given('the Holder has setup thier Wallet')
 def step_impl(context):
     context.execute_steps(f'''
-            Given the User has skipped on-boarding
+            Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
             And a PIN has been set up with "369369"
         ''')

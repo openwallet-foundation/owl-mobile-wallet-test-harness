@@ -32,7 +32,7 @@ Feature: Proof
 
    @T002-Proof @critical @AcceptanceTest @Story_29 @SmokeTest
    Scenario: Holder accepts the proof request
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -52,7 +52,7 @@ Feature: Proof
 
    @T002.1-Proof @critical @AcceptanceTest @Story_29
    Scenario Outline: Holder accepts the proof request
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -76,7 +76,7 @@ Feature: Proof
 
    @T002.2-Proof @normal @FunctionalTest @Story_29
    Scenario Outline: Holder accepts the proof request credential has special characters
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -97,7 +97,7 @@ Feature: Proof
 
    @T003-Proof @critical @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a revoked credential where the verifier cares if the credential was revoked
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -119,7 +119,7 @@ Feature: Proof
 
    @T004-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked revokable credential where the verifier cares if the credential was revoked
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -143,7 +143,7 @@ Feature: Proof
 
    @T005-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a revoked credential where the verifier doesn't care if the credential was revoked
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -168,7 +168,7 @@ Feature: Proof
 
    @T006-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked revokable credential where the verifier doesn't care if the credential was revoked
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -193,7 +193,7 @@ Feature: Proof
    # if a non-revokable credential can be presented then that should take precedent over revokable credentials since it de facto satisfies proof of non-revocation.
    @T007-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked credential and presents a non-revokable credential
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -219,7 +219,7 @@ Feature: Proof
 
    @T008-Proof @critical @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked credential and presents a non-revokable credential that has been revoked and reissued
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -386,7 +386,7 @@ Feature: Proof
 
    @T012.1-Proof @normal @AcceptanceTest @SelfAttestation @Story_239 @wip
    Scenario Outline: Holder accepts the proof request that contains self-attested attributes but the attribute is in an existing credential
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet

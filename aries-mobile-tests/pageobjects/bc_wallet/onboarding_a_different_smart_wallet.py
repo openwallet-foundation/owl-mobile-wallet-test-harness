@@ -10,7 +10,7 @@ class OnboardingADifferentSmartWalletPage(BasePage):
     # Locators
     on_this_page_text_locator = "A different smart wallet"
     on_this_page_locator = (AppiumBy.NAME, "A different smart wallet")
-    skip_locator = (AppiumBy.ID, "com.ariesbifold:id/Skip")
+    #skip_locator = (AppiumBy.ID, "com.ariesbifold:id/Skip")
     next_locator = (AppiumBy.ID, "com.ariesbifold:id/Next")
 
     def on_this_page(self):    
@@ -31,9 +31,9 @@ class OnboardingADifferentSmartWalletPage(BasePage):
         else:
             raise Exception(f"App not on the {type(self)} page")
 
-    def select_skip(self):
-        if self.on_this_page():
-            self.find_by(self.skip_locator).click()
-            return TermsAndConditionsPage(self.driver)
-        else:
-            raise Exception(f"App not on the {type(self)} page")
+    # def select_skip(self):
+    #     if self.on_this_page():
+    #         self.find_by(self.skip_locator).click()
+    #         return TermsAndConditionsPage(self.driver)
+    #     else:
+    #         raise Exception(f"App not on the {type(self)} page")
