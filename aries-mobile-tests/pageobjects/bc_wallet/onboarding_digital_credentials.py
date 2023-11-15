@@ -10,7 +10,7 @@ class OnboardingDigitalCredentialsPage(BasePage):
     # Locators
     on_this_page_text_locator = "Digital credentials"
     on_this_page_locator = (AppiumBy.NAME, "Digital credentials")
-    skip_locator = (AppiumBy.ID, "com.ariesbifold:id/Skip")
+    #skip_locator = (AppiumBy.ID, "com.ariesbifold:id/Skip")
     back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
     next_locator = (AppiumBy.ID, "com.ariesbifold:id/Next")
 
@@ -40,9 +40,9 @@ class OnboardingDigitalCredentialsPage(BasePage):
         else:
             raise Exception(f"App not on the {type(self)} page")
 
-    def select_skip(self):
-        if self.on_this_page():
-            self.find_by(self.skip_locator).click()
-            return TermsAndConditionsPage(self.driver)
-        else:
-            raise Exception(f"App not on the {type(self)} page")
+    # def select_skip(self):
+    #     if self.on_this_page():
+    #         self.find_by(self.skip_locator).click()
+    #         return TermsAndConditionsPage(self.driver)
+    #     else:
+    #         raise Exception(f"App not on the {type(self)} page")

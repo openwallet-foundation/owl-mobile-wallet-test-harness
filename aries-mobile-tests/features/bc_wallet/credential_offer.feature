@@ -26,7 +26,7 @@ Feature: Offer a Credential
 
    @T002-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario: Holder accepts the credential offer recieved
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -43,7 +43,7 @@ Feature: Offer a Credential
 
    @T002.1-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario Outline: Holder accepts the credential offer recieved
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -65,7 +65,7 @@ Feature: Offer a Credential
 
    @T003-CredentialOffer @wip @critical @AcceptanceTest @Story_79
    Scenario: Holder declines the credential offer recieved
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -110,7 +110,7 @@ Feature: Offer a Credential
 
    @T006-CredentialOffer @wip @critical @AcceptanceTest @Story_79 @Story_82
    Scenario: Holder accepts the credential offer recieved with previous credential(s)
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
@@ -145,7 +145,7 @@ Feature: Offer a Credential
 
    @T008-CredentialOffer @normal @FunctionalTest @PerformanceTest
    Scenario Outline: Holder multiple credentials and no issuance should talke a long time
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
