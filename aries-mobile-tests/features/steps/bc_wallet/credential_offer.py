@@ -14,6 +14,7 @@ from agent_test_utils import get_qr_code_from_invitation
 #from pageobjects.bc_wallet.credential_offer_notification import CredentialOfferNotificationPage
 from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
 from pageobjects.bc_wallet.credential_added import CredentialAddedPage
+from pageobjects.bc_wallet.contact import ContactPage
 
 
 @given('a connection has been successfully made')
@@ -41,6 +42,8 @@ def step_impl(context):
 
 @step('the holder opens the credential offer')
 def step_impl(context):
+    if 'thisContactPage' not in context:
+        context.thisContactPage = ContactPage(context.driver)
     # Select the credential offer
     context.thisCredentialOfferPage = context.thisContactPage.select_open_credential_offer()
 
