@@ -2,6 +2,7 @@
 Class for BC Showcase issuer agent for Student and Lawer Showcase Credentials
 """
 import base64
+import io
 from agent_factory.issuer_agent_interface import IssuerAgentInterface
 from sys import platform
 from selenium import webdriver
@@ -76,32 +77,27 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
     def send_credential(self, actor:str, credential_offer=None, version=1, schema=None, revokable=False):
         """send a credential to the holder, returns a qr code for holder to connect to"""
         self._who_do_you_want_to_be_page = self._bc_wallet_showcase_main_page.select_get_started()
+        self.driver.minimize_window()
+        self.driver.maximize_window()
         if actor == "Student":
             self._who_do_you_want_to_be_page.select_student()
         elif actor == "Lawyer":
             self._who_do_you_want_to_be_page.select_lawyer()
         else:
             raise Exception(f"Unknown actor type {actor}")
+        self.driver.minimize_window()
+        self.driver.maximize_window()
         self._lets_get_started_page = self._who_do_you_want_to_be_page.select_next()
         self._install_bc_wallet_page = self._lets_get_started_page.select_next()
         self._connect_with_best_bc_college_page = self._install_bc_wallet_page.select_skip()
+        self.driver.minimize_window()
+        self.driver.maximize_window()
         qrcode = self._connect_with_best_bc_college_page.get_qr_code()
-        return qrcode
+ 
+        contents = qrcode.screenshot_as_base64.encode('utf-8')
+        return contents.decode('utf-8')
 
-
-    def restart_issue_credential(self):
-        # go to the issuer endpoint in the browser
-        self.driver.get(self.endpoint)
-        # make sure we are on the first page, the terms of service page
-        if not self._terms_of_service_page.on_this_page():
-            raise Exception('Something is wrong, not on the Terms of Service Page for the CANdy UVP Issuer')
 
     def revoke_credential(self, publish_immediately=True, notify_holder=False):
         """revoke a credential"""
-        return Exception('Function not supported for CANdy UVP Issuer')
-
-    def _create_name_value_pairs_from_credential_offer(self, credential_offer):
-        credential_data = {}
-        for attribute in credential_offer["attributes"]:
-            credential_data[attribute["name"]] = attribute["value"]
-        return credential_data
+        return Exception('Function not supported for BC Showcase Issuer')

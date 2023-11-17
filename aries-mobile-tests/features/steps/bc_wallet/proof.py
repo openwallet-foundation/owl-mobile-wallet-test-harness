@@ -413,6 +413,7 @@ def step_impl(context, credential):
     '''.format(table=table_to_str(context.table)))
 
 
+@given('they Scan the proof request QR Code')
 @given('they Scan the credential offer QR Code')
 def step_impl(context):
     if hasattr(context, 'thisNavBar') == False:

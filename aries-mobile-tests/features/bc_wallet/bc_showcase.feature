@@ -10,27 +10,46 @@ Feature: BC Showcase
       Given an existing Student wallet user
          | pin    | biometrics |
          | 369369 | off        |
-      #When the <user> has a <credentials> from <issuer_agent_type>
       When the Student has credentials
          | credential | revocable | issuer_agent_type             | credential_name |
          | N/A        | False     | BCShowcaseBestBCCollegeIssuer | Student Card    |
-
-      And the <user> has a proof request of <proof_request> from <verifier_agent_type>
       And the Student has a proof request
-         | verifier_agent_type             | proof_request |
-         | BCShowcaseBestBCCollegeVerifier | Student Card  |
-
+         | verifier_agent_type             | proof_request       |
+         | BCShowcaseBestBCCollegeVerifier | Cool Clothes Online |
       And they select Share
+      Then they have Access
+         | proof_result |
+         | Discount     |
 
-      Then they have <proof_result>
+   @T002-BCShowcase @critical @AcceptanceTest
+   Scenario: BC Showcase Student gets access to a book a room
+      Given an existing Student wallet user
+         | pin    | biometrics |
+         | 369369 | off        |
+      When the Student has credentials
+         | credential | revocable | issuer_agent_type             | credential_name |
+         | N/A        | False     | BCShowcaseBestBCCollegeIssuer | Student Card    |
+      And the Student has a proof request
+         | verifier_agent_type             | proof_request  |
+         | BCShowcaseBestBCCollegeVerifier | BestBC College |
+      And they select Share
       Then they have Access
          | proof_result |
          | Room Booked  |
 
-#       Examples:
-#          | user    | issuer_agent_type             | credentials             | verifier_agent_type                   | proof_request        | proof_result   |
-#          | Student | BCShowcaseBestBCCollegeIssuer | Student Card            | BCShowcaseBestBCCollegeVerifier       | Student Card         | Room Booked    |
-#          | Student | BCShowcaseBestBCCollegeIssuer | Student Card            | BCShowcaseCoolClothesOnlineVerifier   | Student Card         | Discount       |
-#          | Lawyer  | BCShowcaseLSBCIssuer          | LSBC Member Card:Person | BCShowcaseCourtServicesBranchVerifier | Member Card & Person | Court Services |
 
-# BCShowcaseServiceBCIssuer Person
+   @T003-BCShowcase @critical @AcceptanceTest @wip
+   Scenario: BC Showcase Lawyer gets access to court services
+      Given an existing Lawyer wallet user
+         | pin    | biometrics |
+         | 369369 | off        |
+      When the Lawyer has credentials
+         | credential | revocable | issuer_agent_type    | credential_name         |
+         | N/A        | False     | BCShowcaseLSBCIssuer | LSBC Member Card:Person |
+      And the Lawyer has a proof request
+         | verifier_agent_type                   | proof_request        |
+         | BCShowcaseCourtServicesBranchVerifier | Member Card & Person |
+      And they select Share
+      Then they have Access
+         | proof_result   |
+         | Court Services |

@@ -52,6 +52,12 @@ jobs:
           - mobile-platform: "-p iOS"
             app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
             report-project: "bc-digital-id-ios"
+          - mobile-platform: "-p Android"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.aab"
+            report-project: "bc-showcase-android"
+          - mobile-platform: "-p iOS"
+            app-file-name: "-a ${{ needs.check-app-updated.outputs.NEW_APP_NAME }}.ipa"
+            report-project: "bc-showcase-ios"
     #timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
@@ -133,7 +139,7 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet -t ~@wip -t ~@Connectionless -t ~@BCSC"
+          TEST_SCOPE: "-t @bc_wallet -t ~@wip -t ~@Connectionless -t ~@BCSC -t ~@BCShowcase"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
@@ -161,7 +167,7 @@ jobs:
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
-          TEST_SCOPE: "-t @bc_wallet -t @Connectionless -t ~@wip -t ~@BCSC"
+          TEST_SCOPE: "-t @bc_wallet -t @Connectionless -t ~@wip -t ~@BCSC -t ~@BCShowcase"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
@@ -190,6 +196,26 @@ jobs:
           MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
           APP_FILE_NAME: ${{ matrix.app-file-name }}
           TEST_SCOPE: "-t @bc_wallet -t @BCSC -t ~@wip"
+          REPORT_PROJECT: ${{ matrix.report-project }}
+        continue-on-error: true
+
+      - name: Run BC Wallet with BC Showcase Tests
+        if: ${{ contains(matrix.report-project,'bc-showcase') }}
+        uses: ./.github/workflows/run-test-harness
+        env:
+          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
+          REGION: "us-west-1"
+          #TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
+        with:
+          MOBILE_WALLET: "-w bc_wallet"
+          ISSUER_AGENT: '-i "BCShowcaseIssuer;https://bc-wallet-demo-dev.apps.silver.devops.gov.bc.ca/"'
+          VERIFIER_AGENT: '-v "BCShowcaseVerifier;https://bc-wallet-demo-dev.apps.silver.devops.gov.bc.ca/"'
+          DEVICE_CLOUD: "-d SauceLabs"
+          DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
+          DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
+          MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
+          APP_FILE_NAME: ${{ matrix.app-file-name }}
+          TEST_SCOPE: "-t @bc_wallet -t @BCShowcase -t ~@wip"
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 

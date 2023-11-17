@@ -3,7 +3,7 @@ from agent_factory.candy_uvp.pageobjects.webbasepage import WebBasePage
 from selenium.webdriver.common.by import By
 from pageobjects.basepage import WaitCondition
 import base64
-#from agent_factory.bc_showcase.pageobjects.youre_all_set_page import YoureAllSetPage
+from agent_factory.bc_showcase.pageobjects.youre_all_set_page import YoureAllSetPage
 
 
 # These classes can inherit from a BasePage to do commone setup and functions

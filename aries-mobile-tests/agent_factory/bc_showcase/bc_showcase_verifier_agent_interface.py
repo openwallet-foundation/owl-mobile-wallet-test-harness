@@ -1,160 +1,137 @@
 """
-Absctact Base Class for actual verifier agent interfaces to implement
+Class for BC Showcase verifier agent for Student and Lawer Showcase Proofs
 """
 
 from asyncio import sleep
 from agent_factory.verifier_agent_interface import VerifierAgentInterface
+from sys import platform
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
 import json
 from agent_test_utils import get_qr_code_from_invitation
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
-
+# import Page Objects needed
+from agent_factory.bc_showcase.pageobjects.bc_wallet_showcase_main_page import BCWalletShowcaseMainPage
+from agent_factory.bc_showcase.pageobjects.who_do_you_want_to_be_page import WhoDoYouWantToBePage
+from agent_factory.bc_showcase.pageobjects.lets_get_started_page import LetsGetStartedPage
+from agent_factory.bc_showcase.pageobjects.install_bc_wallet_page import InstallBCWalletPage
+from agent_factory.bc_showcase.pageobjects.connect_with_best_bc_college_page import ConnectWithBestBCCollegePage
+from agent_factory.bc_showcase.pageobjects.youre_all_set_page import YoureAllSetPage
+from agent_factory.bc_showcase.pageobjects.using_your_credentials_page import UsingYourCredentialsPage
+from agent_factory.bc_showcase.pageobjects.getting_a_student_discount_page import GettingAStudentDiscountPage
+from agent_factory.bc_showcase.pageobjects.start_proving_youre_a_student_page import StartProvingYoureAStudentPage
+from agent_factory.bc_showcase.pageobjects.book_a_study_room_page import BookAStudyRoomPage
+from agent_factory.bc_showcase.pageobjects.start_booking_the_room_page import StartBookingTheRoomPage
 
 class BCShowcaseVerifierAgentInterface(VerifierAgentInterface):
 
-    # Default schema and cred
-    DEFAULT_PROOF_REQUEST = {
-        "requested_attributes": {
-            "Person":{
-                "restrictions":[
-                    {
-                        "schema_name":"Person"
-                    }
-                ],
-                "names":[
-                    "picture",
-                    "family_name",
-                    "given_names",
-                    "locality",
-                    "region",
-                    "postal_code",
-                    "street_address",
-                    "country",
-                    "expiry_date_dateint",
-                    "birthdate_dateint"
-                ]
-            }
-        },
-        "requested_predicates":{
-         
-        },
-        "version":"1.0.0",
-        "name":"BC Digital ID Request"
-    }
+    _actor : str
+    _bc_wallet_showcase_main_page: BCWalletShowcaseMainPage
+    _who_do_you_want_to_be_page: WhoDoYouWantToBePage
+    _lets_get_started_page: LetsGetStartedPage
+    _install_bc_wallet_page: InstallBCWalletPage
+    _connect_with_best_bc_college_page: ConnectWithBestBCCollegePage
+    _youre_all_set_page: YoureAllSetPage
+    _using_your_credentials_page: UsingYourCredentialsPage
+
+    # Cool Clothes Online Page Objects
+    _getting_a_student_discount_page: GettingAStudentDiscountPage
+    _start_proving_youre_a_student_page: StartProvingYoureAStudentPage
+
+    # BestBC College Page Objects
+    _book_a_study_room_page: BookAStudyRoomPage
+    _start_booking_the_room_page: StartBookingTheRoomPage
+
+
+    def __init__(self, endpoint):
+        # Standup Selenuim Driver with endpoint
+        super().__init__(endpoint)
+        if platform == "linux" or platform == "linux2":
+            print("Starting Chromium on linux for BC Showcase Issuer Agent")
+            options = Options()
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--headless")
+            self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
+        else:
+            print("Starting Chrome on Mac or Windows for Issuer Agent")
+            self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        # go to the issuer endpoint in the browser
+        self.driver.get(self.endpoint)
+        # instantiate intial page objects and navigate to the Proof portion of the BC Wallet Showcase
+        self._bc_wallet_showcase_main_page = BCWalletShowcaseMainPage(self.driver)
+
+        # make sure we are on the page for proofs in the Showcase.
+        if not self._bc_wallet_showcase_main_page.on_this_page():
+            raise Exception('Something is wrong, not on the BC Wallet Showcase Main Page')
+
 
     def get_issuer_type(self) -> str:
-        """return the type of issuer as a string BCPersonShowcaseVerifier"""
-        return "BCPersonShowcaseVerifier"
+        """return the type of issuer as a string BCShowcaseVerifier"""
+        return "BCShowcaseVerifier"
 
     def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
-        """create an invitation and return the json back to the caller """
-        # https://bc-wallet-demo-agent-admin-test.apps.silver.devops.gov.bc.ca/connections/create-invitation
-
-        self._oob = oob
-        if self._oob is True:
-            data = {"use_public_did": False}
-            (resp_status, resp_text) = agent_controller_POST(
-                self.endpoint + "/agent/command/",
-                "out-of-band",
-                operation="send-invitation-message",
-                data=data,
-            )
-        else:
-            (resp_status, resp_text) = agent_controller_POST(
-                self.endpoint, topic="/connections", operation="create-invitation"
-            )
-
-        if resp_status != 200:
-            raise Exception(
-                f"Call to create connection invitation failed: {resp_status}; {resp_text}"
-            )
-        else:
-            self.invitation_json = json.loads(resp_text)
-            qrimage = get_qr_code_from_invitation(self.invitation_json, print_qrcode, save_qrcode, qr_code_border)
-            return qrimage
+        # This is not supported on the BC Showcase Verifier. Connection is made when sending the proof request
+        # If called, send an exception back on this one and let the test handle it. Maybe a VerifierInterfaceFunctionNotSupported error.
+        return Exception('Function not supported for BC Showcase Verifier')
 
     def connected(self):
         """return True/False indicating if this issuer is connected to the wallet holder """
-
-        # If OOB then make a call to get the connection id from the webhook. 
-        if self._oob == True:
-            # Get the responders's connection id from the above request's response webhook in the backchannel
-            invitation_id = self.invitation_json["invitation"]["@id"]
-            (resp_status, resp_text) = agent_controller_GET(
-                self.endpoint  + "/agent/response/", "did-exchange", id=invitation_id
-            )
-            if resp_status != 200:
-                raise Exception(
-                    f"Call get the connection id from the OOB connection failed: {resp_status}; {resp_text}"
-                )
-            else:
-                resp_json = json.loads(resp_text)
-                connection_id = resp_json["connection_id"]
-                self.invitation_json["connection_id"] = connection_id
-        else:
-            connection_id = self.invitation_json['connection']['id']
-        
-        return self._expected_connection_state(self.endpoint, "/connections", connection_id, "complete", 6, 2)
+        """return true if connected"""
+        return self._connect_with_best_bc_college_page.connected()
 
 
-    def _expected_connection_state(self, agent_url, protocol_txt, id, status_txt, wait_time=2.0, sleep_time=0.5):
-        sleep(sleep_time)
-        state = "None"
-        if type(status_txt) != list:
-            status_txt = [status_txt]
-        # "N/A" means that the controller can't determine the state - we'll treat this as a successful response
-        status_txt.append("N/A")
-        #for i in range(int(wait_time/sleep_time)):
-        for i in range(int(wait_time)):
-            (resp_status, resp_text) = agent_controller_GET(agent_url, protocol_txt, id=id)
-            if resp_status == 200:
-                resp_json = json.loads(resp_text)
-                state = resp_json["state"]
-                if state in status_txt:
-                    return True
-            sleep(sleep_time)
-
-        print("From", agent_url, "Expected state", status_txt, "but received", state, ", with a response status of", resp_status)
-        return False
-
-    def send_proof_request(self, version=1, request_for_proof=None, connectionless=False):
+    def send_proof_request(self, actor:str, proof:str, version=1, request_for_proof=None, connectionless=False):
         """create a proof request """
-        
-        if version == 2:
-            topic = "proof-v2"
+        self._who_do_you_want_to_be_page = self._bc_wallet_showcase_main_page.select_get_started()
+        self.driver.minimize_window()
+        self.driver.maximize_window()
+        if actor == "Student":
+            self._who_do_you_want_to_be_page.select_student()
+        elif actor == "Lawyer":
+            self._who_do_you_want_to_be_page.select_lawyer()
         else:
-            topic = "/proofs"
+            raise Exception(f"Unknown actor type {actor}")
+        self.driver.minimize_window()
+        self.driver.maximize_window()
+        self._lets_get_started_page = self._who_do_you_want_to_be_page.select_next()
+        self._install_bc_wallet_page = self._lets_get_started_page.select_next()
+        self._connect_with_best_bc_college_page = self._install_bc_wallet_page.select_skip()
+        self.driver.minimize_window()
+        self.driver.maximize_window()
+        self._youre_all_set_page = self._connect_with_best_bc_college_page.select_i_already_have_my_credential()
+        self._using_your_credentials_page = self._youre_all_set_page.select_finish()
 
-        if request_for_proof:
+        if proof == "Cool Clothes Online":
+            self._getting_a_student_discount_page = self._using_your_credentials_page.select_cool_clothes_online_start()
+            self.driver.minimize_window()
+            self.driver.maximize_window()
+            self._start_proving_youre_a_student_page = self._getting_a_student_discount_page.select_start()
+            self.driver.minimize_window()
+            self.driver.maximize_window()
+            qrcode = self._start_proving_youre_a_student_page.get_qr_code()
+        elif proof == "BestBC College":
+            self._book_a_study_room_page = self._using_your_credentials_page.select_bestbc_college_start()
+            self.driver.minimize_window()
+            self.driver.maximize_window()
+            self._start_booking_the_room_page = self._book_a_study_room_page.select_start()
+            self.driver.minimize_window()
+            self.driver.maximize_window()
+            qrcode = self._start_booking_the_room_page.get_qr_code()
+
+        contents = qrcode.screenshot_as_base64.encode('utf-8')
+        return contents.decode('utf-8')
+
+
+    def proof_success(self, proof_result):
+        if proof_result == "Discount":
+            return self._start_proving_youre_a_student_page.proof_success()
+        elif proof_result == "Room Booked":
+            return self._start_booking_the_room_page.proof_success()
+        elif proof_result == "Court Services":
             pass
-            # if context.non_revoked_timeframe:
-            #     data["non_revoked"] = context.non_revoked_timeframe["non_revoked"]
         else:
-            request_for_proof = self.DEFAULT_PROOF_REQUEST.copy()
-
-        presentation_request = {
-            "connectionId": self.invitation_json['connection']['id'],
-            "proofRequest": request_for_proof,
-            "comment": f"proof request from {self.get_issuer_type()} {self.endpoint}"
-        }
-
-        if connectionless:
-            operation = "create-send-connectionless-request"
-        else:
-            #presentation_request["connectionId"] = self.invitation_json['connection']['id']
-            operation = "request-proof"
-
-        (resp_status, resp_text) = agent_controller_POST(
-            self.endpoint,
-            topic,
-            operation=operation,
-            data=presentation_request,
-            wrap_data_with_data=False
-        )
-        if resp_status != 200:
-            raise Exception(
-                f"Call to send proof request failed: {resp_status}; {resp_text}"
-            )
-        else:
-            self.proof_request_json = json.loads(resp_text)
-
-
+            raise Exception(f"Invalid proof result: {proof_result} expected Discount, Room Booked, or Court Services")
