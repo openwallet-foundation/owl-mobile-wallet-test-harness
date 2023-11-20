@@ -219,6 +219,14 @@ jobs:
           REPORT_PROJECT: ${{ matrix.report-project }}
         continue-on-error: true
 
+      - name: archive screenshots
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-screenshots_from_main
+          path: aries-mobile-tests/*.png
+          retention-days: 7
+
+          
       - name: Upload AMTH All Test results to Allure
         uses: ./.github/workflows/run-send-gen-test-results-secure
         with:
