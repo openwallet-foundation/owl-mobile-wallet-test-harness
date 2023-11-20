@@ -47,6 +47,7 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--headless")
+            options.add_argument("--enable-javascript")
             self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
         else:
             print("Starting Chrome on Mac or Windows for Issuer Agent")
@@ -55,6 +56,7 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
         self.driver.get(self.endpoint)
         # instantiate intial page objects
         self._bc_wallet_showcase_main_page = BCWalletShowcaseMainPage(self.driver)
+        self.driver.save_screenshot('BCWalletShowcaseMainPage.png')
         # make sure we are on the first page, the terms of service page
         if not self._bc_wallet_showcase_main_page.on_this_page():
             raise Exception('Something is wrong, not on the BC Wallet Showcase Main Page')
@@ -79,6 +81,7 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
         self._who_do_you_want_to_be_page = self._bc_wallet_showcase_main_page.select_get_started()
         self.driver.minimize_window()
         self.driver.maximize_window()
+        self.driver.save_screenshot('who_do_you_want_to_be_page.png')
         if actor == "Student":
             self._who_do_you_want_to_be_page.select_student()
         elif actor == "Lawyer":
@@ -87,11 +90,15 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
             raise Exception(f"Unknown actor type {actor}")
         self.driver.minimize_window()
         self.driver.maximize_window()
+        self.driver.save_screenshot('who_do_you_want_to_be_page_actor_select.png')
         self._lets_get_started_page = self._who_do_you_want_to_be_page.select_next()
+        self.driver.save_screenshot('lets_get_started_page.png')
         self._install_bc_wallet_page = self._lets_get_started_page.select_next()
+        self.driver.save_screenshot('install_bc_wallet_page.png')
         self._connect_with_best_bc_college_page = self._install_bc_wallet_page.select_skip()
         self.driver.minimize_window()
         self.driver.maximize_window()
+        self.driver.save_screenshot('connect_with_best_bc_college_page.png')
         qrcode = self._connect_with_best_bc_college_page.get_qr_code()
  
         contents = qrcode.screenshot_as_base64.encode('utf-8')
