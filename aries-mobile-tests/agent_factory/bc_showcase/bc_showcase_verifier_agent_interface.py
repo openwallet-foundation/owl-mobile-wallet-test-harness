@@ -55,6 +55,7 @@ class BCShowcaseVerifierAgentInterface(VerifierAgentInterface):
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--headless")
+            options.add_argument("--enable-javascript")
             self.driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
         else:
             print("Starting Chrome on Mac or Windows for Issuer Agent")
