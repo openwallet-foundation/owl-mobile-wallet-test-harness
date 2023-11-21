@@ -4,6 +4,7 @@ Class for BC Showcase verifier agent for Student and Lawer Showcase Proofs
 
 from asyncio import sleep
 from agent_factory.verifier_agent_interface import VerifierAgentInterface
+from agent_test_utils import add_border_to_qr_code
 from sys import platform
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -123,8 +124,8 @@ class BCShowcaseVerifierAgentInterface(VerifierAgentInterface):
             self.driver.maximize_window()
             qrcode = self._start_booking_the_room_page.get_qr_code()
 
-        contents = qrcode.screenshot_as_base64.encode('utf-8')
-        return contents.decode('utf-8')
+
+        return add_border_to_qr_code(qrcode)
 
 
     def proof_success(self, proof_result):

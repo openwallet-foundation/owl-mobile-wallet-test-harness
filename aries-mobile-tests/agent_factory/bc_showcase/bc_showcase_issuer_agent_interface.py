@@ -4,6 +4,7 @@ Class for BC Showcase issuer agent for Student and Lawer Showcase Credentials
 import base64
 import io
 from agent_factory.issuer_agent_interface import IssuerAgentInterface
+from agent_test_utils import add_border_to_qr_code
 from sys import platform
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -100,9 +101,7 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
         self.driver.maximize_window()
         self.driver.save_screenshot('connect_with_best_bc_college_page.png')
         qrcode = self._connect_with_best_bc_college_page.get_qr_code()
- 
-        contents = qrcode.screenshot_as_base64.encode('utf-8')
-        return contents.decode('utf-8')
+        return add_border_to_qr_code(qrcode)
 
 
     def revoke_credential(self, publish_immediately=True, notify_holder=False):
