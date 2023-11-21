@@ -4,7 +4,7 @@ import base64
 import json
 import io
 from qrcode import QRCode
-from PIL import Image
+from PIL import Image, ImageOps
 
 def get_qr_code_from_invitation(invitation_json, print_qr_code=False, save_qr_code=False, qr_code_border=40):
     if "invitation_url" in invitation_json:
@@ -174,3 +174,21 @@ def table_to_str(table):
             result += cell + '|'
         result += '\n'
     return result
+
+
+def add_border_to_qr_code(qr_code_element, border_size=30):
+    # Take a screenshot of the QR code element
+    qr_code_screenshot = qr_code_element.screenshot_as_base64.encode('utf-8')
+
+    # Convert the screenshot to an image
+    qr_code_image = Image.open(io.BytesIO(base64.b64decode(qr_code_screenshot)))
+
+    # Add a border to the image
+    qr_code_with_border = ImageOps.expand(qr_code_image, border=border_size, fill='white')
+
+    # Convert the modified image back to base64
+    buffered = io.BytesIO()
+    qr_code_with_border.save(buffered, format="PNG")
+    qr_code_with_border_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
+
+    return qr_code_with_border_base64
