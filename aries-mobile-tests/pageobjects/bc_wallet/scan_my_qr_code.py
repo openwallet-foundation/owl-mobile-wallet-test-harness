@@ -16,11 +16,10 @@ class ScanMyQRCodePage(BasePage):
     on_this_page_text_locator = "My QR code"
     #back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
     back_locator = (AppiumBy.ID, "Back")
-    #edit_wallet_name_locator = (AppiumBy.ID, "com.ariesbifold:id/EditWalletName")
-    edit_wallet_name_locator = (AppiumBy.ID, "Edit wallet name")
+    edit_wallet_name_locator = (AppiumBy.ID, "com.ariesbifold:id/EditWalletName")
     scan_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/Scan QR code")
     my_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/My QR code")
-    qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/QRCode")
+    qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/QRRenderer")
 
     def on_this_page(self):     
         return super().on_this_page(self.on_this_page_text_locator) 
@@ -41,8 +40,8 @@ class ScanMyQRCodePage(BasePage):
         # Don't check if on this page becasue android (unless you scroll back to the top) can't see the App Settings accessibility ID
         # if self.on_this_page():
         self.find_by(self.back_locator).click()
-        from pageobjects.bc_wallet.home import HomePage
-        return HomePage(self.driver)
+        from pageobjects.bc_wallet.settings import SettingsPage
+        return SettingsPage(self.driver)
         # else:
         #     raise Exception(f"App not on the {type(self)} page")
 

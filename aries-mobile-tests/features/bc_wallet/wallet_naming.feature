@@ -27,7 +27,7 @@ Feature: Wallet Naming
     Examples:
       | user_state |
       | the menu   |
-  #| Scan my QR code |
+      | Scan my QR code |
 
 
   @T002-WalletNaming @AcceptanceTest @Story_1200 @normal @CanRunOnSLVirtualDevice
@@ -48,7 +48,7 @@ Feature: Wallet Naming
     Examples:
       | user_state |
       | the menu   |
-  #| Scan my QR code |
+      | Scan my QR code |
 
   @T002.1-WalletNaming @FunctionalTest @Story_1200 @minor @CanRunOnSLVirtualDevice
   Scenario Outline: Wallet user updates and saves thier wallet name, then changes back to original name
@@ -71,7 +71,7 @@ Feature: Wallet Naming
     Examples:
       | user_state |
       | the menu   |
-  #| Scan my QR code |
+      | Scan my QR code |
 
   @T003-WalletNaming @AcceptanceTest @Story_1148 @normal @wip
   Scenario: New Wallet User updates thier wallet name during onboarding

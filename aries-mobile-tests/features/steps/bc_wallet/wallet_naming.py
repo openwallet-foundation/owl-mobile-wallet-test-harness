@@ -13,6 +13,8 @@ from agent_controller_client import agent_controller_GET, agent_controller_POST,
 # import Page Objects needed
 from pageobjects.bc_wallet.biometrics import BiometricsPage
 from pageobjects.bc_wallet.camera_privacy_policy import CameraPrivacyPolicyPage
+from pageobjects.bc_wallet.scan_my_qr_code import ScanMyQRCodePage
+from pageobjects.bc_wallet.settings import SettingsPage
 
 
 @step('an existing {actor} wallet user')
@@ -149,18 +151,29 @@ def step_impl(context):
 
 @then(u'the name of the wallet is changed everywhere it is presented')
 def step_impl(context):
-    # Get the wallet name locations from the context table
-    wallet_name_locations = context.table[0]['wallet_name_location']
-    # Split the locations into a list
-    wallet_name_locations = wallet_name_locations.split(',')
-    # check each location in the app for the new wallet name
-    for location in wallet_name_locations:
+    for row in context.table:
+        # Get the new wallet name from the context table or use the wallet_name parameter
+        location = row['wallet_name_location']
         if location == 'the menu':
+            if "thisSettingsPage" not in context:
+                context.thisSettingsPage = SettingsPage(context.driver)
+            if context.thisSettingsPage.on_this_page() == False:
+                # we are probably on the Scan my QR code page so go back to the menu
+                context.thisSettingsPage = context.thisScanMyQRCodePage.select_back()
             assert context.thisSettingsPage.on_this_page(), 'The user is not on the settings/menu page.'
             # This is commented out until we have a testID on the Wallet Name, issue 1557
             #assert context.thisSettingsPage.get_wallet_name() == context.new_wallet_name, 'The wallet name is not correct on the settings/menu page.'
             assert temp_get_wallet_name(context.thisSettingsPage) == context.new_wallet_name, 'The wallet name is not correct on the settings/menu page.'
         elif location == 'Scan my QR code':
+            if "thisScanMyQRCodePage" not in context:
+                context.thisScanMyQRCodePage = ScanMyQRCodePage(context.driver) 
+            if context.thisScanMyQRCodePage.on_this_page() == False:
+                # we are probably on the settings page so go back to the Scan my QR code page
+                context.thisScanMyQRCodePage = context.thisSettingsPage.select_scan_my_qr_code()
+                if context.driver.capabilities['platformName'] == 'iOS':
+                    context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
+                    if context.thisCameraPrivacyPolicyPage.on_this_page():
+                        context.thisCameraPrivacyPolicyPage.select_allow()
             assert context.thisScanMyQRCodePage.on_this_page(), 'The user is not on the Scan my QR code page.'
             # This is commented out until we have a testID on the Wallet Name, issue 1557
             #assert context.thisScanMyQRCodePage.get_wallet_name() == context.new_wallet_name, 'The wallet name is not correct on the Scan my QR code page.'
@@ -170,18 +183,29 @@ def step_impl(context):
 
 @then(u'the name of the wallet is unchanged everywhere it is presented')
 def step_impl(context):
-    # Get the wallet name locations from the context table
-    wallet_name_locations = context.table[0]['wallet_name_location']
-    # Split the locations into a list
-    wallet_name_locations = wallet_name_locations.split(',')
-    # check each location in the app for the new wallet name
-    for location in wallet_name_locations:
+    for row in context.table:
+        # Get the new wallet name from the context table or use the wallet_name parameter
+        location = row['wallet_name_location']
         if location == 'the menu':
+            if hasattr(context, 'thisSettingsPage') == False:
+                context.thisSettingsPage = SettingsPage(context.driver)
+            if context.thisSettingsPage.on_this_page() == False:
+                # we are probably on the Scan my QR code page so go back to the menu
+                context.thisSettingsPage = context.thisScanMyQRCodePage.select_back()
             assert context.thisSettingsPage.on_this_page(), 'The user is not on the settings/menu page.'
             # This is commented out until we have a testID on the Wallet Name, issue 1557
             #assert context.thisSettingsPage.get_wallet_name() == context.new_wallet_name, 'The wallet name is not correct on the settings/menu page.'
             assert temp_get_wallet_name(context.thisSettingsPage) == context.original_wallet_name, 'The wallet name is not correct on the settings/menu page.'
         elif location == 'Scan my QR code':
+            if hasattr(context, 'thisScanMyQRCodePage') == False:
+                context.thisScanMyQRCodePage = ScanMyQRCodePage(context.driver)
+            if context.thisScanMyQRCodePage.on_this_page() == False:
+                # we are probably on the settings page so go back to the Scan my QR code page
+                context.thisScanMyQRCodePage = context.thisSettingsPage.select_scan_my_qr_code()
+                if context.driver.capabilities['platformName'] == 'iOS':
+                    context.thisCameraPrivacyPolicyPage = CameraPrivacyPolicyPage(context.driver)
+                    if context.thisCameraPrivacyPolicyPage.on_this_page():
+                        context.thisCameraPrivacyPolicyPage.select_allow()
             assert context.thisScanMyQRCodePage.on_this_page(), 'The user is not on the Scan my QR code page.'
             # This is commented out until we have a testID on the Wallet Name, issue 1557
             #assert context.thisScanMyQRCodePage.get_wallet_name() == context.new_wallet_name, 'The wallet name is not correct on the Scan my QR code page.'
