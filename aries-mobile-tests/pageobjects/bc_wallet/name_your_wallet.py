@@ -58,6 +58,9 @@ class NameYourWalletPage(BasePage):
         if not self.on_this_page():
             raise Exception(f"App not on the {type(self)} page")
 
+        # sometimes the save button is hidden by the keyboard, so close the keyboard
+        self.find_by(self.message_locator).click()
+
         self.find_by(self.save_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
         return self.calling_page
