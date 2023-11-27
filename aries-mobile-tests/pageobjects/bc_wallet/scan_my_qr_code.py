@@ -20,6 +20,7 @@ class ScanMyQRCodePage(BasePage):
     scan_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/Scan QR code")
     my_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/My QR code")
     qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/QRRenderer")
+    wallet_name_locator = (AppiumBy.ID, "com.ariesbifold:id/WalletName")
 
     def on_this_page(self):     
         return super().on_this_page(self.on_this_page_text_locator) 
@@ -55,3 +56,5 @@ class ScanMyQRCodePage(BasePage):
     def select_my_qr_code(self):
         self.find_by(self.my_qr_code_locator).click()
 
+    def get_wallet_name(self):
+        return self.find_by(self.wallet_name_locator).text
