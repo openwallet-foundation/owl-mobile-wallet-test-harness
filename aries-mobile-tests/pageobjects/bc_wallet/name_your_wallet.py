@@ -59,7 +59,8 @@ class NameYourWalletPage(BasePage):
             raise Exception(f"App not on the {type(self)} page")
 
         # sometimes the save button is hidden by the keyboard, so close the keyboard
-        self.find_by(self.message_locator).click()
+        if self.current_platform == "iOS":
+            self.find_by(self.message_locator).click()
 
         self.find_by(self.save_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
@@ -73,7 +74,8 @@ class NameYourWalletPage(BasePage):
             raise Exception(f"App not on the {type(self)} page")
 
         # sometimes the cancel button is hidden by the keyboard, so close the keyboard
-        self.find_by(self.message_locator).click()
+        if self.current_platform == "iOS":
+            self.find_by(self.message_locator).click()
         self.find_by(self.cancel_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
         return self.calling_page
