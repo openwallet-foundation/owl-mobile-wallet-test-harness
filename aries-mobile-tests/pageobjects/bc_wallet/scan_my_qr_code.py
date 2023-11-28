@@ -14,9 +14,9 @@ class ScanMyQRCodePage(BasePage):
 
     # Locators
     on_this_page_text_locator = "My QR code"
-    #back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
-    back_locator = (AppiumBy.ID, "Back")
+    back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
     edit_wallet_name_locator = (AppiumBy.ID, "com.ariesbifold:id/EditWalletName")
+    edit_wallet_name_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Edit wallet name")
     scan_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/Scan QR code")
     my_qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/My QR code")
     qr_code_locator = (AppiumBy.ID, "com.ariesbifold:id/QRRenderer")
@@ -27,20 +27,23 @@ class ScanMyQRCodePage(BasePage):
 
 
     def select_edit_wallet_name(self):
-        self.find_by(self.edit_wallet_name_locator).click()
+        if self.current_platform == "iOS":
+            self.find_by(self.edit_wallet_name_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+        else:
+            self.find_by(self.edit_wallet_name_aid_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
         # return a new page object for the Edit Wallet Name page
         return NameYourWalletPage(self.driver, calling_page=self)
     
 
     def select_scan_qr_code(self):
-        self.find_by(self.scan_qr_code_locator).click()
+        self.find_by(self.scan_qr_code_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
     
 
     def select_back(self):
         # Don't check if on this page becasue android (unless you scroll back to the top) can't see the App Settings accessibility ID
         # if self.on_this_page():
-        self.find_by(self.back_locator).click()
+        self.find_by(self.back_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
         from pageobjects.bc_wallet.settings import SettingsPage
         return SettingsPage(self.driver)
         # else:
@@ -54,7 +57,7 @@ class ScanMyQRCodePage(BasePage):
         return qr_code
     
     def select_my_qr_code(self):
-        self.find_by(self.my_qr_code_locator).click()
+        self.find_by(self.my_qr_code_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
     def get_wallet_name(self):
         return self.find_by(self.wallet_name_locator).text
