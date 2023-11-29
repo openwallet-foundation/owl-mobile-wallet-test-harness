@@ -3,6 +3,7 @@ Class for actual CANdy Unverified Person Credetial issuer agent
 """
 import base64
 from agent_factory.issuer_agent_interface import IssuerAgentInterface
+from agent_test_utils import add_border_to_qr_code
 from sys import platform
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -103,7 +104,8 @@ class CANdy_UVP_IssuerAgentInterface(IssuerAgentInterface):
 
         qrcode = self._connect_with_issuer_page.get_qr_code()
         self._issuing_credential_page = IssuingCredentialPage(self.driver)
-        return qrcode
+        #return qrcode
+        return add_border_to_qr_code(qrcode)
 
 
     def restart_issue_credential(self):
