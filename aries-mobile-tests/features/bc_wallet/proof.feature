@@ -262,7 +262,7 @@ Feature: Proof
          | cred_data_unverified_person |
 
 
-   @T009.1-Proof @critical @AcceptanceTest @Connectionless
+   @T009.1-Proof @critical @AcceptanceTest @Connectionless @oob
    Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
       Given the PCTF Member has setup thier Wallet
       And the PCTF member has an Unverified Person <credential>
@@ -282,7 +282,7 @@ Feature: Proof
          | cred_data_unverified_person | pcft_connectionless_proof |
 
 
-   @T009.1.debug-Proof @critical @AcceptanceTest @Connectionless @wip
+   @T009.1.debug-Proof @critical @AcceptanceTest @Connectionless @wip @oob
    Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
       Given the user has a connectionless <proof> request for access to PCTF
          | issuer_agent_type |

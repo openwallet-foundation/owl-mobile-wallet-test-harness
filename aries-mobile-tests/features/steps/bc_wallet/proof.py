@@ -399,6 +399,7 @@ def step_impl(context, credential):
         Given the Holder receives a credential offer of {credential}
         And they Scan the credential offer QR Code
         And the Connecting completes successfully
+        And the holder opens the credential offer
         Then holder is brought to the credential offer screen
         When they select Accept
         And the holder is informed that their credential is on the way with an indication of loading
@@ -456,6 +457,8 @@ def step_impl(context, proof):
 
     context.device_service_handler.inject_qrcode(qrcode)
 
+    if "thisNavBar" not in context:
+        context.thisNavBar = NavBar(context.driver)
     context.thisConnectingPage = context.thisNavBar.select_scan()
     # This is connectionless and the connecting page doesn't last long. Assume we move quickly to the Proof Request
     context.thisProofRequestPage = ProofRequestPage(context.driver)
