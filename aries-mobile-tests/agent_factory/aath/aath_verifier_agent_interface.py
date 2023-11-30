@@ -6,7 +6,7 @@ from agent_factory.verifier_agent_interface import VerifierAgentInterface
 from agent_factory.aath.aath_agent_interface import AATHAgentInterface
 import json
 from agent_test_utils import get_qr_code_from_invitation
-from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
+from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected, expected_agent_proof_state
 
 
 class AATHVerifierAgentInterface(VerifierAgentInterface, AATHAgentInterface):
@@ -86,4 +86,12 @@ class AATHVerifierAgentInterface(VerifierAgentInterface, AATHAgentInterface):
                 qrcode = get_qr_code_from_invitation(self.proof_request_json, print_qr_code=False, save_qr_code=True)
                 return qrcode
 
-
+    def proof_request_verified(self):
+        """return true if proof request verified"""
+        thread_id = self.create_request_json["record"]["thread_id"]
+        return expected_agent_proof_state(
+            self.endpoint,
+            thread_id=thread_id,
+            status_txt=["true"],
+            wait_time=10.0,
+        )

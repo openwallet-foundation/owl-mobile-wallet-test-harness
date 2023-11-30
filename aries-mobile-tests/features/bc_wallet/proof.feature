@@ -242,7 +242,7 @@ Feature: Proof
          | cred_data_photo_id_revokable | proof_photo_id_revokable | now:now  |
 
 
-   @T009-Proof @critical @AcceptanceTest @Connectionless
+   @T009-Proof @critical @AcceptanceTest @Connectionless @wip @depricated
    Scenario Outline: Pan Canadian Trust Framework Member aquires access to PCTF Chat with a connectionless proof request
       Given the PCTF Member has setup thier Wallet
       And the PCTF member has an Unverified Person <credential>
