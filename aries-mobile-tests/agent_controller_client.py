@@ -116,9 +116,15 @@ def expected_agent_proof_state(agent_url, thread_id, status_txt, wait_time=2.0, 
         (resp_status, resp_text) = agent_controller_GET(agent_url + "/agent/command/", "proof", id=thread_id)
         if resp_status == 200:
             resp_json = json.loads(resp_text)
-            verified = resp_json["verified"]
-            if verified in status_txt:
-                return True
+            # if "verified" is not in resp_json, then it hasn't been verified yet, loop.
+            if "verified" in resp_json:
+                verified = resp_json["verified"]
+                if verified in status_txt:
+                    return True
+            else:
+                print("Proof not verified on attempt", i, "of", int(wait_time), "sleeping for", sleep_time, "seconds")
+                # print formated json 
+                print(json.dumps(resp_json, indent=4))
         sleep(sleep_time)
 
     print("From", agent_url, "Expected state", status_txt, "but received", verified, ", with a response status of", resp_status)
