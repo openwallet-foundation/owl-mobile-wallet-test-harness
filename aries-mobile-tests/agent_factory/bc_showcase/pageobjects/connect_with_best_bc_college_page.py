@@ -18,6 +18,7 @@ class ConnectWithBestBCCollegePage(WebBasePage):
 
 
     def on_this_page(self):     
+        self.wait_for_page_load_complete()
         return super().on_this_page(self.on_this_page_text_locator) 
 
     def get_qr_code(self):

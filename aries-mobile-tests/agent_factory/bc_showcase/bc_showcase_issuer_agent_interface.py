@@ -80,7 +80,7 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
     def send_credential(self, actor:str, credential_offer=None, version=1, schema=None, revokable=False):
         """send a credential to the holder, returns a qr code for holder to connect to"""
         self._who_do_you_want_to_be_page = self._bc_wallet_showcase_main_page.select_get_started()
-        self.driver.minimize_window()
+        #self.driver.minimize_window()
         self.driver.maximize_window()
         self.driver.save_screenshot('who_do_you_want_to_be_page.png')
         if actor == "Student":
@@ -89,7 +89,7 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
             self._who_do_you_want_to_be_page.select_lawyer()
         else:
             raise Exception(f"Unknown actor type {actor}")
-        self.driver.minimize_window()
+        #self.driver.minimize_window()
         self.driver.maximize_window()
         self.driver.save_screenshot('who_do_you_want_to_be_page_actor_select.png')
         self._lets_get_started_page = self._who_do_you_want_to_be_page.select_next()
@@ -97,7 +97,7 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
         self._install_bc_wallet_page = self._lets_get_started_page.select_next()
         self.driver.save_screenshot('install_bc_wallet_page.png')
         self._connect_with_best_bc_college_page = self._install_bc_wallet_page.select_skip()
-        self.driver.minimize_window()
+        #self.driver.minimize_window()
         self.driver.maximize_window()
         self.driver.save_screenshot('connect_with_best_bc_college_page.png')
         qrcode = self._connect_with_best_bc_college_page.get_qr_code()

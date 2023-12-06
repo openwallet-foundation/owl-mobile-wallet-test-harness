@@ -69,7 +69,7 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: test-screenshots_from_run_action
-        path: ./aries-mobile-test-harness/aries-mobile-tests/*.png
+        path: aries-mobile-test-harness/aries-mobile-tests/*.png
         retention-days: 7
         
 branding:

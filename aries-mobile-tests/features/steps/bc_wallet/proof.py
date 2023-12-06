@@ -133,8 +133,11 @@ def step_impl(context):
 
 @then('holder is brought to the proof request')
 def step_impl(context):
+    # Sometimes the proof request comes in a goal code and the user never goes to the Contact Page.
+    # In this case check that the ProofRequestPage is in context and if not, create it.
+    if hasattr(context, 'thisProofRequestPage') == False:
+        context.thisProofRequestPage = ProofRequestPage(context.driver)
 
-    #context.thisProofRequestPage = ProofRequestPage(context.driver)
     assert context.thisProofRequestPage.on_this_page()
 
 
