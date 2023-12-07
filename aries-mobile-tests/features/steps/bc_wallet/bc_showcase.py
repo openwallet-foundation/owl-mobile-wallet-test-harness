@@ -25,7 +25,6 @@ def step_impl(context):
         context.device_service_handler.inject_qrcode(qrcode)
         context.execute_steps('''
             Given they Scan the credential offer QR Code
-            When the holder opens the credential offer
             Then holder is brought to the credential offer screen
             When they select Accept
             And the holder is informed that their credential is on the way with an indication of loading
@@ -44,7 +43,6 @@ def step_impl(context):
         context.device_service_handler.inject_qrcode(qrcode)
         context.execute_steps('''
             Given they Scan the proof request QR Code
-            When the holder opens the proof request
             Then holder is brought to the proof request
         ''')
 

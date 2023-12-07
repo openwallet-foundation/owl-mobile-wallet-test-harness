@@ -3,6 +3,7 @@ Class for BC Showcase issuer agent for Student and Lawer Showcase Credentials
 """
 import base64
 import io
+import time
 from agent_factory.issuer_agent_interface import IssuerAgentInterface
 from agent_test_utils import add_border_to_qr_code
 from sys import platform
@@ -82,6 +83,8 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
         self._who_do_you_want_to_be_page = self._bc_wallet_showcase_main_page.select_get_started()
         #self.driver.minimize_window()
         self.driver.maximize_window()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('who_do_you_want_to_be_page.png')
         if actor == "Student":
             self._who_do_you_want_to_be_page.select_student()
@@ -91,14 +94,22 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
             raise Exception(f"Unknown actor type {actor}")
         #self.driver.minimize_window()
         self.driver.maximize_window()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('who_do_you_want_to_be_page_actor_select.png')
         self._lets_get_started_page = self._who_do_you_want_to_be_page.select_next()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('lets_get_started_page.png')
         self._install_bc_wallet_page = self._lets_get_started_page.select_next()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('install_bc_wallet_page.png')
         self._connect_with_best_bc_college_page = self._install_bc_wallet_page.select_skip()
         #self.driver.minimize_window()
         self.driver.maximize_window()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('connect_with_best_bc_college_page.png')
         qrcode = self._connect_with_best_bc_college_page.get_qr_code()
         return add_border_to_qr_code(qrcode)

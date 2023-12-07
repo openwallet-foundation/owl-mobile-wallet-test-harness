@@ -3,6 +3,7 @@ Class for BC Showcase verifier agent for Student and Lawer Showcase Proofs
 """
 
 from asyncio import sleep
+import time
 from agent_factory.verifier_agent_interface import VerifierAgentInterface
 from agent_test_utils import add_border_to_qr_code
 from sys import platform
@@ -89,6 +90,8 @@ class BCShowcaseVerifierAgentInterface(VerifierAgentInterface):
     def send_proof_request(self, actor:str, proof:str, version=1, request_for_proof=None, connectionless=False):
         """create a proof request """
         self._who_do_you_want_to_be_page = self._bc_wallet_showcase_main_page.select_get_started()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('Verifier_who_do_you_want_to_be_page.png')
         #self.driver.minimize_window()
         self.driver.maximize_window()
@@ -101,34 +104,52 @@ class BCShowcaseVerifierAgentInterface(VerifierAgentInterface):
         #self.driver.minimize_window()
         self.driver.maximize_window()
         self._lets_get_started_page = self._who_do_you_want_to_be_page.select_next()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('Verifier_lets_get_started_page.png')
         self._install_bc_wallet_page = self._lets_get_started_page.select_next()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('Verifier_install_bc_wallet_page.png')
         self._connect_with_best_bc_college_page = self._install_bc_wallet_page.select_skip()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('Verifier_connect_with_best_bc_college_page.png')
         #self.driver.minimize_window()
         self.driver.maximize_window()
         self._youre_all_set_page = self._connect_with_best_bc_college_page.select_i_already_have_my_credential()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('Verifier_youre_all_set_page.png')
         self._using_your_credentials_page = self._youre_all_set_page.select_finish()
+        #pause 3 second to let page loads
+        time.sleep(3)
         self.driver.save_screenshot('Verifier_using_your_credentials_page.png')
 
         if proof == "Cool Clothes Online":
             self._getting_a_student_discount_page = self._using_your_credentials_page.select_cool_clothes_online_start()
+            #pause 3 second to let page loads
+            time.sleep(3)
             self.driver.save_screenshot('Verifier_getting_a_student_discount_page.png')
             #self.driver.minimize_window()
             self.driver.maximize_window()
             self._start_proving_youre_a_student_page = self._getting_a_student_discount_page.select_start()
+            #pause 3 second to let page loads
+            time.sleep(3)
             self.driver.save_screenshot('Verifier_start_proving_youre_a_student_page.png')
             #self.driver.minimize_window()
             self.driver.maximize_window()
             qrcode = self._start_proving_youre_a_student_page.get_qr_code()
         elif proof == "BestBC College":
             self._book_a_study_room_page = self._using_your_credentials_page.select_bestbc_college_start()
+            #pause 3 second to let page loads
+            time.sleep(3)
             self.driver.save_screenshot('Verifier_book_a_study_room_page.png')
             #self.driver.minimize_window()
             self.driver.maximize_window()
             self._start_booking_the_room_page = self._book_a_study_room_page.select_start()
+            #pause 3 second to let page loads
+            time.sleep(3)
             self.driver.save_screenshot('Verifier_start_booking_the_room_page.png')
             #self.driver.minimize_window()
             self.driver.maximize_window()
