@@ -223,7 +223,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-screenshots_from_main
-          path: *.png
+          path: ./*.png
           retention-days: 7
 
           
