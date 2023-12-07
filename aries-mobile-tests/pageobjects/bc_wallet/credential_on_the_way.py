@@ -32,7 +32,7 @@ class CredentialOnTheWayPage(BasePage):
         else:
             raise Exception(f"App not on the {type(self)} page")
 
-    def wait_for_credential(self, timeout=300):
+    def wait_for_credential(self, timeout=120):
 
         # Wait for the Credential On the way indicator to disappear
         try:

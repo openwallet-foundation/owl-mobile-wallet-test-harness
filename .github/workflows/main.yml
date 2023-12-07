@@ -100,7 +100,7 @@ jobs:
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          directDomains: aries-mediator-agent.vonx.io,apple.com
+          directDomains: aries-mediator-agent.vonx.io,apple.com,*.apple.com,ppq.apple.com,bc-wallet-demo-dev.apps.silver.devops.gov.bc.ca
 
       #    tunnelIdentifier: github-action-tunnel
       #    region: us-west-1
@@ -223,7 +223,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-screenshots_from_main
-          path: aries-mobile-test-harness/aries-mobile-tests/*.png
+          path: *.png
           retention-days: 7
 
           

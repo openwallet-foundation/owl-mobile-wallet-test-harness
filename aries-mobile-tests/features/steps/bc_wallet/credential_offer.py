@@ -205,6 +205,11 @@ def step_impl(context):
 @then('once the credential arrives they are informed that the Credential is added to your wallet')
 @when('once the credential arrives they are informed that the Credential is added to your wallet')
 def step_impl(context):
+    # Check if we are already on the credential added page. This happens if comms is fast enough. 
+    context.thisCredentialAddedPage = CredentialAddedPage(context.driver)
+    if context.thisCredentialAddedPage.on_this_page():
+        return
+    
     try:
         context.thisCredentialAddedPage = context.thisCredentialOnTheWayPage.wait_for_credential()
         assert context.thisCredentialAddedPage.on_this_page()
@@ -212,6 +217,7 @@ def step_impl(context):
         if "Unable to accept credential offer" in str(e) or "TimeoutException" in str(e):
             raise e
         context.thisHomePage = context.thisCredentialOnTheWayPage.select_home()
+    #context.issuer.driver.save_screenshot('Didnt_get_credential.png')
 
 
 @then('they select Done')
