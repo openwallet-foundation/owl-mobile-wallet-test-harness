@@ -100,7 +100,7 @@ jobs:
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          directDomains: aries-mediator-agent.vonx.io,apple.com,ppq.apple.com,bc-wallet-demo-dev.apps.silver.devops.gov.bc.ca
+          directDomains: apple.com,ppq.apple.com,aries-mediator-agent.vonx.io,bc-wallet-demo-dev.apps.silver.devops.gov.bc.ca
 
       #    tunnelIdentifier: github-action-tunnel
       #    region: us-west-1
