@@ -112,7 +112,7 @@ class BCShowcaseIssuerAgentInterface(IssuerAgentInterface):
         time.sleep(3)
         self.driver.save_screenshot('connect_with_best_bc_college_page.png')
         qrcode = self._connect_with_best_bc_college_page.get_qr_code()
-        return add_border_to_qr_code(qrcode)
+        return add_border_to_qr_code(qrcode, border_size=80)
 
 
     def revoke_credential(self, publish_immediately=True, notify_holder=False):
