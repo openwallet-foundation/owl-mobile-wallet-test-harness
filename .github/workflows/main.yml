@@ -95,12 +95,12 @@ jobs:
           USE_NGROK: "-n"
 
       - name: run-sauce-connect-tunnel
-        if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+        if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') && !contains(matrix.report-project,'bc-showcase-ios') }}
         uses: saucelabs/sauce-connect-action@v2
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          directDomains: apple.com,ppq.apple.com,aries-mediator-agent.vonx.io,bc-wallet-demo-dev.apps.silver.devops.gov.bc.ca
+          directDomains: apple.com,ppq.apple.com,aries-mediator-agent.vonx.io
 
       #    tunnelIdentifier: github-action-tunnel
       #    region: us-west-1
@@ -208,8 +208,8 @@ jobs:
           #TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
         with:
           MOBILE_WALLET: "-w bc_wallet"
-          ISSUER_AGENT: '-i "BCShowcaseIssuer;https://bc-wallet-demo-dev.apps.silver.devops.gov.bc.ca/"'
-          VERIFIER_AGENT: '-v "BCShowcaseVerifier;https://bc-wallet-demo-dev.apps.silver.devops.gov.bc.ca/"'
+          ISSUER_AGENT: '-i "BCShowcaseIssuer;https://bc-wallet-demo.apps.silver.devops.gov.bc.ca/"'
+          VERIFIER_AGENT: '-v "BCShowcaseVerifier;https://bc-wallet-demo.apps.silver.devops.gov.bc.ca/"'
           DEVICE_CLOUD: "-d SauceLabs"
           DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
