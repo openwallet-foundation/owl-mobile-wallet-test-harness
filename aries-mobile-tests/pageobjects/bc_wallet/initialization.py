@@ -90,8 +90,8 @@ class OopsSomethingWentWrongModal(BasePage):
     retry_locator = (AppiumBy.ID, "com.ariesbifold:id/Retry")
 
     def on_this_page(self):
-        #return super().on_this_page(self.on_this_page_text_locator)
-        return super().on_this_page(self.error_title_locator)
+        return super().on_this_page(self.on_this_page_text_locator)
+        #return super().on_this_page(self.error_title_locator)
         
     def is_displayed(self):
         return self.on_this_page()

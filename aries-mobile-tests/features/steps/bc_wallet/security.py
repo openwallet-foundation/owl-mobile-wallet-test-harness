@@ -67,7 +67,7 @@ def step_impl(context):
     #assert context.thisInitializationPage.on_this_page()
     context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
-        #context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
+        context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
         assert True
     else:
         assert context.thisHomePage.on_this_page()
