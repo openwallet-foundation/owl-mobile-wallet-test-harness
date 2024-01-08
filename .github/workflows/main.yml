@@ -73,6 +73,7 @@ jobs:
         if: ${{ matrix.mobile-platform=='-p Android' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-aath-agents
         with:
+          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
           LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
           USE_NGROK: "-n"
 
@@ -89,6 +90,7 @@ jobs:
         if: ${{ matrix.mobile-platform=='-p Android' && contains(matrix.report-project,'candy-uvp-pcft-chat') }}
         uses: ./.github/workflows/run-aath-agents
         with:
+          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
           TEST_AGENTS: "-b acapy-main"
           GENESIS_URL: "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis"
           AGENT_CONFIG_FILE: "/aries-backchannels/acapy/read_only_ledger_verifier_config.yaml"

@@ -12,8 +12,8 @@ class TermsAndConditionsPage(BasePage):
     # Locators
     # TODO: We could create a locator module that has all the locators. Given a specific app we could load the locators for that app. 
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
-    on_this_page_text_locator = "End User License Agreement"
-    on_this_page_locator = (AppiumBy.NAME, "End User License Agreement")
+    on_this_page_text_locator = "Terms of Use"
+    on_this_page_locator = (AppiumBy.NAME, "Terms of Use")
     terms_and_conditions_accept_aid_locator = "I Agree"
     terms_and_conditions_accept_locator = (AppiumBy.ID, "com.ariesbifold:id/IAgree")
     continue_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Continue")
