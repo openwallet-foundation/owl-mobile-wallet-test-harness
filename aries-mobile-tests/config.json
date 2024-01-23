@@ -1,21 +1,20 @@
 {
-  "capabilities": {
-    "firstMatch": [
-      {
-        "platformName": "iOS",
-        "appium:options": {
-          "app": "storage:filename=BCWallet-1083.ipa",
-          "autoAcceptAlerts": true,
-          "autoDismissAlerts": true,
-          "automationName": "xcuitest"
-        },
-        "sauce:options": {
-          "appiumVersion": "2.0.0",
-          "fullReset": true,
-          "sauceLabsImageInjectionEnabled": true,
-          "sessionCreationRetry": "3"
-        }
-      }
-    ]
-  }
+    "capabilities": {
+        "firstMatch": [
+            {
+                "platformName": "Android",
+                "appium:options": {
+                    "app": "storage:filename=BCWallet-1459.aab",
+                    "autoGrantPermissions": true,
+                    "automationName": "UiAutomator2"
+                },
+                "sauce:options": {
+                    "appiumVersion": "latest",
+                    "fullReset": true,
+                    "sauceLabsImageInjectionEnabled": true,
+                    "sessionCreationRetry": "3"
+                }
+            }
+        ]
+    }
 }
