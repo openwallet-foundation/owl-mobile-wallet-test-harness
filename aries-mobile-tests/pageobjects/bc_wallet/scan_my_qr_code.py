@@ -27,10 +27,7 @@ class ScanMyQRCodePage(BasePage):
 
 
     def select_edit_wallet_name(self):
-        if self.current_platform == "iOS":
-            self.find_by(self.edit_wallet_name_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
-        else:
-            self.find_by(self.edit_wallet_name_aid_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
+        self.find_by(self.edit_wallet_name_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
         # return a new page object for the Edit Wallet Name page
         return NameYourWalletPage(self.driver, calling_page=self)
