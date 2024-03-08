@@ -28,7 +28,7 @@ jobs:
     needs: [check-app-updated]
     #needs: [check-app-updated-ios, check-app-updated-android]
     if: ${{ needs.check-app-updated.outputs.APP_IS_NEW }} == 'true'
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
       fail-fast: false
