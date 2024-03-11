@@ -22,6 +22,8 @@ class OnboardingIsThisAppForYouPage(BasePage):
         timeout = 10
         if "Local" in os.environ['DEVICE_CLOUD']:
             timeout = 100
+        if self.current_platform == "Android":
+            return super().on_this_page(self.on_this_page_text_locator, timeout)  
         return super().on_this_page(self.on_this_page_locator, timeout)   
 
     def get_onboarding_text(self):
