@@ -42,11 +42,8 @@ class PINSetupPage(BasePage):
             raise Exception(f"App not on the {type(self)} page")
 
     def enter_second_pin(self, pin):
-        if self.on_this_page():
-            self.find_by(self.second_pin_locator).send_keys(pin)
-            return True
-        else:
-            raise Exception(f"App not on the {type(self)} page")
+        self.find_by(self.second_pin_locator).send_keys(pin)
+        return True
 
     def get_second_pin(self):
         if self.on_this_page():
