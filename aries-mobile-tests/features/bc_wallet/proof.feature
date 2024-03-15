@@ -13,6 +13,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
@@ -35,6 +36,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
@@ -55,6 +57,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -79,6 +82,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                        | revocable | issuer_agent_type | credential_name    |
@@ -100,6 +104,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -122,6 +127,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -146,6 +152,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -171,6 +178,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -196,6 +204,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -222,6 +231,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -389,6 +399,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
