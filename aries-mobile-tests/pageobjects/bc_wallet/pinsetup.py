@@ -1,6 +1,6 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.onboarding_biometrics import OnboardingBiometricsPage
+from pageobjects.bc_wallet.enable_notifications import EnableNotificationsPage
 
 
 class PINSetupPage(BasePage):
@@ -56,13 +56,10 @@ class PINSetupPage(BasePage):
             raise Exception(f"App not on the {type(self)} page")
 
     def create_pin(self):
-        if self.on_this_page():
-            self.find_by(self.create_pin_button_tid_locator).click()
+        self.find_by(self.create_pin_button_tid_locator).click()
 
-            # return the wallet initialization page
-            return OnboardingBiometricsPage(self.driver)
-        else:
-            raise Exception(f"App not on the {type(self)} page")
+        # return the wallet enable notifications page
+        return EnableNotificationsPage(self.driver)
 
     def does_pin_match(self, header: str = "PINs do not match"):
         if self.on_this_page():
