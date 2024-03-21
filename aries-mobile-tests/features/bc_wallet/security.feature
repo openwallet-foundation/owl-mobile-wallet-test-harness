@@ -57,8 +57,8 @@ Feature: Secure your Wallet
     When the User enters the first PIN as "369369"
     And the User re-enters the PIN as "369369"
     And the User selects Create PIN
-    And the User allows notifications
     And the User selects to use Biometrics
+    And the User allows notifications
     Then they have access to the app
 
   @T005-Security @AcceptanceTest @ExceptionTest @normal
