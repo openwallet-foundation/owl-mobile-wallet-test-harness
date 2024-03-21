@@ -10,10 +10,9 @@ Scenario: New User Accepts Terms and Conditions
 Given the User has completed on-boarding
 And the User is on the Terms and Conditions screen
 When the users accepts the Terms and Conditions
-And the user clicks continue
 Then the user transitions to the PIN creation screen
 
-@T002-TandC @AcceptanceTest @normal
+@T002-TandC @AcceptanceTest @normal @depricated @wip
 Scenario: New User Rejects Terms and Conditions
 Given the User has completed on-boarding
 And the User is on the Terms and Conditions screen
@@ -24,8 +23,6 @@ Then the User goes back to the last on-boarding screen they viewed
 Scenario: New User Rejects Terms and Conditions and returns to app to accept
 Given the User has completed on-boarding
 And the User was on the Terms and Conditions screen
-And the user has pressed the back button
-And the user was taken back to the on-boarding screen
 When they have closed the app
 And they relaunch the app
 Then they can accept the Terms and conditions

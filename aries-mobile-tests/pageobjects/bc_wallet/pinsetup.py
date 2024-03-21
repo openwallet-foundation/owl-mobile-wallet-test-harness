@@ -1,6 +1,6 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.enable_notifications import EnableNotificationsPage
+from pageobjects.bc_wallet.onboarding_biometrics import OnboardingBiometricsPage
 
 
 class PINSetupPage(BasePage):
@@ -58,8 +58,8 @@ class PINSetupPage(BasePage):
     def create_pin(self):
         self.find_by(self.create_pin_button_tid_locator).click()
 
-        # return the wallet enable notifications page
-        return EnableNotificationsPage(self.driver)
+        # return the wallet biometrics page
+        return OnboardingBiometricsPage(self.driver)
 
     def does_pin_match(self, header: str = "PINs do not match"):
         if self.on_this_page():

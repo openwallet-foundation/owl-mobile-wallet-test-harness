@@ -26,7 +26,6 @@ def step_impl(context):
     context.execute_steps(f'''
         Given the User is on the Terms and Conditions screen
         And the users accepts the Terms and Conditions
-        And the user clicks continue
     ''')
 
 
@@ -51,16 +50,14 @@ def step_impl(context, pin):
 @then('the User selects Create PIN')
 @when('the User selects Create PIN')
 def step_impl(context):
-    # context.thisOnboardingBiometricsPage = context.thisPINSetupPage.create_pin()
-    # context.thisOnboardingBiometricsPage.on_this_page()
-
-    context.thisEnableNotificationsPage = context.thisPINSetupPage.create_pin()
+    context.thisOnboardingBiometricsPage = context.thisPINSetupPage.create_pin()
 
 
 @step('the User allows notifications')
 def step_enable_notifications(context):
     assert context.thisEnableNotificationsPage.on_this_page()
-    context.thisOnboardingBiometricsPage = context.thisEnableNotificationsPage.select_continue()
+    context.thisInitializationPage = context.thisEnableNotificationsPage.select_continue()
+    #context.thisOnboardingBiometricsPage = context.thisEnableNotificationsPage.select_continue()
     # Capabilities are setup to automatically accept system alerts.
     #context.thisEnableNotificationsSystemModal = context.thisEnableNotificationsPage.select_continue()
     #assert context.thisEnableNotificationsSystemModal.on_this_page()
@@ -71,13 +68,14 @@ def step_enable_notifications(context):
     assert context.thisEnableNotificationsPage.on_this_page()
     context.thisEnableNotificationsSystemModal = context.thisEnableNotificationsPage.select_continue()
     assert context.thisEnableNotificationsSystemModal.on_this_page()
-    context.thisOnboardingBiometricsPage = context.thisEnableNotificationsSystemModal.select_dont_allow()
+    context.thisInitializationPage = context.thisEnableNotificationsSystemModal.select_dont_allow()
 
 @when('the User selects to use Biometrics')
 def step_impl(context):
     assert context.thisOnboardingBiometricsPage.on_this_page()
     assert context.thisOnboardingBiometricsPage.select_biometrics()
-    context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
+    #context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
+    context.thisEnableNotificationsPage = context.thisOnboardingBiometricsPage.select_continue()
     context.device_service_handler.biometrics_authenticate(True)
 
 @then('they have access to the app')
@@ -140,8 +138,10 @@ def step_impl(context):
     context.biometrics_choosen = True
     context.execute_steps('''
         When the User selects to use Biometrics
+        And the User allows notifications
         Then they land on the Home screen
     ''')
+    
 
 @when('they have closed the app')
 @given('they have closed the app')
@@ -256,8 +256,9 @@ def step_access_app_with_pin(context):
 @given('the User has choosen not to use biometrics to unlock BC Wallet')
 def step_impl(context):
     context.biometrics_choosen = False
-    context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
+    context.thisEnableNotificationsPage = context.thisOnboardingBiometricsPage.select_continue()
     context.execute_steps('''
+        Given the User allows notifications
         Then they land on the Home screen
     ''')
 

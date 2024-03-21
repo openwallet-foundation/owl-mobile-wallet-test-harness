@@ -1,6 +1,6 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage, WaitCondition
-from pageobjects.bc_wallet.onboarding_biometrics import OnboardingBiometricsPage
+from pageobjects.bc_wallet.initialization import InitializationPage
 
 # These classes can inherit from a BasePage to do common setup and functions
 class EnableNotificationsPage(BasePage):
@@ -24,7 +24,7 @@ class EnableNotificationsPage(BasePage):
     def select_continue(self):
         self.find_by(self.continue_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
-        return OnboardingBiometricsPage(self.driver)
+        return InitializationPage(self.driver)
 
 
 class EnableNotificationsSystemModal(BasePage):

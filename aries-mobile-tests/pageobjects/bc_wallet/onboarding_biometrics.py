@@ -1,7 +1,7 @@
 import os
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.initialization import InitializationPage
+from pageobjects.bc_wallet.enable_notifications import EnableNotificationsPage
 
 class OnboardingBiometricsPage(BasePage):
     """Onboarding Biometrics page object"""
@@ -32,7 +32,8 @@ class OnboardingBiometricsPage(BasePage):
         if self.on_this_page():
             self.find_by(self.continue_button_locator).click()
 
-            # return the wallet initialization page
-            return InitializationPage(self.driver)
+            # return the wallet enable notifications page
+            return EnableNotificationsPage(self.driver)
+            
         else:
             raise Exception(f"App not on the {type(self)} page")
