@@ -12,10 +12,18 @@ class WebBasePage(object):
 
     def on_this_page(self, locator, timeout=10):
         if type(locator) is tuple:
-            if self.find_by(locator, timeout):
+            # if self.find_by(locator, timeout):
+            #     return True
+            # else:
+            #     return False
+            try:
+                self.find_by(locator, timeout)
                 return True
-            else:
+            except Exception as e:
+                # print the exception
+                print(e)
                 return False
+
         else:
             found_locator = False
             i = 0
@@ -58,3 +66,6 @@ class WebBasePage(object):
 
     def get_page_source(self):
         return self.driver.page_source
+    
+    def wait_for_page_load_complete(self, timeout=10):
+        WebDriverWait(self.driver, timeout).until(lambda driver: driver.execute_script('return document.readyState') == 'complete')

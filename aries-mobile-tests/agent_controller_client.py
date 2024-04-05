@@ -107,7 +107,27 @@ def expected_agent_state(agent_url, protocol_txt, thread_id, status_txt, wait_ti
                 return True
         sleep(sleep_time)
 
-    print("From", agent_url, "Expected state", status_txt, "but received", state, ", with a response status of", resp_status)
+def expected_agent_proof_state(agent_url, thread_id, status_txt, wait_time=2.0, sleep_time=0.5):
+    sleep(sleep_time)
+    verified = "False"
+    if type(status_txt) != list:
+        status_txt = [status_txt]
+    for i in range(int(wait_time)):
+        (resp_status, resp_text) = agent_controller_GET(agent_url + "/agent/command/", "proof", id=thread_id)
+        if resp_status == 200:
+            resp_json = json.loads(resp_text)
+            # if "verified" is not in resp_json, then it hasn't been verified yet, loop.
+            if "verified" in resp_json:
+                verified = resp_json["verified"]
+                if verified in status_txt:
+                    return True
+            else:
+                print("Proof not verified on attempt", i, "of", int(wait_time), "sleeping for", sleep_time, "seconds")
+                # print formated json 
+                print(json.dumps(resp_json, indent=4))
+        sleep(sleep_time)
+
+    print("From", agent_url, "Expected state", status_txt, "but received", verified, ", with a response status of", resp_status)
     return False
 
 def check_if_already_connected(context, sender, receiver):

@@ -24,6 +24,10 @@ inputs:
     description: "Customized agent args to use"
     required: true
     default: "/aries-backchannels/acapy/auto_issuer_config.yaml"
+  NGROK_AUTHTOKEN:
+    description: "AUTH Token for NGROK when -n is used"
+    required: false
+    default: ""
   USE_NGROK:
     description: "Use NGROK Tunnel"
     required: false
@@ -41,9 +45,9 @@ runs:
     - name: run-aath-agents
       run: |
         if [[ -n "${{ inputs.GENESIS_URL }}" ]]; then
-          GENESIS_URL=${{ inputs.GENESIS_URL }} TAILS_SERVER_URL_CONFIG=${{ inputs.TAILS_SERVER_URL_CONFIG }} AGENT_CONFIG_FILE=${{ inputs.AGENT_CONFIG_FILE }} ./manage start ${{ inputs.TEST_AGENTS }} ${{ inputs.USE_NGROK }}
+          GENESIS_URL=${{ inputs.GENESIS_URL }} NGROK_AUTHTOKEN=${{ inputs.NGROK_AUTHTOKEN }} TAILS_SERVER_URL_CONFIG=${{ inputs.TAILS_SERVER_URL_CONFIG }} AGENT_CONFIG_FILE=${{ inputs.AGENT_CONFIG_FILE }} ./manage start ${{ inputs.TEST_AGENTS }} ${{ inputs.USE_NGROK }}
         elif [[ -n "${{ inputs.LEDGER_URL_CONFIG }}" ]]; then
-          LEDGER_URL_CONFIG=${{inputs.LEDGER_URL_CONFIG}} TAILS_SERVER_URL_CONFIG=${{inputs.TAILS_SERVER_URL_CONFIG}} AGENT_CONFIG_FILE=${{inputs.AGENT_CONFIG_FILE}} ./manage start ${{inputs.TEST_AGENTS}} ${{inputs.USE_NGROK}}
+          LEDGER_URL_CONFIG=${{inputs.LEDGER_URL_CONFIG}} NGROK_AUTHTOKEN=${{ inputs.NGROK_AUTHTOKEN }} TAILS_SERVER_URL_CONFIG=${{inputs.TAILS_SERVER_URL_CONFIG}} AGENT_CONFIG_FILE=${{inputs.AGENT_CONFIG_FILE}} ./manage start ${{inputs.TEST_AGENTS}} ${{inputs.USE_NGROK}}
         else
           echo "Neither LEDGER_URL_CONFIG nor GENESIS_URL provided."
         fi

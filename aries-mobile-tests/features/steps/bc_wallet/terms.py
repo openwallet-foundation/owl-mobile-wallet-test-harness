@@ -13,32 +13,34 @@ from agent_test_utils import get_qr_code_from_invitation
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 from pageobjects.bc_wallet.secure import SecurePage
 from pageobjects.bc_wallet.pinsetup import PINSetupPage
-from pageobjects.bc_wallet.onboardingwelcome import OnboardingWelcomePage
-from pageobjects.bc_wallet.onboardingtakecontrol import OnboardingTakeControlPage
 
 
 @given('the User has completed on-boarding')
 def step_impl(context):
     context.execute_steps(f'''
             Given the new user has opened the app for the first time
-            Given the user is on the onboarding Welcome screen
-            When the user selects Next
-            And they are brought to the Store your credentials securely screen
+            Given the user is on the Is this app for you screen
+            When the user selects confirms that the app is for them
+            And they select Continue
+            And they are brought to the A different smart wallet screen
             And the user selects Next
-            And they are brought to the Share only what is neccessary screen
+            And they are brought to the Digital credentials screen
             And the user selects Next
-            And they are brought to the Take control of your information screen
+            And they are brought to the Private and confidential screen
             Then they can select Get started
         ''')
 
 
-@given('the User has skipped on-boarding')
-def step_impl(context):
-    context.execute_steps(f'''
-            Given the new user has opened the app for the first time
-            Given the user is on the onboarding Welcome screen
-            When the user selects Skip
-        ''')
+# @given('the User has skipped on-boarding')
+# def step_impl(context):
+#     context.execute_steps(f'''
+#             Given the new user has opened the app for the first time
+#             Given the user is on the Is this app for you screen
+#             When the user selects confirms that the app is for them
+#             And they select Continue
+#             And they are brought to the A different smart wallet screen
+#             And the user selects Skip
+#         ''')
 
 @given('the User was on the Terms and Conditions screen')
 @given('the User is on the Terms and Conditions screen')
@@ -78,12 +80,11 @@ def step_impl(context):
 @when('the User presses the back button')
 def step_impl(context):
     context.thisCurrentOnboardingPage = context.thisTermsAndConditionsPage.select_back()
-    #context.thisOnboardingWelcomePage = OnboardingWelcomePage(context.thisTermsAndConditionsPage.select_back())
 
 
 # TODO change this to any of the onboarding pages. iOS Bug Issue Number: 
 @given('the user was taken back to the on-boarding screen')
 @then('the User goes back to the last on-boarding screen they viewed')
 def step_impl(context):
-    assert context.thisOnboardingTakeControlPage.on_this_page()
+    assert context.thisOnboardingPrivateConfidentialPage.on_this_page()
     

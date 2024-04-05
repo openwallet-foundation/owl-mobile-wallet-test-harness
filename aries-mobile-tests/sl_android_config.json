@@ -4,12 +4,12 @@
             {
                 "platformName": "Android",
                 "appium:options": {
-                    "app": "storage:filename=BCWallet-1083.aab",
+                    "app": "storage:filename=BCWallet-1459.aab",
                     "autoGrantPermissions": true,
                     "automationName": "UiAutomator2"
                 },
                 "sauce:options": {
-                    "appiumVersion": "2.0.0",
+                    "appiumVersion": "latest",
                     "fullReset": true,
                     "sauceLabsImageInjectionEnabled": true,
                     "sessionCreationRetry": "3"

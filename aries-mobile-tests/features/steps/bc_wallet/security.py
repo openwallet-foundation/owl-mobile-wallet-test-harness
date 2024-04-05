@@ -3,8 +3,7 @@
 #
 # -----------------------------------------------------------
 
-from time import sleep
-from behave import given, when, then
+from behave import given, when, then, step
 import json
 import os
 from decouple import config
@@ -61,16 +60,34 @@ def step_impl(context, pin):
 @then("the User selects Create PIN")
 @when("the User selects Create PIN")
 def step_impl(context):
-    context.thisOnboardingBiometricsPage = context.thisPINSetupPage.create_pin()
-    context.thisOnboardingBiometricsPage.on_this_page()
+    # context.thisOnboardingBiometricsPage = context.thisPINSetupPage.create_pin()
+    # context.thisOnboardingBiometricsPage.on_this_page()
 
+    context.thisEnableNotificationsPage = context.thisPINSetupPage.create_pin()
+
+
+@step('the User allows notifications')
+def step_enable_notifications(context):
+    assert context.thisEnableNotificationsPage.on_this_page()
+    context.thisOnboardingBiometricsPage = context.thisEnableNotificationsPage.select_continue()
+    # Capabilities are setup to automatically accept system alerts.
+    #context.thisEnableNotificationsSystemModal = context.thisEnableNotificationsPage.select_continue()
+    #assert context.thisEnableNotificationsSystemModal.on_this_page()
+    #context.thisOnboardingBiometricsPage = context.thisEnableNotificationsSystemModal.select_allow()
+
+@step('the User does not allow notifications')
+def step_enable_notifications(context):
+    assert context.thisEnableNotificationsPage.on_this_page()
+    context.thisEnableNotificationsSystemModal = context.thisEnableNotificationsPage.select_continue()
+    assert context.thisEnableNotificationsSystemModal.on_this_page()
+    context.thisOnboardingBiometricsPage = context.thisEnableNotificationsSystemModal.select_dont_allow()
 
 @given("the Holder has selected to use PIN only to unlock BC Wallet")
 def step_impl(context):
-    context.thisInitializationPage = (
-        context.thisOnboardingBiometricsPage.select_continue()
-    )
-    sleep(3)
+    assert context.thisOnboardingBiometricsPage.on_this_page()
+    assert context.thisOnboardingBiometricsPage.select_biometrics()
+    context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
+    context.device_service_handler.biometrics_authenticate(True)
 
 
 @when("the User selects to use Biometrics")
@@ -94,7 +111,7 @@ def step_impl(context):
     # assert context.thisInitializationPage.on_this_page()
     context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
-        # context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
+        context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
         assert True
     else:
         assert context.thisHomePage.on_this_page()
@@ -149,8 +166,8 @@ def step_impl(context):
 
 @given("the Holder has selected to use biometrics to unlock BC Wallet")
 def step_impl(context):
-    context.execute_steps(
-        """
+    context.biometrics_choosen = True
+    context.execute_steps('''
         When the User selects to use Biometrics
         Then they land on the Home screen
     """
@@ -307,11 +324,9 @@ def step_access_app_with_pin(context):
 
 @given("the User has choosen not to use biometrics to unlock BC Wallet")
 def step_impl(context):
-    context.thisInitializationPage = (
-        context.thisOnboardingBiometricsPage.select_continue()
-    )
-    context.execute_steps(
-        """
+    context.biometrics_choosen = False
+    context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
+    context.execute_steps('''
         Then they land on the Home screen
     """
     )

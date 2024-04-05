@@ -133,8 +133,11 @@ def step_impl(context):
 
 @then('holder is brought to the proof request')
 def step_impl(context):
+    # Sometimes the proof request comes in a goal code and the user never goes to the Contact Page.
+    # In this case check that the ProofRequestPage is in context and if not, create it.
+    if hasattr(context, 'thisProofRequestPage') == False:
+        context.thisProofRequestPage = ProofRequestPage(context.driver)
 
-    #context.thisProofRequestPage = ProofRequestPage(context.driver)
     assert context.thisProofRequestPage.on_this_page()
 
 
@@ -374,9 +377,10 @@ def step_impl(context):
 @given('the PCTF Member has setup thier Wallet')
 def step_impl(context):
     context.execute_steps(f'''
-            Given the User has skipped on-boarding
+            Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
             And a PIN has been set up with "369369"
+            And the User allows notifications
             And the Holder has selected to use biometrics to unlock BC Wallet
         ''')
 
@@ -385,9 +389,10 @@ def step_impl(context):
 @given('the Holder has setup thier Wallet')
 def step_impl(context):
     context.execute_steps(f'''
-            Given the User has skipped on-boarding
+            Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
             And a PIN has been set up with "369369"
+            And the User allows notifications
         ''')
 
 
@@ -399,6 +404,7 @@ def step_impl(context, credential):
         Given the Holder receives a credential offer of {credential}
         And they Scan the credential offer QR Code
         And the Connecting completes successfully
+        And the holder opens the credential offer
         Then holder is brought to the credential offer screen
         When they select Accept
         And the holder is informed that their credential is on the way with an indication of loading
@@ -413,6 +419,7 @@ def step_impl(context, credential):
     '''.format(table=table_to_str(context.table)))
 
 
+@given('they Scan the proof request QR Code')
 @given('they Scan the credential offer QR Code')
 def step_impl(context):
     if hasattr(context, 'thisNavBar') == False:
@@ -455,6 +462,8 @@ def step_impl(context, proof):
 
     context.device_service_handler.inject_qrcode(qrcode)
 
+    if "thisNavBar" not in context:
+        context.thisNavBar = NavBar(context.driver)
     context.thisConnectingPage = context.thisNavBar.select_scan()
     # This is connectionless and the connecting page doesn't last long. Assume we move quickly to the Proof Request
     context.thisProofRequestPage = ProofRequestPage(context.driver)

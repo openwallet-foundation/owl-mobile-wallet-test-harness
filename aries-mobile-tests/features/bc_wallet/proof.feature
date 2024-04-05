@@ -13,6 +13,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
@@ -32,9 +33,10 @@ Feature: Proof
 
    @T002-Proof @critical @AcceptanceTest @Story_29 @SmokeTest @qc_wallet
    Scenario: Holder accepts the proof request
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
@@ -52,9 +54,10 @@ Feature: Proof
 
    @T002.1-Proof @critical @AcceptanceTest @Story_29
    Scenario Outline: Holder accepts the proof request
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -76,9 +79,10 @@ Feature: Proof
 
    @T002.2-Proof @normal @FunctionalTest @Story_29
    Scenario Outline: Holder accepts the proof request credential has special characters
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                        | revocable | issuer_agent_type | credential_name    |
@@ -97,9 +101,10 @@ Feature: Proof
 
    @T003-Proof @critical @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a revoked credential where the verifier cares if the credential was revoked
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -119,9 +124,10 @@ Feature: Proof
 
    @T004-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked revokable credential where the verifier cares if the credential was revoked
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -143,9 +149,10 @@ Feature: Proof
 
    @T005-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a revoked credential where the verifier doesn't care if the credential was revoked
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -168,9 +175,10 @@ Feature: Proof
 
    @T006-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked revokable credential where the verifier doesn't care if the credential was revoked
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -193,9 +201,10 @@ Feature: Proof
    # if a non-revokable credential can be presented then that should take precedent over revokable credentials since it de facto satisfies proof of non-revocation.
    @T007-Proof @normal @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked credential and presents a non-revokable credential
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -219,9 +228,10 @@ Feature: Proof
 
    @T008-Proof @critical @AcceptanceTest @Revocation
    Scenario Outline: Holder accepts the proof request of a non-revoked credential and presents a non-revokable credential that has been revoked and reissued
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
@@ -242,7 +252,7 @@ Feature: Proof
          | cred_data_photo_id_revokable | proof_photo_id_revokable | now:now  |
 
 
-   @T009-Proof @critical @AcceptanceTest @Connectionless
+   @T009-Proof @critical @AcceptanceTest @Connectionless @wip @depricated
    Scenario Outline: Pan Canadian Trust Framework Member aquires access to PCTF Chat with a connectionless proof request
       Given the PCTF Member has setup thier Wallet
       And the PCTF member has an Unverified Person <credential>
@@ -262,7 +272,7 @@ Feature: Proof
          | cred_data_unverified_person |
 
 
-   @T009.1-Proof @critical @AcceptanceTest @Connectionless
+   @T009.1-Proof @critical @AcceptanceTest @Connectionless @oob
    Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
       Given the PCTF Member has setup thier Wallet
       And the PCTF member has an Unverified Person <credential>
@@ -282,7 +292,7 @@ Feature: Proof
          | cred_data_unverified_person | pcft_connectionless_proof |
 
 
-   @T009.1.debug-Proof @critical @AcceptanceTest @Connectionless @wip
+   @T009.1.debug-Proof @critical @AcceptanceTest @Connectionless @wip @oob
    Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
       Given the user has a connectionless <proof> request for access to PCTF
          | issuer_agent_type |
@@ -386,9 +396,10 @@ Feature: Proof
 
    @T012.1-Proof @normal @AcceptanceTest @SelfAttestation @Story_239 @wip
    Scenario Outline: Holder accepts the proof request that contains self-attested attributes but the attribute is in an existing credential
-      Given the User has skipped on-boarding
+      Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
+      And the User allows notifications
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>

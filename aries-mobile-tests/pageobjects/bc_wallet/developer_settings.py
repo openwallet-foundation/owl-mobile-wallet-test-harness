@@ -17,6 +17,11 @@ class DeveloperSettingsPage(BasePage):
     production_locator = (AppiumBy.ID, "com.ariesbifold:id/production")
     development_locator = (AppiumBy.ID, "com.ariesbifold:id/development")
     test_locator = (AppiumBy.ID, "com.ariesbifold:id/test")
+    use_verifier_capability_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleVerifierCapability")
+    accept_non_production_credentials_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleAcceptDevCredentials")
+    use_connection_inviter_capability_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleConnectionInviterCapabilitySwitch")
+    use_development_verifier_templates_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleDevVerifierTemplatesSwitch")
+    prevent_auto_lock_locator = (AppiumBy.ID, "com.ariesbifold:id/TogglePreventAutoLockSwitch")
 
     def on_this_page(self):     
         return super().on_this_page(self.on_this_page_text_locator) 
@@ -34,6 +39,37 @@ class DeveloperSettingsPage(BasePage):
             elif env == 'Test':
                 self.find_by(self.test_locator).click()
             # TODO check that the appopriate env is selected.
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+
+
+    def select_use_verifier_capability(self):
+        if self.on_this_page():
+            self.find_by(self.use_verifier_capability_locator).click()
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+        
+    def select_accept_non_production_credentials(self):
+        if self.on_this_page():
+            self.find_by(self.accept_non_production_credentials_locator).click()
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+        
+    def select_use_connection_inviter_capability(self):
+        if self.on_this_page():
+            self.find_by(self.use_connection_inviter_capability_locator).click()
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+    
+    def select_use_development_verifier_templates(self):
+        if self.on_this_page():
+            self.find_by(self.use_development_verifier_templates_locator).click()
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+    
+    def select_prevent_auto_lock(self):
+        if self.on_this_page():
+            self.find_by(self.prevent_auto_lock_locator).click()
         else:
             raise Exception(f"App not on the {type(self)} page")
 
