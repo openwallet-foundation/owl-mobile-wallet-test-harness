@@ -1,7 +1,7 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/29
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/bcgov/bc-wallet-mobile/614
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/bcgov/bc-wallet-mobile/63
-@Proof @bc_wallet @Story_29 @qc_wallet_not
+@Proof @bc_wallet @Story_29
 Feature: Proof
    In order to easily prove my credential details to a verifier
    As a holder

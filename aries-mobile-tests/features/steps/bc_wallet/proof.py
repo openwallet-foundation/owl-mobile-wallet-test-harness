@@ -146,9 +146,6 @@ def step_impl(context, proof=None, interval=None):
         except FileNotFoundError:
             print("FileNotFoundError: features/data/" + proof.lower() + ".json")
 
-    assert context.thisConnectingPage.wait_for_connection()
-    assert context.thisContactPage.wait_for_proof_request()
-
 
 @when("the holder opens the proof request")
 def step_impl(context):

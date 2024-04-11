@@ -30,6 +30,8 @@ class MCNVerifierAgentInterface(VerifierAgentInterface, AATHAgentInterface):
             }
         },
         "requested_predicates": {},
+        "name": "test_schema",
+        "version": "1.0.0",
     }
 
     def get_issuer_type(self) -> str:
@@ -132,7 +134,7 @@ class MCNVerifierAgentInterface(VerifierAgentInterface, AATHAgentInterface):
 
         presentation_request = {
             "comment": f"proof request from {self.get_issuer_type()} {self.endpoint}",
-            "proof_request": request_for_proof,
+            "" "proof_request": request_for_proof,
         }
 
         if connectionless:
