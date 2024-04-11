@@ -249,7 +249,7 @@ Feature: Secure your Wallet
     And the User has successfully updated PIN
     And they have access to the app with the new PIN
 
-  @T007.3-Security @Story_805 @FunctionalTest @ExceptionTest @normal
+  @T007.3-Security @Story_805 @FunctionalTest @ExceptionTest @normal @qc_wallet_not
   Scenario Outline: User Changes PIN but does not follow conventions
     Given the user has setup thier wallet
     And the user has choosen to have biometrics "off"

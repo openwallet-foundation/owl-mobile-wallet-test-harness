@@ -2,12 +2,11 @@
   "capabilities": {
     "lt:options": {
       "w3c": true,
-      "deviceName": "Galaxy.*,Pixel.*,Nexus.*",
-      "platformName": "Android",
-      "platformVersion": "10",
-      "build": "QCWallet-210-Android-Fetch-Upstream",
-      "name": "Sample Test Android",
-      "app": "lt://APP1016061231698157923265935",
+      "deviceName": "iPhone.*",
+      "platformName": "iOS",
+      "build": "QCWallet-279-CredentialOffer-iOS-Filipe",
+      "name": "Sample Test iOS - Python",
+      "app": "lt://APP1016026231710168589867615",
       "autoGrantPermissions": true,
       "enableImageInjection": true,
       "enableBiometricsAuthentication": true,

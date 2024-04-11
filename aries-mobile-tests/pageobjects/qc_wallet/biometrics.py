@@ -1,11 +1,5 @@
-import os
-import time
 from appium.webdriver.common.appiumby import AppiumBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.bc_wallet.biometrics import BiometricsPage
-from pageobjects.bc_wallet.pinsetup import PINSetupPage
-from pageobjects.bc_wallet.initialization import InitializationPage
 
 
 class BiometricsPageQC(BiometricsPage):

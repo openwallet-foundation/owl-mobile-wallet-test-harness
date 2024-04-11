@@ -1,7 +1,7 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/29
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/bcgov/bc-wallet-mobile/614
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/bcgov/bc-wallet-mobile/63
-@Proof @bc_wallet @Story_29
+@Proof @bc_wallet @Story_29 @qc_wallet_not
 Feature: Proof
    In order to easily prove my credential details to a verifier
    As a holder
@@ -27,7 +27,7 @@ Feature: Proof
       Then holder is brought to the proof request
       And they can view the contents of the proof request
          | verifier_agent_type | who        | attributes | values  |
-         | AATHVerifier        | aca-py.Bob | Attr 1     | value_1 |
+         | MCNVerifier         | aca-py.Bob | Attr 1     | value_1 |
    #| CANdyWebIssuer    | # CANdy - Unverified Person Issuer | Unverified Person | First Name;Last Name;Date of Birth;Street Address;Postal Code;City;Province;Country;Issued | Sheldon;Regular;1989-03-04;123 Perfect Street;A2V 3E1;Awesome City;BC;Canada;2022-03-14T23:27:20.133Z |
 
 
@@ -40,8 +40,8 @@ Feature: Proof
       And the Holder has selected to use biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
-         | issuer_agent_type | credential_name                           |
-         | AATHIssuer        | Default AATH Issuer Credential Definition |
+         | issuer_agent_type | credential_name |
+         | MCNIssuer         | Test Schema     |
       And the user has a proof request
       When they select Share
       And the holder is informed that they are sending information securely

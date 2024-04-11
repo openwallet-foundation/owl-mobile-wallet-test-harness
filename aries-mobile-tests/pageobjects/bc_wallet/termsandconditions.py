@@ -1,8 +1,9 @@
+from time import sleep
+
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.secure import SecurePage
 from pageobjects.bc_wallet.pinsetup import PINSetupPage
-from time import sleep
+from pageobjects.bc_wallet.secure import SecurePage
 
 
 # These classes can inherit from a BasePage to do commone setup and functions
@@ -22,12 +23,6 @@ class TermsAndConditionsPage(BasePage):
     back_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Back")
 
     def on_this_page(self):
-        if "language" in self.driver.capabilities:
-            self.back_aid_locator = (
-                (AppiumBy.ACCESSIBILITY_ID, "Back")
-                if self.driver.capabilities["language"] == "en"
-                else (AppiumBy.ACCESSIBILITY_ID, "Précédent")
-            )
         if self.current_platform.lower() == "Android".lower():
             return super().on_this_page(self.on_this_page_text_locator)
         return super().on_this_page(self.on_this_page_locator)

@@ -1,6 +1,6 @@
 from time import sleep
-from appium.webdriver.common.appiumby import AppiumBy
 
+from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.common.touch_action import TouchAction
 from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.pinsetup import PINSetupPage
@@ -14,6 +14,16 @@ class TermsAndConditionsPageQC(TermsAndConditionsPage):
 
     on_this_page_text_locator = "Terms"
     on_this_page_locator = (AppiumBy.NAME, "Terms & Conditions")
+    back_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Back")
+
+    def on_this_page(self):
+        language = self.get_app_language()
+        if language == "French":
+            self.on_this_page_text_locator = "Conditions"
+            self.on_this_page_locator = (AppiumBy.NAME, "Conditions d'utilisation")
+            self.back_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Précédent")
+
+        return super().on_this_page()
 
     def select_accept(self):
         if self.on_this_page():

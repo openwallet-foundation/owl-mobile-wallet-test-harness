@@ -1,4 +1,5 @@
 from time import sleep
+
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.common.touch_action import TouchAction
 from pageobjects.basepage import BasePage
@@ -48,7 +49,7 @@ class PINSetupPage(BasePage):
             raise Exception(f"App not on the {type(self)} page")
 
     def enter_second_pin(self, pin):
-        self.find_by(self.second_pin_locator).send_keys(pin)
+        self.find_by(self.second_pin_locator).clear().send_keys(pin)
         return True
 
     def get_second_pin(self):

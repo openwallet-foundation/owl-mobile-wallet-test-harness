@@ -1,9 +1,5 @@
-import time
 from appium.webdriver.common.appiumby import AppiumBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pageobjects.basepage import BasePage, WaitCondition
-from pageobjects.bc_wallet.home import HomePage
 from pageobjects.bc_wallet.initialization import InitializationPage
 
 
@@ -20,7 +16,7 @@ class PINPage(BasePage):
 
     def on_this_page(self, language="English"):
         self.on_this_page_text_locator = (
-            "Enter PIN" if language == "English" else "Saisir le NIP"
+            "Enter PIN" if language == "English" else "Entrer le NIP"
         )
         return super().on_this_page(self.on_this_page_text_locator, 50)
 

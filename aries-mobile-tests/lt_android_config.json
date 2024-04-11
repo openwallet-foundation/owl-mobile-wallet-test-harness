@@ -4,7 +4,7 @@
       "w3c": true,
       "deviceName": "Galaxy.*,Pixel.*,Nexus.*",
       "platformName": "Android",
-      "platformVersion": "10",
+      "platformVersion": "11",
       "build": "QCWallet-XXX",
       "name": "Sample Test Android",
       "app": "app_url_lt",

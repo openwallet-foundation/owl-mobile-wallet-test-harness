@@ -2,19 +2,26 @@
 Base Class for actual AATH agents
 """
 
-from agent_factory.issuer_agent_interface import IssuerAgentInterface
 import json
+
+from agent_controller_client import (
+    agent_controller_GET,
+    agent_controller_POST,
+    expected_agent_state,
+    setup_already_connected,
+)
+from agent_factory.issuer_agent_interface import IssuerAgentInterface
 from agent_test_utils import get_qr_code_from_invitation
-from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
 
 
-class AATHAgentInterface():
-
+class AATHAgentInterface:
     _oob = False
     name = str
 
-    def create_invitation_util(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
-        """create an invitation and return the json back to the caller """
+    def create_invitation_util(
+        self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40
+    ):
+        """create an invitation and return the json back to the caller"""
         self._oob = oob
         if self._oob is True:
             data = {"use_public_did": False}
@@ -26,7 +33,9 @@ class AATHAgentInterface():
             )
         else:
             (resp_status, resp_text) = agent_controller_POST(
-                self.endpoint + "/agent/command/", "connection", operation="create-invitation"
+                self.endpoint + "/agent/command/",
+                "connection",
+                operation="create-invitation?auto_accept=true",
             )
 
         if resp_status != 200:
@@ -37,7 +46,9 @@ class AATHAgentInterface():
             self.invitation_json = json.loads(resp_text)
             if "label" in self.invitation_json["invitation"]:
                 self.name = self.invitation_json["invitation"]["label"]
-            qrimage = get_qr_code_from_invitation(self.invitation_json, print_qrcode, save_qrcode, qr_code_border)
+            qrimage = get_qr_code_from_invitation(
+                self.invitation_json, print_qrcode, save_qrcode, qr_code_border
+            )
             return qrimage
 
     def get_name(self):
@@ -47,14 +58,14 @@ class AATHAgentInterface():
             raise Exception("Agent name not set")
 
     def connected_util(self):
-        """return True/False indicating if this issuer is connected to the wallet holder """
+        """return True/False indicating if this issuer is connected to the wallet holder"""
 
-        # If OOB then make a call to get the connection id from the webhook. 
+        # If OOB then make a call to get the connection id from the webhook.
         if self._oob == True:
             # Get the responders's connection id from the above request's response webhook in the backchannel
             invitation_id = self.invitation_json["invitation"]["@id"]
             (resp_status, resp_text) = agent_controller_GET(
-                self.endpoint  + "/agent/response/", "did-exchange", id=invitation_id
+                self.endpoint + "/agent/response/", "did-exchange", id=invitation_id
             )
             if resp_status != 200:
                 raise Exception(
@@ -65,6 +76,7 @@ class AATHAgentInterface():
                 connection_id = resp_json["connection_id"]
                 self.invitation_json["connection_id"] = connection_id
         else:
-            connection_id = self.invitation_json['connection_id']
-        return expected_agent_state(self.endpoint, "connection", connection_id, "complete", sleep_time=2.0)
-
+            connection_id = self.invitation_json["connection_id"]
+        return expected_agent_state(
+            self.endpoint, "connection", connection_id, "complete", sleep_time=2.0
+        )

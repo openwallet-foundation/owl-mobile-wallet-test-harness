@@ -3,23 +3,24 @@
 #
 # -----------------------------------------------------------
 
-from behave import given, when, then, step
 import json
 
 # Local Imports
-from agent_controller_client import (
-    agent_controller_GET,
-    agent_controller_POST,
-    expected_agent_state,
-    setup_already_connected,
-)
+from agent_controller_client import (agent_controller_GET,
+                                     agent_controller_POST,
+                                     expected_agent_state,
+                                     setup_already_connected)
 from agent_test_utils import get_qr_code_from_invitation
-
+from behave import given, step, then, when
+from pageobjects.bc_wallet.onboarding_a_different_smart_wallet import \
+    OnboardingADifferentSmartWalletPage
+from pageobjects.bc_wallet.onboarding_digital_credentials import \
+    OnboardingDigitalCredentialsPage
 # import Page Objects needed
-from pageobjects.bc_wallet.onboarding_is_this_app_for_you import OnboardingIsThisAppForYouPage
-from pageobjects.bc_wallet.onboarding_a_different_smart_wallet import OnboardingADifferentSmartWalletPage
-from pageobjects.bc_wallet.onboarding_private_confidential import OnboardingPrivateConfidentialPage
-from pageobjects.bc_wallet.onboarding_digital_credentials import OnboardingDigitalCredentialsPage
+from pageobjects.bc_wallet.onboarding_is_this_app_for_you import \
+    OnboardingIsThisAppForYouPage
+from pageobjects.bc_wallet.onboarding_private_confidential import \
+    OnboardingPrivateConfidentialPage
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 
 
@@ -27,22 +28,28 @@ from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 def step_impl(context):
     # App opened already buy appium.
     # Intialize the page we should be on
-    context.thisOnboardingIsThisAppForYouPage = OnboardingIsThisAppForYouPage(context.driver)
-    
+    context.thisOnboardingIsThisAppForYouPage = OnboardingIsThisAppForYouPage(
+        context.driver
+    )
 
-@given('the user is on the Is this app for you screen')
+
+@given("the user is on the Is this app for you screen")
 def step_impl(context):
     assert context.thisOnboardingIsThisAppForYouPage.on_this_page()
     # set a current onboarding page so the select Next step can be reused across these pages
     context.currentOnboardingPage = context.thisOnboardingIsThisAppForYouPage
 
-@step(u'the user selects confirms that the app is for them')
+
+@step("the user selects confirms that the app is for them")
 def step_impl(context):
     context.thisOnboardingIsThisAppForYouPage.select_confirm()
 
-@step(u'they select Continue')
+
+@step("they select Continue")
 def step_impl(context):
-    context.thisOnboardingADifferentSmartWalletPage = context.thisOnboardingIsThisAppForYouPage.select_continue()
+    context.thisOnboardingADifferentSmartWalletPage = (
+        context.thisOnboardingIsThisAppForYouPage.select_continue()
+    )
     context.currentOnboardingPage = context.thisOnboardingADifferentSmartWalletPage
 
 
@@ -57,21 +64,21 @@ def step_impl(context):
         context.thisOnboardingDigitalCredentialsPage = thisOnboardingPage
 
 
-@when('they are brought to the A different smart wallet screen')
+@when("they are brought to the A different smart wallet screen")
 def step_impl(context):
     assert context.thisOnboardingADifferentSmartWalletPage.on_this_page()
     # set a current onboarding page so the select Next step can be reused across these pages
     context.currentOnboardingPage = context.thisOnboardingADifferentSmartWalletPage
 
 
-@when('they are brought to the Digital credentials screen')
+@when("they are brought to the Digital credentials screen")
 def step_impl(context):
     assert context.thisOnboardingDigitalCredentialsPage.on_this_page()
     # set a current onboarding page so the select Next step can be reused across these pages
     context.currentOnboardingPage = context.thisOnboardingDigitalCredentialsPage
 
 
-@when('they are brought to the Private and confidential screen')
+@when("they are brought to the Private and confidential screen")
 def step_impl(context):
     assert context.thisOnboardingPrivateConfidentialPage.on_this_page()
     # set a current onboarding page so the select Next step can be reused across these pages
@@ -80,7 +87,9 @@ def step_impl(context):
 
 @then("they can select Get started")
 def step_impl(context):
-    context.thisTermsAndConditionsPage = context.thisOnboardingPrivateConfidentialPage.select_get_started()
+    context.thisTermsAndConditionsPage = (
+        context.thisOnboardingPrivateConfidentialPage.select_get_started()
+    )
 
 
 @then("are brought to the Terms and Conditions screen")
@@ -91,26 +100,31 @@ def step_impl(context):
 @given('the user is on the "{screen}"')
 @given("the user is on the onboarding {screen}")
 def step_impl(context, screen):
-
     if screen == "A different smart wallet screen":
-        context.execute_steps(f'''
+        context.execute_steps(
+            f"""
             When they are brought to the A different smart wallet screen
-        ''')
+        """
+        )
 
     elif screen == "Digital credentials screen":
-        context.execute_steps(f'''
+        context.execute_steps(
+            f"""
             When they are brought to the A different smart wallet screen
             And the user selects Next
             And they are brought to the Digital credentials screen
-        ''')
+        """
+        )
     elif screen == "Private and confidential screen":
-        context.execute_steps(f'''
+        context.execute_steps(
+            f"""
             When they are brought to the A different smart wallet screen
             And the user selects Next
             And they are brought to the Digital credentials screen
             And the user selects Next
             And they are brought to the Private and confidential screen
-        ''')
+        """
+        )
     else:
         raise Exception(f"Unexpected screen, {screen}")
 
@@ -154,13 +168,14 @@ def step_impl(context):
     pass
 
 
-@then('they land on the A different smart wallet screen')
+@then("they land on the A different smart wallet screen")
 def step_impl(context):
     context.execute_steps(
         f"""
         Given the new user has opened the app for the first time
         And the user is on the onboarding {'A different smart wallet screen'}
-    ''')
+    """
+    )
 
 
 @when("the user selects Learn more about BC Wallet")
