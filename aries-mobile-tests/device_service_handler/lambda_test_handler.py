@@ -2,15 +2,15 @@
 Class for actual LambdaTest Device Service Handling
 """
 
-from device_service_handler.device_service_handler_interface import (
-    DeviceServiceHandlerInterface,
-)
-import json
-from decouple import config
-from appium import webdriver
-import aiohttp
 import asyncio
+import json
 import os
+
+import aiohttp
+from appium import webdriver
+from decouple import config
+from device_service_handler.device_service_handler_interface import \
+    DeviceServiceHandlerInterface
 
 
 class LambdaTestHandler(DeviceServiceHandlerInterface):
@@ -112,3 +112,20 @@ class LambdaTestHandler(DeviceServiceHandlerInterface):
             self._driver.execute_script("lambda-status=failed")
         elif passed == True:
             self._driver.execute_script("lambda-status=passed")
+
+    def is_current_device_a_tablet(self):
+        """Determine if the current device is a tablet"""
+
+        if "iPad" in self._driver.capabilities["deviceName"]:
+            return True
+        elif "iPhone" in self._driver.capabilities["deviceName"]:
+            return False
+        else:  # Android
+            pixel_ratio = float(self._driver.capabilities["pixelRatio"])
+
+            # Adjust this threshold according to your specific requirements
+            tablet_threshold = (
+                1.7  # Devices with a pixel ratio less than 1.7 are considered tablets
+            )
+
+            return pixel_ratio < tablet_threshold

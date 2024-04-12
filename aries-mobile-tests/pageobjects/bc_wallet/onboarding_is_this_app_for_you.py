@@ -1,27 +1,22 @@
 from time import sleep
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage
-from pageobjects.bc_wallet.onboardingstorecredssecurely import (
-    OnboardingStoreCredsSecurelyPage,
-)
-from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
+from pageobjects.bc_wallet.onboarding_a_different_smart_wallet import OnboardingADifferentSmartWalletPage
 import os
 
 
 # These classes can inherit from a BasePage to do common setup and functions
-class OnboardingWelcomePage(BasePage):
-    """Onboarding Welcome Screen page object"""
+class OnboardingIsThisAppForYouPage(BasePage):
+    """Onboarding Is This App For You page object"""
 
     # Locators
     # TODO: If Ontario/BC or other wallets are closely alligned and only locators are different,
     # we could create a locator module that has all the locators. Given a specific app we could load the locators for that app.
     # not sure this would be a use case that would be common. Leaving locators with the page objects for now.
-    on_this_page_text_locator = "Welcome"
-    # on_this_page_locator = (AppiumBy.ACCESSIBILITY_ID, "Welcome")
-    on_this_page_locator = (AppiumBy.NAME, "Welcome")  # works on iOS
-    skip_locator = (AppiumBy.ID, "com.ariesbifold:id/Skip")
-    # locator changes in 127
-    next_locator = (AppiumBy.ID, "com.ariesbifold:id/Next")
+    on_this_page_text_locator = "Is this app for you?"
+    on_this_page_locator = (AppiumBy.ID, "com.ariesbifold:id/DeveloperCounter")
+    confirm_locator = (AppiumBy.ID, "com.ariesbifold:id/IAgree")
+    continue_locator = (AppiumBy.ID, "com.ariesbifold:id/Continue")
 
     def on_this_page(self):
         # Sometimes (especially when running with a local emulator ) where the app is not loaded yet.
@@ -39,26 +34,15 @@ class OnboardingWelcomePage(BasePage):
         else:
             raise Exception(f"App not on the {self.on_this_page_text_locator} page")
 
-    def select_next(self):
+    def select_confirm(self):
         if self.on_this_page():
-            try:
-                self.find_by(self.next_locator).click()
-            except:
-                print("Element not found. Waiting 10 seconds and trying again...")
-                sleep(10)
-                self.find_by(self.next_locator).click()
-            return OnboardingStoreCredsSecurelyPage(self.driver)
+            self.find_by(self.confirm_locator).click()
         else:
             raise Exception(f"App not on the {type(self)} page")
 
-    def select_skip(self):
+    def select_continue(self):
         if self.on_this_page():
-            try:
-                self.find_by(self.skip_locator).click()
-            except:
-                print("Element not found. Waiting 10 seconds and trying again...")
-                sleep(10)
-                self.find_by(self.skip_locator).click()
-            return TermsAndConditionsPage(self.driver)
+            self.find_by(self.continue_locator).click()
+            return OnboardingADifferentSmartWalletPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")

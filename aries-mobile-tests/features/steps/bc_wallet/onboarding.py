@@ -3,25 +3,24 @@
 #
 # -----------------------------------------------------------
 
-from behave import given, when, then
 import json
 
 # Local Imports
-from agent_controller_client import (
-    agent_controller_GET,
-    agent_controller_POST,
-    expected_agent_state,
-    setup_already_connected,
-)
+from agent_controller_client import (agent_controller_GET,
+                                     agent_controller_POST,
+                                     expected_agent_state,
+                                     setup_already_connected)
 from agent_test_utils import get_qr_code_from_invitation
-
+from behave import given, step, then, when
+from pageobjects.bc_wallet.onboarding_a_different_smart_wallet import \
+    OnboardingADifferentSmartWalletPage
+from pageobjects.bc_wallet.onboarding_digital_credentials import \
+    OnboardingDigitalCredentialsPage
 # import Page Objects needed
-from pageobjects.bc_wallet.onboardingwelcome import OnboardingWelcomePage
-from pageobjects.bc_wallet.onboardingstorecredssecurely import (
-    OnboardingStoreCredsSecurelyPage,
-)
-from pageobjects.bc_wallet.onboardingtakecontrol import OnboardingTakeControlPage
-from pageobjects.bc_wallet.onboardingsharenecessary import OnboardingShareNecessaryPage
+from pageobjects.bc_wallet.onboarding_is_this_app_for_you import \
+    OnboardingIsThisAppForYouPage
+from pageobjects.bc_wallet.onboarding_private_confidential import \
+    OnboardingPrivateConfidentialPage
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 
 
@@ -29,52 +28,67 @@ from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
 def step_impl(context):
     # App opened already buy appium.
     # Intialize the page we should be on
-    context.thisOnboardingWelcomePage = OnboardingWelcomePage(context.driver)
+    context.thisOnboardingIsThisAppForYouPage = OnboardingIsThisAppForYouPage(
+        context.driver
+    )
 
 
-@given("the user is on the onboarding Welcome screen")
+@given("the user is on the Is this app for you screen")
 def step_impl(context):
-    assert context.thisOnboardingWelcomePage.on_this_page()
+    assert context.thisOnboardingIsThisAppForYouPage.on_this_page()
     # set a current onboarding page so the select Next step can be reused across these pages
-    context.currentOnboardingPage = context.thisOnboardingWelcomePage
+    context.currentOnboardingPage = context.thisOnboardingIsThisAppForYouPage
+
+
+@step("the user selects confirms that the app is for them")
+def step_impl(context):
+    context.thisOnboardingIsThisAppForYouPage.select_confirm()
+
+
+@step("they select Continue")
+def step_impl(context):
+    context.thisOnboardingADifferentSmartWalletPage = (
+        context.thisOnboardingIsThisAppForYouPage.select_continue()
+    )
+    context.currentOnboardingPage = context.thisOnboardingADifferentSmartWalletPage
 
 
 @when("the user selects Next")
 def step_impl(context):
     thisOnboardingPage = context.currentOnboardingPage.select_next()
-    if type(thisOnboardingPage) == OnboardingStoreCredsSecurelyPage:
-        context.thisOnboardingStoreCredsSecurelyPage = thisOnboardingPage
-    elif type(thisOnboardingPage) == OnboardingTakeControlPage:
-        context.thisOnboardingTakeControlPage = thisOnboardingPage
-    elif type(thisOnboardingPage) == OnboardingShareNecessaryPage:
-        context.thisOnboardingShareNecessaryPage = thisOnboardingPage
+    if type(thisOnboardingPage) == OnboardingADifferentSmartWalletPage:
+        context.thisOnboardingADifferentSmartWalletPage = thisOnboardingPage
+    elif type(thisOnboardingPage) == OnboardingPrivateConfidentialPage:
+        context.thisOnboardingPrivateConfidentialPage = thisOnboardingPage
+    elif type(thisOnboardingPage) == OnboardingDigitalCredentialsPage:
+        context.thisOnboardingDigitalCredentialsPage = thisOnboardingPage
 
 
-@when("they are brought to the Store your credentials securely screen")
+@when("they are brought to the A different smart wallet screen")
 def step_impl(context):
-    assert context.thisOnboardingStoreCredsSecurelyPage.on_this_page()
+    assert context.thisOnboardingADifferentSmartWalletPage.on_this_page()
     # set a current onboarding page so the select Next step can be reused across these pages
-    context.currentOnboardingPage = context.thisOnboardingStoreCredsSecurelyPage
+    context.currentOnboardingPage = context.thisOnboardingADifferentSmartWalletPage
 
 
-@when("they are brought to the Share only what is neccessary screen")
+@when("they are brought to the Digital credentials screen")
 def step_impl(context):
-    assert context.thisOnboardingShareNecessaryPage.on_this_page()
+    assert context.thisOnboardingDigitalCredentialsPage.on_this_page()
     # set a current onboarding page so the select Next step can be reused across these pages
-    context.currentOnboardingPage = context.thisOnboardingShareNecessaryPage
+    context.currentOnboardingPage = context.thisOnboardingDigitalCredentialsPage
 
 
-@when("they are brought to the Take control of your information screen")
+@when("they are brought to the Private and confidential screen")
 def step_impl(context):
-    assert context.thisOnboardingTakeControlPage.on_this_page()
+    assert context.thisOnboardingPrivateConfidentialPage.on_this_page()
     # set a current onboarding page so the select Next step can be reused across these pages
-    context.currentOnboardingPage = context.thisOnboardingTakeControlPage
+    context.currentOnboardingPage = context.thisOnboardingPrivateConfidentialPage
 
 
 @then("they can select Get started")
 def step_impl(context):
     context.thisTermsAndConditionsPage = (
-        context.thisOnboardingTakeControlPage.select_get_started()
+        context.thisOnboardingPrivateConfidentialPage.select_get_started()
     )
 
 
@@ -86,82 +100,60 @@ def step_impl(context):
 @given('the user is on the "{screen}"')
 @given("the user is on the onboarding {screen}")
 def step_impl(context, screen):
-    # Assume for now they start on the welcome screen
-
-    # Detemrine what onboarding screen they are on, then migrate them to the screen passed in.
-    if screen == "Welcome screen":
-        # at the start of a test call the intial steps.
+    if screen == "A different smart wallet screen":
         context.execute_steps(
             f"""
-            Given the user is on the onboarding Welcome screen
+            When they are brought to the A different smart wallet screen
         """
         )
 
-    elif screen == "Store your credentials securely screen":
+    elif screen == "Digital credentials screen":
         context.execute_steps(
             f"""
-            Given the user is on the onboarding Welcome screen
-            When the user selects Next
-            And they are brought to the Store your credentials securely screen
+            When they are brought to the A different smart wallet screen
+            And the user selects Next
+            And they are brought to the Digital credentials screen
         """
         )
-
-    elif screen == "Share only what is neccessary screen":
+    elif screen == "Private and confidential screen":
         context.execute_steps(
             f"""
-            Given the user is on the onboarding Welcome screen
-            When the user selects Next
-            And they are brought to the Store your credentials securely screen
+            When they are brought to the A different smart wallet screen
             And the user selects Next
-            And they are brought to the Share only what is neccessary screen
-        """
-        )
-    elif screen == "Take control of your information screen":
-        context.execute_steps(
-            f"""
-            Given the user is on the onboarding Welcome screen
-            When the user selects Next
-            And they are brought to the Store your credentials securely screen
+            And they are brought to the Digital credentials screen
             And the user selects Next
-            And they are brought to the Share only what is neccessary screen
-            And the user selects Next
-            And they are brought to the Take control of your information screen
+            And they are brought to the Private and confidential screen
         """
         )
     else:
         raise Exception(f"Unexpected screen, {screen}")
 
 
-@when("the user selects Skip")
-def step_impl(context):
-    context.thisTermsAndConditionsPage = context.currentOnboardingPage.select_skip()
+# @when('the user selects Skip')
+# def step_impl(context):
+#     context.thisTermsAndConditionsPage = context.currentOnboardingPage.select_skip()
 
 
 @when("the user selects Back")
 def step_impl(context):
     thisOnboardingPage = context.currentOnboardingPage.select_back()
-    if type(thisOnboardingPage) == OnboardingWelcomePage:
-        context.thisOnboardingWelcomePage = thisOnboardingPage
-        context.currentOnboardingPage = context.thisOnboardingWelcomePage
-    if type(thisOnboardingPage) == OnboardingStoreCredsSecurelyPage:
-        context.thisOnboardingStoreCredsSecurelyPage = thisOnboardingPage
-        context.currentOnboardingPage = context.thisOnboardingStoreCredsSecurelyPage
-    elif type(thisOnboardingPage) == OnboardingTakeControlPage:
-        context.thisOnboardingTakeControlPage = thisOnboardingPage
-        context.currentOnboardingPage = context.thisOnboardingTakeControlPage
-    elif type(thisOnboardingPage) == OnboardingShareNecessaryPage:
-        context.thisOnboardingShareNecessaryPage = thisOnboardingPage
-        context.currentOnboardingPage = context.thisOnboardingShareNecessaryPage
+    if type(thisOnboardingPage) == OnboardingADifferentSmartWalletPage:
+        context.thisOnboardingADifferentSmartWalletPage = thisOnboardingPage
+        context.currentOnboardingPage = context.thisOnboardingADifferentSmartWalletPage
+    elif type(thisOnboardingPage) == OnboardingPrivateConfidentialPage:
+        context.thisOnboardingPrivateConfidentialPage = thisOnboardingPage
+        context.currentOnboardingPage = context.thisOnboardingPrivateConfidentialPage
+    elif type(thisOnboardingPage) == OnboardingDigitalCredentialsPage:
+        context.thisOnboardingDigitalCredentialsPage = thisOnboardingPage
+        context.currentOnboardingPage = context.thisOnboardingDigitalCredentialsPage
 
 
 @then("are brought to the {previous_screen}")
 def step_impl(context, previous_screen):
-    if previous_screen == "Welcome screen":
-        assert context.thisOnboardingWelcomePage.on_this_page()
-    elif previous_screen == "Store your credentials securely screen":
-        assert context.thisOnboardingStoreCredsSecurelyPage.on_this_page()
+    if previous_screen == "Store your credentials securely screen":
+        assert context.thisOnboardingADifferentSmartWalletPage.on_this_page()
     elif previous_screen == "Share only what is neccessary screen":
-        assert context.thisOnboardingShareNecessaryPage.on_this_page()
+        assert context.thisOnboardingDigitalCredentialsPage.on_this_page()
 
 
 @when("the user quits the app")
@@ -176,12 +168,12 @@ def step_impl(context):
     pass
 
 
-@then("they land on the Welcome screen")
+@then("they land on the A different smart wallet screen")
 def step_impl(context):
     context.execute_steps(
         f"""
         Given the new user has opened the app for the first time
-        Given the user is on the onboarding Welcome screen
+        And the user is on the onboarding {'A different smart wallet screen'}
     """
     )
 
@@ -196,4 +188,3 @@ def step_impl(context):
     # TODO how to check for this?
     print(context.driver.get().getContextHandles())
     print(context.driver.getContext())
-    # raise NotImplementedError(u'STEP: Then they are brought to thier browser with more info about BC wallet')

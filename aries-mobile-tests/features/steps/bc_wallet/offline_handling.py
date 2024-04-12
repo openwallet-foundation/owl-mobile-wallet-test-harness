@@ -133,19 +133,23 @@ def step_impl(context, using_the_app):
     if using_the_app == "Onboarding":
         context.execute_steps(f'''
             Given the new user has opened the app for the first time
-            And the user is on the onboarding {'Share only what is neccessary screen'}
+            And the user is on the Is this app for you screen
+            And the user selects confirms that the app is for them
+            And they select Continue
+            And the user is on the onboarding {'A different smart wallet screen'}
         ''')
     elif using_the_app == "PIN Setup":
         context.execute_steps(f'''
-            Given the User has skipped on-boarding
+            Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
             And the User is on the PIN creation screen
         ''')
     elif using_the_app == "Receiving Credential":
         context.execute_steps(f'''
-            Given the User has skipped on-boarding
+            Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
             And a PIN has been set up with "369369"
+            And the User allows notifications
             And the Holder has selected to use biometrics to unlock BC Wallet
             And a connection has been successfully made
             And the user has a credential offer
@@ -154,9 +158,10 @@ def step_impl(context, using_the_app):
         ''')
     elif using_the_app == "Presenting Proof":
         context.execute_steps(f'''
-            Given the User has skipped on-boarding
+            Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
             And a PIN has been set up with "369369"
+            And the User allows notifications
             And the Holder has selected to use biometrics to unlock BC Wallet
             And a connection has been successfully made
             And the holder has a Non-Revocable credential

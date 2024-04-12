@@ -4,14 +4,14 @@
             {
                 "platformName": "iOS",
                 "appium:options": {
-                    "app": "storage:filename=BCWallet-1215.ipa",
+                    "app": "storage:filename=BCWallet-1459.ipa",
                     "autoAcceptAlerts": true,
                     "autoDismissAlerts": true,
                     "automationName": "xcuitest",
                     "platformVersion": "16.7|13.7|14.8|15.7.5"
                 },
                 "sauce:options": {
-                    "appiumVersion": "2.0.0",
+                    "appiumVersion": "latest",
                     "sauceLabsImageInjectionEnabled": true,
                     "sessionCreationRetry": "3"
                 }

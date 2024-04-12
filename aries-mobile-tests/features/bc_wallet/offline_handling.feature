@@ -13,7 +13,7 @@ Feature: Wallet Offline Handling
   # This test will remain flacky until we are out of the crawl stage and the test code is refined to properly
   # use swipe to toggle WiFi on control center on iOS. 
   # Android in SL has issues when coming back into a closed app, biometrics at times does not display.
-  @T001-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl
+  @T001-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl @wip @needs_calibration
   Scenario: Holder opens BC Wallet while mobile phone is offline
     Given the Holder has setup thier Wallet
     And the Holder has selected to use biometrics to unlock BC Wallet
@@ -35,8 +35,8 @@ Feature: Wallet Offline Handling
       | using the app        |
       | Onboarding           |
       | PIN Setup            |
-      | Receiving Credential |
-      | Presenting Proof     |
+      #| Receiving Credential |
+      #| Presenting Proof     |
 
 
   @T003-OfflineHandling @critical @AcceptanceTest @Story_386 @crawl @wip

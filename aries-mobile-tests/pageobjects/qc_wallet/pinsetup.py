@@ -1,8 +1,8 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.common.touch_action import TouchAction
 from pageobjects.basepage import WaitCondition
-from pageobjects.bc_wallet.onboarding_biometrics import OnboardingBiometricsPage
 from pageobjects.bc_wallet.pinsetup import PINSetupPage
+from pageobjects.qc_wallet.onboarding_biometrics import OnboardingBiometricsPageQC
 
 
 class PINSetupPageQC(PINSetupPage):
@@ -21,23 +21,23 @@ class PINSetupPageQC(PINSetupPage):
     def __init__(self, driver):
         super().__init__(driver)
 
-    def enter_pin(self, pin):
-        first_pin = self.find_by(self.first_pin_locator)
-        if self.on_this_page():
-            first_pin.click()
-            first_pin.send_keys(pin)
-            return True
-        else:
-            raise Exception(f"App not on the {type(self)} page")
-
-    def enter_second_pin(self, pin):
-        second_pin = self.find_by(self.second_pin_locator)
-        if self.on_this_page():
-            second_pin.click()
-            second_pin.send_keys(pin)
-            return True
-        else:
-            raise Exception(f"App not on the {type(self)} page")
+    # def enter_pin(self, pin):
+    #     first_pin = self.find_by(self.first_pin_locator)
+    #     if self.on_this_page():
+    #         first_pin.click()
+    #         first_pin.send_keys(pin)
+    #         return True
+    #     else:
+    #         raise Exception(f"App not on the {type(self)} page")
+    #
+    # def enter_second_pin(self, pin):
+    #     second_pin = self.find_by(self.second_pin_locator)
+    #     if self.on_this_page():
+    #         second_pin.click()
+    #         second_pin.send_keys(pin)
+    #         return True
+    #     else:
+    #         raise Exception(f"App not on the {type(self)} page")
 
     def get_pin(self):
         if self.on_this_page():
@@ -73,7 +73,10 @@ class PINSetupPageQC(PINSetupPage):
             raise Exception(f"App not on the {type(self)} page")
 
     def create_pin(self):
-        return super().create_pin()
+        self.find_by(self.create_pin_button_tid_locator).click()
+
+        # return the wallet enable notifications page
+        return OnboardingBiometricsPageQC(self.driver)
 
     def select_ok_on_modal(self):
         # On Android the modal hides all the other PIN setup page elements, so we can't check on this page

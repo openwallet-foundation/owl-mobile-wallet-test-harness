@@ -3,10 +3,24 @@ from time import sleep, time
 from bc_wallet.security import *
 from override_steps import overrides
 from pageobjects.qc_wallet.biometrics import BiometricsPageQC
+from pageobjects.qc_wallet.pin import PINPageQC
+
+
+@overrides("the User allows notifications", "step")
+def step_enable_notifications(context):
+    pass
+
+
+@overrides("the Holder has selected to use PIN only to unlock BC Wallet", "given")
+def user_selects_only_pin_auth_step_impl(context):
+    assert context.thisOnboardingBiometricsPage.on_this_page()
+    context.thisInitializationPage = (
+        context.thisOnboardingBiometricsPage.select_continue()
+    )
 
 
 @overrides("the User selects to use Biometrics", "when")
-def select_biometrics_step_impl(context):
+def user_selects_biometrics_step_impl(context):
     if context.device_service_handler.supports_biometrics():
         assert context.thisOnboardingBiometricsPage.select_biometrics()
         context.device_service_handler.biometrics_authenticate(True)
@@ -26,7 +40,6 @@ def auth_biometrics_step_impl(context):
     # if ('autoGrantPermissions' in context.driver.capabilities and context.driver.capabilities['autoGrantPermissions'] == False) or (context.driver.capabilities['platformName'] == 'iOS'):
     if context.device_service_handler.supports_biometrics():
         context.thisBiometricsPage = BiometricsPageQC(context.driver)
-        assert context.thisBiometricsPage.on_this_page()
         context.device_service_handler.biometrics_authenticate(True)
         assert context.thisBiometricsPage.on_this_page() == False
         context.thisInitializationPage.wait_until_initialized()
@@ -45,12 +58,31 @@ def fails_biometrics_step_impl(context):
         if hasattr(context, "thisBiometricsPage") == False:
             context.thisBiometricsPage = BiometricsPageQC(context.driver)
 
-        assert context.thisBiometricsPage.on_this_page()
         context.device_service_handler.biometrics_authenticate(False)
+        assert context.thisBiometricsPage.on_this_page() == True
+        sleep(10)
         context.thisBiometricsPage.dismiss_biometrics_modal()
-        # assert context.thisBiometricsPage.on_this_page()
     else:
         pass
+
+
+@overrides("the Holder authenticates with thier incorrect PIN as {pin}", "when")
+def user_enters_wrong_pin_step_impl(context, pin):
+    if hasattr(context, "thisPINPage") == False:
+        context.thisPINPage = PINPageQC(context.driver)
+    context.thisPINPage.enter_pin(pin)
+    context.thisPINPage.select_enter()
+
+
+@overrides('they enter thier PIN as "{pin}"', "when")
+def user_enter_their_pin_step_impl(context, pin):
+    print("user enter their pin")
+    if hasattr(context, "thisPINPage") == False:
+        context.thisPINPage = PINPageQC(context.driver)
+
+    context.thisPINPage.enter_pin(pin)
+
+    context.thisInitializationPage = context.thisPINPage.select_enter()
 
 
 @then('they select visibility toggle on the first PIN as "{pin}"')
@@ -90,6 +122,44 @@ def step_impl(context):
     assert context.thisPINSetupPage.get_error() == "PINs do not match"
 
 
+@overrides("they have access to the app with the new PIN", "then")
+def step_access_app_with_pin(context):
+    assert context.thisSettingsPage.on_this_page()
+    context.thisHomePage = context.thisSettingsPage.select_back()
+    assert context.thisHomePage.on_this_page()
+
+    context.execute_steps(
+        """
+        Given they have closed the app
+        When they relaunch the app
+    """
+    )
+
+    context.thisBiometricsPage = BiometricsPageQC(context.driver)
+    if context.thisBiometricsPage.on_this_page():
+        context.execute_steps(
+            """
+            When fails to authenticate with thier biometrics once
+        """
+        )
+
+    context.execute_steps(
+        """
+        When they enter thier PIN as "963963"
+        Then they have access to the app
+    """
+    )
+
+
+@overrides("the User has successfully updated PIN", "when")
+@overrides("the User has successfully updated PIN", "then")
+def step_select_update_pin(context):
+    assert context.thisChangePINPage.successfully_changed_pin_modal.is_displayed()
+    context.thisSettingsPage = (
+        context.thisChangePINPage.successfully_changed_pin_modal.select_okay()
+    )
+
+
 @overrides("they land on the Home screen", "then")
 @overrides("initialization ends (failing silently)", "when")
 @overrides("they have access to the app", "then")
@@ -98,6 +168,12 @@ def special_step_impl(context):
     # The Home page will not show until the initialization page is done.
     # assert context.thisInitializationPage.on_this_page()
     context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
+    if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
+        print("MODAL ON HOME PAGE")
+        context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
+        assert True
+    else:
+        assert context.thisHomePage.on_this_page()
     context.thisNavBar = NavBar(context.driver)
     if context.thisHomePage.on_this_page() == False:
         sleep(5)

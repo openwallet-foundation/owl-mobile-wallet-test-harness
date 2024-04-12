@@ -57,12 +57,13 @@ Feature: Secure your Wallet
     When the User enters the first PIN as "369369"
     And the User re-enters the PIN as "369369"
     And the User selects Create PIN
+    And the User allows notifications
     And the User selects to use Biometrics
     Then they have access to the app
 
   @T005-Security @AcceptanceTest @ExceptionTest @normal
   Scenario: New User Sets Up PIN but PINs do not match
-    Given the User has skipped on-boarding
+    Given the User has completed on-boarding
     And the User has accepted the Terms and Conditions
     And the User is on the PIN creation screen
     When the User enters the first PIN as "369369"
@@ -78,7 +79,7 @@ Feature: Secure your Wallet
 
   @T006-Security @FunctionalTest @ExceptionTest @normal @qc_wallet_not
   Scenario Outline: New User Sets Up PIN but does not follow conventions
-    Given the User has skipped on-boarding
+    Given the User has completed on-boarding
     And the User has accepted the Terms and Conditions
     And the User is on the PIN creation screen
     When the User enters the first PIN as <pin>
@@ -248,7 +249,7 @@ Feature: Secure your Wallet
     And the User has successfully updated PIN
     And they have access to the app with the new PIN
 
-  @T007.3-Security @Story_805 @FunctionalTest @ExceptionTest @normal
+  @T007.3-Security @Story_805 @FunctionalTest @ExceptionTest @normal @qc_wallet_not
   Scenario Outline: User Changes PIN but does not follow conventions
     Given the user has setup thier wallet
     And the user has choosen to have biometrics "off"

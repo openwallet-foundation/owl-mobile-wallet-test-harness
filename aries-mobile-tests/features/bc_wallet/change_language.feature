@@ -41,14 +41,14 @@ Feature: Language
     Then the language is set to "English"
 
 
-  @T00X-Language @wip @OutOfScope
-  Scenario Outline: New User sets intial language
-    Given the new user has opened the app for the first time
-    And they are in the initial select language screen
-    When the new user selects <language>
-    Then the new user is brought to the onboarding screen in the <language> they selected
-
-    Examples:
-      | language |
-      | English  |
-      | French   |
+  # @T00X-Language @wip @OutOfScope
+  # Scenario Outline: New User sets intial language
+  #   Given the new user has opened the app for the first time
+  #   And they are in the initial select language screen
+  #   When the new user selects <language>
+  #   Then the new user is brought to the onboarding screen in the <language> they selected
+  #
+  #   Examples:
+  #     | language |
+  #     | English  |
+  #     | French   |

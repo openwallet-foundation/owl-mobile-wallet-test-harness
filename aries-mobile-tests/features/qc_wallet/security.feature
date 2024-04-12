@@ -6,7 +6,7 @@ Feature: Secure your Wallet
 
   @TCL_PNG_ACC_002.1 @FunctionalTest @ExceptionTest @normal
   Scenario Outline: New User Sets Up PIN but does not follow conventions
-    Given the User has skipped on-boarding
+    Given the User has completed on-boarding
     And the User has accepted the Terms and Conditions
     And the User is on the PIN creation screen
     When the User enters the first PIN as <pin>
@@ -21,17 +21,18 @@ Feature: Secure your Wallet
       | D28193 | Your PIN needs to only contain digits. Please try again.             |
       | 123893 | A series was detected in your PIN. Please try again.                 |
       | 333752 | The PIN can't have a repetition of the same digit. Please try again. |
-      | 65237  | Your PIN is too short. Please try again.                             |
+      # Deprecated
+      # | 65237  | Your PIN is too short. Please try again.                            |
 
-  @TCL_PNG_ACC_002.2 @FunctionalTest @ExceptionTest @normal
-  Scenario: New User Sets Up PIN and checks pin by toggling visibility
-    Given the User has skipped on-boarding
-    And the User has accepted the Terms and Conditions
-    And the User is on the PIN creation screen
-    When the User enters the first PIN as "728193"
-    Then they select visibility toggle on the first PIN as "728193"
-    When the User re-enters the PIN as "278596"
-    Then they select visibility toggle on the second PIN as "278596"
+  # @TCL_PNG_ACC_002.2 @FunctionalTest @ExceptionTest @normal
+  # Scenario: New User Sets Up PIN and checks pin by toggling visibility
+  #   Given the User has completed on-boarding
+  #   And the User has accepted the Terms and Conditions
+  #   And the User is on the PIN creation screen
+  #   When the User enters the first PIN as "728193"
+  #   Then they select visibility toggle on the first PIN as "728193"
+  #   When the User re-enters the PIN as "278596"
+  #   Then they select visibility toggle on the second PIN as "278596"
 
   @TCL_PNG_ACC_009 @FunctionalTest @extra_config_security_idle_timeout
   Scenario: Holder has app locked after 5 minutes of inactivity

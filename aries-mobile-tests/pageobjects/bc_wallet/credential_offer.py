@@ -1,8 +1,8 @@
 from appium.webdriver.common.appiumby import AppiumBy
-from pageobjects.basepage import BasePage
-from pageobjects.basepage import WaitCondition
+from pageobjects.basepage import BasePage, WaitCondition
 from pageobjects.bc_wallet.credential_on_the_way import CredentialOnTheWayPage
-from pageobjects.bc_wallet.decline_credential_offer import DeclineCredentialOfferPage
+from pageobjects.bc_wallet.decline_credential_offer import \
+    DeclineCredentialOfferPage
 
 
 # These classes can inherit from a BasePage to do common setup and functions
@@ -23,19 +23,23 @@ class CredentialOfferPage(BasePage):
     decline_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Decline")
 
     def on_this_page(self):
-        #return super().on_this_page(self.on_this_page_text_locator, 30)
-        if self.current_platform == 'iOS':
-            if '14' in self.driver.capabilities['platformVersion']:
+        # return super().on_this_page(self.on_this_page_text_locator, 30)
+        if self.current_platform.lower() == "iOS".lower():
+            if "14" in self.driver.capabilities["platformVersion"]:
                 return super().on_this_page(self.on_this_page_text_locator, 30)
-        #return super().on_this_page(self.credential_offer_card_locator, 30)
-        if self.find_by(self.credential_offer_card_locator, timeout=80, wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED):
+        # return super().on_this_page(self.credential_offer_card_locator, 30)
+        if self.find_by(
+            self.credential_offer_card_locator,
+            timeout=80,
+            wait_condition=WaitCondition.VISIBILITY_OF_ELEMENT_LOCATED,
+        ):
             return True
         else:
             return False
 
     def select_accept(self, scroll=False):
         if self.on_this_page():
-            if scroll == True and self.current_platform == 'Android':
+            if scroll == True and self.current_platform == "Android":
                 self.scroll_to_bottom()
             self.find_by(self.accept_locator).click()
             return CredentialOnTheWayPage(self.driver)

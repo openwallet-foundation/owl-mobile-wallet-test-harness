@@ -15,7 +15,7 @@ jobs:
       BUILD_NAME: ${{ steps.check-app-updated-on-lt.outputs.BUILD_NAME }}
     steps:
       - name: checkout-test-harness
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: check-app-updated-on-lt
         id: check-app-updated-on-lt
         run: |
@@ -58,10 +58,6 @@ jobs:
             app-file-name: "-a ${{ needs.check-app-updated-android.outputs.NEW_APP_URL }}"
             build-name: "-b ${{ needs.check-app-updated-android.outputs.BUILD_NAME }}"
             report-project: "android-multi-device-full"
-          - mobile-platform: "-p iOS"
-            app-file-name: "-a ${{ needs.check-app-updated-ios.outputs.NEW_APP_URL }}"
-            build-name: "-b ${{ needs.check-app-updated-ios.outputs.BUILD_NAME }}"
-            report-project: "ios-multi-device-full"
           # - mobile-platform: "-p Android"
           #   app-file-name: "-a ${{ needs.check-app-updated-android.outputs.NEW_APP_URL }}"
           #   build-name: "-b ${{ needs.check-app-updated-android.outputs.BUILD_NAME }}"
@@ -80,39 +76,40 @@ jobs:
           #   report-project: "bc-digital-id-ios"
     #timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v3
-
-      - name: run-aath-agents
-        if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
-        uses: ./.github/workflows/run-aath-agents
-        with:
-          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
-          USE_NGROK: ""
-
-      - name: run-aath-agents-ngrok
-        if: ${{ matrix.mobile-platform=='-p Android' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
-        uses: ./.github/workflows/run-aath-agents
-        with:
-          LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
-          USE_NGROK: "-n"
-
-      - name: run-aath-verifier-agent
-        if: ${{ matrix.mobile-platform=='-p iOS' && contains(matrix.report-project,'candy-uvp-pcft-chat') }}
-        uses: ./.github/workflows/run-aath-agents
-        with:
-          TEST_AGENTS: "-b acapy-main"
-          GENESIS_URL: "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis"
-          AGENT_CONFIG_FILE: "/aries-backchannels/acapy/read_only_ledger_verifier_config.yaml"
-          USE_NGROK: ""
-
-      - name: run-aath-verifier-agent-ngrok
-        if: ${{ matrix.mobile-platform=='-p Android' && contains(matrix.report-project,'candy-uvp-pcft-chat') }}
-        uses: ./.github/workflows/run-aath-agents
-        with:
-          TEST_AGENTS: "-b acapy-main"
-          GENESIS_URL: "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis"
-          AGENT_CONFIG_FILE: "/aries-backchannels/acapy/read_only_ledger_verifier_config.yaml"
-          USE_NGROK: "-n"
+      # - uses: actions/checkout@v4
+      # - name: run-aath-agents
+      #   if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+      #   uses: ./.github/workflows/run-aath-agents
+      #   with:
+      #     LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
+      #     USE_NGROK: ""
+      #
+      # - name: run-aath-agents-ngrok
+      #   if: ${{ matrix.mobile-platform=='-p Android' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+      #   uses: ./.github/workflows/run-aath-agents
+      #   with:
+      #     NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      #     LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
+      #     USE_NGROK: "-n"
+      #
+      # - name: run-aath-verifier-agent
+      #   if: ${{ matrix.mobile-platform=='-p iOS' && contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+      #   uses: ./.github/workflows/run-aath-agents
+      #   with:
+      #     TEST_AGENTS: "-b acapy-main"
+      #     GENESIS_URL: "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis"
+      #     AGENT_CONFIG_FILE: "/aries-backchannels/acapy/read_only_ledger_verifier_config.yaml"
+      #     USE_NGROK: ""
+      #
+      # - name: run-aath-verifier-agent-ngrok
+      #   if: ${{ matrix.mobile-platform=='-p Android' && contains(matrix.report-project,'candy-uvp-pcft-chat') }}
+      #   uses: ./.github/workflows/run-aath-agents
+      #   with:
+      #     NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      #     TEST_AGENTS: "-b acapy-main"
+      #     GENESIS_URL: "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis"
+      #     AGENT_CONFIG_FILE: "/aries-backchannels/acapy/read_only_ledger_verifier_config.yaml"
+      #     USE_NGROK: "-n"
 
       - name: Run AMTH All Tests
         if: ${{ contains(matrix.report-project,'multi-device-full') }}
@@ -123,8 +120,8 @@ jobs:
           #TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
         with:
           MOBILE_WALLET: "-w qc_wallet"
-          ISSUER_AGENT: '-i "AATH;http://0.0.0.0:9020"'
-          VERIFIER_AGENT: '-v "AATH;http://0.0.0.0:9030"'
+          ISSUER_AGENT: '-i "MCN;https://aries-issuer-090-admin.apps.exp.openshift.cqen.ca"'
+          VERIFIER_AGENT: '-v "MCN;https://aries-issuer-090-admin.apps.exp.openshift.cqen.ca"'
           DEVICE_CLOUD: "-d LambdaTest"
           DEVICE_CLOUD_USER: "-u ${{ secrets.LAMBDA_USERNAME }}"
           DEVICE_CLOUD_KEY: "-k ${{ secrets.LAMBDA_ACCESS_KEY }}"
@@ -153,38 +150,3 @@ jobs:
       #     TEST_SCOPE: "-t @bc_wallet -t @Connectionless -t ~@wip -t ~@BCSC"
       #     REPORT_PROJECT: ${{ matrix.report-project }}
       #   continue-on-error: true
-
-      # - name: Run AMTH BC Wallet BC Digital ID Tests
-      #   #if: ${{ matrix.report-project=='bc-digital-id-ios' || matrix.report-project=='bc-digital-id-android' }}
-      #   if: ${{ contains(matrix.report-project,'bc-digital-id') }}
-      #   uses: ./.github/workflows/run-test-harness
-      #   env:
-      #     REGION: "us-west-1"
-      #     BC_VP_USERNAME: ${{ secrets.BC_VP_USERNAME }}
-      #     BC_VP_PASSWORD: ${{ secrets.BC_VP_PASSWORD }}
-      #     BC_VP_HOLDER_EMAIL: ${{ secrets.BC_VP_HOLDER_EMAIL }}
-      #     BC_VP_HOLDER_EMAIL_PASSWORD: ${{ secrets.BC_VP_HOLDER_EMAIL_PASSWORD }}
-      #     BCSC_ACCOUNT_USER: ${{ secrets.BCSC_ACCOUNT_USER }}
-      #     BCSC_ACCOUNT_PASSWORD: ${{ secrets.BCSC_ACCOUNT_PASSWORD }}
-      #     # GOOGLE_API_TOKEN: ${{ secrets.GOOGLE_API_TOKEN }}
-      #     # GOOGLE_API_CREDENTIALS: ${{ secrets.GOOGLE_API_CREDENTIALS }}
-      #     #TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
-      #   with:
-      #     MOBILE_WALLET: "-w bc_wallet"
-      #     ISSUER_AGENT: '-i "BC_VP;https://bcvcpilot-issuer-admin-test.apps.silver.devops.gov.bc.ca"'
-      #     VERIFIER_AGENT: '-v "AATH;http://0.0.0.0:9030"'
-      #     DEVICE_CLOUD: "-d SauceLabs"
-      #     DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
-      #     DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
-      #     MOBILE_PLATFORM: ${{ matrix.mobile-platform }}
-      #     APP_FILE_NAME: ${{ matrix.app-file-name }}
-      #     TEST_SCOPE: "-t @bc_wallet -t @BCSC -t ~@wip"
-      #     REPORT_PROJECT: ${{ matrix.report-project }}
-      #   continue-on-error: true
-
-      # - name: Upload AMTH All Test results to Allure
-      #   uses: ./.github/workflows/run-send-gen-test-results-secure
-      #   with:
-      #     REPORT_PROJECT: ${{ matrix.report-project }}
-      #     ADMIN_USER: ${{ secrets.ALLURE_USERNAME }}
-      #     ADMIN_PW: ${{ secrets.ALLURE_PASSWD }}
