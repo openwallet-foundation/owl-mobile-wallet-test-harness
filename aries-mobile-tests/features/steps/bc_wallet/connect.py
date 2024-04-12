@@ -8,13 +8,16 @@ import logging
 from time import sleep
 
 # Local Imports
-from agent_controller_client import (agent_controller_GET,
-                                     agent_controller_POST,
-                                     expected_agent_state,
-                                     setup_already_connected)
+from agent_controller_client import (
+    agent_controller_GET,
+    agent_controller_POST,
+    expected_agent_state,
+    setup_already_connected,
+)
 from agent_test_utils import get_qr_code_from_invitation
 from behave import given, then, when
 from pageobjects.bc_wallet.camera_privacy_policy import CameraPrivacyPolicyPage
+
 # import Page Objects needed
 from pageobjects.bc_wallet.connecting import ConnectingPage
 from pageobjects.bc_wallet.contact import ContactPage
@@ -85,33 +88,6 @@ def step_impl(context, agent):
             logging.info(
                 "Soft Assertion failed. Not on the Camera Privacy Policy Page. MAy cause preceeding connection steps to fail"
             )
-
-    # It is possible that the QR code scan page could have an error displayed like invalid QR code, or at times displays
-    # no message and just sits there waiting, like there is no qr code to scan. Check to see if there is an error message and if so,
-    # close the scan window and scan again.
-    if hasattr(context, "thisQRCodeScanPage") == False:
-        context.thisQRCodeScanPage = ScanPage(context.driver)
-    if context.thisQRCodeScanPage.on_this_page():
-        sleep(5)
-        if "Invalid QR code" in context.thisQRCodeScanPage.get_page_source():
-            # log the issue and close the scan window and scan again
-            logging.info(
-                "Invalid QR code error on scan page, closing and scanning again"
-            )
-        else:
-            # we are on the page but no error yet check one more time then close and scan again
-            logging.info(
-                "There might be a problem scanning the QR Code, attemting closing and scanning again"
-            )
-        # Make sure we are still scanning if not we have moved on.
-        # This seems inefficent to check again since we just did 5 seconds ago, but it is possible that after the 5 seconds the QR code may have scanned and we moved on.
-        # TODO Think of a better way to do this.
-        if context.thisQRCodeScanPage.on_this_page():
-            context.thisQRCodeScanPage.select_close()
-            context.device_service_handler.inject_qrcode(qrimage)
-            context.thisConnectingPage = context.thisNavBar.select_scan()
-
-    # sleep(3)
 
 
 @when("the Holder is taken to the Connecting Screen/modal")
