@@ -1,0 +1,188 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Python: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Behave current file",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "behave",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/aries-mobile-tests",
+            "env": {
+                "SAUCE_USERNAME": "",
+                "SAUCE_ACCESS_KEY": "",
+                "SL_REGION": "us-west-1",
+                "DEVICE_CLOUD": "SauceLabs"
+            },
+            "args": [
+                "${file}",
+                "--tags=@T002-Proof",
+                "-k",
+                "-D",
+                "Issuer=AATH;http://acme_agent:9020",
+                "-D",
+                "Verifier=AATH;http://bob_agent:9030"
+            ]
+        },
+        {
+            "name": "Python: Behave current file LocalAndroid",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "behave",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/aries-mobile-tests",
+            "env": {
+                "SAUCE_USERNAME": "",
+                "SAUCE_ACCESS_KEY": "",
+                "SL_REGION": "us-west-1",
+                "DEVICE_CLOUD": "LocalAndroid"
+            },
+            "args": [
+                "${file}",
+                "--tags=@T002-Proof",
+                "-k",
+                "-D",
+                "Issuer=AATH;http://acme_agent:9020",
+                "-D",
+                "Verifier=AATH;http://bob_agent:9030"
+            ]
+        },
+        {
+            "name": "Python: Behave current file Sauce Labs non-AATH Agents",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "behave",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/aries-mobile-tests",
+            "env": {
+                "SAUCE_USERNAME": "",
+                "SAUCE_ACCESS_KEY": "",
+                "SL_REGION": "us-west-1",
+                "DEVICE_CLOUD": "SauceLabs",
+                "TEST_RETRY_ATTEMPTS_OVERRIDE": "1"
+            },
+            "args": [
+                "${file}",
+                "--tags=@T009-Proof",
+                "-k",
+                "-D",
+                "Issuer=CANdy_UVP;https://openvp-candy-issuer-test.apps.silver.devops.gov.bc.ca/",
+                "-D",
+                "Verifier=PCFT_Chat;https://pctftest-test.vonx.io/"
+            ]
+        },
+        {
+            "name": "Python: Behave current file Sauce Labs Connectionless",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "behave",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/aries-mobile-tests",
+            "env": {
+                "SAUCE_USERNAME": "",
+                "SAUCE_ACCESS_KEY": "",
+                "SL_REGION": "us-west-1",
+                "DEVICE_CLOUD": "SauceLabs",
+                "TEST_RETRY_ATTEMPTS_OVERRIDE": "1"
+            },
+            "args": [
+                "${file}",
+                "--tags=@T009.1-Proof",
+                "-k",
+                "-D",
+                "Issuer=CANdy_UVP;https://openvp-candy-issuer-test.apps.silver.devops.gov.bc.ca/",
+                "-D",
+                "Verifier=AATH;http://bob_agent:9030"
+            ]
+        },
+        {
+            "name": "Python: Behave current file Sauce Labs BCSC",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "behave",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/aries-mobile-tests",
+            "env": {
+                "SAUCE_USERNAME": "",
+                "SAUCE_ACCESS_KEY": "",
+                "SL_REGION": "us-west-1",
+                "DEVICE_CLOUD": "SauceLabs",
+                "BC_VP_USERNAME": "",
+                "BC_VP_PASSWORD": "",
+                "BC_VP_HOLDER_EMAIL": "",
+                "BC_VP_HOLDER_EMAIL_PASSWORD": "",
+                "BCSC_ACCOUNT_USER": "",
+                "BCSC_ACCOUNT_PASSWORD": "",
+                "GOOGLE_API_TOKEN": "",
+                "GOOGLE_API_CREDENTIALS": ""
+            },
+            "args": [
+                "${file}",
+                "--tags=@T001-BCSC",
+                "-k",
+                "-D",
+                "Issuer=BC_VP;https://bcvcpilot-issuer-admin-test.apps.silver.devops.gov.bc.ca",
+                "-D",
+                "Verifier=BC_Person_Showcase;https://bc-wallet-demo-agent-admin-test.apps.silver.devops.gov.bc.ca"
+            ]
+        },
+        {
+            "name": "Python: Behave current file Mobile Verifier",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "behave",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/aries-mobile-tests",
+            "env": {
+                "SAUCE_USERNAME": "",
+                "SAUCE_ACCESS_KEY": "",
+                "SL_REGION": "us-west-1",
+                "DEVICE_CLOUD": "SauceLabs"
+            },
+            "args": [
+                "${file}",
+                "--tags=@T001.2-MobileVerifier",
+                "-k",
+                "-D",
+                "Issuer=CANdy_UVP;https://openvp-candy-issuer-test.apps.silver.devops.gov.bc.ca/",
+                "-D",
+                "Holder=AATH;http://bob_agent:9030"
+            ]
+        },
+        {
+            "name": "Python: Behave current file Sauce Labs BC Showcase",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "behave",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/aries-mobile-tests",
+            "env": {
+                "SAUCE_USERNAME": "",
+                "SAUCE_ACCESS_KEY": "",
+                "SL_REGION": "us-west-1",
+                "DEVICE_CLOUD": "SauceLabs",
+                "TEST_RETRY_ATTEMPTS_OVERRIDE": "1"
+            },
+            "args": [
+                "${file}",
+                "--tags=@T002-BCShowcase",
+                "-k",
+                "-D",
+                "Issuer=BCShowcaseIssuer;https://bc-wallet-demo.apps.silver.devops.gov.bc.ca/",
+                "-D",
+                "Verifier=BCShowcaseVerifier;https://bc-wallet-demo.apps.silver.devops.gov.bc.ca/"
+            ]
+        },
+    ]
+}
