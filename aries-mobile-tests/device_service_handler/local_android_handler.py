@@ -28,11 +28,19 @@ class LocalAndroidHandler(DeviceServiceHandlerInterface):
     def set_desired_capabilities(self, config: dict):
         """set extra capabilities above what was in the config file"""
         # Handle common options and capabilities
-        for item in config:
-            self._CONFIG['capabilities'][item] = config[item]
+        #for item in config:
+        #    self._CONFIG['capabilities'][item] = config[item]
         self._desired_capabilities = self._CONFIG['capabilities']
         print("\n\nDesired Capabilities passed to Appium:")
         print(json.dumps(self._desired_capabilities, indent=4))
+
+        self._set_appium_options_from_desired_capabilities()
+
+    def _set_appium_options_from_desired_capabilities(self):
+        """set the appium options from the desired capabilities"""
+        #self._options = webdriver.AppiumOptions()
+        for key in self._desired_capabilities:
+            self._options.set_capability(key, self._desired_capabilities[key])
 
     def inject_qrcode(self, image):
         """pass the qrcode image to the device in a way that allows for the device to scan it when the camera opens"""
@@ -42,6 +50,9 @@ class LocalAndroidHandler(DeviceServiceHandlerInterface):
 
         shutil.copy(
             "qrcode.png", f"{android_home}/emulator/resources/qrcode.png")
+        # if we are running in a dev container copy to /qrcodes as well.
+        shutil.copy(
+            "qrcode.png", f"/qrcodes/qrcode.png")
 
     def biometrics_authenticate(self, authenticate: bool, finger_id: int = 1):
         """authenticate when biometrics, ie fingerprint or faceid, true is success, false is fail biometrics"""

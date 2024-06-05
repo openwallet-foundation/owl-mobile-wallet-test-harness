@@ -53,9 +53,9 @@
                 "--tags=@T002-Proof",
                 "-k",
                 "-D",
-                "Issuer=AATH;http://acme_agent:9020",
+                "Issuer=AATH;http://host.docker.internal:9020",
                 "-D",
-                "Verifier=AATH;http://bob_agent:9030"
+                "Verifier=AATH;http://host.docker.internal:9030"
             ]
         },
         {

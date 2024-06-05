@@ -76,7 +76,10 @@ def step_impl(context):
     assert context.thisOnboardingBiometricsPage.select_biometrics()
     #context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     context.thisEnableNotificationsPage = context.thisOnboardingBiometricsPage.select_continue()
-    context.device_service_handler.biometrics_authenticate(True)
+    # Not sure we need this next line since I don't think the app asks to authenticate when you select to use biometrics.
+    # This is causing the test to fail when using a local android device so make this line conditional
+    if "Local" not in os.environ['DEVICE_CLOUD']:
+        context.device_service_handler.biometrics_authenticate(True)
 
 @then('they have access to the app')
 def step_impl(context):

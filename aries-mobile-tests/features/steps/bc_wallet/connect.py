@@ -3,6 +3,7 @@
 # 
 # -----------------------------------------------------------
 
+import os
 from pageobjects.bc_wallet.scan import ScanPage
 from pageobjects.bc_wallet.navbar import NavBar
 from behave import given, when, then
@@ -40,7 +41,7 @@ def step_impl(context, pin):
 @when('the Holder scans the QR code sent by the "{agent}"')
 def step_impl(context, agent):
     # check the device serivce handler to see if we are on a tablet or phone
-    if context.device_service_handler.is_current_device_a_tablet():
+    if "Local" not in os.environ['DEVICE_CLOUD'] and context.device_service_handler.is_current_device_a_tablet():
         qr_code_border = 80
     else:
         qr_code_border = 40
