@@ -10,6 +10,7 @@
 		"context": "../aries-mobile-tests",
         "dockerfile": "../aries-mobile-tests/Dockerfile.dev-harness"
     },
+	"appPort": ["49160:49160"],
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
@@ -24,7 +25,7 @@
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [4723, 5037, 8554],
+	"forwardPorts": [4723, 5037, 8554, 49160],
 
 	"initializeCommand": "docker network inspect aath_network >/dev/null 2>&1 || docker network create aath_network",
 
