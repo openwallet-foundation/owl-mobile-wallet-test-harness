@@ -51,8 +51,9 @@ class LocalAndroidHandler(DeviceServiceHandlerInterface):
         shutil.copy(
             "qrcode.png", f"{android_home}/emulator/resources/qrcode.png")
         # if we are running in a dev container copy to /qrcodes as well.
-        shutil.copy(
-            "qrcode.png", f"/qrcodes/qrcode.png")
+        if self.is_running_in_dev_container():
+            shutil.copy(
+                "qrcode.png", f"/qrcodes/qrcode.png")
 
     def biometrics_authenticate(self, authenticate: bool, finger_id: int = 1):
         """authenticate when biometrics, ie fingerprint or faceid, true is success, false is fail biometrics"""
