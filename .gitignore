@@ -3,7 +3,6 @@ __pycache__
 .logs
 .build
 *.log
-.vscode/
 all_steps.py
 aries-mobile-tests/features/steps/all_steps.py
 aries-mobile-tests/allure/allure-results/environment.properties

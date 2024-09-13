@@ -1,0 +1,43 @@
+FROM python:3.9-bullseye
+
+# Install sudo
+RUN apt-get update && apt-get install -y sudo
+
+RUN apt update && apt install -y chromium
+
+# workaround for chromium crash reports warning
+RUN mkdir -p "/root/.config/chromium/Crash Reports/pending"
+
+#Setup Android SDK
+# Install necessary tools
+RUN apt-get update && apt-get install -y wget unzip openjdk-11-jdk
+
+# Set JAVA_HOME environment variable
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+ENV PATH $PATH:$JAVA_HOME/bin
+
+# Download and unzip Android SDK command line tools
+RUN mkdir -p /usr/local/android-sdk && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip && \
+    unzip commandlinetools-linux-7302050_latest.zip -d /usr/local/android-sdk && \
+    rm commandlinetools-linux-7302050_latest.zip
+
+# Move unzipped "cmdline-tools" directory to "cmdline-tools/latest"
+RUN mv /usr/local/android-sdk/cmdline-tools /usr/local/android-sdk/cmdline-tools-temp && \
+    mkdir -p /usr/local/android-sdk/cmdline-tools/latest && \
+    mv /usr/local/android-sdk/cmdline-tools-temp/* /usr/local/android-sdk/cmdline-tools/latest && \
+    rm -r /usr/local/android-sdk/cmdline-tools-temp
+
+# Set environment variable
+ENV ANDROID_HOME /usr/local/android-sdk
+ENV PATH $PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+
+# Accept Android SDK licenses
+RUN yes | sdkmanager --licenses
+
+# Install platform tools that includes adb
+RUN sdkmanager "platform-tools"
+# Install Android Build Tools
+RUN yes | sdkmanager --install "build-tools;30.0.3"
+
+

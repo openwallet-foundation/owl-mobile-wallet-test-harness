@@ -1,0 +1,67 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+	"name": "Mobile Wallet Test Dev",
+	//"workspaceMount": "source=${localWorkspaceFolder}/aries-mobile-tests,target=/aries-mobile-tests,type=bind",
+	//"workspaceFolder": "/aries-mobile-tests",
+	// Use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"build": {
+        // Path is relative to the devcontainer.json file.
+		"context": "../aries-mobile-tests",
+        "dockerfile": "../aries-mobile-tests/Dockerfile.dev-harness"
+    },
+	"appPort": ["49160:49160"],
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		"docker-from-docker": "latest"
+	},
+
+	// If using a local android device/emulator you will need to mount to the location of the app apk so that it can be installed.
+	// Change this to your absolute path to the location of the android apk you want to test with
+	"mounts": [
+		{ "source": "/Users/Shel/Projects/BC.gov/apps/bc-wallet", "target": "/bc-wallet/app", "type": "bind" },
+		{ "source": "/Users/Shel/Library/Developer/Xamarin/android-sdk-macosx/emulator/resources","target": "/qrcodes", "type": "bind" }
+	],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [4723, 5037, 8554, 49160],
+
+	"initializeCommand": "docker network inspect aath_network >/dev/null 2>&1 || docker network create aath_network",
+
+	"runArgs": [
+		"--network=aath_network",
+		"--name=amth_test_dev"
+	],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "pip install --upgrade pip && \
+	// 	pip install --no-cache-dir aiohttp behave allure-behave python-decouple",
+	"postCreateCommand": "pip install --upgrade pip && \
+		pip install -r aries-mobile-tests/requirements.txt && \
+		pip install --no-cache-dir python-decouple && \
+		curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && \
+		sudo apt-get install -y nodejs && \
+		npm install -g appium && \
+		appium driver install uiautomator2",
+
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			"settings": {
+					"extensions.verifySignature": false
+				},
+			"extensions": [
+				"ms-python.python",
+				"ms-python.debugpy",
+				"ms-python.vscode-pylance",
+				"alexkrechik.cucumberautocomplete",
+				"zainchen.json"
+			]
+		}
+	},
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	"remoteUser": "root"
+}

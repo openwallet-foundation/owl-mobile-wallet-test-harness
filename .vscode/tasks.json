@@ -1,0 +1,47 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Aries Agents",
+            "type": "shell",
+            "command": "cd ~/Projects/BC.gov/aries-agent-test-harness && LEDGER_URL_CONFIG=http://test.bcovrin.vonx.io TAILS_SERVER_URL_CONFIG=https://tails.vonx.io AGENT_CONFIG_FILE=/aries-backchannels/acapy/auto_issuer_config.yaml ./manage start -a acapy-main -b acapy-main -n"
+        },
+        {
+            "label": "Stop Aries Agents",
+            "type": "shell",
+            "command": "cd ~/Projects/BC.gov/aries-agent-test-harness && ./manage stop"
+        },
+        {
+            "label": "Start Appium Server in Dev Container",
+            "type": "shell",
+            "command": "appium --base-path /wd/hub --allow-cors",
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": ".*"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^\\[Appium\\] Welcome to Appium v.*",
+                    "endsPattern": "^\\[Appium\\] Appium REST http interface listener started on 0.0.0.0:4723"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Stop Appium Server",
+            "type": "shell",
+            "command": "pkill -2 -f appium",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        }
+    ]
+}
