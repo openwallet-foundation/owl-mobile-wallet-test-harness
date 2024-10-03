@@ -8,7 +8,7 @@
                     "autoAcceptAlerts": true,
                     "autoDismissAlerts": true,
                     "automationName": "xcuitest",
-                    "platformVersion": "16.7|13.7|14.8|15.7.5"
+                    "platformVersion": "18|17.7|16.7|13.7|14.8|15.8"
                 },
                 "sauce:options": {
                     "appiumVersion": "latest",

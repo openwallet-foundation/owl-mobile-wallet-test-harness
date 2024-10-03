@@ -7,6 +7,7 @@ from behave import given, when, then, step
 import json
 import os
 from decouple import config
+from time import sleep
 
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
@@ -155,6 +156,9 @@ def step_impl(context):
 @when('they relaunch the app')
 def step_impl(context):
     context.driver.activate_app(context.driver.capabilities[get_package_or_bundle_id(context)])
+    # There is a crash issue in the automation when entering the pin right after a restart.
+    # wait 5 seconds to stop the crashing or minimize at least.
+    sleep(5)
 
 def get_package_or_bundle_id(context):
     if context.driver.capabilities['platformName'] == 'iOS':
