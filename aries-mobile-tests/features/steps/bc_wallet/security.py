@@ -86,7 +86,7 @@ def step_impl(context):
 def step_impl(context):
     # The Home page will not show until the initialization page is done. 
     #assert context.thisInitializationPage.on_this_page()
-    context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
+    #context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
         context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
         assert True
@@ -176,7 +176,9 @@ def step_impl(context):
         assert context.thisBiometricsPage.on_this_page()
         context.device_service_handler.biometrics_authenticate(True)
         assert context.thisBiometricsPage.on_this_page() == False
-        context.thisInitialzationPage.wait_until_initialized()
+        # Check to make sure we are not already on the home page.
+        if context.thisHomePage.on_this_page() == False:
+            context.thisInitializationPage.wait_until_initialized()
 
 
 @when('fails to authenticate with thier biometrics once')
@@ -188,6 +190,11 @@ def step_impl(context):
     context.device_service_handler.biometrics_authenticate(False)
     #assert context.thisBiometricsPage.on_this_page()
 
+
+@step('the User continues from reviewing Secure your Wallet')
+def step_impl(context):
+    assert context.thisWhyYouNeedAPINPage.on_this_page()
+    context.thisPINSetupPage = context.thisWhyYouNeedAPINPage.select_continue()
 
 @when('they enter thier PIN as "{pin}"')
 def step_impl(context, pin):

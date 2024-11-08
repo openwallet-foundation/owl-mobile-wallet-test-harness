@@ -52,7 +52,7 @@ def step_impl(context):
 @given('the users accepts the Terms and Conditions')
 @when('the users accepts the Terms and Conditions')
 def step_impl(context):
-    context.thisPINSetupPage = context.thisTermsAndConditionsPage.select_accept()
+    context.thisWhyYouNeedAPINPage = context.thisTermsAndConditionsPage.select_accept()
 
 
 
@@ -67,6 +67,7 @@ def step_impl(context):
     context.execute_steps(f'''
             Given the User is on the Terms and Conditions screen
             Given the users accepts the Terms and Conditions
+            And the User continues from reviewing Secure your Wallet
             Then the user transitions to the PIN creation screen
         ''')
         

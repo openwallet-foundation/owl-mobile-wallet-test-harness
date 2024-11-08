@@ -142,6 +142,7 @@ def step_impl(context, using_the_app):
         context.execute_steps(f'''
             Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
+            And the User continues from reviewing Secure your Wallet
             And the User is on the PIN creation screen
         ''')
     elif using_the_app == "Receiving Credential":

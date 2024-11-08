@@ -1,7 +1,7 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage, WaitCondition
 from pageobjects.bc_wallet.pinsetup import PINSetupPage
-from time import sleep
+from pageobjects.bc_wallet.why_you_need_a_pin import WhyYouNeedAPINPage
 
 
 # These classes can inherit from a BasePage to do commone setup and functions
@@ -32,6 +32,6 @@ class TermsAndConditionsPage(BasePage):
             #     sleep(5)
             #     self.scroll_to_element(self.back_aid_locator[1])
             self.find_by(self.accept_button_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
-            return PINSetupPage(self.driver)
+            return WhyYouNeedAPINPage(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
