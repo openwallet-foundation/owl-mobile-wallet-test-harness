@@ -379,6 +379,7 @@ def step_impl(context):
     context.execute_steps(f'''
             Given the User has completed on-boarding
             And the User has accepted the Terms and Conditions
+            And the User continues from reviewing Secure your Wallet
             And a PIN has been set up with "369369"
             And the Holder has selected to use biometrics to unlock BC Wallet
         ''')

@@ -9,6 +9,7 @@ Feature: Connections
    Scenario: Scan QR code to recieve a credential offer
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
+      And the User continues from reviewing Secure your Wallet
       And a PIN has been set up with "369369"
       And the Holder has selected to use biometrics to unlock BC Wallet
       When the Holder scans the QR code sent by the "issuer"

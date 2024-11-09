@@ -32,7 +32,8 @@ def step_impl(context, pin):
     #     Then the User has successfully created a PIN
     # ''')
     context.execute_steps(f'''
-        Given the User is on the PIN creation screen
+        Given the User continues from reviewing Secure your Wallet
+        And the User is on the PIN creation screen
         When the User enters the first PIN as "{pin}"
         And the User re-enters the PIN as "{pin}"
         And the User selects Create PIN

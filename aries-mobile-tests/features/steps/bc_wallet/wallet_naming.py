@@ -34,6 +34,7 @@ def an_existing_wallet_user(context, actor=None):
     context.execute_steps(f'''
         Given the User has completed on-boarding
         And the User has accepted the Terms and Conditions
+        And the User continues from reviewing Secure your Wallet
         And a PIN has been set up with "{pin}"
     ''')
     if biometrics == 'on':
