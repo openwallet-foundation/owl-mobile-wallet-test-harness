@@ -25,7 +25,7 @@ class CredentialDetailsPage(BasePage):
     def select_back(self):
         if self.on_this_page():
 
-            if self.driver.desired_capabilities['platformName'] == 'Android':
+            if self.current_platform == 'Android':
                 self.find_by(self.back_locator_android).click()
             else:
                 self.find_by(self.back_locator_ios).click()
