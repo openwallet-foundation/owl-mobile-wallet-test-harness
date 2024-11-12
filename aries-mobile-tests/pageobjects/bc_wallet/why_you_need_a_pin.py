@@ -12,10 +12,15 @@ class WhyYouNeedAPINPage(BasePage):
     continue_locator = (
         AppiumBy.ID, "com.ariesbifold:id/ContinueCreatePIN")
 
-    def on_this_page(self):     
+    def on_this_page(self):   
+        if self.current_platform == "Android":
+            return super().on_this_page(self.on_this_page_text_locator)  
         return super().on_this_page(self.on_this_page_locator) 
 
     def select_continue(self):
+        # Remove the platform check when BC Wallet bug 2264 is fixed
+        if self.current_platform == "Android":
+            self.scroll_to_bottom()
         self.find_by(self.continue_locator).click()
 
         # return the wallet biometrics page
