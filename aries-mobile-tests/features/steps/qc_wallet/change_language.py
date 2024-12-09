@@ -15,8 +15,11 @@ from agent_controller_client import (
 from agent_test_utils import get_qr_code_from_invitation
 from behave import given, then, when
 from pageobjects.bc_wallet.biometrics import BiometricsPage
-from pageobjects.bc_wallet.home import HomePage
 from pageobjects.bc_wallet.pin import PINPage
+from pageobjects.qc_wallet.home import HomePageQC
+from pageobjects.qc_wallet.settings import SettingsPageQC
+from pageobjects.qc_wallet.languageform import LanguageFormPageQC
+
 
 # import Page Objects needed
 # from pageobjects.bc_wallet.languagesplash import LanguageSplashPage
@@ -41,33 +44,27 @@ def initial_lang_step_impl(context, language):
     assert language == language_from_capabitilies
 
 
-@given("the holder is in the language settings")
-def lang_settings_step_impl(context):
-    context.execute_steps(
-        f"""
-            Given the User has skipped on-boarding
-            And the User has accepted the Terms and Conditions
-            And a PIN has been set up with "369369"
-            And the Holder has selected to use PIN only to unlock BC Wallet
-            Then they land on the Home screen
-        """
-    )
+@when("the holder open the Application settings page")
+def change_lang_step_impl(context):
+    context.thisHomePageQC = HomePageQC(context.driver)
+    context.thisSettingsPageQC= context.thisHomePageQC.select_settings()
+
+
 
 
 @given('they have selected "{different_language}"')
 @when('the holder changes app language to "{different_language}"')
 def change_lang_step_impl(context, different_language):
-    if hasattr(context, "thisHomePage") == False:
-        context.thisHomePage = HomePage(context.driver)
-
-    context.thisSettingsPage = context.thisHomePage.select_settings()
-    context.thisLanguageFormPage = context.thisSettingsPage.select_language()
-    context.thisLanguageFormPage.select_language(different_language)
+    if hasattr(context, "thisSettingsPageQC") == False:
+        context.thisSettingsPageQC = SettingsPageQC(context.driver)
+    # context.thisSettingsPageQC = SettingsPageQC(context.driver)
+    context.thisLanguageFormPageQC = context.thisSettingsPageQC.select_language()
+    context.thisLanguageFormPageQC.select_language(different_language)
 
 
 @then('the language changes automatically to "{different_language}"')
 def confirm_lang_change_step_impl(context, different_language):
-    assert context.thisLanguageFormPage.get_title(different_language)
+    assert context.thisLanguageFormPageQC.get_current_language() == different_language
 
 
 @then('the language is set to "{different_language}"')

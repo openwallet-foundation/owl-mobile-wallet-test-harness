@@ -1,13 +1,13 @@
 {
   "capabilities": {
-    "appPackage": "ca.qc.gouv.portefeuillemobileqc",
+    "appium:appPackage": "ca.qc.gouv.portefeuillemobileqc",
     "appium:appActivity": "ca.qc.gouv.portefeuillemobileqc.MainActivity",
-    "platformName": "Android",
-    "app": "/Users/filipe/Projet/portefeuille-mobile-qc/app/android/app/build/outputs/bundle/release/app-release.aab",
-    "deviceName": "emulator-5554",
-    "avd": "Pixel_4_API_31",
-    "automationName": "UiAutomator2",
-    "autoGrantPermissions": true,
-    "fullReset": true
+    "appium:platformName": "Android",
+    "appium:app": "/Users/ghadabnsaad/app-release.apk",
+    "appium:deviceName": "emulator-5554",
+    "appium:avd": "Pixel_9_Pro_XL_API_35",
+    "appium:automationName": "UiAutomator2",
+    "appium:autoGrantPermissions": true,
+    "appium:fullReset": true
   }
 }

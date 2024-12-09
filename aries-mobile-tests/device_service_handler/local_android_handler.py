@@ -25,6 +25,12 @@ class LocalAndroidHandler(DeviceServiceHandlerInterface):
         else:
             self._url = command_executor_url
 
+    def _set_appium_options_from_desired_capabilities(self):
+        """set the appium options from the desired capabilities"""
+        # self._options = webdriver.AppiumOptions()
+        for key in self._desired_capabilities:
+            self._options.set_capability(key, self._desired_capabilities[key])
+
     def set_desired_capabilities(self, config: dict):
         """set extra capabilities above what was in the config file"""
         # Handle common options and capabilities
@@ -33,6 +39,8 @@ class LocalAndroidHandler(DeviceServiceHandlerInterface):
         self._desired_capabilities = self._CONFIG['capabilities']
         print("\n\nDesired Capabilities passed to Appium:")
         print(json.dumps(self._desired_capabilities, indent=4))
+        self._set_appium_options_from_desired_capabilities()
+
 
     def inject_qrcode(self, image):
         """pass the qrcode image to the device in a way that allows for the device to scan it when the camera opens"""

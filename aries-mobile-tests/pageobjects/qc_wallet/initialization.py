@@ -11,7 +11,7 @@ class InitializationPageQC(InitializationPage):
     def __init__(self, driver):
         super().__init__(driver)
 
-    def wait_until_initialized(self, timeout=100, retry_attempts=3):
+    def wait_until_initialized(self, timeout=100, retry_attempts=1):
         logger = logging.getLogger(__name__)
 
         for i in range(retry_attempts):

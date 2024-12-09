@@ -49,7 +49,7 @@ class InitializationPage(BasePage):
             return False
 
 
-    def wait_until_initialized(self, timeout=100, retry_attempts=3):
+    def wait_until_initialized(self, timeout=100, retry_attempts=1):
         logger = logging.getLogger(__name__)
 
         for i in range(retry_attempts):

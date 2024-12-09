@@ -16,7 +16,7 @@ class SettingsPage(BasePage):
     """Settings page object"""
 
     # Locators
-    on_this_page_text_locator = "App Settings"
+    on_this_page_text_locator = "Application Settings"
     on_this_page_locator = (AppiumBy.NAME, "App Settings")
     back_locator = (AppiumBy.ID, "com.ariesbifold:id/Back")
     contacts_locator = (AppiumBy.ID, "com.ariesbifold:id/Contacts")
