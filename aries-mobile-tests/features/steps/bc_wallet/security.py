@@ -44,8 +44,6 @@ def step_impl(context, pin):
     # assert pin == context.thisPINSetupPage.get_pin()
 
 
-# @when("the User re-enters the PIN as {pin}")
-# @then("the User re-enters the PIN as {pin}")
 @then('the User re-enters the PIN as "{pin}"')
 @when('the User re-enters the PIN as "{pin}"')
 def step_impl(context, pin):
