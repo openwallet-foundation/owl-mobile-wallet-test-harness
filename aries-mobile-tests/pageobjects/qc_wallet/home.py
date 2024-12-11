@@ -19,11 +19,11 @@ class HomePageQC(HomePage):
     on_this_page_locator = (AppiumBy.NAME, "Home")
 
     # Modals and Alerts for Home page
-    welcome_to_bc_wallet_modal = WelcomeToQCWalletModal
+    welcome_to_qc_wallet_modal = WelcomeToQCWalletModal
 
     def __init__(self, driver):
         super().__init__(driver)
-        self.welcome_to_bc_wallet_modal = WelcomeToQCWalletModal(driver)
+        self.welcome_to_qc_wallet_modal = WelcomeToQCWalletModal(driver)
 
     def on_this_page(self):
         language = self.get_app_language()
@@ -40,3 +40,9 @@ class HomePageQC(HomePage):
             return SettingsPageQC(self.driver)
         else:
             raise Exception(f"App not on the {type(self)} page")
+
+    def select_dismiss(self):
+        self.find_by(
+            self.dismiss_button_locator,
+            wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE,
+        ).click()

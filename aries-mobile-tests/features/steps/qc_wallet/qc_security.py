@@ -1,9 +1,12 @@
 from time import sleep, time
-
+from behave import given, when, then
 from bc_wallet.security import *
 from override_steps import overrides
 from pageobjects.qc_wallet.biometrics import BiometricsPageQC
 from pageobjects.qc_wallet.pin import PINPageQC
+from pageobjects.qc_wallet.pinsetup import PINSetupPageQC
+from pageobjects.qc_wallet.home import HomePageQC
+from pageobjects.qc_wallet.initialization import InitializationPageQC
 
 
 @overrides("the User allows notifications", "step")
@@ -87,26 +90,29 @@ def user_enter_their_pin_step_impl(context, pin):
 
 @then('they select visibility toggle on the first PIN as "{pin}"')
 def visibility_toggle_first_pin_step_impl(context, pin):
-    assert pin == context.thisPINSetupPage.get_pin()
+    assert pin == context.thisPINSetupPageQC.get_pin()
 
 
 @then('they select visibility toggle on the second PIN as "{pin}"')
 def visibility_toggle_second_pin_step_impl(context, pin):
-    assert pin == context.thisPINSetupPage.get_second_pin()
+    assert pin == context.thisPINSetupPageQC.get_second_pin()
 
 
 @overrides("the User selects Create PIN", "when")
 @overrides("the User selects Create PIN", "then")
 def create_pin_step_impl(context):
-    if "TCL_PNG_ACC_002.1" in context.tags or "T005-Security" in context.tags:
-        context.thisPINSetupPage.create_pin_throw_error()
-    else:
-        context.thisOnboardingBiometricsPage = context.thisPINSetupPage.create_pin()
-        context.thisOnboardingBiometricsPage.on_this_page()
-    # next_page = context.thisPINSetupPage.create_pin()
-    # if type(next_page) == OnboardingBiometricsPage:
-    #     context.thisOnboardingBiometricsPage = next_page
+
+        context.thisPINSetupPageQC.create_pin()
+
+    # if "TCL_PNG_ACC_002.1" in context.tags or "T005-Security" in context.tags:
+    #     context.thisPINSetupPage.create_pin_throw_error()
+    # else:
+    #     context.thisOnboardingBiometricsPage = context.thisPINSetupPage.create_pin()
     #     context.thisOnboardingBiometricsPage.on_this_page()
+    # # next_page = context.thisPINSetupPage.create_pin()
+    # # if type(next_page) == OnboardingBiometricsPage:
+    # #     context.thisOnboardingBiometricsPage = next_page
+    # #     context.thisOnboardingBiometricsPage.on_this_page()
 
 
 @then("they select ok on PINs error")
@@ -205,3 +211,87 @@ def lock_app_impl(context):
         for row in context.table:
             lock_message = row["lock_message"]
         assert context.thisPINPage.get_error() == lock_message
+
+
+@overrides("the User has accepted the Terms and Conditions", "given")
+def step_impl(context):
+    context.execute_steps(
+        f"""
+        Given the User is on the Terms and Conditions screen
+        And the users accepts the Terms and Conditions
+        And the user clicks continue
+    """
+    )
+
+@overrides("the User enters the first PIN as {pin}", "when")
+@overrides('the User enters the first PIN as "{pin}"', "when")
+def step_impl(context, pin):
+    context.thisPINSetupPageQC.enter_pin(pin)
+    # TODO remove comment here when Test IDs are on the visibility toggle
+    # assert pin == context.thisPINSetupPage.get_pin()
+
+@overrides("the User re-enters the PIN as {pin}", "when")
+@overrides("the User re-enters the PIN as {pin}", "then")
+@overrides('the User re-enters the PIN as "{pin}"', "then")
+@overrides('the User re-enters the PIN as "{pin}"', "when")
+def step_impl(context, pin):
+    context.thisPINSetupPageQC.enter_second_pin(pin)
+    # TODO remove comment here when Test IDs are on the visibility toggle
+    # assert pin == context.thisPINSetupPage.get_second_pin()
+
+
+@then("the User transitions to biometric screen")
+def step_impl(context):
+    context.thisBiometricsPageQC = BiometricsPageQC(context.driver)
+    assert context.thisBiometricsPageQC.on_this_page()
+
+
+@overrides("they are informed of {pin_error}", "then")
+def step_impl(context, pin_error):
+    actual_error = context.thisPINSetupPageQC.get_error()
+    print(f"Expected: {pin_error}, Actual: {actual_error}")
+    assert actual_error == pin_error
+
+    # if hasattr(context, "thisPINPage") == True:
+    #     assert context.thisPINPage.get_error() == pin_error
+    # else:
+    #     assert context.thisPINSetupPageQC.get_error() == pin_error
+
+@when("the user click continue on the biometrics screen") 
+def step_impl(context):
+    context.thisBiometricsPageQC.select_continue()
+
+@when("the user enable using biometrics to unlock wallet")
+def step_impl(context):
+    context.thisBiometricsPageQC = BiometricsPageQC(context.driver)
+    assert context.thisBiometricsPageQC.select_biometrics()
+
+@then("the user land on the Home screen")
+def step_impl(context):
+    context.thisInitializationPageQC = InitializationPageQC(context.driver)
+    context.thisHomePageQC = context.thisInitializationPageQC.wait_until_initialized()
+    # assert context.thisHomePageQC.on_this_page()
+    if context.thisHomePageQC.welcome_to_qc_wallet_modal.is_displayed():
+        print("MODAL ON HOME PAGE")
+        context.thisHomePageQC.welcome_to_qc_wallet_modal.select_dismiss()
+        assert True
+    else:
+        assert context.thisHomePageQC.on_this_page()
+    context.thisNavBar = NavBar(context.driver)
+    if context.thisHomePageQC.on_this_page() == False:
+        sleep(5)
+    assert context.thisHomePageQC.on_this_page()
+
+
+@overrides("the user has setup thier Wallet", "given")
+@overrides("the Holder has setup thier Wallet", "given")
+def lang_settings_step_impl(context):
+    context.execute_steps(
+        f"""
+            Given the User has accepted the Terms and Conditions
+            And a PIN has been set up with "369369"
+            Then the User transitions to biometric screen
+            When the user click continue on the biometrics screen 
+            Then the user land on the Home screen
+        """
+    )

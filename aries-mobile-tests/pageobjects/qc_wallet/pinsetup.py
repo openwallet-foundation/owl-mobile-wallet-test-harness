@@ -3,6 +3,7 @@ from appium.webdriver.common.touch_action import TouchAction
 from pageobjects.basepage import WaitCondition
 from pageobjects.bc_wallet.pinsetup import PINSetupPage
 from pageobjects.qc_wallet.onboarding_biometrics import OnboardingBiometricsPageQC
+import logging
 
 
 class PINSetupPageQC(PINSetupPage):
@@ -17,27 +18,32 @@ class PINSetupPageQC(PINSetupPage):
         AppiumBy.ID,
         "com.ariesbifold:id/Show",
     )
+    create_pin_button_tid_locator = (AppiumBy.ID, "com.ariesbifold:id/CreatePIN")
+    modal_message_body_locator = (AppiumBy.ID, "com.ariesbifold:id/InlineErrorText")
+    error_message_pin_locator = (AppiumBy.XPATH, "//*[@resource-id='com.ariesbifold:id/InlineErrorText']")
+
 
     def __init__(self, driver):
         super().__init__(driver)
 
-    # def enter_pin(self, pin):
-    #     first_pin = self.find_by(self.first_pin_locator)
-    #     if self.on_this_page():
-    #         first_pin.click()
-    #         first_pin.send_keys(pin)
-    #         return True
-    #     else:
-    #         raise Exception(f"App not on the {type(self)} page")
-    #
-    # def enter_second_pin(self, pin):
-    #     second_pin = self.find_by(self.second_pin_locator)
-    #     if self.on_this_page():
-    #         second_pin.click()
-    #         second_pin.send_keys(pin)
-    #         return True
-    #     else:
-    #         raise Exception(f"App not on the {type(self)} page")
+    def enter_pin(self, pin):
+        first_pin = self.find_by(self.first_pin_locator)
+        if self.on_this_page():
+            first_pin.click()
+            first_pin.send_keys(pin)
+            return True
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+    
+    def enter_second_pin(self, pin):
+        second_pin = self.find_by(self.second_pin_locator)
+        if self.on_this_page():
+            second_pin.click()
+            second_pin.send_keys(pin)
+            return True
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+
 
     def get_pin(self):
         if self.on_this_page():
@@ -73,7 +79,19 @@ class PINSetupPageQC(PINSetupPage):
             raise Exception(f"App not on the {type(self)} page")
 
     def create_pin(self):
-        self.find_by(self.create_pin_button_tid_locator).click()
+        if self.on_this_page():
+            el_visible = self.is_element_visible(self.create_pin_button_tid_locator)
+            timeout = 30
+            while not el_visible and timeout > 0:
+                self.swipe_down()
+                el_visible = self.is_element_visible(self.create_pin_button_tid_locator)
+                timeout -= 1
+            self.find_by(self.create_pin_button_tid_locator).click()
+            # Maybe should check if it is checked or let the test call is_accept_checked()?
+            # return a new page object? The Pin Setup page.
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+
 
         # return the wallet enable notifications page
         return OnboardingBiometricsPageQC(self.driver)
@@ -99,3 +117,10 @@ class PINSetupPageQC(PINSetupPage):
                 return False
         else:
             raise Exception(f"App not on the {type(self)} page")
+
+    def get_error(self):
+        # On Android the modal hides all the other PIN setup page elements, so we can't check on this page
+        # if self.on_this_page():        
+        return self.find_by(self.modal_message_body_locator).text
+        # else:
+        #     raise Exception(f"App not on the {type(self)} page")
