@@ -1,19 +1,15 @@
 {
   "capabilities": {
-    "lt:options": {
-      "w3c": true,
-      "deviceName": "iPhone.*",
-      "platformName": "iOS",
-      "build": "QCWallet-279-CredentialOffer-iOS-Filipe",
-      "name": "Sample Test iOS - Python",
-      "app": "lt://APP1016026231710168589867615",
-      "autoGrantPermissions": true,
-      "enableImageInjection": true,
-      "enableBiometricsAuthentication": true,
-      "media": "lt://MEDIA14a54efe064642f9a9cf39ab5d189751",
-      "isRealMobile": true,
-      "visual": true,
-      "video": true
-    }
+    "appium:appPackage": "ca.qc.gouv.portefeuillemobileqc",
+    "appium:appActivity": "ca.qc.gouv.portefeuillemobileqc.MainActivity",
+    "appium:platformName": "Android",
+    "appium:app": "/Users/ghadabnsaad/app-release.apk",
+    "appium:deviceName": "emulator-5554",
+    "appium:avd": "Pixel_9_Pro_XL_API_35",
+    "appium:automationName": "UiAutomator2",
+    "appium:autoGrantPermissions": true,
+    "appium:fullReset": true,
+    "platformName": "Android",
+    "app": "/Users/ghadabnsaad/app-release.apk"
   }
 }
