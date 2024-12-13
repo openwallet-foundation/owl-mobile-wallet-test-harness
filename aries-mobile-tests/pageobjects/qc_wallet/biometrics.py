@@ -13,10 +13,9 @@ class BiometricsPageQC(BiometricsPage):
     )
 
     on_this_page_text_locator = "Biometrics"
-    on_this_page_locator = (AppiumBy.XPATH, "//*[@text='Biometrics']")
     biometrics_toggle_locator = (AppiumBy.ID, "com.ariesbifold:id/ToggleBiometrics")
     continue_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Continue")
-    
+
 
     def on_this_page(self):     
        return super().on_this_page()
