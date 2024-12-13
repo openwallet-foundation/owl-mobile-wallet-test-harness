@@ -21,8 +21,3 @@ def step_impl(context, pin):
         And the User selects Create PIN
     """
     )
-
-@then("the user transitions to the Securing the wallet screen")
-def step_impl(context):
-        context.thisBiometricsPageQC = BiometricsPageQC(context.driver)
-        assert context.thisBiometricsPageQC.on_this_page()
