@@ -15,8 +15,6 @@
           "sessionCreationRetry": "3"
         }
       }
-    ],
-    "platformName": "",
-    "app": ""
+    ]
   }
 }
