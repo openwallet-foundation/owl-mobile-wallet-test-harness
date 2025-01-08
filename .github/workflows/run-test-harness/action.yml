@@ -66,7 +66,7 @@ runs:
       env:
         NO_TTY: "1"
     - name: archive screenshots
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-screenshots_from_run_action
         path: ./*.png
