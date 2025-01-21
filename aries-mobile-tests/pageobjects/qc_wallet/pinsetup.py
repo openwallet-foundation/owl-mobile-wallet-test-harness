@@ -20,8 +20,6 @@ class PINSetupPageQC(PINSetupPage):
     )
     create_pin_button_tid_locator = (AppiumBy.ID, "com.ariesbifold:id/CreatePIN")
     modal_message_body_locator = (AppiumBy.ID, "com.ariesbifold:id/InlineErrorText")
-    error_message_pin_locator = (AppiumBy.XPATH, "//*[@resource-id='com.ariesbifold:id/InlineErrorText']")
-
 
     def __init__(self, driver):
         super().__init__(driver)
