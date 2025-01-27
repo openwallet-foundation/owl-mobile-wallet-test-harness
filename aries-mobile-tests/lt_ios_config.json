@@ -6,7 +6,7 @@
       "platformName": "iOS",
       "build": "QCWallet",
       "name": "QCTests-iOS-Python",
-      "app": "lt://APP10160522181733933441604671",
+      "app": "lt://APP10160591071737476659841587",
       "autoGrantPermissions": true,
       "enableImageInjection": true,
       "enableBiometricsAuthentication": true,

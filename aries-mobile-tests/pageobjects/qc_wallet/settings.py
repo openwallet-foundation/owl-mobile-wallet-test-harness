@@ -1,11 +1,14 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.bc_wallet.settings import SettingsPage
 from pageobjects.qc_wallet.change_pin import ChangePINPageQC
-
+from pageobjects.qc_wallet.languageform import LanguageFormPageQC
 
 class SettingsPageQC(SettingsPage):
     """Settings page object"""
 
+    # Locators
+    display_language_button = (AppiumBy.ID, "com.ariesbifold:id/Language")
+                        
     def on_this_page(self):
         language = self.get_app_language()
         if language == "French":
@@ -27,3 +30,10 @@ class SettingsPageQC(SettingsPage):
         return HomePageQC(self.driver)
         # else:
         #     raise Exception(f"App not on the {type(self)} page")
+
+    def select_language(self):
+        if self.on_this_page():
+            self.find_by(self.display_language_button).click()
+            return LanguageFormPageQC(self.driver)
+        else:
+            raise Exception(f"App not on the {type(self)} page")

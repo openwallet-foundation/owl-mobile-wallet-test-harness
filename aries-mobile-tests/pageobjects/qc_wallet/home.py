@@ -9,6 +9,8 @@ from pageobjects.bc_wallet.feedback import FeedbackPage
 from pageobjects.bc_wallet.home import HomePage
 from pageobjects.qc_wallet.settings import SettingsPageQC
 from pageobjects.qc_wallet.welcome_to_qc_wallet import WelcomeToQCWalletModal
+from pageobjects.qc_wallet.moreoptions import MoreOptionsPageQC
+
 
 
 class HomePageQC(HomePage):
@@ -17,6 +19,9 @@ class HomePageQC(HomePage):
     # Locators
     on_this_page_text_locator = "Home"
     on_this_page_locator = (AppiumBy.NAME, "Home")
+    settings_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
+    moreOptions_locator = (AppiumBy.ID, "com.ariesbifold:id/More")
+
 
     # Modals and Alerts for Home page
     welcome_to_qc_wallet_modal = WelcomeToQCWalletModal
@@ -46,3 +51,10 @@ class HomePageQC(HomePage):
             self.dismiss_button_locator,
             wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE,
         ).click()
+
+    def select_more(self):
+        if self.on_this_page():
+            self.find_by(self.moreOptions_locator).click()
+            return MoreOptionsPageQC(self.driver)
+        else:
+            raise Exception(f"App not on the {type(self)} page")
