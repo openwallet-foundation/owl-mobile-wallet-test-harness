@@ -20,7 +20,7 @@ class HomePageQC(HomePage):
     on_this_page_text_locator = "Home"
     on_this_page_locator = (AppiumBy.NAME, "Home")
     settings_locator = (AppiumBy.ID, "com.ariesbifold:id/Settings")
-    moreOptions_locator = (AppiumBy.ID, "com.ariesbifold:id/More")
+    moreOptions_locator = (AppiumBy.ID, "com.ariesbifold:id/TabStack.OptionsPlus")
 
 
     # Modals and Alerts for Home page

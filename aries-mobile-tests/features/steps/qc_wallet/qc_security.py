@@ -285,6 +285,7 @@ def step_impl(context):
 
 @overrides("the user has setup thier Wallet", "given")
 @overrides("the Holder has setup thier Wallet", "given")
+@given("the Holder has setup thier Wallet and land on the Home screen")
 def lang_settings_step_impl(context):
     context.execute_steps(
         f"""
