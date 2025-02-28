@@ -4,7 +4,7 @@
             {
                 "platformName": "Android",
                 "appium:options": {
-                    "app": "storage:filename=BCWallet-1459.aab",
+                    "app": "storage:filename=BCWallet-2175.aab",
                     "autoGrantPermissions": true,
                     "automationName": "UiAutomator2"
                 },
