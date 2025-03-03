@@ -15,6 +15,7 @@ from pageobjects.bc_wallet.onboarding_a_different_smart_wallet import Onboarding
 from pageobjects.bc_wallet.onboarding_private_confidential import OnboardingPrivateConfidentialPage
 from pageobjects.bc_wallet.onboarding_digital_credentials import OnboardingDigitalCredentialsPage
 from pageobjects.bc_wallet.termsandconditions import TermsAndConditionsPage
+from pageobjects.bc_wallet.pin_explainer import PinExplainerPage
 
 
 @given('the new user has opened the app for the first time')
@@ -75,6 +76,21 @@ def step_impl(context):
 def step_impl(context):
     context.thisTermsAndConditionsPage = context.thisOnboardingPrivateConfidentialPage.select_get_started()
 
+@then('they can select Accept')
+def step_impl(context):
+    context.thisTermsAndConditionsPage.select_accept()
+    context.thisPINExplainerPage = PinExplainerPage(context.driver) #TODO: need to add pin explainer page to the context, probably a better spot for this I'm sure
+@then('they can select Continue')
+def step_impl(context):
+    context.thisPINSetupPage = context.thisPINExplainerPage.select_continue()
+
+@then('are brought to the PIN explainer screen')
+def step_impl(context):
+    assert context.thisPINExplainerPage.on_this_page()
+
+@then('are brought to the Create PIN screen')
+def step_impl(context):
+    assert context.thisPINSetupPage.on_this_page()
 
 @then('are brought to the Terms and Conditions screen')
 def step_impl(context):

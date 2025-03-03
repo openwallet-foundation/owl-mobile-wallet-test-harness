@@ -36,8 +36,8 @@ Feature: Onboarding
     And are brought to the Terms and Conditions screen
     Then they can select Accept
     And are brought to the PIN explainer screen
-    # Then they can select Continue
-    # And are brought to the Create PIN screen
+    Then they can select Continue
+    And are brought to the Create PIN screen
     # When the User enters the first PIN as "369369"
     # And the User re-enters the PIN as "369369"
     # And the User selects Create PIN
