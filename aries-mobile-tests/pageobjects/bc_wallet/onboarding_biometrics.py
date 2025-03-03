@@ -26,7 +26,7 @@ class OnboardingBiometricsPage(BasePage):
             return True
         else:
             raise Exception(f"App not on the {type(self)} page")
-
+    
 
     def select_continue(self):
         if self.on_this_page():

@@ -20,30 +20,16 @@ Feature: Onboarding
     And they are brought to the Private and confidential screen
     Then they can select Get started
     And are brought to the Terms and Conditions screen
-
-  @T002-Onboarding @AcceptanceTest
-  Scenario: New User reviews all onboarding screens
-    Given the new user has opened the app for the first time
-    And the user is on the Is this app for you screen
-    When the user selects confirms that the app is for them
-    And they select Continue
-    And they are brought to the A different smart wallet screen
-    And the user selects Next
-    And they are brought to the Digital credentials screen
-    And the user selects Next
-    And they are brought to the Private and confidential screen
-    Then they can select Get started
-    And are brought to the Terms and Conditions screen
     Then they can select Accept
     And are brought to the PIN explainer screen
     Then they can select Continue
     And are brought to the Create PIN screen
-    # When the User enters the first PIN as "369369"
-    # And the User re-enters the PIN as "369369"
-    # And the User selects Create PIN
-    # And the User selects to use Biometrics
-    # And the User allows notifications
-    # Then they have access to the app
+    When the User enters the first PIN as "369369"
+    And the User re-enters the PIN as "369369"
+    And the User selects Create PIN
+    And the User selects to use Biometrics
+    And the User allows notifications
+    Then they have access to the app
 
   # @T002-Onboarding @AcceptanceTest @depricated_nov_7_2023
   # Scenario Outline: New User skips onboarding screens

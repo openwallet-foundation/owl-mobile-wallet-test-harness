@@ -26,7 +26,7 @@
       },
       "args": [
         "${file}",
-        "--tags=@T002-Onboarding",
+        "--tags=@T001-Onboarding",
         "-k",
         "-D",
         "Issuer=AATH;http://acme_agent:9020",

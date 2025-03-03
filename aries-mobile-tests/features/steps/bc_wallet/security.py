@@ -58,6 +58,7 @@ def step_impl(context):
 def step_enable_notifications(context):
     assert context.thisEnableNotificationsPage.on_this_page()
     context.thisInitializationPage = context.thisEnableNotificationsPage.select_continue()
+    context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     #context.thisOnboardingBiometricsPage = context.thisEnableNotificationsPage.select_continue()
     # Capabilities are setup to automatically accept system alerts.
     #context.thisEnableNotificationsSystemModal = context.thisEnableNotificationsPage.select_continue()
@@ -70,11 +71,13 @@ def step_enable_notifications(context):
     context.thisEnableNotificationsSystemModal = context.thisEnableNotificationsPage.select_continue()
     assert context.thisEnableNotificationsSystemModal.on_this_page()
     context.thisInitializationPage = context.thisEnableNotificationsSystemModal.select_dont_allow()
+    context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
 
+#sauce labs does not support 
 @when('the User selects to use Biometrics')
 def step_impl(context):
     assert context.thisOnboardingBiometricsPage.on_this_page()
-    assert context.thisOnboardingBiometricsPage.select_biometrics()
+    # assert context.thisOnboardingBiometricsPage.select_biometrics()
     #context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     context.thisEnableNotificationsPage = context.thisOnboardingBiometricsPage.select_continue()
     # Not sure we need this next line since I don't think the app asks to authenticate when you select to use biometrics.
