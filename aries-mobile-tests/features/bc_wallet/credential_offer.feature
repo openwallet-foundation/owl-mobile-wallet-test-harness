@@ -13,7 +13,7 @@ Feature: Offer a Credential
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       When the Holder receives a Non-Revocable credential offer
       And the holder opens the credential offer
@@ -29,7 +29,7 @@ Feature: Offer a Credential
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the user has a credential offer
       When they select Accept
@@ -46,7 +46,7 @@ Feature: Offer a Credential
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the user has a credential offer of <credential>
       When they select Accept
@@ -68,7 +68,7 @@ Feature: Offer a Credential
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the user has a credential offer
       When the holder opens the credential offer
@@ -113,7 +113,7 @@ Feature: Offer a Credential
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the user has existing credentials
       And the user has a credential offer
@@ -130,7 +130,7 @@ Feature: Offer a Credential
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       When the Holder receives a Non-Revocable credential offer
       And it takes longer than expected
@@ -148,7 +148,7 @@ Feature: Offer a Credential
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
          | issuer_agent_type | credential_name                           |

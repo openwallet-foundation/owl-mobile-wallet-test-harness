@@ -13,7 +13,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
          | issuer_agent_type | credential_name                           |
@@ -35,7 +35,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
          | issuer_agent_type | credential_name                           |
@@ -55,7 +55,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name |
@@ -79,7 +79,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                        | revocable | issuer_agent_type | credential_name    |
          | cred_data_drivers_license_sp_char | True      | AATHIssuer        | Drivers License 😀 |
@@ -100,7 +100,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
@@ -122,7 +122,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
@@ -146,7 +146,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
@@ -171,7 +171,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
@@ -196,7 +196,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name |
@@ -222,7 +222,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
@@ -295,7 +295,7 @@ Feature: Proof
    @T010.1-Proof @normal @MultiCredProof @AcceptanceTest @Story_614
    Scenario: Holder accepts a proof request with multiple credentials
       Given the Holder has setup thier wallet
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
          | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
@@ -315,7 +315,7 @@ Feature: Proof
    @T010.2-Proof @normal @MultiCredProof @AcceptanceTest @Story_614
    Scenario: Holder declines a proof request with multiple credentials
       Given the Holder has setup thier wallet
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
          | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
@@ -332,7 +332,7 @@ Feature: Proof
    @T010.3-Proof @normal @MultiCredProof @AcceptanceTest @Story_614 @wip
    Scenario: Holder accepts a proof request with multiple credentials, however one is revoked
       Given the Holder has setup thier wallet
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
          | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
@@ -353,7 +353,7 @@ Feature: Proof
    @T011.1-Proof @normal @RevocationNotification @AcceptanceTest @Story_63
    Scenario: Holder is notified that their credential has been revoked and is acknowledged
       Given the Holder has setup thier wallet
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And that the holder has a revocable credential stored in the wallet
          | credential                | revocable | issuer_agent_type | credential_name |
          | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
@@ -372,7 +372,7 @@ Feature: Proof
    @T011.2-Proof @normal @RevocationNotification @AcceptanceTest @Story_63
    Scenario: Holder of a dismissed revoked notification reviews revocation status again
       Given the Holder has setup thier wallet
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And that the holder has a revocable credential stored in the wallet
          | credential                | revocable | issuer_agent_type | credential_name |
          | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
@@ -389,7 +389,7 @@ Feature: Proof
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
-      And the Holder has selected to use biometrics to unlock BC Wallet
+      And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name |
