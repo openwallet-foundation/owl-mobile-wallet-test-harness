@@ -7,6 +7,7 @@ import requests
 
 class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
 
+  # credentials need to be setup in the traction instance that is running
   def __init__(self, endpoint):
         self.endpoint = endpoint
         self.token = self._fetch_token()
@@ -33,11 +34,31 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
     invitation_response = requests.post(oob_invite_url, json=payload, headers={"Authorization": f"Bearer {self.token}", "Content-type": "application/json"}).json()
     qr_code = get_qr_code_from_invitation(invitation_response,print_qr_code=print_qrcode, save_qr_code=save_qrcode, qr_code_border=20)
     self.invitation_json = invitation_response
+    self._oob = True
     return qr_code
 
   def connected(self):
     print("Check if is connected")
-    return True
+    connection_id = ''
+    if self._oob == True:
+      # fetch connection ID from connections
+      invite_id = self.invitation_json['invi_msg_id']
+      connection_fetch_rule = f"{self.endpoint}/connections?invitation_msg_id={invite_id}&limit=100&offset=0"
+      connection_response = requests.get(connection_fetch_rule, headers={"Authorization": f"Bearer {self.token}", "Content-type": "application/json"})
+      results = connection_response.json()
+
+      if len(results['results']) > 0: 
+        connection_id = results['results'][0]['connection_id']
+      else:
+         raise Exception("OOB Connection record is not found")
+
+    else:
+       connection_id = self.invitation_json['connection_id']
+
+    connection_ping_url = f"{self.endpoint}/connections/{connection_id}/send_ping"
+    ping_response = requests.post(connection_ping_url, json={}, headers={"Authorization": f"Bearer {self.token}", "Content-type": "application/json"})
+
+    return ping_response.status_code == 200
 
   def revoke_credential():
     pass

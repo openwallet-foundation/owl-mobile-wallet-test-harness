@@ -50,7 +50,6 @@ def step_impl(context, agent):
 
     if agent == "issuer":
         qrimage = context.issuer.create_invitation(print_qrcode=context.print_qr_code_on_creation, save_qrcode=context.save_qr_code_on_creation, qr_code_border=qr_code_border)
-        print(qrimage)
     elif agent == "verifier":
         qrimage = context.verifier.create_invitation(print_qrcode=context.print_qr_code_on_creation, save_qrcode=context.save_qr_code_on_creation, qr_code_border=qr_code_border)
     else:
