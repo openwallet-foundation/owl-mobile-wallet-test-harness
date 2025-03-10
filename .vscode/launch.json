@@ -26,12 +26,12 @@
       },
       "args": [
         "${file}",
-        "--tags=@T001-Onboarding",
+        "--tags=@T001-Connect",
         "-k",
         "-D",
-        "Issuer=AATH;http://acme_agent:9020",
+        "Issuer=Traction;https://traction-sandbox-tenant-proxy.apps.silver.devops.gov.bc.ca",
         "-D",
-        "Verifier=AATH;http://bob_agent:9030"
+        "Verifier=AATH;https://traction-sandbox-tenant-proxy.apps.silver.devops.gov.bc.ca"
       ]
     },
     {
@@ -49,7 +49,7 @@
       },
       "args": [
         "${file}",
-        "--tags=@T002-Proof",
+        "--tags=@T001-Onboarding",
         "-k",
         "-D",
         "Issuer=AATH;http://host.docker.internal:9020",

@@ -6,7 +6,7 @@ Feature: Connections
 
 
    @T001-Connect @critical @AcceptanceTest
-   Scenario: Scan QR code to recieve a credential offer
+   Scenario: Scan QR code to establish a connection
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"

@@ -16,6 +16,7 @@ class AATHAgentInterface():
     def create_invitation_util(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
         """create an invitation and return the json back to the caller """
         self._oob = oob
+        print("__CREATE INVITATION UTIL__")
         if self._oob is True:
             data = {"use_public_did": False}
             (resp_status, resp_text) = agent_controller_POST(

@@ -80,6 +80,7 @@ def step_impl(context):
 def step_impl(context):
     context.thisTermsAndConditionsPage.select_accept()
     context.thisPINExplainerPage = PinExplainerPage(context.driver) #TODO: need to add pin explainer page to the context, probably a better spot for this I'm sure
+
 @then('they can select Continue')
 def step_impl(context):
     context.thisPINSetupPage = context.thisPINExplainerPage.select_continue()

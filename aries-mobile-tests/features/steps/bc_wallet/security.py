@@ -73,6 +73,12 @@ def step_enable_notifications(context):
     context.thisInitializationPage = context.thisEnableNotificationsSystemModal.select_dont_allow()
     context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
 
+@when('the User chooses to not use Biometrics')
+def step_impl(context):
+    assert context.thisOnboardingBiometricsPage.on_this_page()
+    context.thisEnableNotificationsPage = context.thisOnboardingBiometricsPage.select_continue()
+    pass
+
 #sauce labs does not support 
 @when('the User selects to use Biometrics')
 def step_impl(context):
@@ -106,6 +112,7 @@ def step_impl(context):
     if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
         context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
     assert context.thisHomePage.on_this_page()
+    # context.thisHomePage.dismiss_guide_modal()
 
     # set the environment to TEST instead of PROD which is default as of build 575
     # check to see what the current environment is set to. Order of presendence is, Environment Variable, Tag, default. 
@@ -135,10 +142,14 @@ def step_impl(context, env):
     assert context.thisHomePage.on_this_page()
 
 
-@given('the Holder has setup biometrics on thier device')
+@given('the Holder has opted out of biometrics to unlock BC Wallet')
 def step_impl(context):
-    # Assume already setup. TODO May need to actually do the setup here eventually.
-    pass
+    context.biometrics_choosen = False
+    context.execute_steps('''
+        When the User chooses to not use Biometrics
+        And the User allows notifications
+        Then they land on the Home screen
+    ''')
 
 @given('the Holder has selected to use biometrics to unlock BC Wallet')
 def step_impl(context):
