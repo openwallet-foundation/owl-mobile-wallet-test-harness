@@ -7,10 +7,18 @@ import requests
 
 class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
 
+  _schema: dict
+  _credential_definition: dict
+  _credential_json_dict: dict
+
   # credentials need to be setup in the traction instance that is running
   def __init__(self, endpoint):
-        self.endpoint = endpoint
-        self.token = self._fetch_token()
+    self.endpoint = endpoint
+    self.token = self._fetch_token()
+    self._schema = {}
+    self._credential_definition = {}
+    self._credential_json_dict = {}
+    super().__init__(endpoint)
   
   def get_issuer_type(self) -> str:
         """return the type of issuer as a string TractionIssuer"""
@@ -28,41 +36,92 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
       return token_response.json()["token"]
 
   def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
+    print("Create OOB invitation")
     # url configured with default values
     oob_invite_url = f"{self.endpoint}/out-of-band/create-invitation?auto_accept=true&create_unique_did=false&multi_use=false"
-    payload = {"accept":["didcomm/aip1","didcomm/aip2;env=rfc19"],"alias":"OnePlus_10","goal":"","goal_code":"","handshake_protocols":["https://didcomm.org/didexchange/1.0","https://didcomm.org/connections/1.0"],"my_label":"","protocol_version":"1.1","use_public_did":False}
+    payload = {"accept":["didcomm/aip1","didcomm/aip2;env=rfc19"],"alias":"Sauce Labs Device","goal":"","goal_code":"","handshake_protocols":["https://didcomm.org/didexchange/1.0","https://didcomm.org/connections/1.0"],"my_label":"","protocol_version":"1.1","use_public_did":False}
     invitation_response = requests.post(oob_invite_url, json=payload, headers={"Authorization": f"Bearer {self.token}", "Content-type": "application/json"}).json()
-    qr_code = get_qr_code_from_invitation(invitation_response,print_qr_code=print_qrcode, save_qr_code=save_qrcode, qr_code_border=20)
+    qr_code = get_qr_code_from_invitation(invitation_response,print_qr_code=print_qrcode, save_qr_code=save_qrcode, qr_code_border=qr_code_border)
     self.invitation_json = invitation_response
     self._oob = True
     return qr_code
 
   def connected(self):
-    print("Check if is connected")
+    print("Check connection status")
     connection_id = ''
     if self._oob == True:
+      print("OOB CONNECTION")
       # fetch connection ID from connections
       invite_id = self.invitation_json['invi_msg_id']
       connection_fetch_rule = f"{self.endpoint}/connections?invitation_msg_id={invite_id}&limit=100&offset=0"
       connection_response = requests.get(connection_fetch_rule, headers={"Authorization": f"Bearer {self.token}", "Content-type": "application/json"})
       results = connection_response.json()
-
-      if len(results['results']) > 0: 
+      if results['results']: 
         connection_id = results['results'][0]['connection_id']
       else:
          raise Exception("OOB Connection record is not found")
 
     else:
        connection_id = self.invitation_json['connection_id']
-
-    connection_ping_url = f"{self.endpoint}/connections/{connection_id}/send_ping"
+    self._connection_id = connection_id
+    connection_ping_url = f"{self.endpoint}/connections/{connection_id}/send-ping"
     ping_response = requests.post(connection_ping_url, json={}, headers={"Authorization": f"Bearer {self.token}", "Content-type": "application/json"})
-
     return ping_response.status_code == 200
 
   def revoke_credential():
     pass
 
-  def send_credential():
-    # self._fetch_token()
+  def send_credential(self, version=1):
     print("Traction: send credential")
+    issue_credential_url = f"{self.endpoint}/issue-credential-2.0/send"
+    if version == 1:
+       print("version 1 connection")
+    else:
+       print("version 2")
+    print(f"Connection ID: {self._connection_id}")
+    payload = {
+      "auto_remove": True,
+      "comment": "string",
+      "connection_id": self._connection_id,
+      "credential_preview": {
+        "@type": "issue-credential/2.0/credential-preview",
+        "attributes": [
+          {
+            "name": "first_name",
+            "value": "Sauce"
+          },
+          {
+            "name": "last_name",
+            "value": "Test"
+          }
+        ]
+      },
+      "filter": {
+        "indy": {
+          "cred_def_id": "EuP6arAFccaG5jhsVCDhay:3:CL:2716657:TestSchemaTag"
+        }
+      },
+      "trace": True,
+      "verification_method": "string"
+    }
+    self._credential_definition = {
+      #  "schema_id": self._schema["schema_id"],
+      #   "tag": self._schema["schema_name"],
+      "schema_id": "EuP6arAFccaG5jhsVCDhay",
+      "tag": "TestSchemaTag",
+    }
+    print("___")
+    print("___")
+    print("___")
+    print(payload)
+    print(f"Endpoint: {issue_credential_url}")
+    response = requests.post(issue_credential_url, json=payload, headers={"Authorization": f"Bearer {self.token}", "Content-type": "application/json"})
+    print(response.status_code)
+    json_response = response.json()
+    if response.status_code == 200:
+      print("OK IS THIS SETTING THING SUP PROPERLY")
+      self.credential_json = json_response
+      self._credential_json_dict[self._credential_definition["tag"]] = json_response
+    else:
+      raise Exception(f"There was an error sending credential to: {self._connection_id}")
+    

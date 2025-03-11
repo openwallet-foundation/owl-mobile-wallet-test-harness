@@ -142,8 +142,8 @@ def step_impl(context):
 def step_impl(context):
     assert context.thisCredentialOfferPage.on_this_page()
 
-    who, cred_type, attributes, values = get_expected_credential_detail(
-        context)
+    # who, cred_type, attributes, values = get_expected_credential_detail(
+    #     context)
     # TODO The below doesn't have locators in build 127. Calibrate in the future fixed build
     #actual_who, actual_cred_type, actual_attributes, actual_values = context.thisCredentialOfferPage.get_credential_details()
     #assert who in actual_who
@@ -271,6 +271,9 @@ def get_expected_credential_name(context):
 def get_expected_credential_detail(context):
     issuer_type_in_use = context.issuer.get_issuer_type()
     found = False
+    print("__ TABLE __")
+    print("__ __ ")
+    print(context.table)
     for row in context.table:
         if row["issuer_agent_type"] == issuer_type_in_use:
             who = row["who"]

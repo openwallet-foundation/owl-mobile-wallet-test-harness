@@ -81,11 +81,7 @@ def agent_controller_POST(url, topic, operation=None, id=None, data=None, wrap_d
             payload["id"] = id
     try:
         print(f"AGENT URL: {agent_url}")
-        print(payload)
-        temp = run_coroutine_with_kwargs(make_agent_controller_request, "POST", agent_url, data=payload)
-        print("__ AGENT CONTROLLER POST __")
-        print(temp)
-        (resp_status, resp_text) = temp
+        (resp_status, resp_text) = run_coroutine_with_kwargs(make_agent_controller_request, "POST", agent_url, data=payload)
         return (resp_status, resp_text)
     except Exception as e:
         print("__ AGENT CONTROLLER POST ERROR __")
