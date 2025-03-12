@@ -78,7 +78,7 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
        print("version 1 connection")
     else:
        print("version 2")
-    print(f"Connection ID: {self._connection_id}")
+
     payload = {
       "auto_remove": True,
       "comment": "string",
@@ -110,16 +110,10 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
       "schema_id": "EuP6arAFccaG5jhsVCDhay",
       "tag": "TestSchemaTag",
     }
-    print("___")
-    print("___")
-    print("___")
-    print(payload)
-    print(f"Endpoint: {issue_credential_url}")
+
     response = requests.post(issue_credential_url, json=payload, headers={"Authorization": f"Bearer {self.token}", "Content-type": "application/json"})
-    print(response.status_code)
     json_response = response.json()
     if response.status_code == 200:
-      print("OK IS THIS SETTING THING SUP PROPERLY")
       self.credential_json = json_response
       self._credential_json_dict[self._credential_definition["tag"]] = json_response
     else:

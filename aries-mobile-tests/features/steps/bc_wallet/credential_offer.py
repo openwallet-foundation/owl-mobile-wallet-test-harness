@@ -141,7 +141,6 @@ def step_impl(context):
 @then('they can view the contents of the credential')
 def step_impl(context):
     assert context.thisCredentialOfferPage.on_this_page()
-
     # who, cred_type, attributes, values = get_expected_credential_detail(
     #     context)
     # TODO The below doesn't have locators in build 127. Calibrate in the future fixed build
@@ -239,12 +238,17 @@ def step_impl(context):
 @then(u'the IDIM Person credential accepted is at the top of the list')
 @then(u'the credential accepted is at the top of the list')
 def step_impl(context, credential_name=None):
+    print(f"CREDENTIAL NAME: {credential_name}")
     # if the platform is iOS 15+ or android 
     if (context.driver.capabilities['platformName'] and context.driver.capabilities['platformVersion'] >= '15') or context.driver.capabilities['platformName'] == "Android":
         json_elems = context.thisCredentialsPage.get_credentials()
         if credential_name == None:
             credential_name = get_expected_credential_name(context)
-
+            print("____________")
+            print("____________")
+            print("____________")
+            print("____________")
+            print(credential_name)
         assert credential_name in json_elems["credentials"][0]["text"]
     else:
         if credential_name == None:
@@ -256,6 +260,8 @@ def get_expected_credential_name(context):
     issuer_type_in_use = context.issuer.get_issuer_type()
     found = False
     for row in context.table:
+        print(f"Row: {row}")
+        print(issuer_type_in_use)
         if row["issuer_agent_type"] == issuer_type_in_use:
             cred_name = row["credential_name"]
             found = True
