@@ -20,7 +20,7 @@ Feature: Offer a Credential
       Then holder is brought to the credential offer screen
       And they can view the contents of the credential
          | issuer_agent_type | who         | cred_type    | attributes           | values     |
-         | AATHIssuer        | aca-py.Acme | Test Schema. | first_name;last_name | Sauce;Test |
+         | TractionIssuer    | aca-py.Acme | Test Schema | first_name;last_name  | Sauce;Test |
    #| CANdyWebIssuer    | # CANdy - Unverified Person Issuer | Unverified Person | First Name;Last Name;Date of Birth;Street Address;Postal Code;City;Province;Country;Issued | Sheldon;Regular;1989-03-04;123 Perfect Street;A2V 3E1;Awesome City;BC;Canada;2022-03-14T23:27:20.133Z |
 
 

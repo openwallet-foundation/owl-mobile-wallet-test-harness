@@ -126,13 +126,9 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
   def revoke_credential():
     pass
 
-  def send_credential(self, version=1):
+  def send_credential(self, version=2):
     print("Traction: send credential")
     issue_credential_url = f"{self.endpoint}/issue-credential-2.0/send"
-    if version == 1:
-       print("version 1 connection")
-    else:
-       print("version 2")
 
     payload = {
       "auto_remove": True,
@@ -153,17 +149,16 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
       },
       "filter": {
         "indy": {
-          "cred_def_id": "EuP6arAFccaG5jhsVCDhay:3:CL:2716657:TestSchemaTag"
+          "cred_def_id": self._credential_definition["id"]
         }
       },
       "trace": True,
       "verification_method": "string"
     }
+
     self._credential_definition = {
-      #  "schema_id": self._schema["schema_id"],
-      #   "tag": self._schema["schema_name"],
-      "schema_id": "EuP6arAFccaG5jhsVCDhay",
-      "tag": "TestSchemaTag",
+       "schema_id": self._schema["id"],
+        "tag": self._schema["name"],
     }
 
     response = requests.post(issue_credential_url, json=payload, headers=self._build_headers())
