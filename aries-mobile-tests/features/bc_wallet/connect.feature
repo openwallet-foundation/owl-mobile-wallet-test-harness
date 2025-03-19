@@ -4,7 +4,6 @@
 @Connect @bc_wallet @Story_76
 Feature: Connections
 
-
    @T001-Connect @critical @AcceptanceTest
    Scenario: Scan QR code to establish a connection
       Given the User has completed on-boarding
