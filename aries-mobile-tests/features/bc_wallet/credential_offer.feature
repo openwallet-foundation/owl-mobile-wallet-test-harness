@@ -18,9 +18,9 @@ Feature: Offer a Credential
       When the Holder receives a Non-Revocable credential offer
       And the holder opens the credential offer
       Then holder is brought to the credential offer screen
-      And they can view the contents of the credential
-         | issuer_agent_type | who         | cred_type    | attributes           | values     |
-         | TractionIssuer    | aca-py.Acme | Test Schema | first_name;last_name  | Sauce;Test |
+      And they can view the contents of the credential offer
+         | issuer_agent_type | who       | cred_type   | attributes           | values     |
+         | TractionIssuer    | SauceLabs | Test Schema | first_name;last_name | Sauce;Test |
    #| CANdyWebIssuer    | # CANdy - Unverified Person Issuer | Unverified Person | First Name;Last Name;Date of Birth;Street Address;Postal Code;City;Province;Country;Issued | Sheldon;Regular;1989-03-04;123 Perfect Street;A2V 3E1;Awesome City;BC;Canada;2022-03-14T23:27:20.133Z |
 
 
@@ -38,8 +38,8 @@ Feature: Offer a Credential
       And they select Done
       Then they are brought to the list of credentials
       And the credential accepted is at the top of the list
-         | issuer_agent_type | credential_name                           |
-         | AATHIssuer        | Default AATH Issuer Credential Definition |
+         | issuer_agent_type | credential_name |
+         | TractionIssuer    | sauce_labs_test |
 
    @T002.1-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario Outline: Holder accepts the credential offer recieved
@@ -56,7 +56,7 @@ Feature: Offer a Credential
       Then they are brought to the list of credentials
       And the credential accepted is at the top of the list
          | issuer_agent_type | credential_name |
-         | AATHIssuer        | Photo Id        |
+         | TractionIssuer    | Photo Id        |
 
       Examples:
          | credential         |
