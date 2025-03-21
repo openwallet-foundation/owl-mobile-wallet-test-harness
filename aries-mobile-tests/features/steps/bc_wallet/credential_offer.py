@@ -20,6 +20,7 @@ from agent_test_utils import get_qr_code_from_invitation
 # from pageobjects.bc_wallet.credential_offer_notification import CredentialOfferNotificationPage
 from pageobjects.bc_wallet.credential_offer import CredentialOfferPage
 from pageobjects.bc_wallet.credential_added import CredentialAddedPage
+from pageobjects.bc_wallet.decline_credential_offer import DeclineCredentialOfferPage
 from pageobjects.bc_wallet.contact import ContactPage
 
 
@@ -52,10 +53,32 @@ def step_impl(context):
 def step_impl(context):
     if "thisContactPage" not in context:
         context.thisContactPage = ContactPage(context.driver)
+    if "thisCredentialOfferPage" not in context:
+        context.thisContactPage = ContactPage(context.driver)
     # Select the credential offer
     context.thisCredentialOfferPage = (
         context.thisContactPage.select_open_credential_offer()
     )
+
+@step('the user delinces the credential offer')
+def step_impl(context):
+    if "thisCredentialOfferPage" not in context:
+        context.thisCredentialOfferPage = ContactPage(context.driver)
+    
+    context.thisCredentialOfferPage.select_decline()
+
+@step('the user deletes credential offer')
+def step_impl(context):
+    if "thisDeclineCredentialOfferPage" not in context:
+        context.thisDeclineCredentialOfferPage = DeclineCredentialOfferPage(context.driver)
+    
+    context.thisDeclineCredentialOfferPage.select_decline()
+
+@step("the holder see the credential offer")
+def step_impl(context):
+    if "thisCredentialOfferPage" not in context:
+        context.thisCredentialOfferPage = CredentialOfferPage(context.driver)
+    assert context.thisCredentialOfferPage.on_this_page()
 
 
 @given("the Holder receives a credential offer of {credential}")
@@ -108,9 +131,7 @@ def step_impl(context, credential, revocation=None):
                     f"FileNotFoundError: features/data/schema_{cred_type.lower()}.json"
                 )
         elif context.issuer.get_issuer_type() == "TractionIssuer":
-            # setup
-            # send credential
-            context.issuer.send_credential()
+            context.issuer.send_credential(credential_offer=credential_json, revokable=False)
         else:
             if (
                 "Connectionless" in context.tags
@@ -282,7 +303,6 @@ def step_impl(context):
         context.thisCredentialAddedPage = CredentialAddedPage(context.driver)
     context.thisCredentialsPage = context.thisCredentialAddedPage.select_done()
 
-
 @then("they are brought to the list of credentials")
 def step_impl(context):
     context.thisCredentialsPage.on_this_page()
@@ -292,7 +312,6 @@ def step_impl(context):
 @then("the IDIM Person credential accepted is at the top of the list")
 @then("the credential accepted is at the top of the list")
 def step_impl(context, credential_name=None):
-    print(f"CREDENTIAL NAME: {credential_name}")
     # if the platform is iOS 15+ or android
     if (
         context.driver.capabilities["platformName"]
@@ -301,11 +320,6 @@ def step_impl(context, credential_name=None):
         json_elems = context.thisCredentialsPage.get_credentials()
         if credential_name == None:
             credential_name = get_expected_credential_name(context)
-            print("____________")
-            print("____________")
-            print("____________")
-            print("____________")
-            print(credential_name)
         assert credential_name in json_elems["credentials"][0]["text"]
     else:
         if credential_name == None:
@@ -317,8 +331,6 @@ def get_expected_credential_name(context):
     issuer_type_in_use = context.issuer.get_issuer_type()
     found = False
     for row in context.table:
-        print(f"Row: {row}")
-        print(issuer_type_in_use)
         if row["issuer_agent_type"] == issuer_type_in_use:
             cred_name = row["credential_name"]
             found = True

@@ -9,16 +9,16 @@ import json
 
 class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
 
-    _schema: dict
-    _credential_definition: dict
+    _schemas: dict
+    _credential_definitions: dict
     _credential_json_dict: dict
 
     # credentials need to be setup in the traction instance that is running
     def __init__(self, endpoint):
         self.endpoint = endpoint
         self.token = self._fetch_token()
-        self._schema = {}
-        self._credential_definition = {}
+        self._schemas = {}
+        self._credential_definitions = {}
         self._credential_json_dict = {}
         self._load_schemas()
         super().__init__(endpoint)
@@ -47,19 +47,29 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
         self._schema_setup(drivers_license_1)
         self._schema_setup(drivers_license_2)
         self._schema_setup(photo_revokable)
+        self._schema_setup({
+            "schema_name": "sauce_labs_test",
+            "schema_version": "1.0",
+            "attributes": [
+                "first_name",
+                "last_name"
+            ],
+        })
 
     def _schema_setup(self, schema):
         schema_id = self._get_schema_id_for_name(schema["schema_name"])
         cred_def_id = self._get_cred_def_id_for_name(schema["schema_name"])
-
+        
         if schema_id == None:
             new_schema = self._register_schema(schema)
             schema_id = new_schema["sent"]["schema"]["id"]
 
         if cred_def_id == None:
             cred_def_id = self._regsiter_cred_def(schema_id)
-        # self._schema = self._get_schema_for_id(schema_id)["schema"]
-        # self._credential_definition = self._get_cred_def_for_id(cred_def_id)["credential_definition"]
+
+        self._schemas[schema["schema_name"]] = self._get_schema_for_id(schema_id)["schema"]
+        self._credential_definitions[schema["schema_name"]] = self._get_cred_def_for_id(cred_def_id)["credential_definition"]
+        print("Setup for schema: ", schema["schema_name"], " is done!")
 
     def _get_schema_for_id(self, id) -> dict:
         schema_endpoint = f"{self.endpoint}/schemas/{id}"
@@ -135,7 +145,7 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
                 "https://didcomm.org/didexchange/1.0",
                 "https://didcomm.org/connections/1.0",
             ],
-            "my_label": "",
+            "my_label": "Sauce labs Connection",
             "protocol_version": "1.1",
             "use_public_did": False,
         }
@@ -189,7 +199,9 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
 
         if credential_offer:
             cred_data = credential_offer["attributes"]
+            schema_name = credential_offer["schema_name"]
         else:
+            schema_name = "sauce_labs_test"
             cred_data = [
                 {"name": "first_name", "value": "Sauce"},
                 {"name": "last_name", "value": "Test"},
@@ -202,15 +214,11 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
                 "@type": "issue-credential/2.0/credential-preview",
                 "attributes": cred_data,
             },
-            "filter": {"indy": {"cred_def_id": self._credential_definition["id"]}},
+            "filter": {"indy": {"cred_def_id": self._credential_definitions[schema_name]["id"]}},
             "trace": True,
             "verification_method": "string",
         }
 
-        self._credential_definition = {
-            "schema_id": self._schema["id"],
-            "tag": self._schema["name"],
-        }
 
         response = requests.post(
             issue_credential_url, json=payload, headers=self._build_headers()
@@ -218,7 +226,7 @@ class TractionIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
         json_response = response.json()
         if response.status_code == 200:
             self.credential_json = json_response
-            self._credential_json_dict[self._credential_definition["tag"]] = (
+            self._credential_json_dict[schema_name] = (
                 json_response
             )
         else:

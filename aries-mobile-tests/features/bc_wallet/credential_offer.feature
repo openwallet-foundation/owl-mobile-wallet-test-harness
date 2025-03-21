@@ -39,7 +39,7 @@ Feature: Offer a Credential
       Then they are brought to the list of credentials
       And the credential accepted is at the top of the list
          | issuer_agent_type | credential_name |
-         | TractionIssuer    | sauce_labs_test |
+         | TractionIssuer    | Sauce Labs Test |
 
    @T002.1-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
    Scenario Outline: Holder accepts the credential offer recieved
@@ -63,7 +63,7 @@ Feature: Offer a Credential
          | cred_data_photo_id |
 
 
-   @T003-CredentialOffer @wip @critical @AcceptanceTest @Story_79
+   @T003-CredentialOffer @critical @AcceptanceTest @Story_79
    Scenario: Holder declines the credential offer recieved
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
@@ -71,13 +71,10 @@ Feature: Offer a Credential
       And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the user has a credential offer
-      When the holder opens the credential offer
-      And they select Decline
-      Then they are brought to the list of credentials
-      And a temporary notification will appear that informs the holder of the declined action
-      And the credential declined is not in the list
-      Then the holder will be taken to the credential list page
-      And a temporary notification will appear that informs the holder of the declined action
+      When the holder see the credential offer
+      And the user delinces the credential offer
+      And the user deletes credential offer
+      Then they have access to the app
 
    @T004-CredentialOffer @Story_82 @wip @ExceptionTest
    Scenario Outline: Holder is waiting for a Credential Offer but it fails to be recieved
@@ -151,14 +148,14 @@ Feature: Offer a Credential
       And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
-         | issuer_agent_type | credential_name                           |
-         | AATHIssuer        | Default AATH Issuer Credential Definition |
+         | issuer_agent_type | credential_name|
+         | TractionIssuer    | Sace Labs Test |
       And the holder has another credential of <credential>
          | issuer_agent_type | credential_name |
-         | AATHIssuer        | Photo Id        |
+         | TractionIssuer    | Photo Id        |
       And the holder has another credential of <credential_2>
          | issuer_agent_type | credential_name    |
-         | AATHIssuer        | Photo Id Revokable |
+         | TractionIssuer    | Photo Id Revokable |
 
       Examples:
          | credential         | credential_2                |
