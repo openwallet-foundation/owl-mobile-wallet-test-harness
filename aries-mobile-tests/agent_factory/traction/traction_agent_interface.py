@@ -1,6 +1,7 @@
 
 from agent_test_utils import get_qr_code_from_invitation
 import requests
+import json
 
 class TractionAgentInterface():
   _oob = False
@@ -34,6 +35,7 @@ class TractionAgentInterface():
     return token_response.json()["token"]
 
   def create_invitation_util(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
+    self.token = self._fetch_token()
     print("Create OOB traction invitation")
     # url configured with default values
     oob_invite_url = f"{self.endpoint}/out-of-band/create-invitation?auto_accept=true&create_unique_did=false&multi_use=false"
@@ -50,17 +52,24 @@ class TractionAgentInterface():
         "protocol_version": "1.1",
         "use_public_did": False,
     }
-    invitation_response = requests.post(
+
+    print(self._build_headers())
+    response = requests.post(
         oob_invite_url, json=payload, headers=self._build_headers()
-    ).json()
+    )
+    
+    if response.status_code != 200:
+      raise Exception(f"Error creating invitation: {response.status_code}: {response.text}")
+    
+    
+    self.invitation_json = response.json()
+    self._oob = True
 
     qr_code = get_qr_code_from_invitation(
-        invitation_response,
+        invitation_json=self.invitation_json,
         print_qr_code=print_qrcode,
         save_qr_code=save_qrcode,
         qr_code_border=qr_code_border,
     )
-    self.invitation_json = invitation_response
-    self._oob = True
     return qr_code
     

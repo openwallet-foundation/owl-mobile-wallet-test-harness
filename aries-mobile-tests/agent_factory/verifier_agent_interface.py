@@ -14,10 +14,10 @@ class VerifierAgentInterface(ABC):
     DEFAULT_PROOF_REQUEST = {
         "requested_attributes": {
             "attr_1": {
-                "name": "attr_1",
+                "name": "first_name",
                 "restrictions": [
                     {
-                        "schema_name": "test_schema.",
+                        "schema_name": "sauce_labs_test",
                         "schema_version": "1.0.0",
                     }
                 ],
