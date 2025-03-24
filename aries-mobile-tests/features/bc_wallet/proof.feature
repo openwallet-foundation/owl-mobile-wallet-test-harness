@@ -16,8 +16,9 @@ Feature: Proof
       And the Holder has opted out of biometrics to unlock BC Wallet
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
-         | issuer_agent_type | credential_name                           |
-         | AATHIssuer        | Default AATH Issuer Credential Definition |
+         | issuer_agent_type | credential_name |
+         | TractionIssuer    | Sauce Labs Test |
+
       When the Holder scans the QR code sent by the "verifier"
       And the Holder is taken to the Connecting Screen/modal
       And the Connecting completes successfully
@@ -242,26 +243,6 @@ Feature: Proof
          | cred_data_photo_id_revokable | proof_photo_id_revokable | now:now  |
 
 
-   @T009-Proof @critical @AcceptanceTest @Connectionless @wip @depricated
-   Scenario Outline: Pan Canadian Trust Framework Member aquires access to PCTF Chat with a connectionless proof request
-      Given the PCTF Member has setup thier Wallet
-      And the PCTF member has an Unverified Person <credential>
-         | issuer_agent_type | credential_name   |
-         | CANdyUVPIssuer    | Unverified Person |
-      And the user has a connectionless proof request for access to PCTF Chat
-         | issuer_agent_type |
-         | PCTFChatVerifier  |
-      When they select Share
-      And the holder is informed that they are sending information securely
-      And they are informed that the information sent successfully
-      And they select Go back to home on information sent successfully
-      Then the PCTF member has access to chat
-
-      Examples:
-         | credential                  |
-         | cred_data_unverified_person |
-
-
    @T009.1-Proof @critical @AcceptanceTest @Connectionless @oob
    Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
       Given the PCTF Member has setup thier Wallet
@@ -280,17 +261,6 @@ Feature: Proof
       Examples:
          | credential                  | proof                     |
          | cred_data_unverified_person | pcft_connectionless_proof |
-
-
-   @T009.1.debug-Proof @critical @AcceptanceTest @Connectionless @wip @oob
-   Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
-      Given the user has a connectionless <proof> request for access to PCTF
-         | issuer_agent_type |
-         | AATHIssuer        |
-
-      Examples:
-         | proof                     |
-         | pcft_connectionless_proof |
 
    @T010.1-Proof @normal @MultiCredProof @AcceptanceTest @Story_614
    Scenario: Holder accepts a proof request with multiple credentials
@@ -408,9 +378,3 @@ Feature: Proof
       Examples:
          | credential         | credential_2                 | proof                                  | interval |
          | cred_data_photo_id | cred_data_photo_id_revokable | proof_photo_id_revokable_self_attested | now:now  |
-
-   @T012.2-Proof @normal @AcceptanceTest @SelfAttestation @Story_239 @wip
-   Scenario: Self-Attestation with name in an existing revoked credential
-
-   @T012.3-Proof @normal @AcceptanceTest @SelfAttestation @Story_239 @wip
-   Scenario: Self-Attestation with name not in an existing credential
