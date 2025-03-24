@@ -12,6 +12,7 @@ from agent_factory.candy_uvp.candy_uvp_issuer_agent_interface import CANdy_UVP_I
 from agent_factory.bc_person_showcase.bc_person_showcase_verifier_agent_interface import BCPersonShowcaseVerifierAgentInterface
 from agent_factory.bc_vp.bc_vp_issuer_agent_interface import BC_VP_IssuerAgentInterface
 from agent_factory.traction.traction_issuer_agent_interface import TractionIssuerAgentInterface
+from agent_factory.traction.traction_verifier_agent_interface import TractionVerifierAgentInterface
 
 class AgentInterfaceFactory():
     
@@ -25,12 +26,12 @@ class AgentInterfaceFactory():
     verifier_agent_type_interface_dict = {
         "AATH": AATHVerifierAgentInterface,
         "BC_Person_Showcase": BCPersonShowcaseVerifierAgentInterface,
-        "BCShowcaseVerifier": BCShowcaseVerifierAgentInterface
+        "BCShowcaseVerifier": BCShowcaseVerifierAgentInterface,
+        "Traction": TractionVerifierAgentInterface
     }
     
     def create_issuer_agent_interface(self, agent_type, agent_endpoint) -> IssuerAgentInterface:
         """create an issuer agent interface object of the type given"""
-        print(f"CREATE ISSUER AGENT {agent_type} {agent_endpoint}")
         return self.issuer_agent_type_interface_dict[agent_type](agent_endpoint)
 
     def create_verifier_agent_interface(self, agent_type, agent_endpoint) -> VerifierAgentInterface:
