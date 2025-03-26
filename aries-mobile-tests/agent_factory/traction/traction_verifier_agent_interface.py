@@ -21,15 +21,11 @@ class TractionVerifierAgentInterface(VerifierAgentInterface, TractionAgentInterf
         return self.create_invitation_util(oob, print_qrcode, save_qrcode, qr_code_border)
 
     def connected(self):
-        return True
-        # return self.connected_util()
+        return self.connected_util()
 
-
-    def send_proof_request_1(self, version=1, request_for_proof=None, connectionless=False):
-
-        pass
     def send_proof_request(self, version=1, request_for_proof=None, connectionless=False):
         """create a proof request """
+        self._fetch_token()
         
         if connectionless:
             raise Exception("Connectionless proof requets are not supported yet")
@@ -38,24 +34,23 @@ class TractionVerifierAgentInterface(VerifierAgentInterface, TractionAgentInterf
             request_for_proof = self.DEFAULT_PROOF_REQUEST.copy()
 
         presentation_request = {
+            "connection_id": self._connection_id,
+            "auto_verify": False,
+            "trace": False,
+            "comment": f"proof request from {self.get_issuer_type()} {self.endpoint}",
             "presentation_request": {
-                "comment": f"proof request from {self.get_issuer_type()} {self.endpoint}",
-                "proof_request": {"data": request_for_proof},
-            }, 
-            "connection_id": self.invitation_json["connection_id"]
+                "indy": request_for_proof,
+            }
         }
 
-        print(presentation_request)
-
-        # make request to traction
         proof_endpoint = f"{self.endpoint}/present-proof-2.0/send-request"
-        (resp_status, resp_text) = requests.post(proof_endpoint, headers=self._build_headers(), data=presentation_request)
+        proof_sent_response = requests.post(proof_endpoint, json=presentation_request, headers=self._build_headers())
 
-        if resp_status != 200:
+        if proof_sent_response.status_code != 200:
             raise Exception(
-                f"Call to send proof request failed: {resp_status}; {resp_text}"
+                f"Call to send proof request failed: {proof_sent_response.status_code}; {proof_sent_response.text}"
             )
-        self.proof_request_json = json.loads(resp_text)
+        self.proof_request_json = proof_sent_response.json()
 
     def proof_request_verified(self):
         """return true if proof request verified"""

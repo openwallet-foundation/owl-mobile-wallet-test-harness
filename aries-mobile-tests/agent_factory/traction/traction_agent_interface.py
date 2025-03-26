@@ -5,6 +5,7 @@ import json
 
 class TractionAgentInterface():
   _oob = False
+  _connection_id = ""
   endpoint = ""
   token = ""
   invitation_json = {}
@@ -53,7 +54,6 @@ class TractionAgentInterface():
         "use_public_did": False,
     }
 
-    print(self._build_headers())
     response = requests.post(
         oob_invite_url, json=payload, headers=self._build_headers()
     )
@@ -72,4 +72,28 @@ class TractionAgentInterface():
         qr_code_border=qr_code_border,
     )
     return qr_code
+  
+  def connected_util(self):
+    connection_id = ""
+    if self._oob:
+        # fetch connection ID from connections
+        invite_id = self.invitation_json["invi_msg_id"]
+        connection_fetch_rule = f"{self.endpoint}/connections?invitation_msg_id={invite_id}&limit=100&offset=0"
+        connection_response = requests.get(
+            connection_fetch_rule, headers=self._build_headers()
+        )
+        results = connection_response.json()
+        if results["results"]:
+            connection_id = results["results"][0]["connection_id"]
+        else:
+            raise Exception("OOB Connection record is not found")
+
+    else:
+        connection_id = self.invitation_json["connection_id"]
+    self._connection_id = connection_id
+    connection_ping_url = f"{self.endpoint}/connections/{connection_id}/send-ping"
+    ping_response = requests.post(
+        connection_ping_url, json={}, headers=self._build_headers()
+    )
+    return ping_response.status_code == 200
     

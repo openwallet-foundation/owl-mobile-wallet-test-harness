@@ -163,12 +163,10 @@ def step_impl(context):
 
 @then('they can view the contents of the proof request')
 def step_impl(context):
-
     who, attributes, values = get_expected_proof_request_detail(
         context)
-    # The below doesn't have locators in build 127. Calibrate in the future fixed build
     actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
-    assert who in actual_who
+    assert who.lower() in actual_who.lower() # header text is formatted for readability, lower makes the test more consistent
     assert all(item in attributes for item in actual_attributes)
     assert all(item in values for item in actual_values)
 

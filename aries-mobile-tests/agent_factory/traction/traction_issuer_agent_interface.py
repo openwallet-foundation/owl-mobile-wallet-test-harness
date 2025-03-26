@@ -118,30 +118,8 @@ class TractionIssuerAgentInterface(TractionAgentInterface, IssuerAgentInterface)
         return self.create_invitation_util(oob, print_qrcode, save_qrcode, qr_code_border)
 
     def connected(self):
-        print("Check connection status")
-        connection_id = ""
-        if self._oob == True:
-            print("OOB CONNECTION")
-            # fetch connection ID from connections
-            invite_id = self.invitation_json["invi_msg_id"]
-            connection_fetch_rule = f"{self.endpoint}/connections?invitation_msg_id={invite_id}&limit=100&offset=0"
-            connection_response = requests.get(
-                connection_fetch_rule, headers=self._build_headers()
-            )
-            results = connection_response.json()
-            if results["results"]:
-                connection_id = results["results"][0]["connection_id"]
-            else:
-                raise Exception("OOB Connection record is not found")
-
-        else:
-            connection_id = self.invitation_json["connection_id"]
-        self._connection_id = connection_id
-        connection_ping_url = f"{self.endpoint}/connections/{connection_id}/send-ping"
-        ping_response = requests.post(
-            connection_ping_url, json={}, headers=self._build_headers()
-        )
-        return ping_response.status_code == 200
+        print("Check connection status of issuer")
+        return self.connected_util()
 
     def revoke_credential(self):
         pass

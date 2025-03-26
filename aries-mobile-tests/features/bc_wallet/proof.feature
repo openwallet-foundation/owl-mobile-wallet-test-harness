@@ -26,8 +26,8 @@ Feature: Proof
       And the holder opens the proof request
       Then holder is brought to the proof request
       And they can view the contents of the proof request
-         | verifier_agent_type | who        | attributes | values  |
-         | AATHVerifier        | aca-py.Bob | Attr 1     | value_1 |
+         | verifier_agent_type | who           | attributes | values  |
+         | TractionVerifier    | Sauce Labs    | First Name | Sauce   |
    #| CANdyWebIssuer    | # CANdy - Unverified Person Issuer | Unverified Person | First Name;Last Name;Date of Birth;Street Address;Postal Code;City;Province;Country;Issued | Sheldon;Regular;1989-03-04;123 Perfect Street;A2V 3E1;Awesome City;BC;Canada;2022-03-14T23:27:20.133Z |
 
 
@@ -40,7 +40,7 @@ Feature: Proof
       And a connection has been successfully made
       And the holder has a Non-Revocable credential
          | issuer_agent_type | credential_name                           |
-         | AATHIssuer        | Default AATH Issuer Credential Definition |
+         | TractionIssuer    | Sauce Labs Test |
       And the user has a proof request
       When they select Share
       And the holder is informed that they are sending information securely
@@ -60,7 +60,7 @@ Feature: Proof
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name |
-         | AATHIssuer        | Photo Id        |
+         | TractionIssuer    | Photo Id        |
       And the user has a proof request for <proof>
       When they select Share
       And the holder is informed that they are sending information securely
@@ -83,7 +83,7 @@ Feature: Proof
       And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                        | revocable | issuer_agent_type | credential_name    |
-         | cred_data_drivers_license_sp_char | True      | AATHIssuer        | Drivers License 😀 |
+         | cred_data_drivers_license_sp_char | True      | TractionIssuer    | Drivers License 😀 |
       And the user has a proof request for <proof>
       When they select Share
       And the holder is informed that they are sending information securely
@@ -105,7 +105,7 @@ Feature: Proof
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
-         | AATHIssuer        | Photo Id Revokable |
+         | TractionIssuer    | Photo Id Revokable |
       And the credential has been revoked by the issuer
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
       Then they can only select Decline
@@ -127,7 +127,7 @@ Feature: Proof
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
-         | AATHIssuer        | Photo Id Revokable |
+         | TractionIssuer    | Photo Id Revokable |
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
       And they select Share
       And the holder is informed that they are sending information securely
@@ -151,7 +151,7 @@ Feature: Proof
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
-         | AATHIssuer        | Photo Id Revokable |
+         | TractionIssuer    | Photo Id Revokable |
       And the credential has been revoked by the issuer
       When the user has a proof request for <proof>
       And they select Share
@@ -176,7 +176,7 @@ Feature: Proof
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
-         | AATHIssuer        | Photo Id Revokable |
+         | TractionIssuer    | Photo Id Revokable |
       When the user has a proof request for <proof>
       And they select Share
       And the holder is informed that they are sending information securely
@@ -201,10 +201,10 @@ Feature: Proof
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name |
-         | AATHIssuer        | Photo Id        |
+         | TractionIssuer    | Photo Id        |
       And the holder has another credential of <credential_2>
          | issuer_agent_type | credential_name    |
-         | AATHIssuer        | Photo Id Revokable |
+         | TractionIssuer    | Photo Id Revokable |
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
       Then 'Photo Id' is selected as the credential to verify the proof
       Then they select Share
@@ -227,11 +227,11 @@ Feature: Proof
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
-         | AATHIssuer        | Photo Id Revokable |
+         | TractionIssuer    | Photo Id Revokable |
       And the credential has been revoked by the issuer
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name    |
-         | AATHIssuer        | Photo Id Revokable |
+         | TractionIssuer    | Photo Id Revokable |
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
       And they select Share
       And the holder is informed that they are sending information securely
@@ -243,24 +243,24 @@ Feature: Proof
          | cred_data_photo_id_revokable | proof_photo_id_revokable | now:now  |
 
 
-   @T009.1-Proof @critical @AcceptanceTest @Connectionless @oob
-   Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
-      Given the PCTF Member has setup thier Wallet
-      And the PCTF member has an Unverified Person <credential>
-         | issuer_agent_type | credential_name   |
-         | CANdyUVPIssuer    | Unverified Person |
-      And the user has a connectionless <proof> request for access to PCTF
-         | issuer_agent_type |
-         | AATHIssuer        |
-      When they select Share
-      And the holder is informed that they are sending information securely
-      And they are informed that the information sent successfully
-      And they select Go back to home on information sent successfully
-      Then the PCTF member has access to chat
+   # @T009.1-Proof @critical @AcceptanceTest @Connectionless @oob
+   # Scenario Outline: Pan Canadian Trust Framework Member aquires access with a connectionless proof request
+   #    Given the PCTF Member has setup thier Wallet
+   #    And the PCTF member has an Unverified Person <credential>
+   #       | issuer_agent_type | credential_name   |
+   #       | CANdyUVPIssuer    | Unverified Person |
+   #    And the user has a connectionless <proof> request for access to PCTF
+   #       | issuer_agent_type |
+   #       | AATHIssuer        |
+   #    When they select Share
+   #    And the holder is informed that they are sending information securely
+   #    And they are informed that the information sent successfully
+   #    And they select Go back to home on information sent successfully
+   #    Then the PCTF member has access to chat
 
-      Examples:
-         | credential                  | proof                     |
-         | cred_data_unverified_person | pcft_connectionless_proof |
+   #    Examples:
+   #       | credential                  | proof                     |
+   #       | cred_data_unverified_person | pcft_connectionless_proof |
 
    @T010.1-Proof @normal @MultiCredProof @AcceptanceTest @Story_614
    Scenario: Holder accepts a proof request with multiple credentials
@@ -268,8 +268,8 @@ Feature: Proof
       And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
-         | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
-         | cred_data_photo_id        | True      | AATHIssuer        | Photo Id        |
+         | cred_data_drivers_license | True      | TractionIssuer    | Drivers License |
+         | cred_data_photo_id        | True      | TractionIssuer    | Photo Id        |
       When the user has a proof request
          | proof            |
          | multi_cred_proof |
@@ -288,8 +288,8 @@ Feature: Proof
       And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
-         | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
-         | cred_data_photo_id        | True      | AATHIssuer        | Photo Id        |
+         | cred_data_drivers_license | True      | TractionIssuer    | Drivers License |
+         | cred_data_photo_id        | True      | TractionIssuer    | Photo Id        |
       When the user has a proof request
          | proof            |
          | multi_cred_proof |
@@ -305,11 +305,11 @@ Feature: Proof
       And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
-         | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
-         | cred_data_photo_id        | True      | AATHIssuer        | Photo Id        |
+         | cred_data_drivers_license | True      | TractionIssuer    | Drivers License |
+         | cred_data_photo_id        | True      | TractionIssuer    | Photo Id        |
       And a credential has been revoked by the issuer
          | issuer_agent_type | credential_name |
-         | AATHIssuer        | drivers_license |
+         | TractionIssuer    | drivers_license |
       When the user has a proof request
          | proof            |
          | multi_cred_proof |
@@ -326,10 +326,10 @@ Feature: Proof
       And the Holder has opted out of biometrics to unlock BC Wallet
       And that the holder has a revocable credential stored in the wallet
          | credential                | revocable | issuer_agent_type | credential_name |
-         | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
+         | cred_data_drivers_license | True      | TractionIssuer    | Drivers License |
       When a credential has been revoked by the issuer
          | issuer_agent_type | credential_name |
-         | AATHIssuer        | drivers_license |
+         | TractionIssuer    | drivers_license |
       Then The holder receives a revocation message notification
       And the holder selects the revocation notification
       And the holder reviews the contents of the revocation notification message
@@ -345,10 +345,10 @@ Feature: Proof
       And the Holder has opted out of biometrics to unlock BC Wallet
       And that the holder has a revocable credential stored in the wallet
          | credential                | revocable | issuer_agent_type | credential_name |
-         | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
+         | cred_data_drivers_license | True      | TractionIssuer    | Drivers License |
       And a credential has been revoked by the issuer
          | issuer_agent_type | credential_name |
-         | AATHIssuer        | drivers_license |
+         | TractionIssuer    | drivers_license |
       And The holder has received and acknowledged the revocation message notification
       When the holder selects the credential
       Then they will be informed of its revoked status
@@ -363,10 +363,10 @@ Feature: Proof
       And a connection has been successfully made
       And the holder has a credential of <credential>
          | issuer_agent_type | credential_name |
-         | AATHIssuer        | Photo Id        |
+         | TractionIssuer    | Photo Id        |
       And the holder has another credential of <credential_2>
          | issuer_agent_type | credential_name    |
-         | AATHIssuer        | Photo Id Revokable |
+         | TractionIssuer    | Photo Id Revokable |
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
       #Then <credential_name> is selected as the credential to verify the proof
       Then they select Share

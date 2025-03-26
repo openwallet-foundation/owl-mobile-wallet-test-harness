@@ -12,17 +12,20 @@ class VerifierAgentInterface(ABC):
 
     # Default schema and cred
     DEFAULT_PROOF_REQUEST = {
+        "name": "Sauce labs default proof request",
+        "nonce": "1234567890",
+        "version": "1.0",
         "requested_attributes": {
             "attr_1": {
-                "name": "first_name",
+                "names": ["first_name"],
                 "restrictions": [
                     {
-                        "schema_name": "sauce_labs_test",
-                        "schema_version": "1.0.0",
+                        "schema_name": "sauce_labs_test"
                     }
                 ],
             }
-        }
+        },
+        "requested_predicates": {}
     }
 
     @abstractmethod
