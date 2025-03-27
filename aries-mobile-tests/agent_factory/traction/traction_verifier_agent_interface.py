@@ -1,8 +1,6 @@
 from agent_factory.verifier_agent_interface import VerifierAgentInterface
 from agent_factory.traction.traction_agent_interface import TractionAgentInterface
-from agent_test_utils import get_qr_code_from_invitation
 import requests
-import json
 
 class TractionVerifierAgentInterface(VerifierAgentInterface, TractionAgentInterface):
     
@@ -17,7 +15,7 @@ class TractionVerifierAgentInterface(VerifierAgentInterface, TractionAgentInterf
         return "TractionVerifier"
 
     def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
-        print("CREATE AN INVITATION...")
+        print("CREATE VERIFIER CONNECTION")
         return self.create_invitation_util(oob, print_qrcode, save_qrcode, qr_code_border)
 
     def connected(self):

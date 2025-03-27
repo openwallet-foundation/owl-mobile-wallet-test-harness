@@ -83,7 +83,7 @@ Feature: Proof
       And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                        | revocable | issuer_agent_type | credential_name    |
-         | cred_data_drivers_license_sp_char | True      | TractionIssuer    | Drivers License 😀 |
+         | cred_data_drivers_license_sp_char | True      | TractionIssuer    | Credential         |
       And the user has a proof request for <proof>
       When they select Share
       And the holder is informed that they are sending information securely

@@ -593,4 +593,4 @@ def get_expected_proof_request_detail_from_credential(context):
         raise Exception(
             f"No credential details in table data for {verifier_type_in_use}"
         )
-    return who, attributes, values, credential_name
+    return who, attributes, values

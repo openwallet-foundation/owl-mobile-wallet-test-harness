@@ -105,8 +105,8 @@ Feature: Connections
       Given the holder is connected to an Issuer
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
-         | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
-         | cred_data_photo_id        | True      | AATHIssuer        | Photo Id        |
+         | cred_data_drivers_license | True      | TractionIssuer        | Drivers License |
+         | cred_data_photo_id        | True      | TractionIssuer        | Photo Id        |
       And the holder is viewing that Contacts details
       When the holder Removes this Contact
       Then the holder is informed that it can't be removed because there are credentials issued by this contact in their wallet
@@ -120,8 +120,8 @@ Feature: Connections
       Given the holder is connected to an Issuer
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
-         | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
-         | cred_data_photo_id        | True      | AATHIssuer        | Photo Id        |
+         | cred_data_drivers_license | True      | TractionIssuer        | Drivers License |
+         | cred_data_photo_id        | True      | TractionIssuer        | Photo Id        |
       And the holder is viewing that Contacts details
       When the holder Removes this Contact
       Then the holder is informed that it can't be removed because there are credentials issued by this contact in their wallet
@@ -134,7 +134,7 @@ Feature: Connections
       Given the holder is connected to an Issuer
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
-         | cred_data_drivers_license | True      | AATHIssuer        | Drivers License |
+         | cred_data_drivers_license | True      | TractionIssuer        | Drivers License |
       And the credential has been revoked by the issuer
       And the holder is viewing that Contacts details
       When the holder Removes this Contact
