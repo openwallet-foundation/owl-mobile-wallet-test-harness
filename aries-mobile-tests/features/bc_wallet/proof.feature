@@ -229,9 +229,6 @@ Feature: Proof
          | issuer_agent_type | credential_name    |
          | TractionIssuer    | Photo Id Revokable |
       And the credential has been revoked by the issuer
-      And the holder has a credential of <credential>
-         | issuer_agent_type | credential_name    |
-         | TractionIssuer    | Photo Id Revokable |
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
       And they select Share
       And the holder is informed that they are sending information securely

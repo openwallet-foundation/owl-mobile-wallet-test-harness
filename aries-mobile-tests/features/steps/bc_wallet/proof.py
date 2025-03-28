@@ -288,15 +288,13 @@ def step_impl(context, proof, interval=None):
 
 @then('{credential_name} is selected as the credential to verify the proof')
 def step_impl(context, credential_name):
-    context.thisProofRequestDetailsPage = context.thisProofRequestPage.select_details()
-    credential_details = context.thisProofRequestDetailsPage.get_first_credential_details()
+    assert context.thisProofRequestPage.on_this_page()
+    credential_details = context.thisProofRequestPage.get_first_credential_details()
     # try a soft assert here until the wallet supports this selecting a non-revokable cred for a request for non-revocation
     try:
         assert credential_name in credential_details
     except AssertionError:
         print(f"Soft Assertion failed. {credential_name} not in {credential_details}")
-
-    context.thisProofRequestPage = context.thisProofRequestDetailsPage.select_back()
 
 
 @then('they select Share')

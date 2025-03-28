@@ -165,20 +165,18 @@ class TractionIssuerAgentInterface(TractionAgentInterface, IssuerAgentInterface)
             raise Exception(
                 f"There was an error sending credential to: {self._connection_id}"
             )
-    def revoke_credentials(self, publish_immediately=True, notify_holder=False, credential=None):
-        revoke_url = f"{self.endpoint}/revokcation/revoke"
-        revocation_record = self._get_revocation_ids_for_credential_exchange_id(self.credential_json["cred_ex_id"])
+    def revoke_credential(self, publish_immediately=True, notify_holder=False, credential=None):
+        revoke_url = f"{self.endpoint}/revocation/revoke"
         revocation = {
-            "cred_rev_id": revocation_record['revocation_id'],
-            "rev_registry_id": revocation_record['revoc_reg_id'],
+            "cred_ex_id": self.credential_json["cred_ex_id"],
             "publish_immediately": publish_immediately,
         }
 
         if notify_holder:
-            revocation["notify_connection_id"] = self._connection_id
+            revocation["connection_id"] = self._connection_id
 
         response = requests.post(revoke_url, json=revocation, headers=self._build_headers())
-        
+
         if response.status_code != 200:
             raise Exception(
                 f"Call to revoke credential failed: {response.status_code}: {response.text}"
@@ -201,7 +199,7 @@ class TractionIssuerAgentInterface(TractionAgentInterface, IssuerAgentInterface)
 
     def _get_revocation_ids_for_credential_exchange_id(self, credential_exchange_id):
         # use thread Id to 
-        revocation_ids_url = f"{self.endpoint}/revocation/redential-record?cred_ex_id={credential_exchange_id}"
+        revocation_ids_url = f"{self.endpoint}/revocation/credential-record?cred_ex_id={credential_exchange_id}"
         response = requests.get(revocation_ids_url, headers=self._build_headers())
         if response.status_code == 200:
             return response.json()
