@@ -18,7 +18,6 @@ Feature: Proof
       And the holder has a Non-Revocable credential
          | issuer_agent_type | credential_name |
          | TractionIssuer    | Sauce Labs Test |
-
       When the Holder scans the QR code sent by the "verifier"
       And the Holder is taken to the Connecting Screen/modal
       And the Connecting completes successfully
@@ -260,20 +259,27 @@ Feature: Proof
    #       | cred_data_unverified_person | pcft_connectionless_proof |
 
    @T010.1-Proof @normal @MultiCredProof @AcceptanceTest @Story_614
-   Scenario: Holder accepts a proof request with multiple credentials
-      Given the Holder has setup thier wallet
+   Scenario Outline: Holder accepts a proof request with multiple credentials
+      Given the User has completed on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
       And the Holder has opted out of biometrics to unlock BC Wallet
-      And the holder has credentials
-         | credential                | revocable | issuer_agent_type | credential_name |
-         | cred_data_drivers_license | True      | TractionIssuer    | Drivers License |
-         | cred_data_photo_id        | True      | TractionIssuer    | Photo Id        |
-      When the user has a proof request
-         | proof            |
-         | multi_cred_proof |
+      And a connection has been successfully made
+      And the holder has a credential of <credential>
+         | issuer_agent_type | credential_name |
+         | TractionIssuer    | Photo Id        |
+      And the holder has another credential of <credential_2>
+         | issuer_agent_type | credential_name |
+         | TractionIssuer    | Sauce Labs Test |
+      When the user has a proof request for <proof>
       And the request informs them of the attributes and credentials they came from
       And they select Share
       And the holder is informed that they are sending information securely
       Then they are informed that the information sent successfully
+      
+      Examples:
+         | credential         | credential_2              | proof             |
+         | cred_data_photo_id | cred_data_sauce_labs_test | multi_cred_proof  |
 
    # Examples:
    #    | credential                   | proof                    |
@@ -281,7 +287,9 @@ Feature: Proof
 
    @T010.2-Proof @normal @MultiCredProof @AcceptanceTest @Story_614
    Scenario: Holder declines a proof request with multiple credentials
-      Given the Holder has setup thier wallet
+      Given the User has completed on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
       And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
@@ -298,7 +306,9 @@ Feature: Proof
 
    @T010.3-Proof @normal @MultiCredProof @AcceptanceTest @Story_614 @wip
    Scenario: Holder accepts a proof request with multiple credentials, however one is revoked
-      Given the Holder has setup thier wallet
+      Given the User has completed on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
       And the Holder has opted out of biometrics to unlock BC Wallet
       And the holder has credentials
          | credential                | revocable | issuer_agent_type | credential_name |
@@ -319,7 +329,9 @@ Feature: Proof
 
    @T011.1-Proof @normal @RevocationNotification @AcceptanceTest @Story_63
    Scenario: Holder is notified that their credential has been revoked and is acknowledged
-      Given the Holder has setup thier wallet
+      Given the User has completed on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
       And the Holder has opted out of biometrics to unlock BC Wallet
       And that the holder has a revocable credential stored in the wallet
          | credential                | revocable | issuer_agent_type | credential_name |
@@ -338,7 +350,9 @@ Feature: Proof
 
    @T011.2-Proof @normal @RevocationNotification @AcceptanceTest @Story_63
    Scenario: Holder of a dismissed revoked notification reviews revocation status again
-      Given the Holder has setup thier wallet
+      Given the User has completed on-boarding
+      And the User has accepted the Terms and Conditions
+      And a PIN has been set up with "369369"
       And the Holder has opted out of biometrics to unlock BC Wallet
       And that the holder has a revocable credential stored in the wallet
          | credential                | revocable | issuer_agent_type | credential_name |
@@ -365,7 +379,6 @@ Feature: Proof
          | issuer_agent_type | credential_name    |
          | TractionIssuer    | Photo Id Revokable |
       When the user has a proof request for <proof> including proof of non-revocation at <interval>
-      #Then <credential_name> is selected as the credential to verify the proof
       Then they select Share
       And the holder is informed that they are sending information securely
       And they are informed that the information sent successfully

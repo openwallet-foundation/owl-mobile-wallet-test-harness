@@ -4,6 +4,7 @@ from agent_test_utils import get_qr_code_from_invitation
 from typing import Optional
 import requests
 import json
+import time
 
 
 class TractionIssuerAgentInterface(TractionAgentInterface, IssuerAgentInterface):
@@ -26,18 +27,14 @@ class TractionIssuerAgentInterface(TractionAgentInterface, IssuerAgentInterface)
         photo_revokable = json.load(
             open("features/data/schema_photo_id_revokable.json")
         )
+        sauce_labs_schema = json.load(open("features/data/schema_sauce_labs_test.json"))
 
+        print("Photo schema")
         self._schema_setup(photo_schema)
         self._schema_setup(drivers_license_1)
         self._schema_setup(drivers_license_2)
         self._schema_setup(photo_revokable)
-        self._schema_setup(
-            {
-                "schema_name": "sauce_labs_test",
-                "schema_version": "1.0",
-                "attributes": ["first_name", "last_name"],
-            }
-        )
+        self._schema_setup(sauce_labs_schema)
         print("Finished loading schemas")
 
     def _schema_setup(self, schema):
@@ -46,11 +43,14 @@ class TractionIssuerAgentInterface(TractionAgentInterface, IssuerAgentInterface)
 
         if schema_id == None:
             new_schema = self._register_schema(schema)
-            schema_id = new_schema["sent"]["schema"]["id"]
-
+            schema_id = new_schema["sent"]["schema_id"]
         if cred_def_id == None:
-            cred_def_id = self._register_cred_def(schema_id)
-
+            # traction needs time to wrtie schemas to the ledger
+            # don't love this but it will only run the first time a test is run with a traction instance
+            time.sleep(5)
+            new_cred_def =self._register_cred_def(schema_id)
+            cred_def_id = new_cred_def['sent']['credential_definition_id']
+        
         self._schemas[schema["schema_name"]] = self._get_schema_for_id(schema_id)[
             "schema"
         ]
@@ -90,14 +90,19 @@ class TractionIssuerAgentInterface(TractionAgentInterface, IssuerAgentInterface)
     def _register_schema(self, schema) -> dict:
         print("Register Schema")
         register_endpoint = f"{self.endpoint}/schemas"
-        return requests.post(
+        response = requests.post(
             register_endpoint, headers=self._build_headers(), json=schema
-        ).json()
+        )
+        if response.status_code != 200:
+            raise Exception(
+                f"Call to register schema: {response.status_code}: {response.text}"
+            )
+        return response.json()
 
     def _register_cred_def(self, schema_id, tag="default"):
         print("Register Cred Def")
         register_endpoint = f"{self.endpoint}/credential-definitions"
-        return requests.post(
+        response = requests.post(
             register_endpoint,
             headers=self._build_headers(),
             json={
@@ -106,7 +111,12 @@ class TractionIssuerAgentInterface(TractionAgentInterface, IssuerAgentInterface)
                 "support_revocation": True,
                 "tag": tag,
             },
-        ).json()
+        )
+        if response.status_code != 200:
+            raise Exception(
+                f"Call to register cred def failed: {response.status_code}: {response.text}"
+            )
+        return response.json()
 
     def get_issuer_type(self) -> str:
         """return the type of issuer as a string TractionIssuer"""

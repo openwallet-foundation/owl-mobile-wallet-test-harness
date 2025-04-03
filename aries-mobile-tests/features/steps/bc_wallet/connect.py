@@ -41,7 +41,6 @@ def step_impl(context, pin):
 
 @when('the Holder scans the QR code sent by the "{agent}"')
 def step_impl(context, agent):
-    print("__ LOOK AT ME SCAN A QR CODE __")
     # check the device serivce handler to see if we are on a tablet or phone
     if "Local" not in os.environ['DEVICE_CLOUD'] and context.device_service_handler.is_current_device_a_tablet():
         qr_code_border = 80

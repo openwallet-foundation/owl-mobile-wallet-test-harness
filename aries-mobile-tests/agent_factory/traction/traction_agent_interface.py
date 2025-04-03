@@ -27,8 +27,8 @@ class TractionAgentInterface():
   def _fetch_token(self) -> str:
     print("fetch token")
     # reach out to API with tenant id and api key
-    tenant_id = "ac071379-7b24-4275-83d4-c6cc3b62701f"
-    api_key = "60b75d3e9cf34fb3a46ae9d8b6cdf169"
+    tenant_id = "487c5972-beed-4dec-8e18-b3316329e296"
+    api_key = "0abaf514b5b845388b1aac9c2c138ffb"
     token_endpoint = f"{self.endpoint}/multitenancy/tenant/{tenant_id}/token"
     token_response = requests.post(token_endpoint, json={"api_key": api_key})
     if token_response.status_code != 200:
