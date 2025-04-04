@@ -25,10 +25,9 @@ class TractionAgentInterface():
     }
 
   def _fetch_token(self) -> str:
-    print("fetch token")
     # reach out to API with tenant id and api key
-    tenant_id = "487c5972-beed-4dec-8e18-b3316329e296"
-    api_key = "0abaf514b5b845388b1aac9c2c138ffb"
+    tenant_id = ""
+    api_key = ""
     token_endpoint = f"{self.endpoint}/multitenancy/tenant/{tenant_id}/token"
     token_response = requests.post(token_endpoint, json={"api_key": api_key})
     if token_response.status_code != 200:
@@ -37,7 +36,6 @@ class TractionAgentInterface():
 
   def create_invitation_util(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
     self.token = self._fetch_token()
-    print("Create OOB traction invitation")
     # url configured with default values
     oob_invite_url = f"{self.endpoint}/out-of-band/create-invitation?auto_accept=true&create_unique_did=false&multi_use=false"
     payload = {

@@ -19,19 +19,19 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}/aries-mobile-tests",
       "env": {
-        "SAUCE_USERNAME": "oauth-alfred.k.rosenthal-536a8",
-        "SAUCE_ACCESS_KEY": "d90e0238-8014-4d6f-8dac-0a9557e9d012",
+        "SAUCE_USERNAME": "",
+        "SAUCE_ACCESS_KEY": "",
         "SL_REGION": "us-west-1",
         "DEVICE_CLOUD": "SauceLabs"
       },
       "args": [
         "${file}",
-        "--tags=@T001-CredentialOffer",
+        "--tags=@T002.2-Proof",
         "-k",
         "-D",
         "Issuer=Traction;https://traction-sandbox-tenant-proxy.apps.silver.devops.gov.bc.ca",
         "-D",
-        "Verifier=AATH;https://traction-sandbox-tenant-proxy.apps.silver.devops.gov.bc.ca"
+        "Verifier=Traction;https://traction-sandbox-tenant-proxy.apps.silver.devops.gov.bc.ca"
       ]
     },
     {

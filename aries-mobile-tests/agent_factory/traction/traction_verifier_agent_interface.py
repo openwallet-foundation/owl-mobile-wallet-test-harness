@@ -8,14 +8,12 @@ class TractionVerifierAgentInterface(VerifierAgentInterface, TractionAgentInterf
     
     def __init__(self, endpoint):
         super().__init__(endpoint)
-        print("Traction Verifier init")
 
     def get_issuer_type(self) -> str:
         """return the type of issuer as a string TractionVerifier"""
         return "TractionVerifier"
 
     def create_invitation(self, oob=False, print_qrcode=False, save_qrcode=False, qr_code_border=40):
-        print("CREATE VERIFIER CONNECTION")
         return self.create_invitation_util(oob, print_qrcode, save_qrcode, qr_code_border)
 
     def connected(self):
@@ -49,13 +47,3 @@ class TractionVerifierAgentInterface(VerifierAgentInterface, TractionAgentInterf
                 f"Call to send proof request failed: {proof_sent_response.status_code}; {proof_sent_response.text}"
             )
         self.proof_request_json = proof_sent_response.json()
-
-    def proof_request_verified(self):
-        """return true if proof request verified"""
-        thread_id = self.create_request_json["record"]["thread_id"]
-        return expected_agent_proof_state(
-            self.endpoint,
-            thread_id=thread_id,
-            status_txt=["true"],
-            wait_time=10.0,
-        )

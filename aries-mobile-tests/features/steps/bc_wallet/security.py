@@ -83,7 +83,6 @@ def step_impl(context):
 @when('the User selects to use Biometrics')
 def step_impl(context):
     assert context.thisOnboardingBiometricsPage.on_this_page()
-    # assert context.thisOnboardingBiometricsPage.select_biometrics()
     #context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     context.thisEnableNotificationsPage = context.thisOnboardingBiometricsPage.select_continue()
     # Not sure we need this next line since I don't think the app asks to authenticate when you select to use biometrics.
@@ -94,8 +93,6 @@ def step_impl(context):
 @then('they have access to the app')
 def step_impl(context):
     # The Home page will not show until the initialization page is done. 
-    #assert context.thisInitializationPage.on_this_page()
-    #context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
         context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
         assert True

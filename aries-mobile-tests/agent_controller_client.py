@@ -80,12 +80,9 @@ def agent_controller_POST(url, topic, operation=None, id=None, data=None, wrap_d
         else:
             payload["id"] = id
     try:
-        print(f"AGENT URL: {agent_url}")
         (resp_status, resp_text) = run_coroutine_with_kwargs(make_agent_controller_request, "POST", agent_url, data=payload)
         return (resp_status, resp_text)
     except Exception as e:
-        print("__ AGENT CONTROLLER POST ERROR __")
-        print(f"Exception type: {type(e).__name__}")
         print(f"Exception message: {e}")
 
 def agent_controller_DELETE(url, topic, id=None, data=None) -> (int, str):

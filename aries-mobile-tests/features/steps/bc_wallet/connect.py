@@ -48,10 +48,8 @@ def step_impl(context, agent):
         qr_code_border = 40
 
     if agent == "issuer":
-        print("Issuer")
         qrimage = context.issuer.create_invitation(print_qrcode=context.print_qr_code_on_creation, save_qrcode=context.save_qr_code_on_creation, qr_code_border=qr_code_border)
     elif agent == "verifier":
-        print("Verifier")
         qrimage = context.verifier.create_invitation(print_qrcode=context.print_qr_code_on_creation, save_qrcode=context.save_qr_code_on_creation, qr_code_border=qr_code_border)
     else:
         raise Exception(f"Invalid agent type: {agent}")

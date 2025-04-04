@@ -36,5 +36,4 @@ class AgentInterfaceFactory():
 
     def create_verifier_agent_interface(self, agent_type, agent_endpoint) -> VerifierAgentInterface:
         """create a verifier agent interface object of the type given"""
-        print("Verifier agent being added: ", agent_type, " endpoint: ", agent_endpoint)
         return self.verifier_agent_type_interface_dict[agent_type](agent_endpoint)
