@@ -1,7 +1,7 @@
 
 from agent_test_utils import get_qr_code_from_invitation
 import requests
-import json
+import os
 
 class TractionAgentInterface():
   _oob = False
@@ -25,9 +25,15 @@ class TractionAgentInterface():
     }
 
   def _fetch_token(self) -> str:
-    # reach out to API with tenant id and api key
-    tenant_id = ""
-    api_key = ""
+    tenant_id = os.getenv('TRACTION_TENANT_ID')
+    api_key = os.getenv('TRACTION_API_KEY')
+    
+    if tenant_id is None:
+       raise RuntimeError('env: TRACTION_TENANT_ID is not set/ available')
+    
+    if api_key is None:
+       raise RuntimeError('env: TRACTION_API_KEY is not set/ available')
+        
     token_endpoint = f"{self.endpoint}/multitenancy/tenant/{tenant_id}/token"
     token_response = requests.post(token_endpoint, json={"api_key": api_key})
     if token_response.status_code != 200:
