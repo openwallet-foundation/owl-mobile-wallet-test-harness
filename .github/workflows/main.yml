@@ -131,11 +131,13 @@ jobs:
         env:
           LEDGER_URL_CONFIG: "http://test.bcovrin.vonx.io"
           REGION: "us-west-1"
+          "TRACTION_TENANT_ID": ${{secrets.TRACTION_TENANT_ID}}
+          "TRACTION_API_KEY": ${{secrets.TRACTION_API_KEY}}
           #TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
         with:
           MOBILE_WALLET: "-w bc_wallet"
-          ISSUER_AGENT: '-i "AATH;http://0.0.0.0:9020"'
-          VERIFIER_AGENT: '-v "AATH;http://0.0.0.0:9030"'
+          ISSUER_AGENT: '-i "Traction;https://traction-sandbox-tenant-proxy.apps.silver.devops.gov.bc.ca"'
+          VERIFIER_AGENT: '-v "Traction;https://traction-sandbox-tenant-proxy.apps.silver.devops.gov.bc.ca"'
           DEVICE_CLOUD: "-d SauceLabs"
           DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"
