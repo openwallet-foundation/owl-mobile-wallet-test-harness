@@ -25,7 +25,7 @@ Feature: Offer a Credential
 
 
    @T002-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
-   Scenario: Holder accepts the credential offer recieved
+   Scenario: Holder accepts the credential offer received
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
@@ -42,7 +42,7 @@ Feature: Offer a Credential
          | TractionIssuer    | Sauce Labs Test |
 
    @T002.1-CredentialOffer @critical @AcceptanceTest @Story_79 @Story_82
-   Scenario Outline: Holder accepts the credential offer recieved
+   Scenario Outline: Holder accepts the credential offer received
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
@@ -64,7 +64,7 @@ Feature: Offer a Credential
 
 
    @T003-CredentialOffer @critical @AcceptanceTest @Story_79
-   Scenario: Holder declines the credential offer recieved
+   Scenario: Holder declines the credential offer received
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
@@ -95,7 +95,7 @@ Feature: Offer a Credential
 
 
    @T004-CredentialOffer @normal @FunctionalTest @PerformanceTest
-   Scenario Outline: Holder multiple credentials and no issuance should talke a long time
+   Scenario Outline: Holder multiple credentials and no issuance should take a long time
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
       And a PIN has been set up with "369369"
