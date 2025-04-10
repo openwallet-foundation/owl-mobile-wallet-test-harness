@@ -19,10 +19,10 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}/aries-mobile-tests",
       "env": {
-        "TRACTION_TENANT_ID": "487c5972-beed-4dec-8e18-b3316329e296",
-        "TRACTION_API_KEY": "0abaf514b5b845388b1aac9c2c138ffb",
-        "SAUCE_USERNAME": "oauth-alfred.k.rosenthal-536a8",
-        "SAUCE_ACCESS_KEY": "505e4faf-2cec-4d90-974b-8cacfd2edb64",
+        "TRACTION_TENANT_ID": "",
+        "TRACTION_API_KEY": "",
+        "SAUCE_USERNAME": "",
+        "SAUCE_ACCESS_KEY": "",
         "SL_REGION": "us-west-1",
         "DEVICE_CLOUD": "SauceLabs"
       },
