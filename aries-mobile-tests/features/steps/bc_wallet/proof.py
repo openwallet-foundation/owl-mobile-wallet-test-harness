@@ -153,7 +153,7 @@ def step_impl(context):
 
 @then('they are asked if they are sure they want to decline the Proof')
 def step_impl(context):
-    context.thisAreYouSureDeclineProofRequest.on_this_page()
+    assert context.thisAreYouSureDeclineProofRequest.on_this_page()
 
 
 @then('they Confirm the decline')
@@ -360,7 +360,7 @@ def step_impl(context):
 
 @then(u'they are brought Home')
 def step_impl(context):
-    context.thisHomePage.on_this_page()
+    assert context.thisHomePage.on_this_page()
 
 
 @when('the credential has been revoked by the issuer')
@@ -501,7 +501,7 @@ def step_impl(context):
 @then(u'the holder selects the revocation notification')
 def step_impl(context):
     context.thisCredentialDetailsPage = context.thisHomePage.select_revocation_notification()
-    context.thisCredentialDetailsPage.on_this_page()
+    assert context.thisCredentialDetailsPage.on_this_page()
 
 
 @then(u'the holder reviews the contents of the revocation notification message')

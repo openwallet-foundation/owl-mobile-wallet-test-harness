@@ -4,7 +4,7 @@
       {
         "platformName": "iOS",
         "appium:options": {
-          "app": "storage:filename=BCWallet-2225.ipa",
+          "app": "storage:filename=BCWallet-2230.ipa",
           "autoAcceptAlerts": true,
           "autoDismissAlerts": true,
           "automationName": "xcuitest",

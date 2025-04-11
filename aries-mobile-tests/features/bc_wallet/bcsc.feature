@@ -63,8 +63,8 @@ Feature: BCSC
          | setup_option                    | username          | password              |
          | Test with username and password | BCSC_ACCOUNT_USER | BCSC_ACCOUNT_PASSWORD |
 
-   @T00X-BCSC @Normal @FunctionalTest @wip
-   Scenario: BCSC holder removes the IDIM Person credential and can get the IDIM credential again with the button on the home page
+   # @T00X-BCSC @Normal @FunctionalTest @wip
+   # Scenario: BCSC holder removes the IDIM Person credential and can get the IDIM credential again with the button on the home page
 
-   @T00X-BCSC @Normal @FunctionalTest @wip
-   Scenario: BCSC holder removes the IDIM Person credential and the BCVC Certificate and can get the IDIM credential again repeating the credential request
+   # @T00X-BCSC @Normal @FunctionalTest @wip
+   # Scenario: BCSC holder removes the IDIM Person credential and the BCVC Certificate and can get the IDIM credential again repeating the credential request
