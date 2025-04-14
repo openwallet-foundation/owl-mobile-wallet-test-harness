@@ -136,8 +136,8 @@ jobs:
           #TEST_RETRY_ATTEMPTS_OVERRIDE: "2"
         with:
           MOBILE_WALLET: "-w bc_wallet"
-          ISSUER_AGENT: '-i "Traction;https://traction-sandbox-tenant-proxy.apps.silver.devops.gov.bc.ca"'
-          VERIFIER_AGENT: '-v "Traction;https://traction-sandbox-tenant-proxy.apps.silver.devops.gov.bc.ca"'
+          ISSUER_AGENT: '-i "Traction;https://traction-tenant-proxy-dev.apps.silver.devops.gov.bc.ca"'
+          VERIFIER_AGENT: '-v "Traction;https://traction-tenant-proxy-dev.apps.silver.devops.gov.bc.ca"'
           DEVICE_CLOUD: "-d SauceLabs"
           DEVICE_CLOUD_USER: "-u ${{ secrets.SAUCE_USERNAME }}"
           DEVICE_CLOUD_KEY: "-k ${{ secrets.SAUCE_ACCESS_KEY }}"

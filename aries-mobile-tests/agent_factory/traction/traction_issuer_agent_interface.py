@@ -88,14 +88,14 @@ class TractionIssuerAgentInterface(TractionAgentInterface, IssuerAgentInterface)
         )
 
     def _register_schema(self, schema) -> dict:
-        print("Register Schema")
+        print(f"Register Schema {schema['schema_name']}")
         register_endpoint = f"{self.endpoint}/schemas"
         response = requests.post(
             register_endpoint, headers=self._build_headers(), json=schema
         )
         if response.status_code != 200:
             raise Exception(
-                f"Call to register schema: {response.status_code}: {response.text}"
+                f"Call to register schema failed: {response.text}"
             )
         return response.json()
 
