@@ -11,6 +11,7 @@ Feature: Secure your Wallet
   As a person who is curious but cautious of digital wallets
   I want to set my security settings to maximum security
 
+  # Biometrics are not supported by sauce labs
   @T001-Security @critical @AcceptanceTest @Story_421 @critical
   Scenario: Holder chooses biometrics and reopens to biometrics authentication
     Given the Holder has setup biometrics on thier device

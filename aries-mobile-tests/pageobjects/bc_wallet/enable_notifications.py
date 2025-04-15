@@ -22,6 +22,7 @@ class EnableNotificationsPage(BasePage):
         return super().on_this_page(self.on_this_page_locator)
 
     def select_continue(self):
+        self.scroll_to_bottom()
         self.find_by(self.continue_locator, wait_condition=WaitCondition.ELEMENT_TO_BE_CLICKABLE).click()
 
         return InitializationPage(self.driver)

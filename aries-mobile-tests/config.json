@@ -2,15 +2,16 @@
   "capabilities": {
     "firstMatch": [
       {
-        "platformName": "Android",
+        "platformName": "iOS",
         "appium:options": {
-          "app": "storage:filename=BCWallet-2124.aab",
-          "autoGrantPermissions": true,
-          "automationName": "UiAutomator2"
+          "app": "storage:filename=BCWallet-2230.ipa",
+          "autoAcceptAlerts": true,
+          "autoDismissAlerts": true,
+          "automationName": "xcuitest",
+          "platformVersion": "18|17.7|16.7|13.7|14.8|15.8"
         },
         "sauce:options": {
           "appiumVersion": "latest",
-          "fullReset": true,
           "sauceLabsImageInjectionEnabled": true,
           "sessionCreationRetry": "3"
         }

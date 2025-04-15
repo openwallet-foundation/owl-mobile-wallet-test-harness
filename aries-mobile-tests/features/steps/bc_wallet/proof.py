@@ -153,7 +153,7 @@ def step_impl(context):
 
 @then('they are asked if they are sure they want to decline the Proof')
 def step_impl(context):
-    context.thisAreYouSureDeclineProofRequest.on_this_page()
+    assert context.thisAreYouSureDeclineProofRequest.on_this_page()
 
 
 @then('they Confirm the decline')
@@ -163,12 +163,10 @@ def step_impl(context):
 
 @then('they can view the contents of the proof request')
 def step_impl(context):
-
     who, attributes, values = get_expected_proof_request_detail(
         context)
-    # The below doesn't have locators in build 127. Calibrate in the future fixed build
     actual_who, actual_attributes, actual_values = context.thisProofRequestPage.get_proof_request_details()
-    assert who in actual_who
+    assert who.lower() in actual_who.lower() # header text is formatted for readability, lower makes the test more consistent
     assert all(item in attributes for item in actual_attributes)
     assert all(item in values for item in actual_values)
 
@@ -290,15 +288,13 @@ def step_impl(context, proof, interval=None):
 
 @then('{credential_name} is selected as the credential to verify the proof')
 def step_impl(context, credential_name):
-    context.thisProofRequestDetailsPage = context.thisProofRequestPage.select_details()
-    credential_details = context.thisProofRequestDetailsPage.get_first_credential_details()
+    assert context.thisProofRequestPage.on_this_page()
+    credential_details = context.thisProofRequestPage.get_first_credential_details()
     # try a soft assert here until the wallet supports this selecting a non-revokable cred for a request for non-revocation
     try:
         assert credential_name in credential_details
     except AssertionError:
         print(f"Soft Assertion failed. {credential_name} not in {credential_details}")
-
-    context.thisProofRequestPage = context.thisProofRequestDetailsPage.select_back()
 
 
 @then('they select Share')
@@ -364,7 +360,7 @@ def step_impl(context):
 
 @then(u'they are brought Home')
 def step_impl(context):
-    context.thisHomePage.on_this_page()
+    assert context.thisHomePage.on_this_page()
 
 
 @when('the credential has been revoked by the issuer')
@@ -505,7 +501,7 @@ def step_impl(context):
 @then(u'the holder selects the revocation notification')
 def step_impl(context):
     context.thisCredentialDetailsPage = context.thisHomePage.select_revocation_notification()
-    context.thisCredentialDetailsPage.on_this_page()
+    assert context.thisCredentialDetailsPage.on_this_page()
 
 
 @then(u'the holder reviews the contents of the revocation notification message')
@@ -595,4 +591,4 @@ def get_expected_proof_request_detail_from_credential(context):
         raise Exception(
             f"No credential details in table data for {verifier_type_in_use}"
         )
-    return who, attributes, values, credential_name
+    return who, attributes, values

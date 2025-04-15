@@ -102,7 +102,6 @@ class AATHIssuerAgentInterface(IssuerAgentInterface, AATHAgentInterface):
             # also add it to the credential json dict just in case we the tests are using multiple credentials
             self._credential_json_dict[self._credential_definition["tag"]] = self.credential_json
 
-
     def revoke_credential(self, publish_immediately=True, notify_holder=False, credential=None):
         """revoke a credential"""
         topic = "revocation"

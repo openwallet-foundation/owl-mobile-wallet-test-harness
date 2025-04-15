@@ -1,0 +1,14 @@
+{
+  "schema_name": "sauce_labs_test",
+  "schema_version": "1.0.0",
+  "attributes": [
+    {
+      "name": "first_name",
+      "value": "John"
+    },
+    {
+      "name": "last_name",
+      "value": "Smith"
+    }
+  ]
+}

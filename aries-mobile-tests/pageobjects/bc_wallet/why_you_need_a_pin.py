@@ -7,8 +7,8 @@ class WhyYouNeedAPINPage(BasePage):
     """Secure your wallet Why you need a PIN Info page object"""
 
     # Locators
-    on_this_page_text_locator = "Why you need a PIN"
-    on_this_page_locator = (AppiumBy.NAME, "Why you need a PIN")
+    on_this_page_text_locator = "Create a PIN"
+    on_this_page_locator = (AppiumBy.NAME, "Create a PIN")
     continue_locator = (
         AppiumBy.ID, "com.ariesbifold:id/ContinueCreatePIN")
 

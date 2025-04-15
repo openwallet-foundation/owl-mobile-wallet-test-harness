@@ -1,6 +1,5 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pageobjects.basepage import BasePage, WaitCondition
-from pageobjects.bc_wallet.pinsetup import PINSetupPage
 from pageobjects.bc_wallet.why_you_need_a_pin import WhyYouNeedAPINPage
 
 

@@ -16,8 +16,8 @@ class WelcomeToBCWalletModal(BasePage):
     # Locators
     on_this_page_text_locator = "Welcome to BC Wallet"
     dismiss_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Dismiss")
-    use_app_guides_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Okay")
-    dont_use_app_guides_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Cancel")
+    use_app_guides_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Primary")
+    dont_use_app_guides_button_locator = (AppiumBy.ID, "com.ariesbifold:id/Secondary")
 
     def on_this_page(self):
         return super().on_this_page(self.on_this_page_text_locator)
