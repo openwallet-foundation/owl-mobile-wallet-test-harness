@@ -125,7 +125,7 @@ jobs:
       #       --detach \
       #       saucelabs/sauce-connect
 
-      - name: Run AMTH All Tests
+      - name: Run Traction All Tests
         if: ${{ contains(matrix.report-project,'multi-device-full') }}
         uses: ./.github/workflows/run-test-harness
         env:

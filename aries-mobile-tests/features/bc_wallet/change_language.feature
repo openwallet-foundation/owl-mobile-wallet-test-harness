@@ -1,5 +1,6 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/74
-@Language @bc_wallet @Story_74 @normal
+#TODO: no steps or pages created for these tests
+@Language 
 Feature: Language
   In order to use the app in my preferred language
   As a holder

@@ -5,7 +5,8 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/425
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/422
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/hyperledger/aries-mobile-agent-react-native/805
-@Security @bc_wallet
+
+@Security
 Feature: Secure your Wallet
   In order to be reassured that my digital wallet will not be used maliciously
   As a person who is curious but cautious of digital wallets

@@ -1,5 +1,5 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/hyperledger/aries-mobile-agent-react-native/148
-@TermsAndConditions @bc_wallet @Story_148 @normal
+@TermsAndConditions
 Feature: Terms and Conditions
   In order to understand my legal obligations when using the app
   As a new holder

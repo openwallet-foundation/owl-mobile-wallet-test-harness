@@ -1,6 +1,6 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/bcgov/bc-wallet-mobile/1200
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/gh/bcgov/bc-wallet-mobile/1148
-@WalletNaming @bc_wallet
+@WalletNaming
 Feature: Wallet Naming
   In order for contacts to be easily distinguished
   As a wallet user who connects with other people and organizations

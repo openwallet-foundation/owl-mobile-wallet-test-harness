@@ -1,4 +1,5 @@
-@BCShowcase @bc_wallet
+#TODO: Only features are written, no steps or pages
+@BCShowcase
 Feature: BC Showcase
    In order to easily show the capabilities of BC Wallet and ensure those services are working
    As a BC Wallet Stakeholder

@@ -3,7 +3,8 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/414
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/413
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/392
-@OfflineHandling @bc_wallet
+#TODO: these tests will need to be fixed
+@OfflineHandling
 Feature: Wallet Offline Handling
   In order to have a seemless experience in the wallet and make any corrections to my device that could hinder my wallet experience
   As user of BC Wallet

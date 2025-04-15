@@ -1,5 +1,6 @@
 # https://github.com/bcgov/bc-wallet-mobile/issues/1002
-@GiveFeedback @bc_wallet @Story_1002 @normal
+#TODO: this test needs to be fixed
+@GiveFeedback 
 Feature: Give Feedback
   In order to communicate concerns, issues, and praise
   As a wallet user

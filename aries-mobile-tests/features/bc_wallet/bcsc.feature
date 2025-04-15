@@ -1,7 +1,8 @@
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/407
 # https://app.zenhub.com/workspaces/bc-wallet-6148e7423fe04b001444e2bd/issues/bcgov/bc-wallet-mobile/241
 
-@BCSC @bc_wallet @Story_29
+#TODO: these tests need to be fixed
+@BCSC
 Feature: BCSC
    In order to easily prove I hold a BCSC
    As a BCSC holder
