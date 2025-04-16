@@ -347,7 +347,7 @@ Feature: Proof
    #    Then they will be informed of its revoked status
 
 
-   @T012.1-Proof @normal @AcceptanceTest @SelfAttestation @Story_239 @wip
+   @T012.1-Proof @normal @AcceptanceTest @SelfAttestation @Story_239
    Scenario Outline: Holder accepts the proof request that contains self-attested attributes but the attribute is in an existing credential
       Given the User has completed on-boarding
       And the User has accepted the Terms and Conditions
