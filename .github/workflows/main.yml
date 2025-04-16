@@ -22,8 +22,7 @@ jobs:
           echo ${output[@]}
           echo ${output[0]}
           echo ${output[1]}
-          # echo "::set-output name=APP_IS_NEW::${output[0]}"
-          echo "::set-output name=APP_IS_NEW::true"
+          echo "::set-output name=APP_IS_NEW::${output[0]}"
           echo "::set-output name=NEW_APP_NAME::${output[1]}"
   run-on-device-tests:
     needs: [check-app-updated]
