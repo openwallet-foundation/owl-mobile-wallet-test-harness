@@ -12,7 +12,7 @@ jobs:
       NEW_APP_NAME: ${{ steps.check-app-updated-on-sl.outputs.NEW_APP_NAME }}
     steps:
       - name: checkout-test-harness
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: check-app-updated-on-sl
         id: check-app-updated-on-sl
         run: |
@@ -58,7 +58,7 @@ jobs:
             report-project: "bc-showcase-ios"
     #timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: run-aath-agents
         if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') }}
@@ -96,7 +96,7 @@ jobs:
 
       - name: run-sauce-connect-tunnel
         if: ${{ matrix.mobile-platform=='-p iOS' && !contains(matrix.report-project,'candy-uvp-pcft-chat') && !contains(matrix.report-project,'bc-showcase-ios') }}
-        uses: saucelabs/sauce-connect-action@v2
+        uses: saucelabs/sauce-connect-action@v3
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
@@ -220,7 +220,7 @@ jobs:
         continue-on-error: true
 
       - name: archive screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-screenshots_from_main
           path: ./*.png
