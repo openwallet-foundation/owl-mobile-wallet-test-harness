@@ -2,13 +2,13 @@
    "requested_attributes": {
       "id_attrs": {
          "names": [
-               "id"
-            ],
+            "id"
+         ],
          "restrictions": [
-               {
-                  "schema_name": "drivers_license",
-                  "schema_version": "1.0.0"
-               }
+            {
+               "schema_name": "drivers_license",
+               "schema_version": "1.0.0"
+            }
          ]
       }
    },
@@ -18,12 +18,14 @@
          "p_type": ">",
          "p_value": 19420116,
          "restrictions": [
-               {
-                  "schema_name": "drivers_license",
-                  "schema_version": "1.0.0"
-               }
+            {
+               "schema_name": "drivers_license",
+               "schema_version": "1.0.0"
+            }
          ]
       }
    },
-   "version": "0.1.0"
+   "version": "0.1.0",
+   "name": "Sauce labs drivers license proof",
+   "nonce": "1234567890"
 }

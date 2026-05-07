@@ -11,6 +11,7 @@ Feature: Secure your Wallet
   As a person who is curious but cautious of digital wallets
   I want to set my security settings to maximum security
 
+  # Biometrics are not supported by sauce labs
   @T001-Security @critical @AcceptanceTest @Story_421 @critical
   Scenario: Holder chooses biometrics and reopens to biometrics authentication
     Given the Holder has setup biometrics on thier device
@@ -53,6 +54,7 @@ Feature: Secure your Wallet
   Scenario: New User Sets Up PIN
     Given the User has completed on-boarding
     And the User has accepted the Terms and Conditions
+    And the User continues from reviewing Secure your Wallet 
     And the User is on the PIN creation screen
     When the User enters the first PIN as "369369"
     And the User re-enters the PIN as "369369"
@@ -65,6 +67,7 @@ Feature: Secure your Wallet
   Scenario: New User Sets Up PIN but PINs do not match
     Given the User has completed on-boarding
     And the User has accepted the Terms and Conditions
+    And the User continues from reviewing Secure your Wallet 
     And the User is on the PIN creation screen
     When the User enters the first PIN as "369369"
     And the User re-enters the PIN as "369363"
@@ -81,6 +84,7 @@ Feature: Secure your Wallet
   Scenario Outline: New User Sets Up PIN but does not follow conventions
     Given the User has completed on-boarding
     And the User has accepted the Terms and Conditions
+    And the User continues from reviewing Secure your Wallet
     And the User is on the PIN creation screen
     When the User enters the first PIN as <pin>
     And the User re-enters the PIN as <pin>

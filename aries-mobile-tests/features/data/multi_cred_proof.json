@@ -1,51 +1,29 @@
 {
+   "name": "proof-request",
+   "nonce": "1234567890",
+   "version": "1.0",
    "requested_attributes": {
-      "id_attrs": {
+      "default_schema": {
          "names": [
-               "id"
-            ],
+            "first_name",
+            "last_name"
+         ],
          "restrictions": [
-               {
-                  "schema_name": "drivers_license",
-                  "schema_version": "1.0.0"
-               }
+            {
+               "schema_name": "sauce_labs_test"
+            }
          ]
       },
-      "photo_attrs": {
+      "photo_id": {
          "names": [
-               "issue_date"
-            ],
+            "name"
+         ],
          "restrictions": [
-               {
-                  "schema_name": "photo_id",
-                  "schema_version": "1.0.0"
-               }
+            {
+               "schema_name": "photo_id"
+            }
          ]
       }
    },
-   "requested_predicates": {
-      "age": {
-         "name": "birth_dateint",
-         "p_type": ">",
-         "p_value": 19420116,
-         "restrictions": [
-               {
-                  "schema_name": "drivers_license",
-                  "schema_version": "1.0.0"
-               }
-         ]
-      },
-      "birth": {
-         "name": "birth_dateint",
-         "p_type": ">",
-         "p_value": 19420116,
-         "restrictions": [
-               {
-                  "schema_name": "photo_id",
-                  "schema_version": "1.0.0"
-               }
-         ]
-      }
-   },
-   "version": "0.1.0"
+   "requested_predicates": {}
 }

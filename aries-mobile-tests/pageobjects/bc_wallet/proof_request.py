@@ -15,11 +15,11 @@ class ProofRequestPage(BasePage):
     # Locators
     # Wireframes state different text here, so it will probably change to this
     #on_this_page_text_locator = "is requesting the following"
-    on_this_page_text_locator = "is requesting you to share"
+    on_this_page_text_locator = "is requesting the following"
     who_locator = (AppiumBy.ID, "com.ariesbifold:id/HeaderText")
     attribute_locator = (AppiumBy.ID, "com.ariesbifold:id/AttributeName")
     value_locator = (AppiumBy.ID, "com.ariesbifold:id/AttributeValue")
-    details_locator = (AppiumBy.ID, "com.ariesbifold:id/Details")
+    details_locator = (AppiumBy.ID, "com.ariesbifold:id/CredentialName")
     share_locator = (AppiumBy.ID, "com.ariesbifold:id/Share")
     share_aid_locator = (AppiumBy.ACCESSIBILITY_ID, "Share")
     decline_locator = (AppiumBy.ID, "com.ariesbifold:id/Decline")
@@ -89,5 +89,12 @@ class ProofRequestPage(BasePage):
                 credential_card_text_list.append(credential_card.text)
             # If the list is empty, there is no credential on the proof request screen
             return credential_card_text_list
+        else:
+            raise Exception(f"App not on the {type(self)} page")
+
+    def get_first_credential_details(self):
+        if self.on_this_page():
+            credential_elements = self.find_multiple_by(self.attribute_locator)
+            return credential_elements[0].text
         else:
             raise Exception(f"App not on the {type(self)} page")

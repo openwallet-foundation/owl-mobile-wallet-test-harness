@@ -26,7 +26,7 @@ class FeedbackPage(BasePage):
 
     def select_exit(self):
         if self.on_this_page():
-            if self.driver.desired_capabilities['platformName'] == 'Android':
+            if self.current_platform == 'Android':
                 self.find_by(self.exit_locator_android).click()
             else:
                 self.find_by(self.exit_locator).click()

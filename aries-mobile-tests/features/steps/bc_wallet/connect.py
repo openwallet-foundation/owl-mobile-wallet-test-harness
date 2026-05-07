@@ -3,22 +3,20 @@
 # 
 # -----------------------------------------------------------
 
+import os
 from pageobjects.bc_wallet.scan import ScanPage
 from pageobjects.bc_wallet.navbar import NavBar
 from behave import given, when, then
-import json
 from time import sleep
 import logging
 
 
 # Local Imports
-from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
-from agent_test_utils import get_qr_code_from_invitation
 # import Page Objects needed
-from pageobjects.bc_wallet.connecting import ConnectingPage
-from pageobjects.bc_wallet.home import HomePage
+from pageobjects.bc_wallet.contacts import ContactsPage
 from pageobjects.bc_wallet.camera_privacy_policy import CameraPrivacyPolicyPage
 from pageobjects.bc_wallet.contact import ContactPage
+from pageobjects.bc_wallet.home import HomePage
 
 @given('a PIN has been set up with "{pin}"')
 def step_impl(context, pin):
@@ -31,7 +29,8 @@ def step_impl(context, pin):
     #     Then the User has successfully created a PIN
     # ''')
     context.execute_steps(f'''
-        Given the User is on the PIN creation screen
+        Given the User continues from reviewing Secure your Wallet
+        And the User is on the PIN creation screen
         When the User enters the first PIN as "{pin}"
         And the User re-enters the PIN as "{pin}"
         And the User selects Create PIN
@@ -40,7 +39,7 @@ def step_impl(context, pin):
 @when('the Holder scans the QR code sent by the "{agent}"')
 def step_impl(context, agent):
     # check the device serivce handler to see if we are on a tablet or phone
-    if context.device_service_handler.is_current_device_a_tablet():
+    if "Local" not in os.environ['DEVICE_CLOUD'] and context.device_service_handler.is_current_device_a_tablet():
         qr_code_border = 80
     else:
         qr_code_border = 40
@@ -179,9 +178,6 @@ def step_impl(context, no_credentials):
 
 @when('the holder Removes this Contact')
 def step_impl(context):
-    context.thisSettingsPage = context.thisHomePage.select_settings()
-    context.thisContactsPage = context.thisSettingsPage.select_contacts()
-    context.thisContactPage = context.thisContactsPage.select_contact(context.issuer.get_name())
     context.thisContactDetailsPage = context.thisContactPage.select_info()
     context.thisRemoveFromWalletPage = context.thisContactDetailsPage.select_remove_from_wallet()
 
@@ -193,14 +189,15 @@ def step_impl(context):
     assert details in context.thisRemoveFromWalletPage.get_details_text()
 
 
-@when(u'the holder confirms to Remove this Contact')
+@when('the holder confirms to Remove this Contact')
 def step_impl(context):
     context.thisContactsPage = context.thisRemoveFromWalletPage.select_remove_from_wallet()
 
 
-@then(u'the holder is taken to the Contact list')
+@then('the holder is taken to the Contact list')
 def step_impl(context):
-    context.thisContactsPage.on_this_page()
+    context.thisContactsPage = ContactsPage(context.driver)
+    assert context.thisContactsPage.on_this_page()
 
 
 @then(u'the holder is informed that the Contact has been removed')
@@ -218,4 +215,7 @@ def step_impl(context):
     #context.thisContactsPage.select_contact(context.issuer.get_name())
     assert context.thisContactsPage.is_contact_present(context.issuer.get_name()) == False
 
-    
+@then('the holder is brought back to the home screen')
+def step_impl(context):
+    context.thisHomePage = HomePage(context.driver)
+    assert context.thisHomePage.on_this_page()

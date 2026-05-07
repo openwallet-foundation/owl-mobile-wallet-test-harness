@@ -4,7 +4,7 @@
          "names": [
             "photo"
          ],
-      "restrictions": [
+         "restrictions": [
             {
                "schema_name": "photo_id_revokable",
                "schema_version": "1.0.0"
@@ -23,5 +23,7 @@
          "p_value": 19420116
       }
    },
-   "version": "0.1.0"
+   "version": "0.1.0",
+   "name": "Sauce labs photo id no schema restrictions",
+   "nonce": "1234567890"
 }

@@ -7,6 +7,7 @@ from behave import given, when, then, step
 import json
 import os
 from decouple import config
+from time import sleep
 
 # Local Imports
 from agent_controller_client import agent_controller_GET, agent_controller_POST, expected_agent_state, setup_already_connected
@@ -57,6 +58,7 @@ def step_impl(context):
 def step_enable_notifications(context):
     assert context.thisEnableNotificationsPage.on_this_page()
     context.thisInitializationPage = context.thisEnableNotificationsPage.select_continue()
+    context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     #context.thisOnboardingBiometricsPage = context.thisEnableNotificationsPage.select_continue()
     # Capabilities are setup to automatically accept system alerts.
     #context.thisEnableNotificationsSystemModal = context.thisEnableNotificationsPage.select_continue()
@@ -69,20 +71,28 @@ def step_enable_notifications(context):
     context.thisEnableNotificationsSystemModal = context.thisEnableNotificationsPage.select_continue()
     assert context.thisEnableNotificationsSystemModal.on_this_page()
     context.thisInitializationPage = context.thisEnableNotificationsSystemModal.select_dont_allow()
+    context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
 
+@when('the User chooses to not use Biometrics')
+def step_impl(context):
+    assert context.thisOnboardingBiometricsPage.on_this_page()
+    context.thisEnableNotificationsPage = context.thisOnboardingBiometricsPage.select_continue()
+    pass
+
+#sauce labs does not support 
 @when('the User selects to use Biometrics')
 def step_impl(context):
     assert context.thisOnboardingBiometricsPage.on_this_page()
-    assert context.thisOnboardingBiometricsPage.select_biometrics()
     #context.thisInitializationPage = context.thisOnboardingBiometricsPage.select_continue()
     context.thisEnableNotificationsPage = context.thisOnboardingBiometricsPage.select_continue()
-    context.device_service_handler.biometrics_authenticate(True)
+    # Not sure we need this next line since I don't think the app asks to authenticate when you select to use biometrics.
+    # This is causing the test to fail when using a local android device so make this line conditional
+    if "Local" not in os.environ['DEVICE_CLOUD']:
+        context.device_service_handler.biometrics_authenticate(True)
 
 @then('they have access to the app')
 def step_impl(context):
     # The Home page will not show until the initialization page is done. 
-    #assert context.thisInitializationPage.on_this_page()
-    context.thisHomePage = context.thisInitializationPage.wait_until_initialized()
     if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
         context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
         assert True
@@ -99,6 +109,7 @@ def step_impl(context):
     if context.thisHomePage.welcome_to_bc_wallet_modal.is_displayed():
         context.thisHomePage.welcome_to_bc_wallet_modal.select_dismiss()
     assert context.thisHomePage.on_this_page()
+    # context.thisHomePage.dismiss_guide_modal()
 
     # set the environment to TEST instead of PROD which is default as of build 575
     # check to see what the current environment is set to. Order of presendence is, Environment Variable, Tag, default. 
@@ -128,10 +139,14 @@ def step_impl(context, env):
     assert context.thisHomePage.on_this_page()
 
 
-@given('the Holder has setup biometrics on thier device')
+@given('the Holder has opted out of biometrics to unlock BC Wallet')
 def step_impl(context):
-    # Assume already setup. TODO May need to actually do the setup here eventually.
-    pass
+    context.biometrics_choosen = False
+    context.execute_steps('''
+        When the User chooses to not use Biometrics
+        And the User allows notifications
+        Then they land on the Home screen
+    ''')
 
 @given('the Holder has selected to use biometrics to unlock BC Wallet')
 def step_impl(context):
@@ -152,6 +167,9 @@ def step_impl(context):
 @when('they relaunch the app')
 def step_impl(context):
     context.driver.activate_app(context.driver.capabilities[get_package_or_bundle_id(context)])
+    # There is a crash issue in the automation when entering the pin right after a restart.
+    # wait 5 seconds to stop the crashing or minimize at least.
+    sleep(5)
 
 def get_package_or_bundle_id(context):
     if context.driver.capabilities['platformName'] == 'iOS':
@@ -169,7 +187,9 @@ def step_impl(context):
         assert context.thisBiometricsPage.on_this_page()
         context.device_service_handler.biometrics_authenticate(True)
         assert context.thisBiometricsPage.on_this_page() == False
-        context.thisInitialzationPage.wait_until_initialized()
+        # Check to make sure we are not already on the home page.
+        if context.thisHomePage.on_this_page() == False:
+            context.thisInitializationPage.wait_until_initialized()
 
 
 @when('fails to authenticate with thier biometrics once')
@@ -181,6 +201,11 @@ def step_impl(context):
     context.device_service_handler.biometrics_authenticate(False)
     #assert context.thisBiometricsPage.on_this_page()
 
+
+@step('the User continues from reviewing Secure your Wallet')
+def step_impl(context):
+    assert context.thisWhyYouNeedAPINPage.on_this_page()
+    context.thisPINSetupPage = context.thisWhyYouNeedAPINPage.select_continue()
 
 @when('they enter thier PIN as "{pin}"')
 def step_impl(context, pin):

@@ -25,6 +25,10 @@ class DeviceServiceHandlerInterface(ABC):
         self.set_device_service_specific_options()
         self._options = AppiumOptions()
 
+    def is_running_in_dev_container(self):
+        """Returns: True if running in a VS Code Dev Container, else False"""
+        return 'REMOTE_CONTAINERS_IPC' in os.environ
+
     @abstractmethod
     def set_device_service_specific_options(self, options:dict=None, command_executor_url:str=None):
         """set any specific device options before initialize_driver is called """

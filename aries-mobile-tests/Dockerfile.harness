@@ -5,8 +5,9 @@ RUN pip install -r requirements.txt
 
 RUN \
     echo "==> Install stuff not in the requirements..."   && \
+    pip install --upgrade pip && \
     pip install --no-cache-dir \
-        aiohttp \
+        aiohttp && \
     pip install --no-cache-dir \
          python-decouple
 

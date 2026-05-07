@@ -10,6 +10,7 @@ Scenario: New User Accepts Terms and Conditions
 Given the User has completed on-boarding
 And the User is on the Terms and Conditions screen
 When the users accepts the Terms and Conditions
+And the User continues from reviewing Secure your Wallet
 Then the user transitions to the PIN creation screen
 
 @T002-TandC @AcceptanceTest @normal @depricated @wip

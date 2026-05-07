@@ -83,8 +83,8 @@ Feature: Wallet Naming
     And they are presented with the option to tap "not now" to complete this step later
 
 
-  @T004-WalletNaming @AcceptanceTest @Story_1148 @normal @wip
-  Scenario: New Wallet User Chooses not to update thier wallet name during onboarding
+  # @T004-WalletNaming @AcceptanceTest @Story_1148 @normal @wip
+  # Scenario: New Wallet User Chooses not to update thier wallet name during onboarding
 
 
   @T005-WalletNaming @AcceptanceTest @Story_1148 @normal @CanRunOnSLVirtualDevice
