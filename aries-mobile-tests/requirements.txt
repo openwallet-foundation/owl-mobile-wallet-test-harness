@@ -3,7 +3,7 @@ allure-behave
 SauceClient
 paver==1.3.4
 selenium==4.25.0
-psutil==5.7.2
+psutil==5.9.8
 Appium-Python-Client==3.2.1
 qrcode[pil]~=6.1
 webdriver-manager
