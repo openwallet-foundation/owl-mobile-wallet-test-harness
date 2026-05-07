@@ -1,4 +1,4 @@
-FROM python:3.9-bullseye
+FROM python:3.13-bullseye
 COPY ./aries-mobile-tests/requirements.txt /aries-mobile-test-harness/
 WORKDIR /aries-mobile-test-harness
 RUN pip install -r requirements.txt
